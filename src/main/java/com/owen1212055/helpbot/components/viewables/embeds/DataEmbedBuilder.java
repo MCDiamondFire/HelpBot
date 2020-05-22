@@ -26,13 +26,13 @@ public abstract class DataEmbedBuilder {
         StringBuilder footer = new StringBuilder(footerText);
 
         if (icon.getRequiredCredits() && !icon.getRequiredRank().equals("Default")) {
-            if (footerText.length() != 0)  footer.append(" | ");
+            if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits OR ").append(icon.getRequiredRank());
         } else if (icon.getRequiredCredits()) {
-            if (footerText.length() != 0)  footer.append(" | ");
+            if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits");
         } else if (!icon.getRequiredRank().equals("Default")) {
-            if (footerText.length() != 0)  footer.append(" | ");
+            if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with " + icon.getRequiredRank());
         }
 

@@ -5,7 +5,6 @@ import com.owen1212055.helpbot.command.arguments.NoArg;
 import com.owen1212055.helpbot.command.commands.Command;
 import com.owen1212055.helpbot.command.permissions.Permission;
 import com.owen1212055.helpbot.components.ExternalFileHandler;
-import com.owen1212055.helpbot.components.codedatabase.db.CodeDatabase;
 import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -53,7 +52,6 @@ public abstract class AbstractFileListCommand extends Command {
         }
 
         event.getChannel().sendMessage("Here you go!").addFile(file).queue();
-
 
 
     }

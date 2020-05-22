@@ -16,5 +16,6 @@ public abstract class Command {
     protected boolean inHelp() {
         return true;
     }
+
     public abstract void run(CommandEvent event);
 }

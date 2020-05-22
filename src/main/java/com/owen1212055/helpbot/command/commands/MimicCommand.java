@@ -6,7 +6,7 @@ import com.owen1212055.helpbot.command.permissions.Permission;
 import com.owen1212055.helpbot.events.CommandEvent;
 
 
-public class MimicCommand extends Command  {
+public class MimicCommand extends Command {
     @Override
     public String getName() {
         return "mimic";

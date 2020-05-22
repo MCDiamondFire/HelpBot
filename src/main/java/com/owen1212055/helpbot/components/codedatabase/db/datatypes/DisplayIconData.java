@@ -3,8 +3,8 @@ package com.owen1212055.helpbot.components.codedatabase.db.datatypes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.owen1212055.helpbot.util.CompressionUtil;
 import com.owen1212055.helpbot.components.ExternalFileHandler;
+import com.owen1212055.helpbot.util.CompressionUtil;
 import com.owen1212055.helpbot.util.Util;
 
 import java.io.File;
@@ -142,7 +142,7 @@ public class DisplayIconData {
 
         String texture = format.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString().substring(38);
 
-        File check = new File(ExternalFileHandler.HEAD_CACHE.getPath() + "/"  + texture + ".png");
+        File check = new File(ExternalFileHandler.HEAD_CACHE.getPath() + "/" + texture + ".png");
         if (check.exists()) {
             return check;
         }

@@ -1,6 +1,6 @@
 package com.owen1212055.helpbot.command.arguments;
 
-public class LazyStringArg extends Argument{
+public class LazyStringArg extends Argument {
     @Override
     public boolean validate(String args) {
         return true;

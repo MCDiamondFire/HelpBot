@@ -1,11 +1,17 @@
 package com.owen1212055.helpbot.instance;
 
 import com.owen1212055.helpbot.command.CommandHandler;
-import com.owen1212055.helpbot.command.commands.*;
+import com.owen1212055.helpbot.command.commands.FetchDataCommand;
+import com.owen1212055.helpbot.command.commands.HelpCommand;
+import com.owen1212055.helpbot.command.commands.InfoCommand;
+import com.owen1212055.helpbot.command.commands.MimicCommand;
 import com.owen1212055.helpbot.command.commands.filespitter.ParticleListCommand;
 import com.owen1212055.helpbot.command.commands.filespitter.PotionListCommand;
 import com.owen1212055.helpbot.command.commands.filespitter.SoundListCommand;
-import com.owen1212055.helpbot.command.commands.query.*;
+import com.owen1212055.helpbot.command.commands.query.BlockCommand;
+import com.owen1212055.helpbot.command.commands.query.RankCommand;
+import com.owen1212055.helpbot.command.commands.query.SearchCommand;
+import com.owen1212055.helpbot.command.commands.query.TagsCommand;
 import com.owen1212055.helpbot.command.commands.stats.InBadCommand;
 import com.owen1212055.helpbot.command.commands.stats.InBadJoinCommand;
 import com.owen1212055.helpbot.command.commands.stats.StatsCommand;

@@ -1,11 +1,11 @@
 package com.owen1212055.helpbot.command.commands;
 
-import com.owen1212055.helpbot.command.commands.query.AbstractSingleQueryCommand;
-import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.command.arguments.Argument;
 import com.owen1212055.helpbot.command.arguments.LazyStringArg;
+import com.owen1212055.helpbot.command.commands.query.AbstractSingleQueryCommand;
 import com.owen1212055.helpbot.command.permissions.Permission;
 import com.owen1212055.helpbot.command.permissions.PermissionHandler;
+import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.events.CommandEvent;
 import com.owen1212055.helpbot.instance.BotInstance;
 import com.owen1212055.helpbot.util.BotConstants;
@@ -18,6 +18,30 @@ import java.util.function.BiConsumer;
 
 
 public class HelpCommand extends AbstractSingleQueryCommand {
+    public static void sendHelpMessage(SimpleData data, TextChannel channel) {
+        if (data == null) {
+            return;
+        }
+        EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
+        String material;
+        File actionIcon;
+
+        File customHead = data.getItem().getHead();
+        if (customHead == null) {
+            material = data.getItem().getMaterial().toLowerCase();
+
+            actionIcon = Util.fetchMinecraftTextureFile(material);
+
+        } else {
+            actionIcon = customHead;
+            material = customHead.getName();
+        }
+        builder.setThumbnail("attachment://" + material + ".png");
+
+        channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
+
+    }
+
     @Override
     public String getName() {
         return "help";
@@ -59,35 +83,10 @@ public class HelpCommand extends AbstractSingleQueryCommand {
         super.run(event);
 
 
-
     }
 
     @Override
     public BiConsumer<SimpleData, TextChannel> onDataReceived() {
         return HelpCommand::sendHelpMessage;
-    }
-
-    public static void sendHelpMessage(SimpleData data, TextChannel channel) {
-        if (data == null) {
-            return;
-        }
-        EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
-        String material;
-        File actionIcon;
-
-        File customHead = data.getItem().getHead();
-        if (customHead == null) {
-            material = data.getItem().getMaterial().toLowerCase();
-
-            actionIcon = Util.fetchMinecraftTextureFile(material);
-
-        } else {
-            actionIcon = customHead;
-            material = customHead.getName();
-        }
-        builder.setThumbnail("attachment://" + material + ".png");
-        
-        channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
-
     }
 }

@@ -4,9 +4,9 @@ import com.owen1212055.helpbot.components.codedatabase.db.datatypes.CodeBlockAct
 import com.owen1212055.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
 import com.owen1212055.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
 import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
+import com.owen1212055.helpbot.components.viewables.BasicReaction;
 import com.owen1212055.helpbot.util.ParamConverter;
 import com.owen1212055.helpbot.util.StringFormatting;
-import com.owen1212055.helpbot.components.viewables.BasicReaction;
 import com.owen1212055.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -28,7 +28,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         StringBuilder footer = new StringBuilder();
 
         if (actionData.getTags().length != 0) {
-            footer.append(actionData.getTags().length + Util.sCheck(" Tag", actionData.getTags().length) );
+            footer.append(actionData.getTags().length + Util.sCheck(" Tag", actionData.getTags().length));
         }
 
         builder.setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor());

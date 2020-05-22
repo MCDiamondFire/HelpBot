@@ -3,9 +3,12 @@ package com.owen1212055.helpbot.command.arguments;
 
 import com.owen1212055.helpbot.util.JaroWinkler;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
-public class DefinedStringArg extends Argument{
+public class DefinedStringArg extends Argument {
 
     String[] options;
 
@@ -43,7 +46,7 @@ public class DefinedStringArg extends Argument{
     public String toString() {
         String parsedOptions = null;
         if (options.length > 6) {
-            parsedOptions = String.format(String.join("/", Arrays.asList(options).subList(1, 6).toArray(new String[0])) + "..." + String.format("*+%s more*", options.length - 6) );
+            parsedOptions = String.format(String.join("/", Arrays.asList(options).subList(1, 6).toArray(new String[0])) + "..." + String.format("*+%s more*", options.length - 6));
         } else {
             parsedOptions = String.join("/", options);
         }

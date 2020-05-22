@@ -18,7 +18,7 @@ public class StringFormatting {
         return sanitize ? MarkdownSanitizer.sanitize(list, MarkdownSanitizer.SanitizationStrategy.ESCAPE) : list;
     }
 
-    public static String asciidocStyle(HashMap<String,Integer> hashes) {
+    public static String asciidocStyle(HashMap<String, Integer> hashes) {
         if (hashes.size() == 0) {
             return "";
         }
@@ -29,20 +29,21 @@ public class StringFormatting {
 
         hashes.entrySet()
                 .forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
-                        Util.repeat("", " ",(longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
+                        Util.repeat("", " ", (longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
 
         return String.join("\n", strings);
     }
 
     public static String fieldSafe(String string) {
         if (string.length() >= 950) {
-            return string.substring(0,950);
+            return string.substring(0, 950);
         }
         return string;
     }
+
     public static String titleSafe(String string) {
         if (string.length() >= 200) {
-            return string.substring(0,200);
+            return string.substring(0, 200);
         }
         return string;
     }

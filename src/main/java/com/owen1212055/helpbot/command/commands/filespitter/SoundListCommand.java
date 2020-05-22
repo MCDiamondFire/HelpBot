@@ -6,7 +6,7 @@ import com.owen1212055.helpbot.command.permissions.Permission;
 import com.owen1212055.helpbot.components.codedatabase.db.CodeDatabase;
 import com.owen1212055.helpbot.events.CommandEvent;
 
-public class SoundListCommand extends AbstractFileListCommand{
+public class SoundListCommand extends AbstractFileListCommand {
     @Override
     public String getName() {
         return "sounds";

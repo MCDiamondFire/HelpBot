@@ -34,7 +34,7 @@ public class Util {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new File(ExternalFileHandler.IMAGES.getPath()  + "/" + "unknown_texture" + ".png");
+        return new File(ExternalFileHandler.IMAGES.getPath() + "/" + "unknown_texture" + ".png");
     }
 
     /**

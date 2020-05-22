@@ -1,10 +1,10 @@
 package com.owen1212055.helpbot.command.commands.query;
 
+import com.owen1212055.helpbot.command.arguments.Argument;
+import com.owen1212055.helpbot.command.arguments.BasicStringArg;
 import com.owen1212055.helpbot.command.commands.Command;
 import com.owen1212055.helpbot.components.codedatabase.db.CodeDatabase;
 import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.owen1212055.helpbot.command.arguments.Argument;
-import com.owen1212055.helpbot.command.arguments.BasicStringArg;
 import com.owen1212055.helpbot.events.CommandEvent;
 import com.owen1212055.helpbot.util.StringFormatting;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -69,6 +69,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
         event.getChannel().sendMessage(builder.build()).queue();
 
     }
+
     protected String getSearchQuery(CommandEvent event) {
         return MarkdownSanitizer.sanitize(event.getParsedArgs(), MarkdownSanitizer.SanitizationStrategy.REMOVE);
     }

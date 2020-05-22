@@ -1,8 +1,8 @@
 package com.owen1212055.helpbot.command.commands.query;
 
-import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.command.arguments.DefinedStringArg;
 import com.owen1212055.helpbot.command.permissions.Permission;
+import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.events.CommandEvent;
 
 import java.util.List;

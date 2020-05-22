@@ -1,6 +1,6 @@
 package com.owen1212055.helpbot.command.arguments;
 
-public class BasicStringArg extends Argument{
+public class BasicStringArg extends Argument {
     @Override
     public boolean validate(String args) {
         return args.length() != 0;

@@ -1,9 +1,9 @@
 package com.owen1212055.helpbot.command.commands.query;
 
-import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.command.arguments.Argument;
 import com.owen1212055.helpbot.command.arguments.BasicStringArg;
 import com.owen1212055.helpbot.command.permissions.Permission;
+import com.owen1212055.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.owen1212055.helpbot.events.CommandEvent;
 
 import java.util.ArrayList;

@@ -66,7 +66,8 @@ public class InBadJoinCommand extends Command {
 
             }
 
-        } catch (SQLException ignored) { }
+        } catch (SQLException ignored) {
+        }
 
         players.keySet().removeAll(good);
 

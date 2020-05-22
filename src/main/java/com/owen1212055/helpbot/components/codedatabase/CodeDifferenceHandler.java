@@ -9,7 +9,6 @@ import com.owen1212055.helpbot.components.ExternalFileHandler;
 import com.owen1212055.helpbot.util.Util;
 
 import java.io.*;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ public class CodeDifferenceHandler {
             Util.error(e, "Failed while generating differences!");
         }
     }
+
     public static void setComparer(File toCompare) {
         try {
             Files.copy(toCompare.toPath(), ExternalFileHandler.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -38,6 +38,7 @@ public class CodeDifferenceHandler {
             Util.error(e, "Could not set main compare file!");
         }
     }
+
     private static void generateDifferences() throws IOException {
 
         BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFileHandler.DB_COMPARE.getPath()));
@@ -61,11 +62,11 @@ public class CodeDifferenceHandler {
 
 
         compare(object.get("codeblocks").getAsJsonArray(), objectOld.get("codeblocks").getAsJsonArray(), "name");
-        compare(object.get("actions").getAsJsonArray(), objectOld.get("actions").getAsJsonArray(),"name");
-        compare(object.get("gameValues").getAsJsonArray(),objectOld.get("gameValues").getAsJsonArray(), "name");
-        compare(object.get("particles").getAsJsonArray(),objectOld.get("particles").getAsJsonArray(), "particle" );
-        compare(object.get("potions").getAsJsonArray(),objectOld.get("potions").getAsJsonArray(), "potion" );
-        compare(object.get("sounds").getAsJsonArray(), objectOld.get("sounds").getAsJsonArray(),"sound");
+        compare(object.get("actions").getAsJsonArray(), objectOld.get("actions").getAsJsonArray(), "name");
+        compare(object.get("gameValues").getAsJsonArray(), objectOld.get("gameValues").getAsJsonArray(), "name");
+        compare(object.get("particles").getAsJsonArray(), objectOld.get("particles").getAsJsonArray(), "particle");
+        compare(object.get("potions").getAsJsonArray(), objectOld.get("potions").getAsJsonArray(), "potion");
+        compare(object.get("sounds").getAsJsonArray(), objectOld.get("sounds").getAsJsonArray(), "sound");
         if (differs.size() >= 20) {
             differences.append(String.format("\n+ %s Modifications...", differs.size()));
         } else {
@@ -84,7 +85,7 @@ public class CodeDifferenceHandler {
     private static HashMap<String, JsonObject> generateHashMap(JsonArray array, String keyName) {
         HashMap<String, JsonObject> objectHashMap = new HashMap<>();
         for (JsonElement element : array) {
-            if(element == null) {
+            if (element == null) {
                 continue;
             }
             JsonElement nameElement = null;
@@ -123,7 +124,7 @@ public class CodeDifferenceHandler {
                     differences.append("\n- Removed " + key);
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

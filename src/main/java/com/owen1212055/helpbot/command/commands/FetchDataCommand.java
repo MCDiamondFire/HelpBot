@@ -8,15 +8,16 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.packetlib.Client;
-import com.github.steveice10.packetlib.event.session.*;
+import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
+import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
-import com.owen1212055.helpbot.components.codedatabase.CodeDifferenceHandler;
-import com.owen1212055.helpbot.components.codedatabase.db.CodeDatabase;
 import com.owen1212055.helpbot.command.arguments.Argument;
 import com.owen1212055.helpbot.command.arguments.NoArg;
 import com.owen1212055.helpbot.command.permissions.Permission;
-import com.owen1212055.helpbot.events.CommandEvent;
 import com.owen1212055.helpbot.components.ExternalFileHandler;
+import com.owen1212055.helpbot.components.codedatabase.CodeDifferenceHandler;
+import com.owen1212055.helpbot.components.codedatabase.db.CodeDatabase;
+import com.owen1212055.helpbot.events.CommandEvent;
 import com.owen1212055.helpbot.util.SensitiveData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -25,7 +26,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,14 +38,10 @@ public class FetchDataCommand extends Command {
 
 
     boolean ready = false;
-
-
+    boolean errored = false;
     private Message sentMessage;
     private ArrayList<String> queue = new ArrayList<>();
     private BufferedWriter bufferedWriter = null;
-
-    boolean errored = false;
-
 
     @Override
     public String getName() {
@@ -71,6 +67,7 @@ public class FetchDataCommand extends Command {
     public void run(CommandEvent event) {
         setup(event.getChannel());
     }
+
     public void setup(TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
 
@@ -115,7 +112,6 @@ public class FetchDataCommand extends Command {
         status(sentMessage, "Finished!");
 
 
-
     }
 
     private void login(Message message) {
@@ -152,7 +148,7 @@ public class FetchDataCommand extends Command {
                         ready = true;
                     }
                     if (ready) {
-                            queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
+                        queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
                     }
                     if (text.startsWith("}")) {
                         event.getSession().disconnect("Sorry y'all, but ima head out.");
@@ -187,6 +183,7 @@ public class FetchDataCommand extends Command {
         message.editMessage(builder.build()).queue();
         e.printStackTrace();
     }
+
     private void status(Message message, String status) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Status");
