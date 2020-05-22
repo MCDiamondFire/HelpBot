@@ -2,4 +2,4 @@
 .idea
 gradle
 build
-/src/main/java/com/owen1212055/helpbot/util/SensitiveData.java
+/src/main/java/com/diamondfire/helpbot/util/SensitiveData.java

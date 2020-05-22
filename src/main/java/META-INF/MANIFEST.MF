@@ -1,1 +1,1 @@
-Main-Class: com.owen1212055.helpbot.HelpBot
+Main-Class: com.diamondfire.helpbot.HelpBot
