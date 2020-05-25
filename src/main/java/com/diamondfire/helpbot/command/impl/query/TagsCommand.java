@@ -1,5 +1,7 @@
-package com.diamondfire.helpbot.command.commands.query;
+package com.diamondfire.helpbot.command.impl.query;
 
+import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockData;
@@ -7,8 +9,6 @@ import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockTag
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -17,20 +17,23 @@ import java.util.function.BiConsumer;
 
 
 public class TagsCommand extends AbstractSingleQueryCommand {
+
     public static void sendTagMessage(SimpleData data, TextChannel channel) {
         if (data == null) {
             return;
         }
         EmbedBuilder builder = new EmbedBuilder();
         CodeBlockActionData actionData;
+
+        // Handle codeblocks that have actions associated with them.
         if (data instanceof CodeBlockData && ((CodeBlockData) data).getAssociatedAction() != null) {
             actionData = ((CodeBlockData) data).getAssociatedAction();
-
         } else if (data instanceof CodeBlockActionData) {
             actionData = (CodeBlockActionData) data;
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
+
             channel.sendMessage(builder.build()).queue();
             return;
         }
@@ -38,12 +41,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
+
             channel.sendMessage(builder.build()).queue();
             return;
         }
 
         for (CodeBlockTagData tag : actionData.getTags()) {
             StringBuilder stringBuilder = new StringBuilder();
+
             for (String option : tag.getOptions()) {
                 stringBuilder.append("\n\\> " + (option.equals(tag.getDefaultValue()) ? String.format("**%s**", option) : option));
             }
@@ -52,22 +57,19 @@ public class TagsCommand extends AbstractSingleQueryCommand {
 
         String material;
         File actionIcon;
-
-
         File customHead = data.getItem().getHead();
+
         if (customHead == null) {
             material = data.getItem().getMaterial().toLowerCase();
-
             actionIcon = Util.fetchMinecraftTextureFile(material);
-
         } else {
             actionIcon = customHead;
             material = customHead.getName();
         }
+
         builder.setThumbnail("attachment://" + material + ".png");
-
-
         builder.setTitle("Tags for: " + data.getMainName());
+
         channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
 
     }
@@ -83,7 +85,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
 
     @Override
-    public Argument getArgument() {
+    public ValueArgument<String> getArgument() {
         return new BasicStringArg();
     }
 

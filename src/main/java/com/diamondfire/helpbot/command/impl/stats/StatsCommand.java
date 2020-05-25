@@ -1,17 +1,18 @@
-package com.diamondfire.helpbot.command.commands.stats;
+package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.commands.Command;
+import com.diamondfire.helpbot.command.arguments.Argument;
+import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.ConnectionGiver;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
 import java.util.concurrent.TimeUnit;
 
 public class StatsCommand extends Command {
+
     @Override
     public String getName() {
         return "stats";
@@ -42,7 +43,6 @@ public class StatsCommand extends Command {
 
 
             statement.setString(1, event.getArguments()[0]);
-            statement.execute();
 
             ResultSet rs = statement.executeQuery();
 
@@ -61,7 +61,6 @@ public class StatsCommand extends Command {
 
 
             statementStats.setString(1, event.getArguments()[0]);
-            statementStats.execute();
 
             ResultSet rsStats = statementStats.executeQuery();
 

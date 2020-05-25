@@ -1,20 +1,20 @@
 package com.diamondfire.helpbot.instance;
 
 import com.diamondfire.helpbot.command.CommandHandler;
-import com.diamondfire.helpbot.command.commands.FetchDataCommand;
-import com.diamondfire.helpbot.command.commands.HelpCommand;
-import com.diamondfire.helpbot.command.commands.InfoCommand;
-import com.diamondfire.helpbot.command.commands.MimicCommand;
-import com.diamondfire.helpbot.command.commands.filespitter.ParticleListCommand;
-import com.diamondfire.helpbot.command.commands.filespitter.PotionListCommand;
-import com.diamondfire.helpbot.command.commands.filespitter.SoundListCommand;
-import com.diamondfire.helpbot.command.commands.query.BlockCommand;
-import com.diamondfire.helpbot.command.commands.query.RankCommand;
-import com.diamondfire.helpbot.command.commands.query.SearchCommand;
-import com.diamondfire.helpbot.command.commands.query.TagsCommand;
-import com.diamondfire.helpbot.command.commands.stats.InBadCommand;
-import com.diamondfire.helpbot.command.commands.stats.InBadJoinCommand;
-import com.diamondfire.helpbot.command.commands.stats.StatsCommand;
+import com.diamondfire.helpbot.command.impl.FetchDataCommand;
+import com.diamondfire.helpbot.command.impl.HelpCommand;
+import com.diamondfire.helpbot.command.impl.InfoCommand;
+import com.diamondfire.helpbot.command.impl.MimicCommand;
+import com.diamondfire.helpbot.command.impl.filespitter.ParticleListCommand;
+import com.diamondfire.helpbot.command.impl.filespitter.PotionListCommand;
+import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
+import com.diamondfire.helpbot.command.impl.query.BlockCommand;
+import com.diamondfire.helpbot.command.impl.query.RankCommand;
+import com.diamondfire.helpbot.command.impl.query.SearchCommand;
+import com.diamondfire.helpbot.command.impl.query.TagsCommand;
+import com.diamondfire.helpbot.command.impl.stats.InBadCommand;
+import com.diamondfire.helpbot.command.impl.stats.InBadJoinCommand;
+import com.diamondfire.helpbot.command.impl.stats.StatsCommand;
 import com.diamondfire.helpbot.events.MessageEvent;
 import com.diamondfire.helpbot.events.ReactionEvent;
 import com.diamondfire.helpbot.util.BotConstants;
@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import javax.security.auth.login.LoginException;
 
 public class BotInstance {
+
     private static JDA jda;
     private static CommandHandler handler = new CommandHandler();
 
@@ -50,10 +51,13 @@ public class BotInstance {
                 new InBadCommand(),
                 new InBadJoinCommand()
         );
+
         JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);
+
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("for ?help"));
         builder.addEventListeners(new MessageEvent(), new ReactionEvent());
+
         jda = builder.build();
         jda.awaitReady();
     }

@@ -1,5 +1,9 @@
-package com.diamondfire.helpbot.command.commands;
+package com.diamondfire.helpbot.command.impl;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
+import com.diamondfire.helpbot.command.arguments.LazyStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.impl.query.AbstractSingleQueryCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.command.permissions.PermissionHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
@@ -7,9 +11,6 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.diamondfire.helpbot.util.BotConstants;
 import com.diamondfire.helpbot.util.Util;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.LazyStringArg;
-import com.diamondfire.helpbot.command.commands.query.AbstractSingleQueryCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -18,20 +19,18 @@ import java.util.function.BiConsumer;
 
 
 public class HelpCommand extends AbstractSingleQueryCommand {
+
     public static void sendHelpMessage(SimpleData data, TextChannel channel) {
-        if (data == null) {
-            return;
-        }
+        if (data == null) return;
+
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String material;
         File actionIcon;
-
         File customHead = data.getItem().getHead();
+
         if (customHead == null) {
             material = data.getItem().getMaterial().toLowerCase();
-
             actionIcon = Util.fetchMinecraftTextureFile(material);
-
         } else {
             actionIcon = customHead;
             material = customHead.getName();
@@ -53,7 +52,7 @@ public class HelpCommand extends AbstractSingleQueryCommand {
     }
 
     @Override
-    public Argument getArgument() {
+    public ValueArgument<String> getArgument() {
         return new LazyStringArg();
     }
 
@@ -72,14 +71,17 @@ public class HelpCommand extends AbstractSingleQueryCommand {
             builder.setThumbnail(BotInstance.getJda().getSelfUser().getAvatarUrl());
             builder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
 
-            BotInstance.getHandler().getCommands().values().stream()
-                    .filter(Command::inHelp)
-                    .filter((command) -> command.getPermission().hasPermission(event.getMember()))
-                    .forEach(command -> builder.addField(BotConstants.PREFIX + command.getName() + " " + command.getArgument(), command.getDescription(), false));
+            for (Command command : BotInstance.getHandler().getCommands().values()) {
+                if (command.inHelp() && command.getPermission().hasPermission(event.getMember()) ) {
+                    builder.addField(BotConstants.PREFIX + command.getName() + " " + command.getArgument(), command.getDescription(), false);
+                }
+
+            }
 
             event.getChannel().sendMessage(builder.build()).queue();
             return;
         }
+
         super.run(event);
 
 

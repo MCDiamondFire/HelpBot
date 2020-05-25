@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ExternalFileHandler {
+
     public static File DB = null;
     public static File DB_COMPARE = null;
     public static File MAIN_FILE = null;

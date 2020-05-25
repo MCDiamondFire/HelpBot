@@ -8,13 +8,14 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
-    private String[] arguments;
-    private String command;
 
-    public CommandEvent(@Nonnull JDA api, long responseNumber, @Nonnull Message message) {
+    private final String[] arguments;
+    private final String command;
+
+    public CommandEvent(JDA api, long responseNumber, Message message) {
         super(api, responseNumber, message);
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
-        String[] args = Arrays.copyOfRange(getMessage().getContentDisplay().split(" "), 1, rawArgs.length);
+        String[] args = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
 
         this.command = rawArgs[0].substring(1);
         this.arguments = args;

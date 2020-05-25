@@ -1,8 +1,14 @@
 package com.diamondfire.helpbot.command.arguments;
 
-public class LazyStringArg extends Argument {
+public class LazyStringArg extends ValueArgument<String> {
+
     @Override
-    public boolean validate(String args) {
+    public String getArg(String msg) {
+        return msg;
+    }
+
+    @Override
+    public boolean validate(String msg) {
         return true;
     }
 

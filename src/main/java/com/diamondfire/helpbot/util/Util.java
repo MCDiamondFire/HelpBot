@@ -1,8 +1,8 @@
 package com.diamondfire.helpbot.util;
 
+import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.google.gson.JsonArray;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -13,16 +13,6 @@ import java.util.stream.Collectors;
 
 public class Util {
 
-    public static Image fetchImage(String fileName) {
-        try {
-            return new ImageIcon(ClassLoader.getSystemClassLoader().getResource(fileName + ".png")).getImage();
-        } catch (Exception e) {
-            System.out.println("Error while loading image! " + fileName);
-            e.printStackTrace();
-        }
-        return new ImageIcon().getImage();
-
-    }
 
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
@@ -37,17 +27,7 @@ public class Util {
         return new File(ExternalFileHandler.IMAGES.getPath() + "/" + "unknown_texture" + ".png");
     }
 
-    /**
-     * Fetch the file contents based on the url.
-     */
-    public static String fetchFileContents(String fileName) {
-        try {
-            BufferedReader txtReader = new BufferedReader(new InputStreamReader(Util.class.getResourceAsStream("/" + fileName), "UTF16"));
-            return txtReader.lines().collect(Collectors.joining());
-        } catch (Exception e) {
-            return "";
-        }
-    }
+
 
 
     /**
@@ -67,18 +47,19 @@ public class Util {
 
     public static void error(Exception e, String title) {
         TextChannel channel = BotInstance.getJda().getTextChannelById(705205549498892299L);
-
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle(title);
-
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
-        e.printStackTrace(pw);
         String sStackTrace = sw.toString();
+
+        embed.setTitle(title);
+
 
         embed.setColor(Color.RED);
         channel.sendMessage(embed.build()).queue();
         channel.sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
+
+        e.printStackTrace(pw);
     }
 
     public static String repeat(String ogString, String repeat, int i) {

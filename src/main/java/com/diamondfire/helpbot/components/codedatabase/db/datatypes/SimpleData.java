@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.components.viewables.consts.DataTypes;
 import com.google.gson.JsonObject;
 
 public abstract class SimpleData {
+
     protected final JsonObject data;
 
     protected final String mainName;

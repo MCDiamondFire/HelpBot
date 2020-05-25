@@ -26,9 +26,7 @@ public enum ParamConverter {
     }
 
     public static ParamConverter getTypeFromString(String internalName) {
-        ParamConverter.valueOf(internalName);
         return ParamConverter.valueOf(internalName);
-
     }
 
     public String getText() {

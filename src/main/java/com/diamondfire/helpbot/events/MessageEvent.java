@@ -8,8 +8,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 
 public class MessageEvent extends ListenerAdapter {
-    public MessageEvent() {
-    }
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {

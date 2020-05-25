@@ -1,6 +1,7 @@
-package com.diamondfire.helpbot.command.commands.query;
+package com.diamondfire.helpbot.command.impl.query;
 
 import com.diamondfire.helpbot.command.arguments.DefinedStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 
 public class BlockCommand extends AbstractMultiQueryCommand {
+
     @Override
     public String getName() {
         return "block";
@@ -24,7 +26,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
-    public DefinedStringArg getArgument() {
+    public ValueArgument<String> getArgument() {
         return new DefinedStringArg(CodeDatabase.getCodeBlocks().stream()
                 .filter((codeBlockData -> codeBlockData.getAssociatedAction() == null))
                 .map(CodeBlockData::getName)
@@ -36,20 +38,17 @@ public class BlockCommand extends AbstractMultiQueryCommand {
         return Permission.USER;
     }
 
-
     @Override
     protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
-        String closestArg = getArgument().getClosestOption(event.getParsedArgs());
-
         return data.stream()
                 .filter(simpleData -> simpleData instanceof CodeBlockActionData)
-                .filter((simpleData -> ((CodeBlockActionData) simpleData).getCodeblockName().equalsIgnoreCase(closestArg)))
+                .filter((simpleData -> ((CodeBlockActionData) simpleData).getCodeblockName().equalsIgnoreCase(getArgument().getArg(event.getParsedArgs()))))
                 .map(SimpleData::getMainName)
                 .collect(Collectors.toList());
     }
 
     @Override
     protected String getSearchQuery(CommandEvent event) {
-        return getArgument().getClosestOption(event.getParsedArgs());
+        return getArgument().getArg(event.getParsedArgs());
     }
 }

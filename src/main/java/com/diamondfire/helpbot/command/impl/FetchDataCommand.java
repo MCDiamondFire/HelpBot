@@ -1,5 +1,6 @@
-package com.diamondfire.helpbot.command.commands;
+package com.diamondfire.helpbot.command.impl;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.ExternalFileHandler;
@@ -15,10 +16,11 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
 import com.github.steveice10.packetlib.Client;
+import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
+import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
-import com.diamondfire.helpbot.command.arguments.Argument;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -37,11 +39,9 @@ public class FetchDataCommand extends Command {
     private static final String PASSWORD = SensitiveData.USER_PASS;
 
 
-    boolean ready = false;
-    boolean errored = false;
-    private Message sentMessage;
-    private ArrayList<String> queue = new ArrayList<>();
-    private BufferedWriter bufferedWriter = null;
+    private boolean ready = false;
+    private boolean errored = false;
+    private final ArrayList<String> queue = new ArrayList<>();
 
     @Override
     public String getName() {
@@ -74,10 +74,12 @@ public class FetchDataCommand extends Command {
         builder.setTitle("Fetching Code Database...");
         builder.setDescription("Please wait a moment!");
 
-        sentMessage = channel.sendMessage(builder.build()).complete();
-        login(sentMessage);
+        Message sentMessage = channel.sendMessage(builder.build()).complete();
 
-        if (errored) {
+        try {
+            start(sentMessage);
+        } catch (Exception exception) {
+            error(sentMessage, exception);
             return;
         }
 
@@ -95,7 +97,7 @@ public class FetchDataCommand extends Command {
                 file.createNewFile();
             }
 
-            bufferedWriter = new BufferedWriter(new FileWriter(file.getPath(), true));
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath(), true));
 
             for (String s : queue) {
                 bufferedWriter.append(s);
@@ -114,63 +116,57 @@ public class FetchDataCommand extends Command {
 
     }
 
-    private void login(Message message) {
-        MinecraftProtocol protocol = null;
-        try {
-            protocol = new MinecraftProtocol(USERNAME, PASSWORD);
-        } catch (RequestException e) {
-            error(message, e);
-            errored = true;
-            return;
-        }
-
+    private void start(Message message) throws RequestException {
+        MinecraftProtocol protocol = new MinecraftProtocol(USERNAME, PASSWORD);
         Client client = new Client("beta.mcdiamondfire.com", 25565, protocol, new TcpSessionFactory());
-        client.getSession().setFlag(MinecraftConstants.AUTH_PROXY_KEY, Proxy.NO_PROXY);
+        Session session = client.getSession();
 
+        session.setFlag(MinecraftConstants.AUTH_PROXY_KEY, Proxy.NO_PROXY);
         status(message, "Connecting to DiamondFire...");
-        client.getSession().connect();
 
+        client.getSession().connect();
         client.getSession().addListener(new SessionAdapter() {
             @Override
             public void packetReceived(PacketReceivedEvent event) {
-                if (event.getPacket() instanceof ServerJoinGamePacket) {
+                Packet packet = event.getPacket();
+
+                if (packet instanceof ServerJoinGamePacket) {
                     status(message, "Joined server!");
                     event.getSession().send(new ClientChatPacket("/chat none"));
                     event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
                 }
-                if (event.getPacket() instanceof ServerChatPacket) {
-                    if (((ServerChatPacket) event.getPacket()).getType() == MessageType.NOTIFICATION) {
-                        return;
+
+                if (packet instanceof ServerChatPacket) {
+                    ServerChatPacket chatPacket = event.getPacket();
+                    String text = chatPacket.getMessage().getFullText();
+
+                    if (chatPacket.getType() == MessageType.NOTIFICATION) return;
+
+                    if (text.contains("Unknown command!")) {
+                       throw new IllegalStateException("Command not found!");
                     }
-                    String text = ((ServerChatPacket) event.getPacket()).getMessage().getFullText();
+
                     if (text.startsWith("{")) {
                         status(message, "Receiving data...");
                         ready = true;
+                    } else if (text.startsWith("}")) {
+                        session.disconnect("Sorry y'all, but ima head out.");
                     }
+
                     if (ready) {
                         queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
                     }
-                    if (text.startsWith("}")) {
-                        event.getSession().disconnect("Sorry y'all, but ima head out.");
-                        status(message, "Database cloned!");
-                    }
 
-                    if (text.contains("Unknown command!")) {
-                        error(message, new Exception("Command was not found!"));
-                        errored = true;
-                        event.getSession().disconnect("ERRORED");
-                        return;
-                    }
+
 
                 }
             }
         });
 
-        while (client.getSession().isConnected()) {
+        while (session.isConnected()) {
             try {
                 Thread.sleep(5);
-            } catch (Exception e) {
-
+            } catch (Exception ignored) {
             }
         }
 
@@ -178,16 +174,20 @@ public class FetchDataCommand extends Command {
 
     private void error(Message message, Exception e) {
         EmbedBuilder builder = new EmbedBuilder();
+
         builder.setTitle("Error occured!");
         builder.setDescription(e.getMessage());
+
         message.editMessage(builder.build()).queue();
         e.printStackTrace();
     }
 
     private void status(Message message, String status) {
         EmbedBuilder builder = new EmbedBuilder();
+
         builder.setTitle("Status");
         builder.setDescription(status);
+
         message.editMessage(builder.build()).queue();
     }
 

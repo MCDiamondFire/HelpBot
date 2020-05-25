@@ -1,12 +1,12 @@
 package com.diamondfire.helpbot.components.codedatabase;
 
+import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class CodeDifferenceHandler {
+
     static StringBuilder differences = new StringBuilder();
     static ArrayList<String> differs = new ArrayList<>();
 

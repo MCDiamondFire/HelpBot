@@ -1,15 +1,18 @@
 package com.diamondfire.helpbot.components.codedatabase;
 
+import com.diamondfire.helpbot.command.impl.FetchDataCommand;
 import com.diamondfire.helpbot.instance.BotInstance;
-import com.diamondfire.helpbot.command.commands.FetchDataCommand;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class AutoRefreshDBTask implements Runnable {
+
     public static void initialize() {
+
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
         scheduler.scheduleAtFixedRate(new AutoRefreshDBTask(),
                 1,
                 1,

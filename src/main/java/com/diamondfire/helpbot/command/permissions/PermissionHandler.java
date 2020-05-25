@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 public class PermissionHandler {
+
     private static final HashMap<Long, Permission> permsCache = new HashMap<>();
 
     static {
@@ -17,10 +18,12 @@ public class PermissionHandler {
             return permsCache.get(member.getIdLong());
         }
 
+        //Calculates the highest permission that the member has access to.
         Permission perm = member.getRoles().stream()
                 .map((role) -> Permission.fromRole(role.getIdLong()))
                 .max(Comparator.comparingInt(Permission::getPermissionLevel))
                 .orElse(Permission.USER);
+
 
         permsCache.put(member.getIdLong(), perm);
         return perm;

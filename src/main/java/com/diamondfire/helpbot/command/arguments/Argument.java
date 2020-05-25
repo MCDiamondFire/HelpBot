@@ -1,8 +1,13 @@
 package com.diamondfire.helpbot.command.arguments;
 
 public abstract class Argument {
+    // Bad and ugly implementation, sorry.
 
-    public abstract boolean validate(String args);
+    public boolean validate(String msg) {
+        return true;
+    }
 
-    public abstract String failMessage();
+    public String failMessage() {
+        return "";
+    }
 }

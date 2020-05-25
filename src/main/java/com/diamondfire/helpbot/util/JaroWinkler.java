@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.util;
 
 
 public class JaroWinkler {
+
     final static double DEFAULT_SCALING_FACTOR = 0.1;  // This is the default scaling factor Winkler used.
 
     public static double score(String first, String second) {

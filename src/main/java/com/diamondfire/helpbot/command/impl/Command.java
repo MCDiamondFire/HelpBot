@@ -1,10 +1,11 @@
-package com.diamondfire.helpbot.command.commands;
+package com.diamondfire.helpbot.command.impl;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.command.arguments.Argument;
 
 public abstract class Command {
+
     public abstract String getName();
 
     public abstract String getDescription();

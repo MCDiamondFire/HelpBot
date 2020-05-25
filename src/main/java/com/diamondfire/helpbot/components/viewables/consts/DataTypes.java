@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.viewables.consts;
 
 import com.diamondfire.helpbot.components.viewables.embeds.*;
-import com.owen1212055.helpbot.components.viewables.embeds.*;
 
 public enum DataTypes {
     CODEBLOCK("Codeblock", 688643535842705408L, new CodeBlockEmbedBuilder()),

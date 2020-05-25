@@ -1,12 +1,12 @@
-package com.diamondfire.helpbot.command.commands.query;
+package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.commands.Command;
+import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringFormatting;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -20,15 +20,18 @@ public abstract class AbstractMultiQueryCommand extends Command {
     protected abstract List<String> filterData(List<SimpleData> data, CommandEvent event);
 
     @Override
-    public Argument getArgument() {
+    public ValueArgument<String> getArgument() {
         return new BasicStringArg();
     }
 
+
+    //TODO Cleaner implementation. NOW
     @Override
     public void run(CommandEvent event) {
 
         List<String> names = filterData(CodeDatabase.getSimpleData(), event);
         Collections.sort(names);
+
         EmbedBuilder builder = new EmbedBuilder();
         if (names.size() != 0) {
 
@@ -38,20 +41,23 @@ public abstract class AbstractMultiQueryCommand extends Command {
 
             for (int i = 0; i < names.size(); i++) {
                 String dataName = names.get(i);
+
                 queue.add(dataName);
                 list = StringFormatting.listView(queue.toArray(new String[0]), "> ", true);
 
                 if (i == names.size() - 1) {
-                    builder.addField("<:air:309522480391913474>", list, false);
+                    builder.addField("", list, false);
                 } else if (list.length() >= 1000) {
                     queue.removeFirst();
-                    builder.addField("<:air:309522480391913474>", lastList, false);
+                    builder.addField("", lastList, false);
+
                     queue.clear();
                     queue.add(dataName);
                 }
                 lastList = list;
 
             }
+
             if (builder.getFields().size() >= 5) {
                 builder.setTitle("This search yields too many results! Please narrow down your search.");
                 builder.clearFields();

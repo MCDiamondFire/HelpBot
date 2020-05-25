@@ -1,5 +1,6 @@
-package com.diamondfire.helpbot.command.commands;
+package com.diamondfire.helpbot.command.impl;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.ExternalFileHandler;
@@ -7,13 +8,13 @@ import com.diamondfire.helpbot.components.codedatabase.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringFormatting;
-import com.diamondfire.helpbot.command.arguments.Argument;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.Instant;
 import java.util.LinkedHashMap;
 
 public class InfoCommand extends Command {
+
     @Override
     public String getName() {
         return "info";
@@ -36,9 +37,8 @@ public class InfoCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
-
         LinkedHashMap<String, Integer> dataStats = new LinkedHashMap<>();
+        EmbedBuilder builder = new EmbedBuilder();
 
         dataStats.put("CodeBlocks", CodeDatabase.getCodeBlocks().size());
         dataStats.put("Actions", CodeDatabase.getActions().size());

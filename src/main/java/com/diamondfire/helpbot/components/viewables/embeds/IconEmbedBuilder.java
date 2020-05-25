@@ -1,10 +1,10 @@
 package com.diamondfire.helpbot.components.viewables.embeds;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.util.StringFormatting;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 

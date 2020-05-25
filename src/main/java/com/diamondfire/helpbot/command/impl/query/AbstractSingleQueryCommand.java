@@ -1,6 +1,8 @@
-package com.diamondfire.helpbot.command.commands.query;
+package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.commands.Command;
+import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.components.reactions.ReactionHandler;
@@ -9,8 +11,6 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import com.diamondfire.helpbot.util.StringFormatting;
 import com.diamondfire.helpbot.util.Util;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -85,7 +85,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
     }
 
     @Override
-    public Argument getArgument() {
+    public ValueArgument<String> getArgument() {
         return new BasicStringArg();
     }
 
@@ -146,12 +146,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 Collection<String> similarActionNames = possibleChoices.keySet().stream().map(SimpleData::getMainName).collect(Collectors.toCollection(ArrayList::new));
 
                 builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
-
-                boolean repeatedActions = similarActionNames.stream()
-                        .anyMatch(s -> Collections.frequency(similarActionNames, s) != 1);
-
                 builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
-                builder.setFooter(repeatedActions ? "*Duplicate actions are caused by codeblocks having actions that have the same name on their sign as other codeblocks." : "");
 
 
                 event.getChannel().sendMessage(builder.build()).queue();

@@ -1,20 +1,21 @@
-package com.diamondfire.helpbot.command.commands.filespitter;
+package com.diamondfire.helpbot.command.impl.filespitter;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.command.arguments.Argument;
 
-public class ParticleListCommand extends AbstractFileListCommand {
+public class PotionListCommand extends AbstractFileListCommand {
+
     @Override
     public String getName() {
-        return "particles";
+        return "potions";
     }
 
     @Override
     public String getDescription() {
-        return "Generates a file that contains all current particles.";
+        return "Generates a file that contains all current potions.";
     }
 
     @Override
@@ -29,6 +30,11 @@ public class ParticleListCommand extends AbstractFileListCommand {
 
     @Override
     public void run(CommandEvent event) {
-        super.generate(event, CodeDatabase.getParticles());
+        super.generate(event, CodeDatabase.getPotions());
+    }
+
+    @Override
+    protected boolean inHelp() {
+        return false;
     }
 }

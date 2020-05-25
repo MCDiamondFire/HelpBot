@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.components.viewables.embeds;
 
-import com.diamondfire.helpbot.util.ParamConverter;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.GameValueData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.util.ParamConverter;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;

@@ -1,12 +1,12 @@
-package com.diamondfire.helpbot.command.commands.filespitter;
+package com.diamondfire.helpbot.command.impl.filespitter;
 
+import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
-import com.diamondfire.helpbot.command.commands.Command;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.command.arguments.Argument;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.BufferedWriter;
@@ -32,18 +32,17 @@ public abstract class AbstractFileListCommand extends Command {
 
         File file;
         try {
-
             file = ExternalFileHandler.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "_") + "-list.txt");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), true))) {
+                StringBuilder stringBuilder = new StringBuilder();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), true));
+                for (SimpleData simpleData : data) {
+                    stringBuilder.append(simpleData.getItem().getItemName() + "|");
+                }
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                writer.append(stringBuilder.toString());
+            }
 
-            StringBuilder stringBuilder = new StringBuilder();
-
-            data.forEach((simpleData -> stringBuilder.append(simpleData.getItem().getItemName() + "|")));
-
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            writer.append(stringBuilder.toString());
-            writer.close();
         } catch (IOException e) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Could not generate file!");
@@ -51,7 +50,7 @@ public abstract class AbstractFileListCommand extends Command {
             return;
         }
 
-        event.getChannel().sendMessage("Here you go!").addFile(file).queue();
+        event.getChannel().sendMessage("File Generated...").addFile(file).queue();
 
 
     }

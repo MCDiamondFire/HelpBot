@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Timer;
 
 public class ReactionHandler {
+
     private static final HashMap<Long, ReactionWait> reactionWaitHashMap = new HashMap<>();
 
     private static final Timer timer = new Timer();

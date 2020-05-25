@@ -1,16 +1,17 @@
-package com.diamondfire.helpbot.command.commands.query;
+package com.diamondfire.helpbot.command.impl.query;
 
+import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class SearchCommand extends AbstractMultiQueryCommand {
+
     @Override
     public String getName() {
         return "search";
@@ -22,7 +23,7 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
-    public Argument getArgument() {
+    public ValueArgument<String> getArgument() {
         return new BasicStringArg();
     }
 
@@ -31,15 +32,16 @@ public class SearchCommand extends AbstractMultiQueryCommand {
         return Permission.USER;
     }
 
-
     @Override
     protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
         ArrayList<String> list = new ArrayList<>();
-        String argumentsParsed = String.join(" ", event.getArguments()).toLowerCase();
+        String args = event.getParsedArgs();
+
         for (SimpleData simpleData : data) {
-            if (simpleData.getItem().getItemName().toLowerCase().contains(argumentsParsed) || simpleData.getMainName().toLowerCase().contains(argumentsParsed)) {
+            if (simpleData.getItem().getItemName().toLowerCase().contains(args) || simpleData.getMainName().toLowerCase().contains(args)) {
                 list.add(simpleData.getMainName());
             }
+
         }
         return list;
     }

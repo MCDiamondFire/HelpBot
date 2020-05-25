@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefinedStringArg extends Argument {
+public class DefinedStringArg extends ValueArgument<String> {
 
     String[] options;
 
@@ -17,7 +17,34 @@ public class DefinedStringArg extends Argument {
         this.options = options;
     }
 
-    public String getClosestOption(String args) {
+    @Override
+    public String getArg(String msg) {
+        return getClosestOption(msg);
+    }
+
+    @Override
+    public boolean validate(String msg) {
+        return getClosestOption(msg) != null;
+    }
+
+    @Override
+    public String failMessage() {
+        return "Invalid argument, please choose from the following: " + String.join(", ", options);
+    }
+
+    @Override
+    public String toString() {
+        String parsedOptions;
+        if (options.length > 6) {
+            parsedOptions = String.join("/", Arrays.copyOfRange(options, 1, 6)) + "..." + String.format("*+%s more*", options.length - 6);
+        } else {
+            parsedOptions = String.join("/", options);
+        }
+
+        return "<" + parsedOptions + ">";
+    }
+
+    private String getClosestOption(String args) {
         //Generate a bunch of "favorable" actions.
         Map<String, Double> possibleChoices = new HashMap<>();
         for (String option : options) {
@@ -30,27 +57,5 @@ public class DefinedStringArg extends Argument {
                 .orElse(null);
 
         return closestAction.getValue() >= 0.85 ? closestAction.getKey() : null;
-    }
-
-    @Override
-    public boolean validate(String args) {
-        return getClosestOption(args) != null;
-    }
-
-    @Override
-    public String failMessage() {
-        return "Invalid argument, please choose from the following: " + String.join(", ", options);
-    }
-
-    @Override
-    public String toString() {
-        String parsedOptions = null;
-        if (options.length > 6) {
-            parsedOptions = String.format(String.join("/", Arrays.asList(options).subList(1, 6).toArray(new String[0])) + "..." + String.format("*+%s more*", options.length - 6));
-        } else {
-            parsedOptions = String.join("/", options);
-        }
-
-        return "<" + parsedOptions + ">";
     }
 }

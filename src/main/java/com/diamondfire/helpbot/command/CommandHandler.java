@@ -1,13 +1,14 @@
 package com.diamondfire.helpbot.command;
 
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
-import com.diamondfire.helpbot.command.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.HashMap;
 
 public class CommandHandler {
+
     private HashMap<String, Command> commands = new HashMap<>();
 
     public void register(Command... commands) {

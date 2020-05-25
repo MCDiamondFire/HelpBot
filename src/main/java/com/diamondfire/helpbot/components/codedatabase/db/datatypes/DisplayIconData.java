@@ -1,11 +1,11 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
+import com.diamondfire.helpbot.components.ExternalFileHandler;
+import com.diamondfire.helpbot.util.CompressionUtil;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
-import com.diamondfire.helpbot.util.CompressionUtil;
 
 import java.io.File;
 import java.io.InputStream;
