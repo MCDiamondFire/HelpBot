@@ -9,10 +9,6 @@ public class PermissionHandler {
 
     private static final HashMap<Long, Permission> permsCache = new HashMap<>();
 
-    static {
-        permsCache.put(246778942323818506L, Permission.BOT_DEVELOPER);
-    }
-
     public static Permission getPermission(Member member) {
         if (permsCache.containsKey(member.getIdLong())) {
             return permsCache.get(member.getIdLong());

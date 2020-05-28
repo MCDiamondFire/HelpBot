@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.components.viewables.consts;
+package com.diamondfire.helpbot.components.viewables.constants;
 
 import java.awt.*;
 import java.util.Map;

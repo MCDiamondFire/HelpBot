@@ -1,8 +1,8 @@
 package com.diamondfire.helpbot.command.impl;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.LazyStringArg;
-import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.arguments.value.optional.OptionalStringArg;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.query.AbstractSingleQueryCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.command.permissions.PermissionHandler;
@@ -53,7 +53,7 @@ public class HelpCommand extends AbstractSingleQueryCommand {
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new LazyStringArg();
+        return new OptionalStringArg("");
     }
 
     @Override

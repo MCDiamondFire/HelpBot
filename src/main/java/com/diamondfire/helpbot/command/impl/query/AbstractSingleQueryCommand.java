@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
-import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
@@ -86,7 +86,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new BasicStringArg();
+        return new StringArg();
     }
 
     @Override

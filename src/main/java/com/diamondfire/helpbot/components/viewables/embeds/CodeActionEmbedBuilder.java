@@ -20,19 +20,16 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         CodeBlockActionData actionData = (CodeBlockActionData) data;
 
         EmbedBuilder builder = new EmbedBuilder();
-
         generateParameters(data, builder);
         generateInfo(data, builder);
 
 
         StringBuilder footer = new StringBuilder();
-
         if (actionData.getTags().length != 0) {
             footer.append(actionData.getTags().length + Util.sCheck(" Tag", actionData.getTags().length));
         }
 
         builder.setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor());
-
         builder.setFooter(footer.toString());
 
         return builder;
@@ -51,8 +48,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
                 continue;
             }
 
-            String line =
-                    String.format("**%s**", ParamConverter.getTypeFromString(arg.getType()).getText()) +
+            String line = String.format("**%s**", ParamConverter.getTypeFromString(arg.getType()).getText()) +
                             (arg.isPlural() ? "(s)" : "") +
                             (arg.isOptional() ? "*" : "") +
                             " - " + arg.getDescription()[0] + " "; // If there is a description on the argument, first part appears in same line.
@@ -81,7 +77,6 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         LinkedHashMap<BasicReaction, SimpleData> dataHashed = new LinkedHashMap<>();
         for (SimpleData data : dataArrayList) {
             CodeBlockActionData actionData = (CodeBlockActionData) data;
-
             dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji()), data);
         }
 

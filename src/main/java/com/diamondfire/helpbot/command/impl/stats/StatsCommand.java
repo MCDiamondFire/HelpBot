@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -25,7 +25,7 @@ public class StatsCommand extends Command {
 
     @Override
     public Argument getArgument() {
-        return new BasicStringArg();
+        return new StringArg();
     }
 
     @Override
@@ -57,7 +57,11 @@ public class StatsCommand extends Command {
             e.printStackTrace();
         }
         try (Connection connection = ConnectionGiver.getConnection();
-             PreparedStatement statementStats = connection.prepareStatement("SELECT COUNT(*) AS count, MIN(time) as earliest_time, MAX(time) AS latest_time, AVG(duration) as average_duration, MIN(duration) AS shortest_duration, MAX(duration) AS longest_duration, COUNT(DISTINCT name) AS unique_helped FROM support_sessions WHERE staff = ?;")) {
+             PreparedStatement statementStats = connection.prepareStatement("" +
+                     "SELECT COUNT(*) AS count," +
+                     "MIN(time) as earliest_time," +
+                     "MAX(time) AS latest_time," +
+                     "COUNT(DISTINCT name) AS unique_helped FROM support_sessions WHERE staff = ?;")) {
 
 
             statementStats.setString(1, event.getArguments()[0]);
@@ -77,14 +81,35 @@ public class StatsCommand extends Command {
                 builder.addField("Unique Players", rsStats.getInt("unique_helped") + "", true);
                 builder.addField("Earliest Session", formatDate(rsStats.getDate("earliest_time")), true);
                 builder.addField("Latest Session", formatDate(rsStats.getDate("latest_time")), true);
+
+            }
+            rsStats.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try (Connection connection = ConnectionGiver.getConnection();
+             PreparedStatement statementStats = connection.prepareStatement("" +
+                     "SELECT AVG(duration) AS average_duration," +
+                     "MIN(duration) AS shortest_duration," +
+                     "MAX(duration) AS longest_duration " +
+                     "FROM support_sessions WHERE duration != 0 AND staff = ?;")) {
+
+
+
+            statementStats.setString(1, event.getArguments()[0]);
+
+            ResultSet rsStats = statementStats.executeQuery();
+
+            if (rsStats.next()) {
                 builder.addField("Average Session Time", format(rsStats.getInt(("average_duration"))), true);
-                builder.addField("Shortest Session Time", format(rsStats.getInt(("shortest_duration"))), true);
+                builder.addField("Shortest Session Time", format(rsStats.getInt("shortest_duration")), true);
                 builder.addField("Longest Session Time", format(rsStats.getInt("longest_duration")), true);
             }
             rsStats.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
 
 
         builder.setAuthor(event.getArguments()[0]);
@@ -98,8 +123,9 @@ public class StatsCommand extends Command {
     public String format(int millis) {
         StringBuilder builder = new StringBuilder();
 
-        if (TimeUnit.MILLISECONDS.toHours(millis) > 0) {
-            builder.append(TimeUnit.MILLISECONDS.toHours(millis) + "h");
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        if (hours > 0) {
+            builder.append(hours + "h");
         }
 
         long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
@@ -109,6 +135,8 @@ public class StatsCommand extends Command {
         long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         if (secs != 0) {
             builder.append(" " + secs + "s");
+        } else {
+            builder.append("0." + TimeUnit.MILLISECONDS.toMillis(millis) + "s");
         }
 
         return builder.toString();

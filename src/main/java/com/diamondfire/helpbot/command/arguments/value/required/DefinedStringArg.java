@@ -1,6 +1,7 @@
-package com.diamondfire.helpbot.command.arguments;
+package com.diamondfire.helpbot.command.arguments.value.required;
 
 
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.util.JaroWinkler;
 
 import java.util.Arrays;
@@ -13,9 +14,9 @@ public class DefinedStringArg extends ValueArgument<String> {
     String[] options;
 
     public DefinedStringArg(String[] options) {
-        super();
         this.options = options;
     }
+
 
     @Override
     public String getArg(String msg) {
@@ -35,6 +36,7 @@ public class DefinedStringArg extends ValueArgument<String> {
     @Override
     public String toString() {
         String parsedOptions;
+
         if (options.length > 6) {
             parsedOptions = String.join("/", Arrays.copyOfRange(options, 1, 6)) + "..." + String.format("*+%s more*", options.length - 6);
         } else {

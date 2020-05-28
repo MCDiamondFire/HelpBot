@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot;
 
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.instance.InstanceHandler;
 
 import javax.security.auth.login.LoginException;

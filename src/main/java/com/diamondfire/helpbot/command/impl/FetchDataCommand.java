@@ -3,9 +3,9 @@ package com.diamondfire.helpbot.command.impl;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.components.codedatabase.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.SensitiveData;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
@@ -40,7 +40,6 @@ public class FetchDataCommand extends Command {
 
 
     private boolean ready = false;
-    private boolean errored = false;
     private final ArrayList<String> queue = new ArrayList<>();
 
     @Override
@@ -85,25 +84,25 @@ public class FetchDataCommand extends Command {
 
         status(sentMessage, String.format("Data has been received, parsing %s lines...", queue.size()));
 
-        File file = ExternalFileHandler.DB;
+        File file = ExternalFile.DB.getFile();
 
         CodeDifferenceHandler.setComparer(file);
 
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            } else {
+            if (file.exists()) {
                 file.delete();
-                file.createNewFile();
+            }
+            file.createNewFile();
+
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath(), true))) {
+                for (String s : queue) {
+                    bufferedWriter.append(s);
+                }
+
             }
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath(), true));
 
-            for (String s : queue) {
-                bufferedWriter.append(s);
-            }
 
-            bufferedWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,6 +111,8 @@ public class FetchDataCommand extends Command {
         status(sentMessage, "Comparing to last database...");
         CodeDifferenceHandler.refresh();
         status(sentMessage, "Finished!");
+
+        queue.clear();
 
 
     }
@@ -132,6 +133,11 @@ public class FetchDataCommand extends Command {
 
                 if (packet instanceof ServerJoinGamePacket) {
                     status(message, "Joined server!");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     event.getSession().send(new ClientChatPacket("/chat none"));
                     event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
                 }
@@ -150,7 +156,7 @@ public class FetchDataCommand extends Command {
                         status(message, "Receiving data...");
                         ready = true;
                     } else if (text.startsWith("}")) {
-                        session.disconnect("Sorry y'all, but ima head out.");
+                        session.disconnect("HelpBot data collection has concluded. ");
                     }
 
                     if (ready) {
@@ -175,7 +181,7 @@ public class FetchDataCommand extends Command {
     private void error(Message message, Exception e) {
         EmbedBuilder builder = new EmbedBuilder();
 
-        builder.setTitle("Error occured!");
+        builder.setTitle("Error occurred!");
         builder.setDescription(e.getMessage());
 
         message.editMessage(builder.build()).queue();

@@ -17,6 +17,7 @@ public class MessageEvent extends ListenerAdapter {
             BotInstance.getHandler().run(commandEvent);
 
         }
+
     }
 
 }

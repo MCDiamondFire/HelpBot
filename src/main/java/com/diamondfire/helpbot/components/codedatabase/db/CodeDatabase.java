@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.components.codedatabase.db;
 
-import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.*;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,13 +37,12 @@ public class CodeDatabase {
         deprecatedGameValues.clear();
 
         System.out.println("Starting code database...");
-        try (BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFileHandler.DB.getPath()));
+        try (BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
              JsonReader reader = new JsonReader(new StringReader(txtReader.lines().collect(Collectors.joining())));) {
 
             reader.setLenient(true);
             // Setup the reader to prevent parsing problems.
             JsonObject mainMap = JsonParser.parseReader(reader).getAsJsonObject();
-
             CodeDatabase.initDatabase(mainMap);
 
 
@@ -94,7 +93,6 @@ public class CodeDatabase {
 
 
     private static boolean deprecationCheck(SimpleData data) {
-
         return !data.getItem().getMaterial().equals("STONE");
     }
 

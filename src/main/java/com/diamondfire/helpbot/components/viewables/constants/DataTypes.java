@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.components.viewables.consts;
+package com.diamondfire.helpbot.components.viewables.constants;
 
 import com.diamondfire.helpbot.components.viewables.embeds.*;
 

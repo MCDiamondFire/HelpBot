@@ -13,16 +13,12 @@ public abstract class DataEmbedBuilder {
 
     public EmbedBuilder generateEmbed(SimpleData data) {
         EmbedBuilder builder = buildDataEmbed(data);
-
-
         DisplayIconData icon = data.getItem();
 
         builder.setTitle(icon.getItemName() + " | " + data.getMainName());
-
         builder.setDescription(String.join(" ", icon.getDescription()));
 
         String footerText = builder.build().getFooter() == null ? "" : builder.build().getFooter().getText();
-
         StringBuilder footer = new StringBuilder(footerText);
 
         if (icon.getRequiredCredits() && !icon.getRequiredRank().equals("Default")) {
@@ -36,13 +32,8 @@ public abstract class DataEmbedBuilder {
             footer.append("Unlock with " + icon.getRequiredRank());
         }
 
-
         builder.setFooter(footer.toString());
-
-        String material = icon.getMaterial().toLowerCase();
-
-        builder.setThumbnail("attachment://" + material + ".png");
-
+        builder.setThumbnail("attachment://" + icon.getMaterial().toLowerCase() + ".png");
 
         return builder;
     }

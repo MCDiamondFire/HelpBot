@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.command.impl;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.components.codedatabase.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -51,10 +51,9 @@ public class InfoCommand extends Command {
 
         builder.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringFormatting.asciidocStyle(dataStats)), true);
         builder.addField("What's New on Beta?", String.format("```%s```", StringFormatting.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
-
         builder.setFooter("Database Last Updated");
         builder.setDescription("The database is updated automatically every 24h.");
-        builder.setTimestamp(Instant.ofEpochMilli(ExternalFileHandler.DB.lastModified()));
+        builder.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
         event.getChannel().sendMessage(builder.build()).queue();
 
     }

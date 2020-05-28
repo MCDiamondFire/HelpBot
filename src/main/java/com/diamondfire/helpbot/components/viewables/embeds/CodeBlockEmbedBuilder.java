@@ -11,15 +11,12 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
     @Override
     protected EmbedBuilder buildDataEmbed(SimpleData data) {
         CodeBlockData codeBlockData = (CodeBlockData) data;
-
         EmbedBuilder builder = new EmbedBuilder();
-
         generateInfo(data, builder);
 
 
         if (codeBlockData.getAssociatedAction() != null) {
             CodeBlockTagData[] tags = codeBlockData.getAssociatedAction().getTags();
-
             StringBuilder footer = new StringBuilder();
 
             if (tags.length != 0) {

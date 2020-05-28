@@ -13,7 +13,6 @@ public class BasicReaction {
     long id;
 
     public BasicReaction(String unicode) {
-
         isUnicode = true;
         this.unicode = unicode;
     }

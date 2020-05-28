@@ -12,7 +12,6 @@ public class AutoRefreshDBTask implements Runnable {
     public static void initialize() {
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
         scheduler.scheduleAtFixedRate(new AutoRefreshDBTask(),
                 1,
                 1,

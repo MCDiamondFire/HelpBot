@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 
@@ -20,7 +20,7 @@ public class MimicCommand extends Command {
 
     @Override
     public Argument getArgument() {
-        return new BasicStringArg();
+        return new StringArg();
     }
 
     @Override
@@ -31,7 +31,6 @@ public class MimicCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         event.getMessage().delete().queue();
-
         event.getChannel().sendMessage(event.getParsedArgs()).queue();
 
     }

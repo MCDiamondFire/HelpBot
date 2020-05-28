@@ -53,7 +53,6 @@ public class BotInstance {
         );
 
         JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);
-
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("for ?help"));
         builder.addEventListeners(new MessageEvent(), new ReactionEvent());

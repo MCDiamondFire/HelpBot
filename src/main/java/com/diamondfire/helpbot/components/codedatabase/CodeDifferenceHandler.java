@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.components.codedatabase;
 
-import com.diamondfire.helpbot.components.ExternalFileHandler;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 
 public class CodeDifferenceHandler {
 
+    //TODO Cleanup
+
     static StringBuilder differences = new StringBuilder();
     static ArrayList<String> differs = new ArrayList<>();
 
@@ -32,7 +34,7 @@ public class CodeDifferenceHandler {
 
     public static void setComparer(File toCompare) {
         try {
-            Files.copy(toCompare.toPath(), ExternalFileHandler.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(toCompare.toPath(), ExternalFile.DB_COMPARE.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
             refresh();
 
         } catch (Exception e) {
@@ -42,14 +44,14 @@ public class CodeDifferenceHandler {
 
     private static void generateDifferences() throws IOException {
 
-        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFileHandler.DB_COMPARE.getPath()));
+        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFile.DB_COMPARE.getFile().getPath()));
         String json = txtReader.lines().collect(Collectors.joining());
         txtReader.close();
 
         JsonReader reader = new JsonReader(new StringReader(json));
         reader.setLenient(true);
 
-        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFileHandler.DB.getPath()));
+        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
         String json2 = txtReader2.lines().collect(Collectors.joining());
         txtReader2.close();
 

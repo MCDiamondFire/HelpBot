@@ -14,13 +14,7 @@ public class IconEmbedBuilder extends DataEmbedBuilder {
     protected EmbedBuilder buildDataEmbed(SimpleData data) {
 
         EmbedBuilder builder = new EmbedBuilder();
-
         generateInfo(data, builder);
-
-
-        StringBuilder footer = new StringBuilder();
-
-        builder.setFooter(footer.toString());
 
         return builder;
 
@@ -36,7 +30,7 @@ public class IconEmbedBuilder extends DataEmbedBuilder {
             for (JsonElement current : icon.getAdditionalInfo()) {
                 String mainAdditional = current.getAsJsonArray().get(0).getAsString();
 
-                // Request combines stuff like "ite-rations" to "iterations". Skezza complained about this not being fixed, it's a shame he retired so he cannot see this wonderful fix..
+                // Request combines stuff like "ite-rations" to "iterations".
                 boolean requestCombine = mainAdditional.endsWith("-");
 
                 mainAdditional = requestCombine ? mainAdditional.substring(0, mainAdditional.length() - 1) : (mainAdditional + " ");

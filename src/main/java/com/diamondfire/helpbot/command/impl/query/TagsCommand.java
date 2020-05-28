@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
-import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockData;
@@ -33,7 +33,6 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
-
             channel.sendMessage(builder.build()).queue();
             return;
         }
@@ -41,7 +40,6 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
-
             channel.sendMessage(builder.build()).queue();
             return;
         }
@@ -69,7 +67,6 @@ public class TagsCommand extends AbstractSingleQueryCommand {
 
         builder.setThumbnail("attachment://" + material + ".png");
         builder.setTitle("Tags for: " + data.getMainName());
-
         channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
 
     }
@@ -86,7 +83,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new BasicStringArg();
+        return new StringArg();
     }
 
     @Override

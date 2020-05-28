@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
-import com.diamondfire.helpbot.components.viewables.consts.DataTypes;
+import com.diamondfire.helpbot.components.viewables.constants.DataTypes;
 import com.google.gson.JsonObject;
 
 

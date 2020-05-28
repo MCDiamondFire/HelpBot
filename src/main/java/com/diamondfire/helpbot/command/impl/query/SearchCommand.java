@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.BasicStringArg;
-import com.diamondfire.helpbot.command.arguments.ValueArgument;
+import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -24,7 +24,7 @@ public class SearchCommand extends AbstractMultiQueryCommand {
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new BasicStringArg();
+        return new StringArg();
     }
 
     @Override

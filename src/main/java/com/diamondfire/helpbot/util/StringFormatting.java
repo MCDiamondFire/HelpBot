@@ -12,10 +12,11 @@ public class StringFormatting {
         if (array.length == 0) {
             return "";
         }
+
         String list = ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
 
 
-        return sanitize ? MarkdownSanitizer.sanitize(list, MarkdownSanitizer.SanitizationStrategy.ESCAPE) : list;
+        return sanitize ? MarkdownSanitizer.escape(list) : list;
     }
 
     public static String asciidocStyle(HashMap<String, Integer> hashes) {
@@ -36,7 +37,7 @@ public class StringFormatting {
 
     public static String fieldSafe(String string) {
         if (string.length() >= 950) {
-            return string.substring(0, 950);
+            return string.substring(0, 950) + "...";
         }
         return string;
     }

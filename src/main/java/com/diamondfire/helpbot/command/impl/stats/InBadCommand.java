@@ -1,7 +1,9 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.arguments.value.optional.LimitedOptionalIntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.optional.OptionalIntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.required.IntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -28,8 +30,8 @@ public class InBadCommand extends Command {
     }
 
     @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ValueArgument<Integer> getArgument() {
+        return new LimitedOptionalIntegerArg(5, 0, Integer.MAX_VALUE);
     }
 
     @Override
@@ -42,6 +44,7 @@ public class InBadCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         ArrayList<String> good = new ArrayList<>();
         ArrayList<String> players = new ArrayList<>();
+        int num = getArgument().getArg(event.getParsedArgs());
 
         try (Connection connection = ConnectionGiver.getConnection();) {
 
@@ -55,11 +58,15 @@ public class InBadCommand extends Command {
             }
 
             //Gives people who did sessions
-            try (PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT staff FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= 5");
-                 ResultSet resultSet = fetchPlayers.executeQuery()) {
+            PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT staff FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?");
+            fetchPlayers.setInt(1,num);
+
+            try (ResultSet resultSet = fetchPlayers.executeQuery()) {
                 while (resultSet.next()) {
                     good.add(resultSet.getString(1));
                 }
+
+                fetchPlayers.close();
 
             }
 
@@ -67,7 +74,7 @@ public class InBadCommand extends Command {
 
         players.removeAll(good);
 
-        builder.setTitle("Current Support Bad:");
+        builder.setTitle(String.format("People with less than %s sessions:", num));
         builder.setColor(Color.RED);
         builder.setDescription(String.join("\n", players.toArray(new String[0])));
         event.getChannel().sendMessage(builder.build()).queue();

@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
-import com.diamondfire.helpbot.components.ExternalFileHandler;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.CompressionUtil;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonArray;
@@ -142,7 +142,7 @@ public class DisplayIconData {
 
         String texture = format.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString().substring(38);
 
-        File check = new File(ExternalFileHandler.HEAD_CACHE.getPath() + "/" + texture + ".png");
+        File check = new File(ExternalFile.HEAD_CACHE_DIR.getFile(), texture + ".png");
         if (check.exists()) {
             return check;
         }
@@ -151,8 +151,8 @@ public class DisplayIconData {
         try {
             URL website = new URL(url);
             InputStream inputStream = website.openStream();
-            Files.copy(inputStream, Paths.get(ExternalFileHandler.HEAD_CACHE.getPath() + "/" + texture + ".png"), StandardCopyOption.REPLACE_EXISTING);
-            return new File(ExternalFileHandler.HEAD_CACHE.getPath() + "/" + texture + ".png");
+            Files.copy(inputStream, Paths.get(check.toURI()), StandardCopyOption.REPLACE_EXISTING);
+            return check;
         } catch (Exception e) {
             e.printStackTrace();
         }

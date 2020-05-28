@@ -1,15 +1,13 @@
 package com.diamondfire.helpbot.util;
 
-import com.diamondfire.helpbot.components.ExternalFileHandler;
+import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.util.stream.Collectors;
 
 public class Util {
 
@@ -17,14 +15,14 @@ public class Util {
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
             if (fileName.endsWith("spawn_egg")) {
-                return new File(ExternalFileHandler.IMAGES.getPath() + "/spawn_egg.png");
+                return new File(ExternalFile.IMAGES_DIR.getFile(),  "spawn_egg.png");
             }
-            return new File(ExternalFileHandler.IMAGES.getPath() + "/" + fileName + ".png");
+            return new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new File(ExternalFileHandler.IMAGES.getPath() + "/" + "unknown_texture" + ".png");
+        return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
     }
 
 
@@ -47,19 +45,19 @@ public class Util {
 
     public static void error(Exception e, String title) {
         TextChannel channel = BotInstance.getJda().getTextChannelById(705205549498892299L);
-        EmbedBuilder embed = new EmbedBuilder();
         StringWriter sw = new StringWriter();
+        EmbedBuilder embed = new EmbedBuilder();
         PrintWriter pw = new PrintWriter(sw);
+
+        e.printStackTrace(pw);
+
         String sStackTrace = sw.toString();
 
         embed.setTitle(title);
-
-
         embed.setColor(Color.RED);
+
         channel.sendMessage(embed.build()).queue();
         channel.sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
-
-        e.printStackTrace(pw);
     }
 
     public static String repeat(String ogString, String repeat, int i) {

@@ -2,6 +2,8 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
+import com.diamondfire.helpbot.command.arguments.value.optional.LimitedOptionalIntegerArg;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -29,8 +31,8 @@ public class InBadJoinCommand extends Command {
     }
 
     @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ValueArgument<Integer> getArgument() {
+        return new LimitedOptionalIntegerArg(30, 0, 100);
     }
 
     @Override
@@ -45,9 +47,10 @@ public class InBadJoinCommand extends Command {
         // I managed to kill the DF database completely by using my awful SQL knowledge.
 
         EmbedBuilder builder = new EmbedBuilder();
-
         ArrayList<String> good = new ArrayList<>();
         HashMap<String, String> players = new HashMap<>();
+        int num = getArgument().getArg(event.getParsedArgs());
+
         try (Connection connection = ConnectionGiver.getConnection();) {
 
 
@@ -59,11 +62,14 @@ public class InBadJoinCommand extends Command {
 
             }
 
-            try (PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT uuid FROM player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY ");
-                 ResultSet resultSet = fetchPlayers.executeQuery()) {
+            PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT uuid FROM player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY ");
+            fetchPlayers.setInt(1, num);
+
+            try (ResultSet resultSet = fetchPlayers.executeQuery()) {
                 while (resultSet.next()) {
                     good.add(resultSet.getString(1));
                 }
+                fetchPlayers.close();
 
             }
 
@@ -72,7 +78,7 @@ public class InBadJoinCommand extends Command {
 
         players.keySet().removeAll(good);
 
-        builder.setTitle("Staff who have not joined in 30 days:");
+        builder.setTitle(String.format("Staff who have not joined in %s days:", num));
         builder.setColor(Color.RED);
         builder.setDescription(String.join("\n", players.values().toArray(new String[0])));
 

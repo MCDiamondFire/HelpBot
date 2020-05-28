@@ -4,8 +4,8 @@ import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.ExternalFileHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.components.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractFileListCommand extends Command {
 
@@ -32,15 +33,14 @@ public abstract class AbstractFileListCommand extends Command {
 
         File file;
         try {
-            file = ExternalFileHandler.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "_") + "-list.txt");
+            file = ExternalFileUtil.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "-") + "-list.txt");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), true))) {
-                StringBuilder stringBuilder = new StringBuilder();
 
-                for (SimpleData simpleData : data) {
-                    stringBuilder.append(simpleData.getItem().getItemName() + "|");
-                }
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-                writer.append(stringBuilder.toString());
+                String[] names = data.stream()
+                        .map(simpleData -> simpleData.getItem().getItemName())
+                        .toArray(String[]::new);
+
+                writer.append(String.join("|", names));
             }
 
         } catch (IOException e) {
