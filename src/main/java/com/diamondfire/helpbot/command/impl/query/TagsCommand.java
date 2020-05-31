@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
@@ -81,10 +80,6 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         return "Gives you to get a list of tags for a code block or action.";
     }
 
-    @Override
-    public ValueArgument<String> getArgument() {
-        return new StringArg();
-    }
 
     @Override
     public Permission getPermission() {

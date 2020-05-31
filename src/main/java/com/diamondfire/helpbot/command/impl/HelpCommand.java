@@ -1,7 +1,8 @@
 package com.diamondfire.helpbot.command.impl;
 
-import com.diamondfire.helpbot.command.arguments.value.optional.OptionalStringArg;
-import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.Argument;
+import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.query.AbstractSingleQueryCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
@@ -35,8 +36,8 @@ public class HelpCommand extends AbstractSingleQueryCommand {
             actionIcon = customHead;
             material = customHead.getName();
         }
-        builder.setThumbnail("attachment://" + material + ".png");
 
+        builder.setThumbnail("attachment://" + material + ".png");
         channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
 
     }
@@ -48,12 +49,12 @@ public class HelpCommand extends AbstractSingleQueryCommand {
 
     @Override
     public String getDescription() {
-        return "Gets information for a game value, code block or action. If you cannot find what you want, try using the ?search command. \nSpecifying no arguments causes this help menu to appear.";
+        return "Gets information for a game value, code block or action. If you cannot find what you want, try using the ?search command.";
     }
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new OptionalStringArg("");
+        return new StringArg("Codeblock/Action/GameValue Name OR Blank", false);
     }
 
     @Override
@@ -73,7 +74,10 @@ public class HelpCommand extends AbstractSingleQueryCommand {
 
             for (Command command : BotInstance.getHandler().getCommands().values()) {
                 if (command.inHelp() && command.getPermission().hasPermission(event.getMember()) ) {
-                    builder.addField(BotConstants.PREFIX + command.getName() + " " + command.getArgument(), command.getDescription(), false);
+                    Argument argument = command.getArgument();
+                    String arg = argument instanceof NoArg ? "" : String.format(" <%s>", argument);
+
+                    builder.addField(BotConstants.PREFIX + command.getName() + arg, command.getDescription(), false);
                 }
 
             }

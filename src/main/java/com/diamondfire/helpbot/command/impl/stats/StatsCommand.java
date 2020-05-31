@@ -1,7 +1,8 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.StringArg;
+
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -25,7 +26,7 @@ public class StatsCommand extends Command {
 
     @Override
     public Argument getArgument() {
-        return new StringArg();
+        return new StringArg("Username", false);
     }
 
     @Override
@@ -37,12 +38,15 @@ public class StatsCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
 
+        String name = event.getParsedArgs().isEmpty() ? event.getMember().getEffectiveName() : event.getArguments()[0];
+
 
         try (Connection connection = ConnectionGiver.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) AS count, (COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;")) {
+             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) AS count, (COUNT(*) < 5) AS bad FROM support_sessions " +
+                     "WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;")) {
 
 
-            statement.setString(1, event.getArguments()[0]);
+            statement.setString(1,name);
 
             ResultSet rs = statement.executeQuery();
 
@@ -56,6 +60,7 @@ public class StatsCommand extends Command {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         try (Connection connection = ConnectionGiver.getConnection();
              PreparedStatement statementStats = connection.prepareStatement("" +
                      "SELECT COUNT(*) AS count," +
@@ -64,7 +69,7 @@ public class StatsCommand extends Command {
                      "COUNT(DISTINCT name) AS unique_helped FROM support_sessions WHERE staff = ?;")) {
 
 
-            statementStats.setString(1, event.getArguments()[0]);
+            statementStats.setString(1, name);
 
             ResultSet rsStats = statementStats.executeQuery();
 
@@ -96,7 +101,7 @@ public class StatsCommand extends Command {
 
 
 
-            statementStats.setString(1, event.getArguments()[0]);
+            statementStats.setString(1,name);
 
             ResultSet rsStats = statementStats.executeQuery();
 
@@ -112,7 +117,7 @@ public class StatsCommand extends Command {
 
 
 
-        builder.setAuthor(event.getArguments()[0]);
+        builder.setAuthor(name);
         builder.setTitle("Support Stats");
 
         event.getChannel().sendMessage(builder.build()).queue();

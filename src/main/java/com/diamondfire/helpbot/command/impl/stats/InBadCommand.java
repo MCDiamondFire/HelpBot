@@ -1,8 +1,7 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.value.optional.LimitedOptionalIntegerArg;
-import com.diamondfire.helpbot.command.arguments.value.optional.OptionalIntegerArg;
-import com.diamondfire.helpbot.command.arguments.value.required.IntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
+
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
@@ -31,7 +30,7 @@ public class InBadCommand extends Command {
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedOptionalIntegerArg(5, 0, Integer.MAX_VALUE);
+        return new LimitedIntegerArg("Session Count", 5,Integer.MAX_VALUE, 0);
     }
 
     @Override

@@ -3,7 +3,8 @@ package com.diamondfire.helpbot.command.impl;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.codedatabase.CodeDifferenceHandler;
+
+import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -106,9 +107,8 @@ public class FetchDataCommand extends Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        status(sentMessage, "Restarting code database...");
+        status(sentMessage, "Restarting and comparing code database...");
         CodeDatabase.initialize();
-        status(sentMessage, "Comparing to last database...");
         CodeDifferenceHandler.refresh();
         status(sentMessage, "Finished!");
 

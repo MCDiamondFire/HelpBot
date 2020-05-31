@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
+import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
@@ -21,7 +21,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
 
     @Override
     public ValueArgument<String> getArgument() {
-        return new StringArg();
+        return new StringArg("Name", true);
     }
 
 

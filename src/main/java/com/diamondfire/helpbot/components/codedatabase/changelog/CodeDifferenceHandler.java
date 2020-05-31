@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.components.codedatabase;
+package com.diamondfire.helpbot.components.codedatabase.changelog;
 
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.Util;
@@ -49,19 +49,22 @@ public class CodeDifferenceHandler {
         txtReader.close();
 
         JsonReader reader = new JsonReader(new StringReader(json));
-        reader.setLenient(true);
+        //reader.setLenient(true);
 
         BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
         String json2 = txtReader2.lines().collect(Collectors.joining());
         txtReader2.close();
 
         JsonReader reader2 = new JsonReader(new StringReader(json2));
-        reader2.setLenient(true);
+        //reader2.setLenient(true);
 
         JsonObject objectOld = JsonParser.parseReader(reader).getAsJsonObject();
         // Setup the reader to prevent parsing problems.
 
         JsonObject object = JsonParser.parseReader(reader2).getAsJsonObject();
+
+        // object is new
+        // object old is old instance
 
 
         compare(object.get("codeblocks").getAsJsonArray(), objectOld.get("codeblocks").getAsJsonArray(), "name");
@@ -75,6 +78,9 @@ public class CodeDifferenceHandler {
         } else {
             differs.forEach((s -> differences.append(s)));
         }
+
+
+
     }
 
     public static String getDifferences() {

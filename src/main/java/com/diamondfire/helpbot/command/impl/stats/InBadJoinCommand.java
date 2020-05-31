@@ -1,9 +1,7 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-import com.diamondfire.helpbot.command.arguments.value.optional.LimitedOptionalIntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -32,7 +30,7 @@ public class InBadJoinCommand extends Command {
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedOptionalIntegerArg(30, 0, 100);
+        return new LimitedIntegerArg("Days",  2, 100, 30);
     }
 
     @Override

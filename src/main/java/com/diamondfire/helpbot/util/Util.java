@@ -71,5 +71,9 @@ public class Util {
         return number.intValue() == 1 ? text : text + "s";
     }
 
+    public static int clamp(int num, int min, int max) {
+       return Math.max(min, Math.min(num, max));
+    }
+
 
 }

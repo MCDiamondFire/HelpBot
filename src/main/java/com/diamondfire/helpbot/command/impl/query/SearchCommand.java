@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.value.required.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
@@ -20,11 +19,6 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     @Override
     public String getDescription() {
         return "Tries to find a list of possible actions/game values based on the given arguments.";
-    }
-
-    @Override
-    public ValueArgument<String> getArgument() {
-        return new StringArg();
     }
 
     @Override

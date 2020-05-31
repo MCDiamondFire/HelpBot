@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.value.required.DefinedStringArg;
+import com.diamondfire.helpbot.command.arguments.value.DefinedStringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;

@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.command.arguments.value.required;
+package com.diamondfire.helpbot.command.arguments.value;
 
 
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
@@ -14,17 +14,18 @@ public class DefinedStringArg extends ValueArgument<String> {
     String[] options;
 
     public DefinedStringArg(String[] options) {
+        super("", true);
         this.options = options;
     }
 
 
     @Override
-    public String getArg(String msg) {
+    public String getValue(String msg) {
         return getClosestOption(msg);
     }
 
     @Override
-    public boolean validate(String msg) {
+    protected boolean validateValue(String msg) {
         return getClosestOption(msg) != null;
     }
 
@@ -34,7 +35,7 @@ public class DefinedStringArg extends ValueArgument<String> {
     }
 
     @Override
-    public String toString() {
+    public String getName() {
         String parsedOptions;
 
         if (options.length > 6) {
@@ -43,7 +44,7 @@ public class DefinedStringArg extends ValueArgument<String> {
             parsedOptions = String.join("/", options);
         }
 
-        return "<" + parsedOptions + ">";
+        return parsedOptions;
     }
 
     private String getClosestOption(String args) {
