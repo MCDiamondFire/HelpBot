@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
+import org.omg.CORBA.OBJ_ADAPTER;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +41,9 @@ public class StringFormatting {
             return string.substring(0, 950) + "...";
         }
         return string;
+    }
+    public static String fieldSafe(Object object) {
+      return fieldSafe(String.valueOf(object));
     }
 
     public static String titleSafe(String string) {

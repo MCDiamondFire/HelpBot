@@ -1,10 +1,7 @@
 package com.diamondfire.helpbot.instance;
 
 import com.diamondfire.helpbot.command.CommandHandler;
-import com.diamondfire.helpbot.command.impl.FetchDataCommand;
-import com.diamondfire.helpbot.command.impl.HelpCommand;
-import com.diamondfire.helpbot.command.impl.InfoCommand;
-import com.diamondfire.helpbot.command.impl.MimicCommand;
+import com.diamondfire.helpbot.command.impl.*;
 import com.diamondfire.helpbot.command.impl.filespitter.ParticleListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.PotionListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
@@ -46,6 +43,7 @@ public class BotInstance {
                 new MimicCommand(),
                 new FetchDataCommand(),
                 new InfoCommand(),
+                new EvalCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
