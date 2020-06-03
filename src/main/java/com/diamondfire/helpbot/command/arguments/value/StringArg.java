@@ -19,7 +19,7 @@ public class StringArg extends ValueArgument<String> {
     }
 
     @Override
-    public boolean validateValue(String msg) {
+    protected boolean validateValue(String msg) {
        return isRequired();
     }
 

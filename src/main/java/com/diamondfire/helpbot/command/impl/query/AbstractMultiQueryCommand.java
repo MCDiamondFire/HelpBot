@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -71,6 +72,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
         else {
             builder.setTitle(String.format("I couldn't find anything that matched `%s`!", getSearchQuery(event)));
         }
+        builder.setFooter(String.format("%s %s found", names.size(), Util.sCheck("object", names.size())));
         event.getChannel().sendMessage(builder.build()).queue();
 
     }

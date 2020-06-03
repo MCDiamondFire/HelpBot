@@ -5,10 +5,13 @@ import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockAct
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.components.viewables.BasicReaction;
+import com.diamondfire.helpbot.instance.BotInstance;
 import com.diamondfire.helpbot.util.ParamConverter;
 import com.diamondfire.helpbot.util.StringFormatting;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +34,9 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 
         builder.setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor());
         builder.setFooter(footer.toString());
+
+        Emote emote = BotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
+        builder.setAuthor(actionData.getCodeblockName(), null, emote.getImageUrl());
 
         return builder;
 

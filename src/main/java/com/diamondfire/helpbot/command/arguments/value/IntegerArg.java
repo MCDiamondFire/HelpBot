@@ -20,7 +20,7 @@ public class IntegerArg extends ValueArgument<Integer> {
 
 
     @Override
-    public boolean validateValue(String msg) {
+    protected boolean validateValue(String msg) {
         try {
             Integer.parseInt(msg);
             return true;

@@ -35,7 +35,6 @@ public class IconEmbedBuilder extends DataEmbedBuilder {
 
                 mainAdditional = requestCombine ? mainAdditional.substring(0, mainAdditional.length() - 1) : (mainAdditional + " ");
 
-
                 // Prints the first part of the additional section
                 additionalInfo.append("\n> " + mainAdditional);
 

@@ -23,15 +23,7 @@ public abstract class ValueArgument<T> extends Argument {
     public abstract T getValue(String msg);
 
     public boolean validate(String msg) {
-        if (msg.isEmpty()) {
-            return !isRequired();
-        } else {
-            if (validateValue(msg)) {
-                return true;
-            } else {
-                return fallbackValue != null;
-            }
-        }
+        return !isRequired();
 
     }
 

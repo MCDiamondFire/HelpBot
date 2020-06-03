@@ -64,11 +64,11 @@ public class HelpCommand extends AbstractSingleQueryCommand {
 
     @Override
     public void run(CommandEvent event) {
-        if (event.getArguments().length == 0) {
+        if (event.getParsedArgs().isEmpty()) {
             EmbedBuilder builder = new EmbedBuilder();
 
             builder.setTitle("Help");
-            builder.setDescription("HelpBot is a bot dedicated to looking at information regarding game values, codeblocks, actions, and more! Listed below are the commands that you are currently allowed to use. Any additional questions may be forwarded to Owen1212055");
+            builder.setDescription("Listed below are the commands that you are currently allowed to use. Any additional questions may be forwarded to Owen1212055");
             builder.setThumbnail(BotInstance.getJda().getSelfUser().getAvatarUrl());
             builder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
 

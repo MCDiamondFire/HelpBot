@@ -15,7 +15,14 @@ public abstract class DataEmbedBuilder {
         EmbedBuilder builder = buildDataEmbed(data);
         DisplayIconData icon = data.getItem();
 
-        builder.setTitle(icon.getItemName() + " | " + data.getMainName());
+        String iconName = icon.getItemName();
+        String dataName = data.getMainName();
+        if (!iconName.equals(dataName)) {
+            builder.setTitle(iconName + " | " + dataName);
+        } else {
+            builder.setTitle(dataName);
+        }
+
         builder.setDescription(String.join(" ", icon.getDescription()));
 
         String footerText = builder.build().getFooter() == null ? "" : builder.build().getFooter().getText();

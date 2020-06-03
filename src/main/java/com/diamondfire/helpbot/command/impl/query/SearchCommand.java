@@ -29,7 +29,7 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     @Override
     protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
         ArrayList<String> list = new ArrayList<>();
-        String args = event.getParsedArgs();
+        String args = event.getParsedArgs().toLowerCase();
 
         for (SimpleData simpleData : data) {
             if (simpleData.getItem().getItemName().toLowerCase().contains(args) || simpleData.getMainName().toLowerCase().contains(args)) {
