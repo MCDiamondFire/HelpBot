@@ -35,7 +35,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         builder.setFooter(footer.toString());
 
         Emote emote = BotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
-        builder.setAuthor(actionData.getCodeblockName(), null, emote.getImageUrl());
+        builder.setAuthor(StringFormatting.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
 
         return builder;
 

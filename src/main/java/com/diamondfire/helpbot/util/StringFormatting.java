@@ -52,4 +52,20 @@ public class StringFormatting {
         }
         return string;
     }
+
+    public static String smartCaps(String text) {
+        String[] words = text.split(" ");
+        StringBuilder builder = new StringBuilder();
+
+        for (String word : words) {
+            if (word.length() < 2) {
+                builder.append(word.toLowerCase() + " ");
+                continue;
+            }
+
+            builder.append(word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ");
+        }
+        return builder.toString();
+
+    }
 }
