@@ -24,7 +24,6 @@ public class CommandHandler {
     public void run(CommandEvent e) {
 
 
-
         Command commandToRun = commands.get(e.getCommand());
         if (commandToRun != null) {
 
@@ -35,20 +34,20 @@ public class CommandHandler {
                 e.getChannel().sendMessage(builder.build()).queue();
             }
 
-                if (commandToRun.getArgument().validate(e.getParsedArgs())) {
+            if (commandToRun.getArgument().validate(e.getParsedArgs())) {
 
-                    try {
-                        POOL.submit(() -> commandToRun.run(e));
-                    } catch (Exception error) {
-                        Util.error(error, "Command error!");
-                        error.printStackTrace();
-                    }
-                } else {
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setTitle("Invalid Arguments!");
-                    builder.setDescription(commandToRun.getArgument().failMessage());
-                    e.getChannel().sendMessage(builder.build()).queue();
+                try {
+                    POOL.submit(() -> commandToRun.run(e));
+                } catch (Exception error) {
+                    Util.error(error, "Command error!");
+                    error.printStackTrace();
                 }
+            } else {
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setTitle("Invalid Arguments!");
+                builder.setDescription(commandToRun.getArgument().failMessage());
+                e.getChannel().sendMessage(builder.build()).queue();
+            }
 
 
         }

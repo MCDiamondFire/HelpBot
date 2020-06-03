@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.command.arguments;
 
 public abstract class Argument {
+
     private final String name;
     private final boolean isRequired;
 

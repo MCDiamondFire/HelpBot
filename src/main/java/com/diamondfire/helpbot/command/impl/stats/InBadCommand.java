@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
-
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
@@ -30,7 +29,7 @@ public class InBadCommand extends Command {
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedIntegerArg("Session Count", 5,Integer.MAX_VALUE, 0);
+        return new LimitedIntegerArg("Session Count", 5, Integer.MAX_VALUE, 0);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class InBadCommand extends Command {
         ArrayList<String> players = new ArrayList<>();
         int num = getArgument().getArg(event.getParsedArgs());
 
-        try (Connection connection = ConnectionGiver.getConnection();) {
+        try (Connection connection = ConnectionGiver.getConnection()) {
 
             //Gives all staff members
             try (PreparedStatement fetchPlayers = connection.prepareStatement("SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0");
@@ -58,7 +57,7 @@ public class InBadCommand extends Command {
 
             //Gives people who did sessions
             PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT staff FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?");
-            fetchPlayers.setInt(1,num);
+            fetchPlayers.setInt(1, num);
 
             try (ResultSet resultSet = fetchPlayers.executeQuery()) {
                 while (resultSet.next()) {
@@ -69,7 +68,8 @@ public class InBadCommand extends Command {
 
             }
 
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) {
+        }
 
         players.removeAll(good);
 

@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
-
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -46,7 +45,7 @@ public class StatsCommand extends Command {
                      "WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;")) {
 
 
-            statement.setString(1,name);
+            statement.setString(1, name);
 
             ResultSet rs = statement.executeQuery();
 
@@ -100,8 +99,7 @@ public class StatsCommand extends Command {
                      "FROM support_sessions WHERE duration != 0 AND staff = ?;")) {
 
 
-
-            statementStats.setString(1,name);
+            statementStats.setString(1, name);
 
             ResultSet rsStats = statementStats.executeQuery();
 
@@ -114,7 +112,6 @@ public class StatsCommand extends Command {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
 
 
         builder.setAuthor(name);

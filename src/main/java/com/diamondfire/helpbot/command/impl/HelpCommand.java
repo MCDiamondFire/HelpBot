@@ -73,7 +73,7 @@ public class HelpCommand extends AbstractSingleQueryCommand {
             builder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
 
             for (Command command : BotInstance.getHandler().getCommands().values()) {
-                if (command.inHelp() && command.getPermission().hasPermission(event.getMember()) ) {
+                if (command.inHelp() && command.getPermission().hasPermission(event.getMember())) {
                     Argument argument = command.getArgument();
                     String arg = argument instanceof NoArg ? "" : String.format(" <%s>", argument);
 

@@ -29,7 +29,7 @@ public enum CodeBlockEnum {
     CALL_FUNC("call_func", "1C3890", 688643632063840281L),
     START_PROCESS("start_process", "16DD61", 688643646425268301L);
 
-    private static Map<String, CodeBlockEnum> identifiers = Stream.of(CodeBlockEnum.values()).collect(Collectors.toMap(CodeBlockEnum::getID, p -> p));
+    private static final Map<String, CodeBlockEnum> identifiers = Stream.of(CodeBlockEnum.values()).collect(Collectors.toMap(CodeBlockEnum::getID, p -> p));
     private final String ID;
     private final String color;
     private final long emoji;

@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class CommandEvent extends GuildMessageReceivedEvent {

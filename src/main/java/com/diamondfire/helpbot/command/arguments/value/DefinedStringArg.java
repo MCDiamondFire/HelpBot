@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.command.arguments.value;
 
 
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.util.JaroWinkler;
 
 import java.util.Arrays;
@@ -11,7 +10,7 @@ import java.util.Map;
 
 public class DefinedStringArg extends ValueArgument<String> {
 
-    String[] options;
+    final String[] options;
 
     public DefinedStringArg(String[] options) {
         super("", true);

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CodeBlockActionArgumentData {
 
-    private JsonObject data;
+    private final JsonObject data;
 
     /**
      * An argument that shows what variable type is used in that slot.

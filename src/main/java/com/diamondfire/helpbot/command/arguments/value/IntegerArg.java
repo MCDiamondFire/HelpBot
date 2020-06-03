@@ -1,7 +1,5 @@
 package com.diamondfire.helpbot.command.arguments.value;
 
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-
 public class IntegerArg extends ValueArgument<Integer> {
 
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class InstanceHandler {
 
-    public void startup() throws LoginException, InterruptedException, IOException {
+    public void startup() throws LoginException, InterruptedException {
 
         BotInstance.start();
         CodeDatabase.initialize();

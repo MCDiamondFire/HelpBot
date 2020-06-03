@@ -3,7 +3,6 @@ package com.diamondfire.helpbot.command.impl;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
-
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
@@ -38,10 +37,8 @@ public class FetchDataCommand extends Command {
 
     private static final String USERNAME = SensitiveData.USER_EMAIL;
     private static final String PASSWORD = SensitiveData.USER_PASS;
-
-
-    private boolean ready = false;
     private final ArrayList<String> queue = new ArrayList<>();
+    private boolean ready = false;
 
     @Override
     public String getName() {
@@ -103,7 +100,6 @@ public class FetchDataCommand extends Command {
             }
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,7 +145,7 @@ public class FetchDataCommand extends Command {
                     if (chatPacket.getType() == MessageType.NOTIFICATION) return;
 
                     if (text.contains("Unknown command!")) {
-                       throw new IllegalStateException("Command not found!");
+                        throw new IllegalStateException("Command not found!");
                     }
 
                     if (text.startsWith("{")) {
@@ -162,7 +158,6 @@ public class FetchDataCommand extends Command {
                     if (ready) {
                         queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
                     }
-
 
 
                 }

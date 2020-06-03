@@ -12,9 +12,8 @@ public class JaroWinkler {
 
         // The Jaro–Winkler distance uses a prefix scale which gives more favorable ratings
         // to strings that match from the beginning for a set prefix length.
-        double winkler = jaro + (DEFAULT_SCALING_FACTOR * cl * (1.0 - jaro));
 
-        return winkler;
+        return jaro + (DEFAULT_SCALING_FACTOR * cl * (1.0 - jaro));
     }
 
     private static int commonPrefixLength(String first, String second) {
@@ -41,7 +40,7 @@ public class JaroWinkler {
         }
 
         // Limit the result to 4.
-        return result > 4 ? 4 : result;
+        return Math.min(result, 4);
     }
 
     private static double scoreT(String first, String second) {
@@ -79,11 +78,9 @@ public class JaroWinkler {
         int transpositions = transpositions(m1, m2);
 
         // Calculate the distance.
-        double dist =
-                (m1.length() / ((double) shorter.length()) +
-                        m2.length() / ((double) longer.length()) +
-                        (m1.length() - transpositions) / ((double) m1.length())) / 3.0;
-        return dist;
+        return (m1.length() / ((double) shorter.length()) +
+                m2.length() / ((double) longer.length()) +
+                (m1.length() - transpositions) / ((double) m1.length())) / 3.0;
 
     }
 

@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class Util {
 
@@ -15,7 +17,7 @@ public class Util {
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
             if (fileName.endsWith("spawn_egg")) {
-                return new File(ExternalFile.IMAGES_DIR.getFile(),  "spawn_egg.png");
+                return new File(ExternalFile.IMAGES_DIR.getFile(), "spawn_egg.png");
             }
             return new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
 
@@ -24,8 +26,6 @@ public class Util {
         }
         return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
     }
-
-
 
 
     /**
@@ -61,9 +61,11 @@ public class Util {
     }
 
     public static String repeat(String ogString, String repeat, int i) {
+        StringBuilder ogStringBuilder = new StringBuilder(ogString);
         for (int j = 0; j < i; j++) {
-            ogString = ogString + repeat;
+            ogStringBuilder.append(repeat);
         }
+        ogString = ogStringBuilder.toString();
         return ogString;
     }
 
@@ -72,7 +74,7 @@ public class Util {
     }
 
     public static int clamp(int num, int min, int max) {
-       return Math.max(min, Math.min(num, max));
+        return Math.max(min, Math.min(num, max));
     }
 
 

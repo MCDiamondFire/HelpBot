@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
+import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -30,7 +30,7 @@ public class InBadJoinCommand extends Command {
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedIntegerArg("Days",  2, 100, 30);
+        return new LimitedIntegerArg("Days", 2, 100, 30);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InBadJoinCommand extends Command {
         HashMap<String, String> players = new HashMap<>();
         int num = getArgument().getArg(event.getParsedArgs());
 
-        try (Connection connection = ConnectionGiver.getConnection();) {
+        try (Connection connection = ConnectionGiver.getConnection()) {
 
 
             try (PreparedStatement fetchPlayers = connection.prepareStatement("SELECT players.name, players.uuid FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0");

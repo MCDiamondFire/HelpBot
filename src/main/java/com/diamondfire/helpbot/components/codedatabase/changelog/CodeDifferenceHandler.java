@@ -80,7 +80,6 @@ public class CodeDifferenceHandler {
         }
 
 
-
     }
 
     public static String getDifferences() {
@@ -97,7 +96,7 @@ public class CodeDifferenceHandler {
             if (element == null) {
                 continue;
             }
-            JsonElement nameElement = null;
+            JsonElement nameElement;
             if (element.getAsJsonObject().get(keyName) == null) {
                 nameElement = element.getAsJsonObject().get("icon").getAsJsonObject().get("name");
             } else {
@@ -129,7 +128,7 @@ public class CodeDifferenceHandler {
 
             for (String key : objectHashMap2.keySet()) {
                 if (!objectHashMap.containsKey(key)) {
-                    //That means that an action poofed
+                    //That means that an action was deleted.
                     differences.append("\n- Removed " + key);
                 }
             }

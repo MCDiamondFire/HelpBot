@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginException;
 public class BotInstance {
 
     private static JDA jda;
-    private static CommandHandler handler = new CommandHandler();
+    private static final CommandHandler handler = new CommandHandler();
 
     public static void start() throws InterruptedException, LoginException {
         handler.register(

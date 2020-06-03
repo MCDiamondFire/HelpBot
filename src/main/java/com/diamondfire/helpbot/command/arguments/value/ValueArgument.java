@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.command.arguments.Argument;
 
 public abstract class ValueArgument<T> extends Argument {
 
-    T fallbackValue;
+    final T fallbackValue;
 
     public ValueArgument(String name, boolean isRequired) {
         super(name, isRequired);
@@ -23,7 +23,12 @@ public abstract class ValueArgument<T> extends Argument {
     public abstract T getValue(String msg);
 
     public boolean validate(String msg) {
-        return !isRequired();
+        if (msg.isEmpty()) {
+            return !isRequired();
+        } else {
+            return true;
+        }
+
 
     }
 
@@ -32,7 +37,6 @@ public abstract class ValueArgument<T> extends Argument {
     }
 
     protected abstract boolean validateValue(String msg);
-
 
 
 }

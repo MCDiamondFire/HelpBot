@@ -6,14 +6,11 @@ import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringFormatting;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Icon;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URL;
 
 
 public class EvalCommand extends Command {

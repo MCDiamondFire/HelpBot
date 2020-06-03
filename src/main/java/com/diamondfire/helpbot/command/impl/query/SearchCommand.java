@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -32,8 +31,11 @@ public class SearchCommand extends AbstractMultiQueryCommand {
         String args = event.getParsedArgs().toLowerCase();
 
         for (SimpleData simpleData : data) {
-            if (simpleData.getItem().getItemName().toLowerCase().contains(args) || simpleData.getMainName().toLowerCase().contains(args)) {
-                list.add(simpleData.getMainName());
+            String dataName = simpleData.getMainName();
+            String itemName = simpleData.getItem().getItemName();
+
+            if (itemName.toLowerCase().contains(args) || dataName.toLowerCase().contains(args)) {
+                list.add(dataName);
             }
 
         }

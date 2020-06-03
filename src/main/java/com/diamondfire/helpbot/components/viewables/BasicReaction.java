@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 
 public class BasicReaction {
 
-    boolean isUnicode;
+    final boolean isUnicode;
     String unicode;
     long id;
 

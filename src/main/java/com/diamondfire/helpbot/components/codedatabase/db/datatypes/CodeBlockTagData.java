@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CodeBlockTagData {
 
-    private JsonObject data;
+    private final JsonObject data;
 
 
     public CodeBlockTagData(JsonObject data) {
@@ -74,7 +74,7 @@ public class CodeBlockTagData {
 
 class CodeBlockTagOption {
 
-    private JsonObject optionData;
+    private final JsonObject optionData;
 
     CodeBlockTagOption(JsonObject optionData) {
         this.optionData = optionData;

@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 public class CodeBlockData extends SimpleData {
 
-    private CodeBlockActionData assosiatedAction;
+    private CodeBlockActionData associatedAction;
 
     /**
      * Creates a main codeblock that goes into the players inventory.
@@ -40,11 +40,11 @@ public class CodeBlockData extends SimpleData {
     }
 
     public void assignAction(CodeBlockActionData data) {
-        assosiatedAction = data;
+        associatedAction = data;
     }
 
     public CodeBlockActionData getAssociatedAction() {
-        return assosiatedAction;
+        return associatedAction;
     }
 
     public CodeBlockEnum getCodeblockEnum() {

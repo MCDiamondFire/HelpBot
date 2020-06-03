@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 
-public abstract class Command  {
+public abstract class Command {
 
     public abstract String getName();
 

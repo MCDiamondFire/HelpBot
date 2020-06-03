@@ -4,8 +4,8 @@ import com.diamondfire.helpbot.util.Util;
 
 public class LimitedIntegerArg extends IntegerArg {
 
-    int min;
-    int max;
+    final int min;
+    final int max;
 
     public LimitedIntegerArg(String name, int min, int max) {
         super(name, false);
@@ -13,6 +13,7 @@ public class LimitedIntegerArg extends IntegerArg {
         this.min = min;
         this.max = max;
     }
+
     public LimitedIntegerArg(String name, int min, int max, int fallbackValue) {
         super(name, fallbackValue);
 
@@ -27,7 +28,7 @@ public class LimitedIntegerArg extends IntegerArg {
         if (num <= max && num >= min) {
             return num;
         } else {
-            return Util.clamp(num, min,max);
+            return Util.clamp(num, min, max);
         }
     }
 

@@ -36,7 +36,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         if (names.size() != 0) {
 
-            String list = null;
+            String list;
             String lastList = null;
             LinkedList<String> queue = new LinkedList<>();
 

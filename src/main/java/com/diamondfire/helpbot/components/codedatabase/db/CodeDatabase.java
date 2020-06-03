@@ -38,7 +38,7 @@ public class CodeDatabase {
 
         System.out.println("Starting code database...");
         try (BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
-             JsonReader reader = new JsonReader(new StringReader(txtReader.lines().collect(Collectors.joining())));) {
+             JsonReader reader = new JsonReader(new StringReader(txtReader.lines().collect(Collectors.joining())))) {
 
             reader.setLenient(true);
             // Setup the reader to prevent parsing problems.

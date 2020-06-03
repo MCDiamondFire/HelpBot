@@ -10,7 +10,6 @@ import com.diamondfire.helpbot.util.ParamConverter;
 import com.diamondfire.helpbot.util.StringFormatting;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.LinkedHashMap;
@@ -55,9 +54,9 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
             }
 
             String line = String.format("**%s**", ParamConverter.getTypeFromString(arg.getType()).getText()) +
-                            (arg.isPlural() ? "(s)" : "") +
-                            (arg.isOptional() ? "*" : "") +
-                            " - " + arg.getDescription()[0] + " "; // If there is a description on the argument, first part appears in same line.
+                    (arg.isPlural() ? "(s)" : "") +
+                    (arg.isOptional() ? "*" : "") +
+                    " - " + arg.getDescription()[0] + " "; // If there is a description on the argument, first part appears in same line.
 
             params.append(line);
 

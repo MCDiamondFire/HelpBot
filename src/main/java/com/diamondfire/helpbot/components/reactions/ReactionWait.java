@@ -7,10 +7,10 @@ import java.util.TimerTask;
 
 public class ReactionWait extends TimerTask {
 
-    private long user;
-    private long message;
-    private long channel;
-    private ReactionResponder responder;
+    private final long user;
+    private final long message;
+    private final long channel;
+    private final ReactionResponder responder;
 
     public ReactionWait(long user, long channel, long message, ReactionResponder responder) {
         this.user = user;

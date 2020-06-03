@@ -1,11 +1,9 @@
 package com.diamondfire.helpbot.components.externalfile;
 
-import com.diamondfire.helpbot.util.BotConstants;
-
 import java.io.File;
-import java.io.IOException;
 
 public class ExternalFileBuilder {
+
     String fileName;
     String fileType = "unk";
     boolean directory = false;
@@ -30,7 +28,7 @@ public class ExternalFileBuilder {
         try {
             if (!file.exists()) {
                 if (directory) {
-                   file.mkdir();
+                    file.mkdir();
                 } else {
                     file.createNewFile();
                 }

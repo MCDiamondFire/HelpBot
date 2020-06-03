@@ -1,7 +1,5 @@
 package com.diamondfire.helpbot.command.arguments.value;
 
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-
 public class StringArg extends ValueArgument<String> {
 
 
@@ -20,7 +18,7 @@ public class StringArg extends ValueArgument<String> {
 
     @Override
     protected boolean validateValue(String msg) {
-       return isRequired();
+        return isRequired();
     }
 
 }
