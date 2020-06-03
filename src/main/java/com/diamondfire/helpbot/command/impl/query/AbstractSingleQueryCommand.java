@@ -24,6 +24,85 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSingleQueryCommand extends Command {
 
+    @Override
+    public ValueArgument<String> getArgument() {
+        return new StringArg("String", true);
+    }
+
+    @Override
+    public void run(CommandEvent event) {
+        getData(event, onDataReceived());
+    }
+
+    public abstract BiConsumer<SimpleData, TextChannel> onDataReceived();
+
+    protected void getData(CommandEvent event, BiConsumer<SimpleData, TextChannel> onChosen) {
+        String argumentsParsed = event.getParsedArgs();
+
+        //Generate a bunch of "favorable" actions.
+        Map<SimpleData, Double> possibleChoices = new HashMap<>();
+        for (SimpleData data : CodeDatabase.getSimpleData()) {
+            double compScore = JaroWinkler.score(argumentsParsed, data.getMainName());
+            if (compScore >= 0.85) {
+                possibleChoices.put(data, compScore);
+            }
+        }
+
+
+        //Get the most similar action possible.
+        Map.Entry<SimpleData, Double> closestAction = possibleChoices.entrySet().stream()
+                .max(Comparator.comparingDouble(Map.Entry::getValue))
+                .orElse(null);
+
+        //If the amount of favorable actions is low enough and closest action exists, use the favorable action.
+
+        // (Prevents random words from being picked when there is a wide variety of close choices too)
+        if (closestAction != null) {
+            if (possibleChoices.size() < 10 || closestAction.getKey().getMainName().toLowerCase().equals(argumentsParsed.toLowerCase())) {
+
+                // Find actions that are exactly the same
+                List<SimpleData> sameActions = possibleChoices.keySet().stream()
+                        .filter(data -> data.getMainName().equals(closestAction.getKey().getMainName()))
+                        .collect(Collectors.toList());
+
+                // If none, proceed. Else we need to special case that.
+
+                if (sameActions.size() == 1) {
+                    onChosen.accept(sameActions.get(0), event.getChannel());
+                } else if (sameActions.size() > 1) {
+                    try {
+                        sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
+                    } catch (Exception e) {
+                        Util.error(e, "Error while sending multi-reaction msg!");
+                        e.printStackTrace();
+                    }
+                }
+
+                // Either there are too many similar actions or there is no close action.
+            } else {
+
+                EmbedBuilder builder = new EmbedBuilder();
+
+                Collection<String> similarActionNames = possibleChoices.keySet().stream()
+                        .map(SimpleData::getMainName)
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
+                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+
+
+                event.getChannel().sendMessage(builder.build()).queue();
+            }
+
+            // If possible choices is empty, meaning none can be found.
+        } else {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+            event.getChannel().sendMessage(builder.build()).queue();
+
+        }
+    }
+
     public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Duplicate actions detected!");
@@ -82,83 +161,6 @@ public abstract class AbstractSingleQueryCommand extends Command {
         emojis.keySet().forEach((emote -> emote.react(finalMessage).queue()));
 
 
-    }
-
-    @Override
-    public ValueArgument<String> getArgument() {
-        return new StringArg("String", true);
-    }
-
-    @Override
-    public void run(CommandEvent event) {
-        getData(event, onDataReceived());
-    }
-
-    public abstract BiConsumer<SimpleData, TextChannel> onDataReceived();
-
-    protected void getData(CommandEvent event, BiConsumer<SimpleData, TextChannel> onChosen) {
-        String argumentsParsed = event.getParsedArgs();
-
-        //Generate a bunch of "favorable" actions.
-        Map<SimpleData, Double> possibleChoices = new HashMap<>();
-        for (SimpleData data : CodeDatabase.getSimpleData()) {
-            double compScore = JaroWinkler.score(argumentsParsed, data.getMainName());
-            if (compScore >= 0.85) {
-                possibleChoices.put(data, compScore);
-            }
-        }
-
-
-        //Get the most similar action possible.
-        Map.Entry<SimpleData, Double> closestAction = possibleChoices.entrySet().stream()
-                .max(Comparator.comparingDouble(Map.Entry::getValue))
-                .orElse(null);
-
-        //If the amount of favorable actions is low enough and closest action exists, use the favorable action.
-
-        // (Prevents random words from being picked when there is a wide variety of close choices too)
-        if (closestAction != null) {
-            if (possibleChoices.size() < 10 || closestAction.getKey().getMainName().equals(argumentsParsed)) {
-
-                // Find actions that are exactly the same
-                List<SimpleData> sameActions = possibleChoices.keySet().stream()
-                        .filter(data -> data.getMainName().equals(closestAction.getKey().getMainName()))
-                        .collect(Collectors.toList());
-
-                // If none, proceed. Else we need to special case that.
-
-                if (sameActions.size() == 1) {
-                    onChosen.accept(sameActions.get(0), event.getChannel());
-                } else if (sameActions.size() > 1) {
-                    try {
-                        sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
-                    } catch (Exception e) {
-                        Util.error(e, "Error while sending multi-reaction msg!");
-                        e.printStackTrace();
-                    }
-                }
-
-                // Either there are too many similar actions or there is no close action.
-            } else {
-
-                EmbedBuilder builder = new EmbedBuilder();
-
-                Collection<String> similarActionNames = possibleChoices.keySet().stream().map(SimpleData::getMainName).collect(Collectors.toCollection(ArrayList::new));
-
-                builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
-                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
-
-
-                event.getChannel().sendMessage(builder.build()).queue();
-            }
-
-            // If possible choices is empty, meaning none can be found.
-        } else {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
-            event.getChannel().sendMessage(builder.build()).queue();
-
-        }
     }
 
 }
