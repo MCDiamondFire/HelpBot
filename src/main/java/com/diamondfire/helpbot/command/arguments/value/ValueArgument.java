@@ -26,7 +26,7 @@ public abstract class ValueArgument<T> extends Argument {
         if (msg.isEmpty()) {
             return !isRequired();
         } else {
-            return true;
+            return validateValue(msg);
         }
 
 

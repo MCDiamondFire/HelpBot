@@ -5,11 +5,11 @@ import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.components.reactions.ReactionHandler;
+import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.components.viewables.BasicReaction;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -88,7 +88,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                         .collect(Collectors.toCollection(ArrayList::new));
 
                 builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
-                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
 
 
                 event.getChannel().sendMessage(builder.build()).queue();
@@ -97,7 +97,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             // If possible choices is empty, meaning none can be found.
         } else {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringFormatting.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
             event.getChannel().sendMessage(builder.build()).queue();
 
         }
@@ -142,11 +142,11 @@ public abstract class AbstractSingleQueryCommand extends Command {
         HashMap<BasicReaction, SimpleData> finalEmojis = emojis;
         Message finalMessage = message;
 
-        ReactionHandler.handleReaction(userToWait, message, (reaction -> {
+        ReactionHandler.waitReaction(userToWait, message, (event -> {
             finalMessage.delete().queue();
 
             ArrayList<SimpleData> filteredData = finalEmojis.entrySet().stream()
-                    .filter((entry) -> entry.getKey().equalToReaction(reaction.getReactionEmote()))
+                    .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
                     .map(Map.Entry::getValue)
                     .collect(Collectors.toCollection(ArrayList::new));
 

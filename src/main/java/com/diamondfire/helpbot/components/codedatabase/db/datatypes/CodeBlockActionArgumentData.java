@@ -70,7 +70,7 @@ public class CodeBlockActionArgumentData {
      * @return Extra notes of this argument.
      */
     public String[] getExtraNotes() {
-        return Util.jsonArrayToString(this.data.get("extraNotes").getAsJsonArray());
+        return Util.jsonArrayToString(this.data.get("notes").getAsJsonArray());
     }
 
     /**

@@ -16,7 +16,6 @@ public class IntegerArg extends ValueArgument<Integer> {
         return Integer.parseInt(msg);
     }
 
-
     @Override
     protected boolean validateValue(String msg) {
         try {
@@ -30,11 +29,11 @@ public class IntegerArg extends ValueArgument<Integer> {
 
     @Override
     public String failMessage() {
-        return "Text must contain a valid integer!";
+        return "Argument must contain a valid integer!";
     }
 
     @Override
     public String toString() {
-        return "<Optional Number>";
+        return "Number";
     }
 }

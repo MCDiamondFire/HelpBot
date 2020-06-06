@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,16 +33,23 @@ public class CommandHandler {
                 builder.setTitle("No Permission!");
                 builder.setDescription("Sorry, you do not have permission to use this command. Commands that you are able to use are listed in ?help.");
                 e.getChannel().sendMessage(builder.build()).queue();
+                return;
             }
 
             if (commandToRun.getArgument().validate(e.getParsedArgs())) {
 
-                try {
-                    POOL.submit(() -> commandToRun.run(e));
-                } catch (Exception error) {
-                    Util.error(error, "Command error!");
-                    error.printStackTrace();
-                }
+                CompletableFuture.runAsync(
+                        () -> {
+                            try {
+                                commandToRun.run(e);
+                            } catch (Exception error) {
+                                Util.error(error, "Command error!");
+                                error.printStackTrace();
+                            }
+                        }, POOL
+                );
+
+
             } else {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setTitle("Invalid Arguments!");

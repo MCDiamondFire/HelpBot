@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.components.viewables;
 
+import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.instance.BotInstance;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
@@ -21,6 +22,7 @@ public class BasicReaction {
         isUnicode = false;
         this.id = emoteID;
     }
+
 
     public String getUnicode() {
         if (!isUnicode) throw new IllegalStateException("Emoji is not a unicode char!");
@@ -49,6 +51,12 @@ public class BasicReaction {
     }
 
     public boolean equalToReaction(MessageReaction.ReactionEmote reaction) {
+        // if reaction is emoji yet this isn't unicode error is thrown.
+        if (reaction.isEmoji() != isUnicode) {
+            return false;
+        }
+
+        //TODO if reaction isEmoji and this is emoji isn't same return false.
         if (reaction.isEmoji()) return getUnicode().equals(reaction.getEmoji());
         if (!reaction.isEmoji()) return getEmote().getIdLong() == reaction.getIdLong();
         return false;

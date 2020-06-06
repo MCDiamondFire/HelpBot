@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.components.viewables.embeds;
 
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -57,11 +57,11 @@ public class IconEmbedBuilder extends DataEmbedBuilder {
         }
 
         if (icon.getWorksWith().length != 0) {
-            builder.addField("Works With", StringFormatting.listView(icon.getWorksWith(), ">", true), false);
+            builder.addField("Works With", StringUtil.listView(icon.getWorksWith(), ">", true), false);
         }
 
         if (icon.getExample().length != 0) {
-            builder.addField("Examples", StringFormatting.listView(icon.getExample(), "", true), false);
+            builder.addField("Examples", StringUtil.listView(icon.getExample(), "", true), false);
         }
         if (icon.isCancellable()) {
             builder.addField("\uD83D\uDEAB Cancellable", "", false);

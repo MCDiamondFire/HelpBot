@@ -114,7 +114,7 @@ public class StatsCommand extends Command {
         }
 
 
-        builder.setAuthor(name);
+        builder.setAuthor(name, null, "https://mc-heads.net/head/" + name);
         builder.setTitle("Support Stats");
 
         event.getChannel().sendMessage(builder.build()).queue();

@@ -29,7 +29,7 @@ public class InBadCommand extends Command {
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedIntegerArg("Session Count", 5, Integer.MAX_VALUE, 0);
+        return new LimitedIntegerArg("Session Count", 5, Integer.MAX_VALUE, 5);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class InBadCommand extends Command {
             }
 
             //Gives people who did sessions
-            PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT staff FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?");
+            PreparedStatement fetchPlayers = connection.prepareStatement("SELECT DISTINCT staff, COUNT(*) as `session` FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?");
             fetchPlayers.setInt(1, num);
 
             try (ResultSet resultSet = fetchPlayers.executeQuery()) {

@@ -24,6 +24,10 @@ public enum ExternalFile {
     IMAGES_DIR(new ExternalFileBuilder()
             .isDirectory(true)
             .setName("images")
+            .buildFile()),
+    SAM_DIR(new ExternalFileBuilder()
+            .isDirectory(true)
+            .setName("samquotes")
             .buildFile());
 
     private final File file;

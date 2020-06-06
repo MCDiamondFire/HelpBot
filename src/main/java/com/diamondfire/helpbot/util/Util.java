@@ -4,27 +4,114 @@ import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 
 import java.awt.*;
 import java.io.File;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Util {
 
+    public static LinkedList<String>  getUnicodeNumbers() {
+        LinkedList<String> nums = new LinkedList<>();
+        nums.add("\u0031\uFE0F\u20E3");
+        nums.add("\u0032\uFE0F\u20E3");
+        nums.add("\u0033\uFE0F\u20E3");
+        nums.add("\u0034\uFE0F\u20E3");
+        nums.add("\u0035\uFE0F\u20E3");
+        nums.add("\u0036\uFE0F\u20E3");
+        nums.add("\u0037\uFE0F\u20E3");
+        nums.add("\u0038\uFE0F\u20E3");
+        nums.add("\u0039\uFE0F\u20E3");
+        nums.add("\uD83D\uDD1F");
+        return nums;
+    }
 
+    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name) {
+        return addFields(builder,strings, "> ");
+    }
+    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings) {
+        return addFields(builder,strings, "", "> ");
+    }
+    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
+
+        String list;
+        String lastList = null;
+        LinkedList<String> queue = new LinkedList<>();
+        boolean firstField = true;
+
+
+        for (int i = 0; i < strings.size(); i++) {
+            String dataName = strings.get(i);
+
+            queue.add(dataName);
+            list = StringUtil.listView(queue.toArray(new String[0]), pointer, true);
+
+            if (i == strings.size() - 1) {
+                builder.addField(firstField ? name : "", list, false);
+                firstField = false;
+            } else if (list.length() >= 1000) {
+                queue.removeFirst();
+                builder.addField(firstField ? name : "", lastList, false);
+                firstField = false;
+
+                queue.clear();
+                queue.add(dataName);
+            }
+            lastList = list;
+
+        }
+        return builder;
+    }
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
+            File file;
             if (fileName.endsWith("spawn_egg")) {
-                return new File(ExternalFile.IMAGES_DIR.getFile(), "spawn_egg.png");
+                file = new File(ExternalFile.IMAGES_DIR.getFile(), "spawn_egg.png");
+            } else {
+                file = new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
             }
-            return new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
+
+            if (file.exists()) {
+                return file;
+            } else {
+                return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
+    }
+
+    public static File getPlayerHead(String player) {
+        File check = new File(ExternalFile.HEAD_CACHE_DIR.getFile(), player + ".png");
+        if (check.exists()) {
+            return check;
+        }
+
+        String url = String.format("https://mc-heads.net/head/%s", player);
+        try {
+            URL website = new URL(url);
+            InputStream inputStream = website.openStream();
+            Files.copy(inputStream, Paths.get(check.toURI()), StandardCopyOption.REPLACE_EXISTING);
+            return check;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 
@@ -58,6 +145,11 @@ public class Util {
 
         channel.sendMessage(embed.build()).queue();
         channel.sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
+    }
+
+    public static void log(MessageEmbed embed) {
+        TextChannel channel = BotInstance.getJda().getTextChannelById(705205549498892299L);
+        channel.sendMessage(embed).queue();
     }
 
     public static String repeat(String ogString, String repeat, int i) {

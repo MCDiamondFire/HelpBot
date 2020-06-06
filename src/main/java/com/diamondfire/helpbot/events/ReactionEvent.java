@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.events;
 
-import com.diamondfire.helpbot.components.reactions.ReactionHandler;
+import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.components.viewables.BasicReaction;
+import com.diamondfire.helpbot.instance.BotInstance;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -14,33 +16,31 @@ public class ReactionEvent extends ListenerAdapter {
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
         if (event.getMember().getUser().isBot()) return;
 
-
         if (ReactionHandler.isMessageReserved(event.getMessageIdLong())) {
-            event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue((message -> {
-                MessageReaction reaction = message.getReactions().stream()
-                        .filter((messageReaction) -> messageReaction.getReactionEmote().equals(event.getReaction().getReactionEmote()) && messageReaction.getCount() != 2)
-                        .findFirst()
-                        .orElse(null);
+                event.getReaction().retrieveUsers().queue((users) -> {
+                    if (!users.contains(BotInstance.getJda().getSelfUser()) || !ReactionHandler.isWaiting(event.getMember().getIdLong())) {
+                        if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE)) {
+                            MessageReaction.ReactionEmote emote = event.getReactionEmote();
+                            if (emote.isEmoji()) {
+                                event.getChannel().removeReactionById(event.getMessageIdLong(),emote.getEmoji(), event.getUser()).queue();
+                            } else if (emote.isEmote()) {
+                                event.getChannel().removeReactionById(event.getMessageIdLong(),emote.getEmote(), event.getUser()).queue();
+                            }
 
-                if (reaction != null) {
-                    if (event.getGuild().getSelfMember().hasPermission(event.getChannel(), Permission.MESSAGE_MANAGE)) {
-                        MessageReaction.ReactionEmote emote = reaction.getReactionEmote();
-                        if (emote.isEmoji()) {
-                            message.removeReaction(emote.getEmoji(), event.getUser()).queue();
-                        } else if (emote.isEmote()) {
-                            message.removeReaction(emote.getEmote(), event.getUser()).queue();
                         }
-
+                    } else {
+                        if (ReactionHandler.isWaiting(event.getMember().getIdLong())) {
+                            ReactionHandler.reacted(event.getMember(), event.getReaction().getMessageIdLong(), event.getReaction());
+                        }
                     }
-                }
-            }));
+                });
+
+
 
 
         }
 
-        if (ReactionHandler.isWaiting(event.getMember().getIdLong())) {
-            ReactionHandler.reacted(event.getMember().getIdLong(), event.getReaction().getMessageIdLong(), event.getReaction());
-        }
+
 
     }
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class StringFormatting {
+public class StringUtil {
 
     public static String listView(String[] array, String pointer, boolean sanitize) {
         if (array.length == 0) {
@@ -67,5 +67,9 @@ public class StringFormatting {
         }
         return builder.toString();
 
+    }
+
+    public static String stripColorCodes(String text) {
+        return text.replaceAll("&[(a-z)(A-Z)(0-9)]", "");
     }
 }

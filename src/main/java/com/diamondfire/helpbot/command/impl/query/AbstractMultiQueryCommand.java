@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
@@ -35,29 +35,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
 
         EmbedBuilder builder = new EmbedBuilder();
         if (names.size() != 0) {
-
-            String list;
-            String lastList = null;
-            LinkedList<String> queue = new LinkedList<>();
-
-            for (int i = 0; i < names.size(); i++) {
-                String dataName = names.get(i);
-
-                queue.add(dataName);
-                list = StringFormatting.listView(queue.toArray(new String[0]), "> ", true);
-
-                if (i == names.size() - 1) {
-                    builder.addField("", list, false);
-                } else if (list.length() >= 1000) {
-                    queue.removeFirst();
-                    builder.addField("", lastList, false);
-
-                    queue.clear();
-                    queue.add(dataName);
-                }
-                lastList = list;
-
-            }
+            Util.addFields(builder, names);
 
             if (builder.getFields().size() >= 5) {
                 builder.setTitle("This search yields too many results! Please narrow down your search.");

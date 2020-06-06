@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.components.viewables.BasicReaction;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.diamondfire.helpbot.util.ParamConverter;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
@@ -19,6 +19,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 
     @Override
     protected EmbedBuilder buildDataEmbed(SimpleData data) {
+
         CodeBlockActionData actionData = (CodeBlockActionData) data;
 
         EmbedBuilder builder = new EmbedBuilder();
@@ -35,7 +36,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         builder.setFooter(footer.toString());
 
         Emote emote = BotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
-        builder.setAuthor(StringFormatting.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
+        builder.setAuthor(StringUtil.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
 
         return builder;
 
@@ -66,7 +67,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
             }
 
             // Generate extra notes that appear under the argument.
-            params.append(StringFormatting.listView(arg.getExtraNotes(), "> ", true));
+            params.append(StringUtil.listView(arg.getExtraNotes(), "> ", true));
 
         }
         if (icon.getParameters().length == 0) {

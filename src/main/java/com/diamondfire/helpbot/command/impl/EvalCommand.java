@@ -4,11 +4,12 @@ import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -37,6 +38,17 @@ public class EvalCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
+
+        // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
+        if (!System.getProperty("os.name").contains("Linux")) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("No.");
+            builder.setColor(Color.red);
+
+            event.getChannel().sendMessage(builder.build()).queue();
+            return;
+        }
+
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("Nashorn");
 
         engine.put("jda", event.getJDA());
@@ -51,7 +63,7 @@ public class EvalCommand extends Command {
             Object object = engine.eval(code); // Returns an object of the eval
 
             builder.setTitle("Eval Result");
-            builder.addField("Object Returned:", String.format("```js\n%s```", StringFormatting.fieldSafe(object)), false);
+            builder.addField("Object Returned:", String.format("```js\n%s```", StringUtil.fieldSafe(object)), false);
             event.getChannel().sendMessage(builder.build()).queue();
 
         } catch (Throwable e) {

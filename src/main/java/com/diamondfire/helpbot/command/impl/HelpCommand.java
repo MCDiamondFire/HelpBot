@@ -37,9 +37,9 @@ public class HelpCommand extends AbstractSingleQueryCommand {
             material = customHead.getName();
         }
 
+
         builder.setThumbnail("attachment://" + material + ".png");
         channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
-
     }
 
     @Override

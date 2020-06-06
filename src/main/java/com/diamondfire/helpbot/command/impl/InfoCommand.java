@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceH
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringFormatting;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.Instant;
@@ -49,8 +49,8 @@ public class InfoCommand extends Command {
         dataStats.put("Legacy Actions", CodeDatabase.getDeprecatedActions().size());
         dataStats.put("Legacy Game Values", CodeDatabase.getDeprecatedGameValues().size());
 
-        builder.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringFormatting.asciidocStyle(dataStats)), true);
-        builder.addField("What's New on Beta?", String.format("```%s```", StringFormatting.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
+        builder.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
+        builder.addField("What's New on Beta?", String.format("```%s```", StringUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
         builder.setFooter("Database Last Updated");
         builder.setDescription("The database is updated automatically every 24h.");
         builder.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));

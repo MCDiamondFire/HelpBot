@@ -9,9 +9,7 @@ import com.diamondfire.helpbot.command.impl.query.BlockCommand;
 import com.diamondfire.helpbot.command.impl.query.RankCommand;
 import com.diamondfire.helpbot.command.impl.query.SearchCommand;
 import com.diamondfire.helpbot.command.impl.query.TagsCommand;
-import com.diamondfire.helpbot.command.impl.stats.InBadCommand;
-import com.diamondfire.helpbot.command.impl.stats.InBadJoinCommand;
-import com.diamondfire.helpbot.command.impl.stats.StatsCommand;
+import com.diamondfire.helpbot.command.impl.stats.*;
 import com.diamondfire.helpbot.events.MessageEvent;
 import com.diamondfire.helpbot.events.ReactionEvent;
 import com.diamondfire.helpbot.util.BotConstants;
@@ -19,6 +17,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
 
 import javax.security.auth.login.LoginException;
 
@@ -47,7 +46,17 @@ public class BotInstance {
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
-                new InBadJoinCommand()
+                new InBadJoinCommand(),
+                new PlotCommand(),
+                new ProfileCommand(),
+                new ActivePlotsCommand(),
+                new TrendingPlotsCommand(),
+                new PlotsCommand(),
+                new CpTopCommand(),
+                new SamQuotesCommand(),
+                new RetiredListCommand(),
+                new StaffListCommand(),
+                new SessionTopCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);
