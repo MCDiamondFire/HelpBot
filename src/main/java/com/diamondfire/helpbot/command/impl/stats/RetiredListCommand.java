@@ -47,7 +47,7 @@ public class RetiredListCommand extends Command {
                     do {
                         retired.add(resultTable.getString("name"));
                     } while (resultTable.next());
-                    builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retired, ""));
+                    builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retired, "", ""));
                 }).execute();
         new SingleQueryBuilder()
                 .query("SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.retirement = 2 AND ranks.moderation = 0 AND ranks.support = 0")
@@ -56,9 +56,10 @@ public class RetiredListCommand extends Command {
                     do {
                         retired.add(resultTable.getString("name"));
                     } while (resultTable.next());
-                    builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retired, ""));
+                    builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retired, "", ""));
                 }).execute();
         builder.build().send();
+
 
 
     }
