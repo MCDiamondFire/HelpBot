@@ -14,11 +14,9 @@ public enum Permission {
     private static final HashMap<Long, Permission> roleMap = new HashMap<>();
 
     static {
-
         for (Permission perm : values()) {
             roleMap.put(perm.getRole(), perm);
         }
-
     }
 
     private final long role;

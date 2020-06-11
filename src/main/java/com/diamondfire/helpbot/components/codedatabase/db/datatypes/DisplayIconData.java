@@ -142,22 +142,7 @@ public class DisplayIconData {
 
         String texture = format.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString().substring(38);
 
-        File check = new File(ExternalFile.HEAD_CACHE_DIR.getFile(), texture + ".png");
-        if (check.exists()) {
-            return check;
-        }
-
-        String url = String.format("https://mc-heads.net/head/%s", texture);
-        try {
-            URL website = new URL(url);
-            InputStream inputStream = website.openStream();
-            Files.copy(inputStream, Paths.get(check.toURI()), StandardCopyOption.REPLACE_EXISTING);
-            return check;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return Util.getPlayerHead(texture);
 
     }
 

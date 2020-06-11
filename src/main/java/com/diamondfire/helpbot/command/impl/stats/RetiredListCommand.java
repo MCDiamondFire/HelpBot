@@ -60,8 +60,6 @@ public class RetiredListCommand extends Command {
                 }).execute();
         builder.build().send();
 
-
-
     }
 
 

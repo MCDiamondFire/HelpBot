@@ -20,7 +20,6 @@ public class PermissionHandler {
                 .max(Comparator.comparingInt(Permission::getPermissionLevel))
                 .orElse(Permission.USER);
 
-
         permsCache.put(member.getIdLong(), perm);
         return perm;
     }

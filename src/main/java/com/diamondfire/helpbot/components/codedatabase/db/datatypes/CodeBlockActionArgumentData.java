@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CodeBlockActionArgumentData {
@@ -70,7 +71,18 @@ public class CodeBlockActionArgumentData {
      * @return Extra notes of this argument.
      */
     public String[] getExtraNotes() {
-        return Util.jsonArrayToString(this.data.get("notes").getAsJsonArray());
+
+        List<String> strings = new ArrayList<>();
+        JsonArray array = this.data.get("notes").getAsJsonArray();
+        if (array.size() == 0) return new String[0];
+        if (array.get(0).isJsonArray()) {
+            for (JsonElement element : array) {
+                strings.addAll(Arrays.asList(Util.jsonArrayToString(element.getAsJsonArray())));
+            }
+        } else {
+            return Util.jsonArrayToString(this.data.get("notes").getAsJsonArray());
+        }
+        return strings.toArray(new String[0]);
     }
 
     /**

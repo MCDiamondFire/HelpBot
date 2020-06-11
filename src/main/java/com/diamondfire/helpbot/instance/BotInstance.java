@@ -1,10 +1,10 @@
 package com.diamondfire.helpbot.instance;
 
 import com.diamondfire.helpbot.command.CommandHandler;
-import com.diamondfire.helpbot.command.impl.*;
 import com.diamondfire.helpbot.command.impl.filespitter.ParticleListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.PotionListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
+import com.diamondfire.helpbot.command.impl.other.*;
 import com.diamondfire.helpbot.command.impl.query.BlockCommand;
 import com.diamondfire.helpbot.command.impl.query.RankCommand;
 import com.diamondfire.helpbot.command.impl.query.SearchCommand;
@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
 
 import javax.security.auth.login.LoginException;
 
@@ -43,10 +42,11 @@ public class BotInstance {
                 new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
+                new GarfieldCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
-                new InBadJoinCommand(),
+                new JoinBadCommand(),
                 new PlotCommand(),
                 new ProfileCommand(),
                 new ActivePlotsCommand(),
@@ -56,7 +56,8 @@ public class BotInstance {
                 new SamQuotesCommand(),
                 new RetiredListCommand(),
                 new StaffListCommand(),
-                new SessionTopCommand()
+                new SessionTopCommand(),
+                new LastJoinedCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);

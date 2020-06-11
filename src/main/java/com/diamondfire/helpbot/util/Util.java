@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 
 import java.awt.*;
 import java.io.File;

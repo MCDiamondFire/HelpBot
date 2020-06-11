@@ -2,9 +2,11 @@ package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class StringUtil {
 
@@ -71,5 +73,38 @@ public class StringUtil {
 
     public static String stripColorCodes(String text) {
         return text.replaceAll("&[(a-z)(A-Z)(0-9)]", "");
+    }
+
+    public static String formatMilliTime(int millis) {
+        StringBuilder builder = new StringBuilder();
+
+        boolean disallowDecimal = false;
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        if (hours > 0) {
+            builder.append(hours + "h");
+            disallowDecimal = true;
+        }
+
+        long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+        if (mins > 0) {
+            builder.append(" " + mins + "m");
+            disallowDecimal = true;
+        }
+        long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+        if (secs != 0) {
+            builder.append(" " + secs + "s");
+        } else {
+            if (!disallowDecimal) {
+                builder.append("0." + TimeUnit.MILLISECONDS.toMillis(millis) + "s");
+            }
+        }
+
+        return builder.toString();
+
+    }
+
+    @SuppressWarnings("deprecation")
+    public static String formatDate(Date date) {
+        return (date.getMonth() + 1) + "/" + (date.toLocalDate().getDayOfMonth()) + "/" + (date.getYear() + 1900);
     }
 }

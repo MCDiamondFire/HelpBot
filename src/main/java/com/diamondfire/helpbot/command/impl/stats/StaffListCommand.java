@@ -9,8 +9,12 @@ import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorB
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -116,19 +120,9 @@ public class StaffListCommand extends Command {
 
         // Not pretty, ik. But it would require me to cache things and that is yucky.
         EmbedBuilder devEmbed = new EmbedBuilder();
-        ArrayList<String> devNames = new ArrayList<>();
-        devNames.add("K_Sasha");
-        devNames.add("S4nders");
-        devNames.add("RedDaedalus");
-        ArrayList<String> botDevNames = new ArrayList<>();
-        botDevNames.add("RedDaedalus");
-        botDevNames.add("Owen1212055");
-        botDevNames.add("Ottelino");
-        botDevNames.add("Tomoli");
-        botDevNames.add("EnjoyYourBan");
 
-        Util.addFields(devEmbed, devNames, "DiamondFire Developers", "");
-        Util.addFields(devEmbed, botDevNames, "Bot Developers", "");
+        Util.addFields(devEmbed, Arrays.asList("K_Sasha", "S4nders", "RedDaedalus"), "DiamondFire Developers", "");
+        Util.addFields(devEmbed, Arrays.asList("RedDaedalus", "Owen1212055", "Ottelino", "Tomoli", "EnjoyYourBan"), "Bot Developers", "");
         builder.addPage("Developers", devEmbed);
 
         builder.build().send();

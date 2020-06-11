@@ -50,7 +50,6 @@ public class CpTopCommand extends Command {
 
         event.getChannel().sendMessage(builder.build()).queue();
 
-
     }
 
 

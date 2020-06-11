@@ -25,7 +25,7 @@ public class SamQuotesCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Gets current trending plots.";
+        return "Gets a quote from Sam the Man";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SamQuotesCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         String[] strings = ExternalFile.SAM_DIR.getFile().list();
-        File file = new File(ExternalFile.SAM_DIR.getFile(), strings[ThreadLocalRandom.current().nextInt(0, strings.length)]);
+        File file = new File(ExternalFile.SAM_DIR.getFile(), strings[new Random().nextInt(strings.length)]);
         event.getChannel().sendFile(file).queue();
 
     }

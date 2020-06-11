@@ -7,8 +7,6 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class CompressionUtil {
-
-
     /**
      * Decompresses Base64
      *
@@ -18,7 +16,6 @@ public class CompressionUtil {
     public static byte[] fromBase64(byte[] Base64F) {
         return Base64.getDecoder().decode(Base64F);
     }
-
 
     /**
      * Compresses Base64

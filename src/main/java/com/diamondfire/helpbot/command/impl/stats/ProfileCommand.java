@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class ProfileCommand extends Command {
+public class ProfileCommand extends AbstractPlayerCommand {
 
     @Override
     public String getName() {
@@ -26,7 +25,6 @@ public class ProfileCommand extends Command {
         return "Get info on a certain player.";
     }
 
-    @Override
     public ValueArgument<String> getArgument() {
         return new StringArg("Player Name/UUID", false);
     }
@@ -37,21 +35,12 @@ public class ProfileCommand extends Command {
     }
 
     @Override
-    public void run(CommandEvent event) {
+    protected void execute(CommandEvent event, String player) {
         EmbedBuilder builder = new EmbedBuilder();
-
-        String nameToSelect = getArgument().getArg(event.getParsedArgs());
-
-        if (event.getParsedArgs().isEmpty()) {
-            nameToSelect = event.getMember().getEffectiveName();
-        }
-
-        final String name = nameToSelect;
-
         new SingleQueryBuilder()
                 .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
-                    statement.setString(1, name);
-                    statement.setString(2, name);
+                    statement.setString(1, player);
+                    statement.setString(2, player);
                 })
                 .onQuery(table -> {
                     final String playerName = table.getString("name");
@@ -61,7 +50,7 @@ public class ProfileCommand extends Command {
                     builder.addField("UUID", playerUUID, false);
 
                     String whois = table.getString("whois");
-                    builder.addField("Whois", StringUtil.stripColorCodes(whois.isEmpty() ?  "N/A" : whois).replace("\\n", "\n"), false);
+                    builder.addField("Whois", StringUtil.stripColorCodes(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
                     new SingleQueryBuilder()
                             .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
@@ -86,15 +75,6 @@ public class ProfileCommand extends Command {
                                 builder.addField("Ranks", stringBuilder.toString(), false);
                             }).execute();
 
-//                    new SingleQueryBuilder()
-//                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> {
-//                                statement.setString(1, playerUUID);
-//                            })
-//                            .onQuery((resultTable) -> {
-//                                builder.addField("Last Seen", formatDate(resultTable.getDate("time")), false);
-//                            }).execute();
-
-
                     new SingleQueryBuilder()
                             .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time LIMIT 1;", (statement) -> {
                                 statement.setString(1, playerUUID);
@@ -108,13 +88,13 @@ public class ProfileCommand extends Command {
                                         .onQuery((resultTablePlot) -> {
                                             Date plotDate = new Date(resultTablePlot.getLong("time"));
                                             if (plotDate.toLocalDate().isBefore(joinDate.toLocalDate())) {
-                                                builder.addField("Date Joined", "~" + formatDate(plotDate), false);
+                                                builder.addField("Date Joined", "~" + StringUtil.formatDate(plotDate), false);
                                             } else {
-                                                builder.addField("Date Joined", formatDate(joinDate), false);
+                                                builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
                                             }
                                         })
                                         .onNotFound(() -> {
-                                            builder.addField("Date Joined", formatDate(joinDate), false);
+                                            builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
                                         }).execute();
                             }).execute();
 
@@ -125,90 +105,7 @@ public class ProfileCommand extends Command {
                     builder.addField("Error!", "Player was not found", false);
                 }).execute();
 
-//        try (Connection connection = ConnectionGiver.getConnection();
-//             PreparedStatement lastSeenStatement = connection.prepareStatement("SELECT time FROM player_join_log WHERE player_join_log.uuid = ? LIMIT 1;");
-//             PreparedStatement lastPlotStatement = connection.prepareStatement("SELECT MIN(time) AS time FROM plot_votes AS plot_vote_time WHERE uuid = ? LIMIT 1;")) {
-//            lastSeenStatement.setString(1, playerUUID.get());
-//            lastPlotStatement.setString(1, playerUUID.get());
-//
-//            ResultSet joinDate = lastSeenStatement.executeQuery();
-//            ResultSet plotVote = lastPlotStatement.executeQuery();
-//
-//            String lastSeen = null;
-//            Date earliestDate = null;
-//            if (joinDate.next()) {
-//                earliestDate = joinDate.getDate("time");
-//                lastSeen = formatDate(earliestDate);
-//            } else {
-//                lastSeen = "Has not joined server!";
-//            }
-//            if (plotVote.next()) {
-//                Date plotDate = new Date(plotVote.getLong("time"));
-//                if (plotDate.toLocalDate().isBefore(earliestDate.toLocalDate())) {
-//                    lastSeen = "~" + formatDate(plotDate);
-//                }
-//
-//
-//            }
-//
-//            builder.addField("First Joined", lastSeen, false);
-//            joinDate.close();
-//            plotVote.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try (Connection connection = ConnectionGiver.getConnection();
-//             PreparedStatement lastSeenStatement = connection.prepareStatement("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;")) {
-//            lastSeenStatement.setString(1, "3f7edf24-af79-4197-af58-fc31e4d96e41");
-//
-//            ResultSet set = lastSeenStatement.executeQuery();
-//
-//            String lastSeen = null;
-//            if (set.next()) {
-//                lastSeen = formatDate(set.getDate("time"));
-//            } else {
-//                lastSeen = "Has not joined server!";
-//            }
-//            builder.addField("Last Seen", lastSeen, false);
-//            set.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
-
         event.getChannel().sendMessage(builder.build()).queue();
-
-
-    }
-
-
-    public String format(long millis) {
-        StringBuilder builder = new StringBuilder();
-
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        if (hours > 0) {
-            builder.append(hours + "h");
-        }
-
-        long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
-        if (mins > 0) {
-            builder.append(" " + mins + "m");
-        }
-        long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
-        if (secs != 0) {
-            builder.append(" " + secs + "s");
-        } else {
-            builder.append("0." + TimeUnit.MILLISECONDS.toMillis(millis) + "s");
-        }
-
-        return builder.toString();
-
-    }
-
-    @SuppressWarnings("deprecation")
-    public String formatDate(Date date) {
-        return date.toLocalDate().getDayOfMonth() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900);
     }
 
 }

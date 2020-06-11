@@ -14,7 +14,7 @@ public abstract class Command {
 
     public abstract Permission getPermission();
 
-    protected boolean inHelp() {
+    public boolean inHelp() {
         return true;
     }
 

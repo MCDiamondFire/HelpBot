@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.components.codedatabase;
 
-import com.diamondfire.helpbot.command.impl.FetchDataCommand;
+import com.diamondfire.helpbot.command.impl.other.FetchDataCommand;
 import com.diamondfire.helpbot.instance.BotInstance;
 
 import java.util.concurrent.Executors;

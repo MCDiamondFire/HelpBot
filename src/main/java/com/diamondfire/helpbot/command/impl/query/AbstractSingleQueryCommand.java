@@ -48,25 +48,20 @@ public abstract class AbstractSingleQueryCommand extends Command {
             }
         }
 
-
         //Get the most similar action possible.
         Map.Entry<SimpleData, Double> closestAction = possibleChoices.entrySet().stream()
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .orElse(null);
 
-        //If the amount of favorable actions is low enough and closest action exists, use the favorable action.
-
         // (Prevents random words from being picked when there is a wide variety of close choices too)
         if (closestAction != null) {
             if (possibleChoices.size() < 10 || closestAction.getKey().getMainName().toLowerCase().equals(argumentsParsed.toLowerCase())) {
-
                 // Find actions that are exactly the same
                 List<SimpleData> sameActions = possibleChoices.keySet().stream()
                         .filter(data -> data.getMainName().equals(closestAction.getKey().getMainName()))
                         .collect(Collectors.toList());
 
                 // If none, proceed. Else we need to special case that.
-
                 if (sameActions.size() == 1) {
                     onChosen.accept(sameActions.get(0), event.getChannel());
                 } else if (sameActions.size() > 1) {
@@ -82,7 +77,6 @@ public abstract class AbstractSingleQueryCommand extends Command {
             } else {
 
                 EmbedBuilder builder = new EmbedBuilder();
-
                 Collection<String> similarActionNames = possibleChoices.keySet().stream()
                         .map(SimpleData::getMainName)
                         .collect(Collectors.toCollection(ArrayList::new));

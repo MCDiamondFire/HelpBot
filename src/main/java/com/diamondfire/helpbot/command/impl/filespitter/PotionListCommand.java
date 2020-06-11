@@ -34,7 +34,7 @@ public class PotionListCommand extends AbstractFileListCommand {
     }
 
     @Override
-    protected boolean inHelp() {
+    public boolean inHelp() {
         return false;
     }
 }

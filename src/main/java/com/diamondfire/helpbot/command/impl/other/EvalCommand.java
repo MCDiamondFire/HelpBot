@@ -1,7 +1,8 @@
-package com.diamondfire.helpbot.command.impl;
+package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;

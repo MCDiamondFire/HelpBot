@@ -9,10 +9,7 @@ public class HelpBot {
 
     public static final InstanceHandler instance = new InstanceHandler();
 
-    public static void main(String[] args) throws LoginException, InterruptedException, IOException {
+    public static void main(String[] args) throws LoginException, InterruptedException {
         instance.startup();
-
-
-
     }
 }

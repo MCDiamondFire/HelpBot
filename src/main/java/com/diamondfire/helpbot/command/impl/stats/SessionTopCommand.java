@@ -22,12 +22,12 @@ public class SessionTopCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Gets people with the top sessions.";
+        return "Gets support members with the top sessions.";
     }
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedIntegerArg("days", 1, Integer.MAX_VALUE, 30);
+        return new LimitedIntegerArg("days", 1, 4000000, 30);
     }
 
     @Override

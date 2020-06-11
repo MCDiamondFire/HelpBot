@@ -9,59 +9,64 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-public class InBadCommand extends Command {
+public class JoinBadCommand extends Command {
 
     @Override
     public String getName() {
-        return "bad";
+        return "joinbad";
     }
 
     @Override
     public String getDescription() {
-        return "Gets current staff members who have not done a session in 30 days.";
+        return "Gets current staff members who have not joined in 30 days.";
     }
 
     @Override
     public ValueArgument<Integer> getArgument() {
-        return new LimitedIntegerArg("Session Count", 5, Integer.MAX_VALUE, 5);
+        return new LimitedIntegerArg("Days", 2, 100, 30);
     }
 
     @Override
     public Permission getPermission() {
-        return Permission.SUPPORT;
+        return Permission.EXPERT;
     }
 
     @Override
     public void run(CommandEvent event) {
+
+        // I recommend not trying to improve this unless you know what you are doing.
+        // I managed to kill the DF database completely by using my awful SQL knowledge.
+
         EmbedBuilder builder = new EmbedBuilder();
         int num = getArgument().getArg(event.getParsedArgs());
 
         new SingleQueryBuilder()
-                .query("SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0")
+                .query("SELECT players.name, players.uuid FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0")
                 .onQuery((resultTable) -> {
-                    List<String> staff = new ArrayList<>();
+                    HashMap<String, String> staff = new HashMap<>();
                     do {
-                        staff.add(resultTable.getString(1));
+                        staff.put(resultTable.getString("uuid"), resultTable.getString("name"));
                     } while (resultTable.next());
 
                     new SingleQueryBuilder()
-                            .query("SELECT DISTINCT staff, COUNT(*) as session FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?", (statement -> {
+                            .query("SELECT DISTINCT uuid FROM player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY ", statement -> {
                                 statement.setInt(1, num);
-                            }))
-                            .onQuery((resultBadTable) -> {
+                            })
+                            .onQuery((resultTableJoins) -> {
                                 do {
-                                    staff.remove(resultBadTable.getString(1));
-                                } while (resultBadTable.next());
+                                    staff.remove(resultTableJoins.getString("uuid"));
+                                } while (resultTableJoins.next());
 
-                                builder.setTitle(String.format("People with less than %s sessions:", num));
+                                builder.setTitle(String.format("Staff who have not joined in %s days:", num));
                                 builder.setColor(Color.RED);
-                                builder.setDescription(String.join("\n", staff.toArray(new String[0])));
+                                builder.setDescription(String.join("\n", staff.values().toArray(new String[0])));
                                 event.getChannel().sendMessage(builder.build()).queue();
+
                             }).execute();
                 }).execute();
+
 
     }
 }

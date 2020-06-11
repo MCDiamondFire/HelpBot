@@ -34,7 +34,7 @@ public class ParticleListCommand extends AbstractFileListCommand {
     }
 
     @Override
-    protected boolean inHelp() {
+    public boolean inHelp() {
         return false;
     }
 }

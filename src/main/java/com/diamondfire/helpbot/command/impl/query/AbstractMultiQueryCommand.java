@@ -29,11 +29,10 @@ public abstract class AbstractMultiQueryCommand extends Command {
     //TODO Cleaner implementation. NOW
     @Override
     public void run(CommandEvent event) {
-
         List<String> names = filterData(CodeDatabase.getSimpleData(), event);
         Collections.sort(names);
-
         EmbedBuilder builder = new EmbedBuilder();
+
         if (names.size() != 0) {
             Util.addFields(builder, names);
 
@@ -46,8 +45,8 @@ public abstract class AbstractMultiQueryCommand extends Command {
 
             builder.setTitle(String.format("Search results for `%s`!", getSearchQuery(event)));
 
-        }// If possible choices is empty, meaning none can be found.
-        else {
+            // If possible choices is empty, meaning none can be found.
+        } else {
             builder.setTitle(String.format("I couldn't find anything that matched `%s`!", getSearchQuery(event)));
         }
         builder.setFooter(String.format("%s %s found", names.size(), Util.sCheck("object", names.size())));

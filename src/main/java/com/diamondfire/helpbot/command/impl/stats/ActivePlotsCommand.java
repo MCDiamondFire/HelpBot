@@ -47,7 +47,6 @@ public class ActivePlotsCommand extends Command {
 
         event.getChannel().sendMessage(builder.build()).queue();
 
-
     }
 
 

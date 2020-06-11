@@ -1,7 +1,8 @@
-package com.diamondfire.helpbot.command.impl;
+package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;

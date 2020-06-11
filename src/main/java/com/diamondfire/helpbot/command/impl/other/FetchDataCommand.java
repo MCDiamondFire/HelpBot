@@ -1,7 +1,8 @@
-package com.diamondfire.helpbot.command.impl;
+package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
@@ -120,6 +121,7 @@ public class FetchDataCommand extends Command {
 
         session.setFlag(MinecraftConstants.AUTH_PROXY_KEY, Proxy.NO_PROXY);
         status(message, "Connecting to DiamondFire...");
+        ready = false;
 
         client.getSession().connect();
         client.getSession().addListener(new SessionAdapter() {
@@ -141,7 +143,6 @@ public class FetchDataCommand extends Command {
                 if (packet instanceof ServerChatPacket) {
                     ServerChatPacket chatPacket = event.getPacket();
                     String text = chatPacket.getMessage().getFullText();
-
                     if (chatPacket.getType() == MessageType.NOTIFICATION) return;
 
                     if (text.contains("Unknown command!")) {

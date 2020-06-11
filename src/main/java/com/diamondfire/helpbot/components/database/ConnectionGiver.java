@@ -1,5 +1,6 @@
-package com.diamondfire.helpbot.util;
+package com.diamondfire.helpbot.components.database;
 
+import com.diamondfire.helpbot.util.SensitiveData;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
