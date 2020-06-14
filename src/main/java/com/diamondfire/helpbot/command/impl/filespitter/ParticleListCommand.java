@@ -33,8 +33,4 @@ public class ParticleListCommand extends AbstractFileListCommand {
         super.generate(event, CodeDatabase.getParticles());
     }
 
-    @Override
-    public boolean inHelp() {
-        return false;
-    }
 }

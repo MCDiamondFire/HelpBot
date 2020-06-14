@@ -75,13 +75,19 @@ public class StringUtil {
         return text.replaceAll("&[(a-z)(A-Z)(0-9)]", "");
     }
 
-    public static String formatMilliTime(int millis) {
+    public static String formatMilliTime(long millis) {
         StringBuilder builder = new StringBuilder();
-
         boolean disallowDecimal = false;
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        if (days > 0) {
+            builder.append(days + "d ");
+            disallowDecimal = true;
+        }
+
+        long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
         if (hours > 0) {
-            builder.append(hours + "h");
+            builder.append(" " + hours + "h");
             disallowDecimal = true;
         }
 
@@ -90,6 +96,7 @@ public class StringUtil {
             builder.append(" " + mins + "m");
             disallowDecimal = true;
         }
+
         long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         if (secs != 0) {
             builder.append(" " + secs + "s");

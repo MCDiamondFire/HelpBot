@@ -10,13 +10,11 @@ public abstract class Command {
 
     public abstract String getDescription();
 
+    public abstract CommandCategory getCategory();
+
     public abstract Argument getArgument();
 
     public abstract Permission getPermission();
-
-    public boolean inHelp() {
-        return true;
-    }
 
     public abstract void run(CommandEvent event);
 }

@@ -33,8 +33,4 @@ public class PotionListCommand extends AbstractFileListCommand {
         super.generate(event, CodeDatabase.getPotions());
     }
 
-    @Override
-    public boolean inHelp() {
-        return false;
-    }
 }

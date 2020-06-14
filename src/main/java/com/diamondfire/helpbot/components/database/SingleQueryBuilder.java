@@ -42,12 +42,14 @@ public class SingleQueryBuilder {
     ResultSetManager onQuery;
     Runnable onFail;
 
+    @Contract("_,_, -> this")
     public SingleQueryBuilder query(@NotNull @Language("SQL") String query, @NotNull PreparedStatementManager statement) {
         this.query = query;
         this.preparedStatement = statement;
         return this;
     }
 
+    @Contract("_, -> this")
     public SingleQueryBuilder query(@NotNull @Language("SQL") String query) {
         this.query = query;
         return this;
@@ -73,11 +75,14 @@ public class SingleQueryBuilder {
      *     }
      * </pre>
      */
+
+    @Contract("_, -> this")
     public SingleQueryBuilder onQuery(@NotNull ResultSetManager onQuery) {
         this.onQuery = onQuery;
         return this;
     }
 
+    @Contract("_, -> this")
     public SingleQueryBuilder onNotFound(@Nullable Runnable onFail) {
         this.onFail = onFail;
         return this;

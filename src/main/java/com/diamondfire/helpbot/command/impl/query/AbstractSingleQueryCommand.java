@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.query;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
@@ -23,6 +24,11 @@ import java.util.stream.Collectors;
 
 
 public abstract class AbstractSingleQueryCommand extends Command {
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.CODE_BLOCK;
+    }
 
     @Override
     public ValueArgument<String> getArgument() {

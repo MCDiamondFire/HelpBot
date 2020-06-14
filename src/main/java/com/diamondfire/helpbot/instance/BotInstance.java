@@ -5,10 +5,7 @@ import com.diamondfire.helpbot.command.impl.filespitter.ParticleListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.PotionListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
 import com.diamondfire.helpbot.command.impl.other.*;
-import com.diamondfire.helpbot.command.impl.query.BlockCommand;
-import com.diamondfire.helpbot.command.impl.query.RankCommand;
-import com.diamondfire.helpbot.command.impl.query.SearchCommand;
-import com.diamondfire.helpbot.command.impl.query.TagsCommand;
+import com.diamondfire.helpbot.command.impl.query.*;
 import com.diamondfire.helpbot.command.impl.stats.*;
 import com.diamondfire.helpbot.events.MessageEvent;
 import com.diamondfire.helpbot.events.ReactionEvent;
@@ -28,12 +25,12 @@ public class BotInstance {
     public static void start() throws InterruptedException, LoginException {
         handler.register(
                 // query commands
-                new HelpCommand(),
+                new CodeCommand(),
                 new RankCommand(),
                 new BlockCommand(),
                 new SearchCommand(),
                 new TagsCommand(),
-                //listers
+                //file listers
                 new SoundListCommand(),
                 new ParticleListCommand(),
                 new PotionListCommand(),
@@ -43,6 +40,7 @@ public class BotInstance {
                 new InfoCommand(),
                 new EvalCommand(),
                 new GarfieldCommand(),
+                new HelpCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),

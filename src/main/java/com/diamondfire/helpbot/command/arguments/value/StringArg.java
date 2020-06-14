@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.command.arguments.value;
 
 public class StringArg extends ValueArgument<String> {
 
-
     public StringArg(String name, boolean isRequired) {
         super(name, isRequired);
     }

@@ -12,8 +12,18 @@ public class DefinedStringArg extends ValueArgument<String> {
 
     final String[] options;
 
+
+
     public DefinedStringArg(String[] options) {
-        super("", true);
+        super(null, true);
+        this.options = options;
+    }
+    public DefinedStringArg(String[] options, boolean required) {
+        super(null, required);
+        this.options = options;
+    }
+    public DefinedStringArg(String[] options, boolean required, String displayName) {
+        super(displayName, required);
         this.options = options;
     }
 
@@ -35,15 +45,18 @@ public class DefinedStringArg extends ValueArgument<String> {
 
     @Override
     public String getName() {
-        String parsedOptions;
+        if (super.getName() == null) {
+            String parsedOptions;
 
-        if (options.length > 6) {
-            parsedOptions = String.join("/", Arrays.copyOfRange(options, 1, 6)) + "..." + String.format("*+%s more*", options.length - 6);
-        } else {
-            parsedOptions = String.join("/", options);
+            if (options.length > 6) {
+                parsedOptions = String.join("/", Arrays.copyOfRange(options, 1, 6)) + "..." + String.format("*+%s more*", options.length - 6);
+            } else {
+                parsedOptions = String.join("/", options);
+            }
+
+            return parsedOptions;
         }
-
-        return parsedOptions;
+       return super.getName();
     }
 
     private String getClosestOption(String args) {

@@ -3,22 +3,27 @@ package com.diamondfire.helpbot.command.impl.query;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public abstract class AbstractMultiQueryCommand extends Command {
 
     protected abstract List<String> filterData(List<SimpleData> data, CommandEvent event);
+
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.CODE_BLOCK;
+    }
 
     @Override
     public ValueArgument<String> getArgument() {

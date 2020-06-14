@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -21,6 +22,11 @@ public class JoinBadCommand extends Command {
     @Override
     public String getDescription() {
         return "Gets current staff members who have not joined in 30 days.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.STATS;
     }
 
     @Override
@@ -43,7 +49,7 @@ public class JoinBadCommand extends Command {
         int num = getArgument().getArg(event.getParsedArgs());
 
         new SingleQueryBuilder()
-                .query("SELECT players.name, players.uuid FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0")
+                .query("SELECT players.name, players.uuid FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support > 0 | ranks.moderation > 0")
                 .onQuery((resultTable) -> {
                     HashMap<String, String> staff = new HashMap<>();
                     do {
@@ -58,7 +64,6 @@ public class JoinBadCommand extends Command {
                                 do {
                                     staff.remove(resultTableJoins.getString("uuid"));
                                 } while (resultTableJoins.next());
-
                                 builder.setTitle(String.format("Staff who have not joined in %s days:", num));
                                 builder.setColor(Color.RED);
                                 builder.setDescription(String.join("\n", staff.values().toArray(new String[0])));

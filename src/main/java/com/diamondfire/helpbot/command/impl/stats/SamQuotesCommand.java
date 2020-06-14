@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
@@ -26,6 +27,11 @@ public class SamQuotesCommand extends Command {
     @Override
     public String getDescription() {
         return "Gets a quote from Sam the Man";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.STATS;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.other;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -24,7 +25,12 @@ public class EvalCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Executes given code..";
+        return "Executes given code.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.OTHER;
     }
 
     @Override

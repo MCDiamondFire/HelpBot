@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 import com.diamondfire.helpbot.command.arguments.value.IntegerArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -54,6 +55,11 @@ public class PlotCommand extends Command {
     @Override
     public String getDescription() {
         return "Get info on a certain plot.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.STATS;
     }
 
     @Override

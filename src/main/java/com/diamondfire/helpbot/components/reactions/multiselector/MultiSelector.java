@@ -24,40 +24,39 @@ public class MultiSelector {
     }
 
     public void send() {
-        EmbedBuilder builder = pages[0].getPage();
-
         StringBuilder stringBuilder = new StringBuilder();
         LinkedList<String> nums = Util.getUnicodeNumbers();
-
-        if (pages.length > 10) {
-            throw new IllegalStateException("Not enough emojis to map 10 objects!");
-        }
         LinkedHashMap<BasicReaction, MultiSelectorPage> pagesHash = new LinkedHashMap<>();
+
         for (MultiSelectorPage page : this.pages) {
-            String number = nums.pop();
-            stringBuilder.append("\n" + number + " " + page.getName());
-            pagesHash.put(new BasicReaction(number), page);
-        }
-        for (MultiSelectorPage page : this.pages) {
-            page.getPage().addField("Pages", stringBuilder.toString(), false);
+            if (page.isHidden()) {
+                continue;
+            }
+            if (nums.isEmpty()) {
+                throw new IllegalStateException("Not enough emojis to map 10 objects!");
+            }
+            String emoji = page.getCustomEmote() != null ? page.getCustomEmote() : nums.pop();
+            stringBuilder.append("\n" + emoji + " " + page.getName());
+            pagesHash.put(new BasicReaction(emoji), page);
         }
 
-        BotInstance.getJda().getTextChannelById(channel).sendMessage(builder.build()).queue((message) -> {
+        for (MultiSelectorPage page : this.pages) {
+            EmbedBuilder pageBuilder = page.getPage();
+            pageBuilder.addField("Pages", stringBuilder.toString(), false);
+            pageBuilder.setTitle(page.getName());
+        }
+
+        BotInstance.getJda().getTextChannelById(channel).sendMessage(pages[0].getPage().build()).queue((message) -> {
             for (BasicReaction reaction : pagesHash.keySet()) {
                 reaction.react(message).queue();
             }
-
             ReactionHandler.waitReaction(user, message, event -> {
                 MultiSelectorPage page = pagesHash.entrySet().stream()
                         .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
                         .map(Map.Entry::getValue)
                         .findFirst()
                         .orElse(null);
-
-
-
                 BotInstance.getJda().retrieveUserById(user).queue(userObj -> event.getReactionEvent().removeReaction(userObj).queue());
-
                 message.editMessage(page.getPage().build()).queue();
             }, true);
         });

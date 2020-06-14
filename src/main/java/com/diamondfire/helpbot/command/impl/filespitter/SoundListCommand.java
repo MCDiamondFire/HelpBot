@@ -33,8 +33,4 @@ public class SoundListCommand extends AbstractFileListCommand {
         super.generate(event, CodeDatabase.getSounds());
     }
 
-    @Override
-    public boolean inHelp() {
-        return false;
-    }
 }

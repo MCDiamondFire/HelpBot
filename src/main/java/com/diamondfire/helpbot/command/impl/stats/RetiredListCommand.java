@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
@@ -22,6 +23,11 @@ public class RetiredListCommand extends Command {
     @Override
     public String getDescription() {
         return "Gets current retired staff members.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.STATS;
     }
 
     @Override

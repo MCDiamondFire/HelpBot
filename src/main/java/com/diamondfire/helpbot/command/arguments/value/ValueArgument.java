@@ -38,5 +38,4 @@ public abstract class ValueArgument<T> extends Argument {
 
     protected abstract boolean validateValue(String msg);
 
-
 }

@@ -2,28 +2,54 @@ package com.diamondfire.helpbot.components.reactions.multiselector;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Contract;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class MultiSelectorBuilder {
     private ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
     private long channel;
     private long userID;
 
+    @Contract("_, -> this")
     public MultiSelectorBuilder setUser(long userID) {
         this.userID = userID;
         return this;
     }
 
+    @Contract("_, -> this")
     public MultiSelectorBuilder setChannel(long channel) {
         this.channel = channel;
         return this;
     }
 
+    @Contract("_,_, -> this")
     public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder) {
         pages.add(new MultiSelectorPage(name, EmbedBuilder));
+        return this;
+    }
+
+    @Contract("_,_, -> this")
+    public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, String customEmote) {
+        pages.add(new MultiSelectorPage(name, EmbedBuilder, customEmote,false));
+        return this;
+    }
+
+    @Contract("_,_,_, -> this")
+    public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, boolean hidden) {
+        pages.add(new MultiSelectorPage(name, EmbedBuilder, hidden));
+        return this;
+    }
+
+    @Contract("_,_,_,_, -> this")
+    public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, String customEmote, boolean hidden) {
+        pages.add(new MultiSelectorPage(name, EmbedBuilder,customEmote, hidden));
+        return this;
+    }
+
+    @Contract("-> this")
+    public MultiSelectorBuilder orderPages() {
+        pages.sort(Comparator.comparing(MultiSelectorPage::getName));
         return this;
     }
 

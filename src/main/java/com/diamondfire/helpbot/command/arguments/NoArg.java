@@ -3,7 +3,6 @@ package com.diamondfire.helpbot.command.arguments;
 
 public class NoArg extends Argument {
 
-
     public NoArg() {
         super("", false);
     }

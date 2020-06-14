@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 import com.diamondfire.helpbot.command.arguments.value.LimitedIntegerArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -23,6 +24,11 @@ public class SessionTopCommand extends Command {
     @Override
     public String getDescription() {
         return "Gets support members with the top sessions.";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.STATS;
     }
 
     @Override

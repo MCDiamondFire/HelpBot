@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -26,7 +27,12 @@ public class GarfieldCommand extends Command {
 
     @Override
     public String getDescription() {
-        return null;
+        return "Garfield";
+    }
+
+    @Override
+    public CommandCategory getCategory() {
+        return CommandCategory.HIDDEN;
     }
 
     @Override
@@ -40,28 +46,25 @@ public class GarfieldCommand extends Command {
     }
 
     @Override
-    public boolean inHelp() { return false; }
-
-    @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        try {
-            URL url = new URL("https://garfield-api.glitch.me/v1/link");
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                String line = in.readLine();
+            try {
+                URL url = new URL("https://garfield-api.glitch.me/v1/link");
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                    String line = in.readLine();
 
-                if (line == null) {
-                   throw new IOException();
-                } else {
-                    builder.setTitle("Random Garfield Comic");
-                    builder.setImage(line);
-                    builder.setColor(new Color(	252, 166, 28));
+                    if (line == null) {
+                        throw new IOException();
+                    } else {
+                        builder.setTitle("Random Garfield Comic");
+                        builder.setImage(line);
+                        builder.setColor(new Color(	252, 166, 28));
+                    }
                 }
+            } catch (IOException e) {
+                builder.setTitle(":rotating_light: API BROKE :rotating_light:");
+                builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
             }
-        } catch (IOException e) {
-            builder.setTitle(":rotating_light: API BROKE :rotating_light:");
-            builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
-        }
         event.getChannel().sendMessage(builder.build()).queue();
     }
 
