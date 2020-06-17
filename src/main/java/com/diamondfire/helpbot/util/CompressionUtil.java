@@ -40,12 +40,10 @@ public class CompressionUtil {
         BufferedReader bf = new BufferedReader(new InputStreamReader(new GZIPInputStream(new ByteArrayInputStream(str)), StandardCharsets.UTF_8));
         StringBuilder outStr = new StringBuilder();
         String line;
-
         while ((line = bf.readLine()) != null) {
             outStr.append(line);
         }
         bf.close();
-
         return outStr.toString().getBytes();
 
     }
@@ -60,11 +58,9 @@ public class CompressionUtil {
     public static byte[] toGZIP(byte[] str) throws IOException {
         ByteArrayOutputStream obj = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(obj);
-
         gzip.write(str);
         gzip.close();
         obj.close();
-
         return obj.toByteArray();
     }
 
