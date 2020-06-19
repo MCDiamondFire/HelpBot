@@ -20,7 +20,7 @@ public class CommandHandler {
         for (Command command : commands) {
             this.commands.put(command.getName().toLowerCase(), command);
             for (String alias : command.getAliases()) {
-                this.commands.put(alias.toLowerCase(), command);
+                this.aliases.put(alias.toLowerCase(), command);
             }
         }
 
