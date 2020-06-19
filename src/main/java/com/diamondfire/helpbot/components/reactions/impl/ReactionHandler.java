@@ -24,6 +24,7 @@ public class ReactionHandler {
         reactionWaitHashMap.put(user, wait);
 
     }
+
     public static void waitReaction(long user, Message message, ReactionResponder responder, boolean multiUse) {
         if (isWaiting(user)) {
             reactionWaitHashMap.get(user).run();
@@ -35,6 +36,7 @@ public class ReactionHandler {
         reactionWaitHashMap.put(user, wait);
 
     }
+
     public static boolean isWaiting(long user) {
         return reactionWaitHashMap.containsKey(user);
     }

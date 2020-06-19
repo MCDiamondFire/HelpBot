@@ -1,21 +1,15 @@
-package com.diamondfire.helpbot.command.impl.stats;
+package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringUtil;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SamQuotesCommand extends Command {
 
@@ -25,13 +19,18 @@ public class SamQuotesCommand extends Command {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"sam", "quote"};
+    }
+
+    @Override
     public String getDescription() {
         return "Gets a quote from Sam the Man";
     }
 
     @Override
     public CommandCategory getCategory() {
-        return CommandCategory.STATS;
+        return CommandCategory.OTHER;
     }
 
     @Override
@@ -51,7 +50,6 @@ public class SamQuotesCommand extends Command {
         event.getChannel().sendFile(file).queue();
 
     }
-
 
 }
 

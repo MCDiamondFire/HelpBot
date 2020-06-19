@@ -10,15 +10,20 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
-import net.dv8tion.jda.api.utils.MarkdownUtil;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SessionTopCommand extends Command {
 
     @Override
     public String getName() {
         return "top";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"sessiontop"};
     }
 
     @Override
@@ -54,11 +59,11 @@ public class SessionTopCommand extends Command {
                 .onQuery((resultTable) -> {
                     LinkedHashMap<String, Integer> stats = new LinkedHashMap<>();
                     do {
-                        stats.put(resultTable.getString("staff"), resultTable.getInt("sessions"));
+                        stats.put(StringUtil.display(resultTable.getString("staff")), resultTable.getInt("sessions"));
                     } while (resultTable.next());
 
                     for (Map.Entry<String, Integer> stat : stats.entrySet()) {
-                        builder.addField(MarkdownSanitizer.escape(stat.getKey()), "\nSessions: " + stat.getValue(), false);
+                        builder.addField(stat.getKey(), "\nSessions: " + stat.getValue(), false);
                     }
 
                 }).execute();

@@ -16,6 +16,11 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"find"};
+    }
+
+    @Override
     public String getDescription() {
         return "Tries to find a list of possible actions/game values based on the given arguments.";
     }

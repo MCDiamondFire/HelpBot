@@ -8,6 +8,10 @@ public abstract class Command {
 
     public abstract String getName();
 
+    public String[] getAliases() {
+        return new String[0];
+    }
+
     public abstract String getDescription();
 
     public abstract CommandCategory getCategory();

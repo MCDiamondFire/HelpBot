@@ -14,6 +14,11 @@ public class PotionListCommand extends AbstractFileListCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"potionlist"};
+    }
+
+    @Override
     public String getDescription() {
         return "Generates a file that contains all current potions.";
     }

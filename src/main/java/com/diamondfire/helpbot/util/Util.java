@@ -16,13 +16,12 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Util {
 
-    public static LinkedList<String>  getUnicodeNumbers() {
+    public static LinkedList<String> getUnicodeNumbers() {
         LinkedList<String> nums = new LinkedList<>();
         nums.add("\u0031\uFE0F\u20E3");
         nums.add("\u0032\uFE0F\u20E3");
@@ -38,11 +37,13 @@ public class Util {
     }
 
     public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name) {
-        return addFields(builder,strings, "> ");
+        return addFields(builder, strings, "> ");
     }
+
     public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings) {
-        return addFields(builder,strings, "", "> ");
+        return addFields(builder, strings, "", "> ");
     }
+
     public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
 
         String list;
@@ -73,6 +74,7 @@ public class Util {
         }
         return builder;
     }
+
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
             File file;

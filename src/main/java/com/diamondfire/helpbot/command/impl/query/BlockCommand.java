@@ -21,6 +21,11 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"codeblock"};
+    }
+
+    @Override
     public String getDescription() {
         return "Searches for actions based on their code block.";
     }

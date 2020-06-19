@@ -52,10 +52,10 @@ public class TrendingPlotsCommand extends Command {
 
                         int count = resultTable.getInt("player_count");
                         if (count > 0) {
-                           stats.add("Players: " + count);
+                            stats.add("Players: " + count);
                         }
 
-                        builder.addField(StringUtil.stripColorCodes(resultTable.getString("name")) +
+                        builder.addField(StringUtil.display(resultTable.getString("name")) +
                                         String.format(" **(%s)**", resultTable.getInt("id")),
                                 String.join("\n", stats), false);
                     } while (resultTable.next());

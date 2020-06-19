@@ -58,7 +58,14 @@ public class CodeDifferenceHandler {
         JsonReader reader2 = new JsonReader(new StringReader(json2));
         //reader2.setLenient(true);
 
-        JsonObject objectOld = JsonParser.parseReader(reader).getAsJsonObject();
+        JsonObject objectOld;
+        try {
+            objectOld = JsonParser.parseReader(reader).getAsJsonObject();
+        } catch (Exception e) {
+            System.out.println("Old db is corrupted, rewriting!");
+            Files.copy(ExternalFile.DB.getFile().toPath(), ExternalFile.DB_COMPARE.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return;
+        }
         // Setup the reader to prevent parsing problems.
 
         JsonObject object = JsonParser.parseReader(reader2).getAsJsonObject();

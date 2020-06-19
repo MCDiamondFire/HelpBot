@@ -9,7 +9,7 @@ public abstract class Argument {
         this.name = name;
         this.isRequired = isRequired;
     }
-    
+
     public String getName() {
         return name;
     }

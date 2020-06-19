@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.components.viewables;
 
-import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.instance.BotInstance;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;

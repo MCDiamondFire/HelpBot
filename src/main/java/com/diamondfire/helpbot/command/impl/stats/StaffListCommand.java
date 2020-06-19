@@ -8,11 +8,9 @@ import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +22,11 @@ public class StaffListCommand extends Command {
     @Override
     public String getName() {
         return "stafflist";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"staff"};
     }
 
     @Override
@@ -67,13 +70,13 @@ public class StaffListCommand extends Command {
                     for (Map.Entry<String, Integer> player : supports.entrySet()) {
                         switch (player.getValue()) {
                             case 1:
-                                jrHelpers.add(player.getKey());
+                                jrHelpers.add(StringUtil.display(player.getKey()));
                                 break;
                             case 2:
-                                helpers.add(player.getKey());
+                                helpers.add(StringUtil.display(player.getKey()));
                                 break;
                             case 3:
-                                experts.add(player.getKey());
+                                experts.add(StringUtil.display(player.getKey()));
                                 break;
                         }
                     }
@@ -100,16 +103,16 @@ public class StaffListCommand extends Command {
                     for (Map.Entry<String, Integer> player : moderators.entrySet()) {
                         switch (player.getValue()) {
                             case 1:
-                                jrMods.add(player.getKey());
+                                jrMods.add(StringUtil.display(player.getKey()));
                                 break;
                             case 2:
-                                mods.add(player.getKey());
+                                mods.add(StringUtil.display(player.getKey()));
                                 break;
                             case 3:
-                                admins.add(player.getKey());
+                                admins.add(StringUtil.display(player.getKey()));
                                 break;
                             case 4:
-                                owners.add(player.getKey());
+                                owners.add(StringUtil.display(player.getKey()));
                                 break;
                         }
                     }

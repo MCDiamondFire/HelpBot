@@ -13,15 +13,16 @@ public class DefinedStringArg extends ValueArgument<String> {
     final String[] options;
 
 
-
     public DefinedStringArg(String[] options) {
         super(null, true);
         this.options = options;
     }
+
     public DefinedStringArg(String[] options, boolean required) {
         super(null, required);
         this.options = options;
     }
+
     public DefinedStringArg(String[] options, boolean required, String displayName) {
         super(displayName, required);
         this.options = options;
@@ -56,7 +57,7 @@ public class DefinedStringArg extends ValueArgument<String> {
 
             return parsedOptions;
         }
-       return super.getName();
+        return super.getName();
     }
 
     private String getClosestOption(String args) {

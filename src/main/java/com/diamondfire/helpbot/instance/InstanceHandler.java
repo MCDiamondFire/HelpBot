@@ -5,7 +5,6 @@ import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceH
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 
 public class InstanceHandler {
 

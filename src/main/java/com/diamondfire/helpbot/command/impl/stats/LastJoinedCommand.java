@@ -5,13 +5,16 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.sql.Date;
-
 public class LastJoinedCommand extends AbstractPlayerCommand {
 
     @Override
     public String getName() {
         return "lastjoined";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"lastseen"};
     }
 
     @Override
@@ -34,18 +37,15 @@ public class LastJoinedCommand extends AbstractPlayerCommand {
                                 statement.setString(1, resultTable.getString("uuid"));
                             })
                             .onQuery((resultTableDate) -> {
-                                builder.setTitle(player);
+                                builder.setAuthor(StringUtil.display(player), null, "https://mc-heads.net/head/" + player);
                                 builder.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false);
                             })
                             .onNotFound(() -> {
-                                builder.setTitle(player);
+                                builder.setAuthor(StringUtil.display(player), null, "https://mc-heads.net/head/" + player);
                                 builder.addField("Last Seen", "A long time ago...", false);
                             }).execute();
                 })
-                .onNotFound(() -> {
-                    builder.setTitle("Player not found!");
-                }
-        ).execute();
+                .onNotFound(() -> builder.setTitle("Player not found!")).execute();
 
         event.getChannel().sendMessage(builder.build()).queue();
 

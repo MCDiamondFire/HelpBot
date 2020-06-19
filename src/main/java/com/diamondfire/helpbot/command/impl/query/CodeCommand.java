@@ -1,24 +1,15 @@
 package com.diamondfire.helpbot.command.impl.query;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.command.permissions.PermissionHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.instance.BotInstance;
-import com.diamondfire.helpbot.util.BotConstants;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.File;
-import java.util.*;
 import java.util.function.BiConsumer;
 
 

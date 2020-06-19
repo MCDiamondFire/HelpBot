@@ -75,6 +75,11 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"codetags"};
+    }
+
+    @Override
     public String getDescription() {
         return "Gives you to get a list of tags for a code block or action.";
     }

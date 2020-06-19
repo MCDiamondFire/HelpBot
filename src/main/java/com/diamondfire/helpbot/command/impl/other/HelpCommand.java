@@ -1,29 +1,20 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.CommandHandler;
 import com.diamondfire.helpbot.command.arguments.Argument;
 import com.diamondfire.helpbot.command.arguments.NoArg;
 import com.diamondfire.helpbot.command.arguments.value.DefinedStringArg;
-import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.impl.CommandCategory;
-import com.diamondfire.helpbot.command.impl.query.AbstractSingleQueryCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.command.permissions.PermissionHandler;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.components.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.diamondfire.helpbot.util.BotConstants;
-import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.io.File;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 
 public class HelpCommand extends Command {
@@ -107,6 +98,7 @@ public class HelpCommand extends Command {
             builder.setTitle("Command Information");
             builder.addField("Name", command.getName(), false);
             builder.addField("Description", command.getDescription(), false);
+            builder.addField("Aliases", (command.getAliases().length == 0 ? "None" : String.join(", ", command.getAliases())), false);
             builder.addField("Argument", String.format("<%s>", argument), true);
             builder.addField("Category", command.getCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);

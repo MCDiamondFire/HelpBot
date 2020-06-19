@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.arguments.value.StringArg;
 import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -12,104 +11,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
-public class ProfileCommand extends AbstractPlayerCommand {
-
-    @Override
-    public String getName() {
-        return "profile";
-    }
-
-    @Override
-    public String getDescription() {
-        return "Get info on a certain player.";
-    }
-
-    public ValueArgument<String> getArgument() {
-        return new StringArg("Player Name/UUID", false);
-    }
-
-    @Override
-    public Permission getPermission() {
-        return Permission.USER;
-    }
-
-    @Override
-    protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
-        new SingleQueryBuilder()
-                .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
-                })
-                .onQuery(table -> {
-                    final String playerName = table.getString("name");
-                    final String playerUUID = table.getString("uuid");
-
-                    builder.addField("Name", playerName, false);
-                    builder.addField("UUID", playerUUID, false);
-
-                    String whois = table.getString("whois");
-                    builder.addField("Whois", StringUtil.stripColorCodes(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
-
-                    new SingleQueryBuilder()
-                            .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
-                            .onQuery((resultTablePlot) -> {
-                                Ranks[] ranks = Ranks.getAllRanks(
-                                        resultTablePlot.getInt("donor"),
-                                        resultTablePlot.getInt("support"),
-                                        resultTablePlot.getInt("moderation"),
-                                        resultTablePlot.getInt("retirement"),
-                                        resultTablePlot.getInt("youtuber"));
-
-                                StringBuilder stringBuilder = new StringBuilder();
-                                for (Ranks rank : ranks) {
-                                    if (rank == null) {
-                                        continue;
-                                    }
-                                    stringBuilder.append(String.format("[%s]", rank.getRankName()) + " ");
-
-                                }
-                                builder.addField("Ranks", stringBuilder.toString(), false);
-                            }).execute();
-
-                    new SingleQueryBuilder()
-                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time LIMIT 1;", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
-                            .onQuery((resultTable) -> {
-                                Date joinDate = resultTable.getDate("time");
-                                new SingleQueryBuilder()
-                                        .query("SELECT time FROM plot_votes WHERE uuid = ? ORDER BY time LIMIT 1;", (statement) -> {
-                                            statement.setString(1, playerUUID);
-                                        })
-                                        .onQuery((resultTablePlot) -> {
-                                            Date plotDate = new Date(resultTablePlot.getLong("time"));
-                                            if (plotDate.toLocalDate().isBefore(joinDate.toLocalDate())) {
-                                                builder.addField("Date Joined", "~" + StringUtil.formatDate(plotDate), false);
-                                            } else {
-                                                builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
-                                            }
-                                        })
-                                        .onNotFound(() -> {
-                                            builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
-                                        }).execute();
-                            }).execute();
-
-
-                    builder.setAuthor(playerName, null, "https://mc-heads.net/head/" + playerUUID);
-                })
-                .onNotFound(() -> {
-                    builder.addField("Error!", "Player was not found", false);
-                }).execute();
-
-        event.getChannel().sendMessage(builder.build()).queue();
-    }
-
-}
 
 enum RankCategories {
     DONOR,
@@ -171,10 +72,6 @@ enum Ranks {
         return RANK_LIST.get(category).get(number);
     }
 
-    public String getRankName() {
-        return rankName;
-    }
-
     public static Ranks[] getAllRanks(int donor, int support, int moderation, int retirement, int yt) {
         ArrayList<Ranks> ranks = new ArrayList<>();
         ranks.add(getRank(RankCategories.DONOR, donor));
@@ -186,6 +83,112 @@ enum Ranks {
         return ranks.toArray(new Ranks[0]);
     }
 
+    public String getRankName() {
+        return rankName;
+    }
+
+
+}
+
+public class ProfileCommand extends AbstractPlayerCommand {
+
+    @Override
+    public String getName() {
+        return "profile";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"user", "whois", "p", "prof"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Get info on a certain player.";
+    }
+
+    public ValueArgument<String> getArgument() {
+        return new StringArg("Player Name/UUID", false);
+    }
+
+    @Override
+    public Permission getPermission() {
+        return Permission.USER;
+    }
+
+    @Override
+    protected void execute(CommandEvent event, String player) {
+        EmbedBuilder builder = new EmbedBuilder();
+        new SingleQueryBuilder()
+                .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+                    statement.setString(1, player);
+                    statement.setString(2, player);
+                })
+                .onQuery(table -> {
+                    final String playerName = table.getString("name");
+                    final String playerUUID = table.getString("uuid");
+
+                    builder.addField("Name", StringUtil.display(playerName), false);
+                    builder.addField("UUID", playerUUID, false);
+
+                    String whois = table.getString("whois");
+                    builder.addField("Whois", StringUtil.stripColorCodes(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+
+                    new SingleQueryBuilder()
+                            .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
+                                statement.setString(1, playerUUID);
+                            })
+                            .onQuery((resultTablePlot) -> {
+                                Ranks[] ranks = Ranks.getAllRanks(
+                                        resultTablePlot.getInt("donor"),
+                                        resultTablePlot.getInt("support"),
+                                        resultTablePlot.getInt("moderation"),
+                                        resultTablePlot.getInt("retirement"),
+                                        resultTablePlot.getInt("youtuber"));
+
+                                StringBuilder stringBuilder = new StringBuilder();
+                                for (Ranks rank : ranks) {
+                                    if (rank == null) {
+                                        continue;
+                                    }
+                                    stringBuilder.append(String.format("[%s]", rank.getRankName()) + " ");
+
+                                }
+                                builder.addField("Ranks", stringBuilder.toString(), false);
+                            }).execute();
+
+                    new SingleQueryBuilder()
+                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time LIMIT 1;", (statement) -> {
+                                statement.setString(1, playerUUID);
+                            })
+                            .onQuery((resultTable) -> {
+                                Date joinDate = resultTable.getDate("time");
+                                new SingleQueryBuilder()
+                                        .query("SELECT time FROM plot_votes WHERE uuid = ? ORDER BY time LIMIT 1;", (statement) -> {
+                                            statement.setString(1, playerUUID);
+                                        })
+                                        .onQuery((resultTablePlot) -> {
+                                            Date plotDate = new Date(resultTablePlot.getLong("time"));
+                                            if (plotDate.toLocalDate().isBefore(joinDate.toLocalDate())) {
+                                                builder.addField("Date Joined", "~" + StringUtil.formatDate(plotDate), false);
+                                            } else {
+                                                builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
+                                            }
+                                        })
+                                        .onNotFound(() -> {
+                                            builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
+                                        }).execute();
+                            }).execute();
+
+
+                    builder.setAuthor(StringUtil.display(playerName), null, "https://mc-heads.net/head/" + playerUUID);
+                })
+                .onNotFound(() -> {
+                    builder.addField("Error!", "Player was not found", false);
+                }).execute();
+
+        event.getChannel().sendMessage(builder.build()).queue();
+    }
 
 }
 

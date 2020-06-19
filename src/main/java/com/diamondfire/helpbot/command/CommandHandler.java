@@ -13,17 +13,25 @@ import java.util.concurrent.Executors;
 public class CommandHandler {
 
     private final HashMap<String, Command> commands = new HashMap<>();
+    private final HashMap<String, Command> aliases = new HashMap<>();
     private final ExecutorService POOL = Executors.newCachedThreadPool();
 
     public void register(Command... commands) {
         for (Command command : commands) {
-            this.commands.put(command.getName(), command);
+            this.commands.put(command.getName().toLowerCase(), command);
+            for (String alias : command.getAliases()) {
+                this.commands.put(alias.toLowerCase(), command);
+            }
         }
 
     }
 
     public void run(CommandEvent e) {
-        Command commandToRun = commands.get(e.getCommand());
+        Command commandToRun = commands.get(e.getCommand().toLowerCase());
+        if (commandToRun == null) {
+            commandToRun = aliases.get(e.getCommand().toLowerCase());
+        }
+
         if (commandToRun != null) {
             if (!commandToRun.getPermission().hasPermission(e.getMember())) {
                 EmbedBuilder builder = new EmbedBuilder();
@@ -34,10 +42,11 @@ public class CommandHandler {
             }
 
             if (commandToRun.getArgument().validate(e.getParsedArgs())) {
+                Command finalCommandToRun = commandToRun;
                 CompletableFuture.runAsync(
                         () -> {
                             try {
-                                commandToRun.run(e);
+                                finalCommandToRun.run(e);
                             } catch (Exception error) {
                                 Util.error(error, "Command error!");
                                 error.printStackTrace();

@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.reactions.impl;
 
 import com.diamondfire.helpbot.instance.BotInstance;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.TimerTask;
 
@@ -20,6 +19,7 @@ public class ReactionWait extends TimerTask {
         this.responder = responder;
         this.multiUse = false;
     }
+
     public ReactionWait(long user, long channel, long message, ReactionResponder responder, boolean multiUse) {
         this.user = user;
         this.message = message;
@@ -27,6 +27,7 @@ public class ReactionWait extends TimerTask {
         this.responder = responder;
         this.multiUse = multiUse;
     }
+
     @Override
     public void run() {
         BotInstance.getJda().getTextChannelById(this.channel).retrieveMessageById(this.message).queue((message) -> {

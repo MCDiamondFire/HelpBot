@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
+import net.dv8tion.jda.api.utils.MarkdownUtil;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -108,6 +109,10 @@ public class StringUtil {
 
         return builder.toString();
 
+    }
+
+    public static String display(String string) {
+        return MarkdownSanitizer.escape(stripColorCodes(string));
     }
 
     @SuppressWarnings("deprecation")

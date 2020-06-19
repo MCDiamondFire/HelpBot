@@ -1,12 +1,13 @@
 package com.diamondfire.helpbot.components.reactions.multiselector;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class MultiSelectorBuilder {
+
     private ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
     private long channel;
     private long userID;
@@ -31,7 +32,7 @@ public class MultiSelectorBuilder {
 
     @Contract("_,_, -> this")
     public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, String customEmote) {
-        pages.add(new MultiSelectorPage(name, EmbedBuilder, customEmote,false));
+        pages.add(new MultiSelectorPage(name, EmbedBuilder, customEmote, false));
         return this;
     }
 
@@ -43,7 +44,7 @@ public class MultiSelectorBuilder {
 
     @Contract("_,_,_,_, -> this")
     public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, String customEmote, boolean hidden) {
-        pages.add(new MultiSelectorPage(name, EmbedBuilder,customEmote, hidden));
+        pages.add(new MultiSelectorPage(name, EmbedBuilder, customEmote, hidden));
         return this;
     }
 

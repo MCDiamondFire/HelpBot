@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -14,6 +13,11 @@ public class PlotsCommand extends AbstractPlayerCommand {
     @Override
     public String getName() {
         return "plots";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"ownedplots"};
     }
 
     @Override
@@ -40,8 +44,7 @@ public class PlotsCommand extends AbstractPlayerCommand {
                         builder.setTitle(resultTablePlot.getString("owner_name") + "'s Plots");
                         stats.add("Votes: " + resultTablePlot.getInt("votes"));
                         stats.add("Players: " + resultTablePlot.getInt("player_count"));
-
-                        builder.addField(StringUtil.stripColorCodes(resultTablePlot.getString("name")) +
+                        builder.addField(StringUtil.display(resultTablePlot.getString("name")) +
                                         String.format(" **(%s)**", resultTablePlot.getInt("id")),
                                 String.join("\n", stats), false);
 

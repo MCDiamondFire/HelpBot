@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 /**
  * <h1>SingleQueryBuilder</h1>
  * The SingleQueryBuilder class allows you to initialize a prepared query within lambda statements.
- *
+ * <p>
  * Here is an example of a basic implementation
  *
  * <pre>{@code
@@ -32,7 +32,7 @@ import java.sql.ResultSet;
  * As you can see, "SELECT * FROM players WHERE uuid = ?" is queried after given its values from {@link PreparedStatementManager}.
  * Then, if the query result is not empty it will execute .onQuery(), otherwise it will execute .onNotFound() if it was specified.
  *
- * @author  Owen1212055
+ * @author Owen1212055
  * @version 1.0
  */
 public class SingleQueryBuilder {
@@ -99,9 +99,9 @@ public class SingleQueryBuilder {
             if (set.next()) {
                 onQuery.run(set);
             } else {
-               if (onFail != null) {
-                   onFail.run();
-               }
+                if (onFail != null) {
+                    onFail.run();
+                }
             }
             set.close();
 

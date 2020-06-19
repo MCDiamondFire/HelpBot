@@ -19,8 +19,8 @@ import javax.security.auth.login.LoginException;
 
 public class BotInstance {
 
-    private static JDA jda;
     private static final CommandHandler handler = new CommandHandler();
+    private static JDA jda;
 
     public static void start() throws InterruptedException, LoginException {
         handler.register(
@@ -55,7 +55,9 @@ public class BotInstance {
                 new RetiredListCommand(),
                 new StaffListCommand(),
                 new SessionTopCommand(),
-                new LastJoinedCommand()
+                new LastJoinedCommand(),
+                new SessionStatsCommand(),
+                new NewPlayersCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);

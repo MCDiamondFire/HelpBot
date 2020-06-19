@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -53,7 +54,7 @@ public class JoinBadCommand extends Command {
                 .onQuery((resultTable) -> {
                     HashMap<String, String> staff = new HashMap<>();
                     do {
-                        staff.put(resultTable.getString("uuid"), resultTable.getString("name"));
+                        staff.put(resultTable.getString("uuid"), StringUtil.display(resultTable.getString("uuid")));
                     } while (resultTable.next());
 
                     new SingleQueryBuilder()

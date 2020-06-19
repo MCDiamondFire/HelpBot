@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -50,7 +51,7 @@ public class InBadCommand extends Command {
                 .onQuery((resultTable) -> {
                     List<String> staff = new ArrayList<>();
                     do {
-                        staff.add(resultTable.getString(1));
+                        staff.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
                     new SingleQueryBuilder()
@@ -59,7 +60,7 @@ public class InBadCommand extends Command {
                             }))
                             .onQuery((resultBadTable) -> {
                                 do {
-                                    staff.remove(resultBadTable.getString(1));
+                                    staff.remove(StringUtil.display(resultBadTable.getString("staff")));
                                 } while (resultBadTable.next());
 
                                 builder.setTitle(String.format("People with less than %s sessions:", num));

@@ -116,8 +116,6 @@ public class FetchDataCommand extends Command {
         status(sentMessage, "Finished!");
 
         queue.clear();
-
-
     }
 
     private void start(Message message) throws RequestException {
@@ -178,24 +176,24 @@ public class FetchDataCommand extends Command {
             }
         }
 
+        if (queue.isEmpty()) {
+            throw new IllegalStateException("Failed to retrieve data");
+        }
+
     }
 
     private void error(Message message, Exception e) {
         EmbedBuilder builder = new EmbedBuilder();
-
         builder.setTitle("Error occurred!");
         builder.setDescription(e.getMessage());
-
         message.editMessage(builder.build()).queue();
         e.printStackTrace();
     }
 
     private void status(Message message, String status) {
         EmbedBuilder builder = new EmbedBuilder();
-
         builder.setTitle("Status");
         builder.setDescription(status);
-
         message.editMessage(builder.build()).queue();
     }
 

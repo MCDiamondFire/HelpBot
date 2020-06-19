@@ -8,6 +8,7 @@ import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -18,6 +19,11 @@ public class RetiredListCommand extends Command {
     @Override
     public String getName() {
         return "retiredlist";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"retired", "retiredstaff"};
     }
 
     @Override
@@ -51,7 +57,7 @@ public class RetiredListCommand extends Command {
                 .onQuery((resultTable) -> {
                     ArrayList<String> retired = new ArrayList<>();
                     do {
-                        retired.add(resultTable.getString("name"));
+                        retired.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
                     builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retired, "", ""));
                 }).execute();
@@ -60,7 +66,7 @@ public class RetiredListCommand extends Command {
                 .onQuery((resultTable) -> {
                     ArrayList<String> retired = new ArrayList<>();
                     do {
-                        retired.add(resultTable.getString("name"));
+                        retired.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
                     builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retired, "", ""));
                 }).execute();

@@ -25,6 +25,66 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSingleQueryCommand extends Command {
 
+    public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Duplicate actions detected!");
+
+        HashMap<BasicReaction, SimpleData> emojis = new HashMap<>();
+
+
+        // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first.
+        Class<? extends SimpleData> classReference = actions.get(0).getClass();
+
+        if (actions.stream().allMatch((simpleData -> simpleData.getClass().isAssignableFrom(classReference)))) {
+            // If here all of the types are the same
+            emojis = actions.get(0).getEnum().getEmbedBuilder().generateDupeEmojis(actions);
+        } else {
+            // We have special types, we need to filter those out.
+            for (SimpleData data : actions) {
+                emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
+            }
+        }
+
+
+        builder.setDescription("What you are searching for contains a duplicate entry, please react accordingly so I can figure out what you are looking for.");
+        builder.addField("Options:", emojis.entrySet().stream()
+                        .map((dataEntry -> "\n" + dataEntry.getKey().toString() + " - " + dataEntry.getValue().getMainName()))
+                        .collect(Collectors.joining()),
+                false);
+        Message message;
+        try {
+            message = channel.sendMessage((builder.build())).submit().get();
+        } catch (InterruptedException | ConcurrentModificationException | ExecutionException exception) {
+            exception.printStackTrace();
+            Util.error(exception, "Failed to fetch message sent!");
+            return;
+        }
+
+
+        HashMap<BasicReaction, SimpleData> finalEmojis = emojis;
+        Message finalMessage = message;
+
+        ReactionHandler.waitReaction(userToWait, message, (event -> {
+            finalMessage.delete().queue();
+
+            ArrayList<SimpleData> filteredData = finalEmojis.entrySet().stream()
+                    .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            if (filteredData.size() == 1) {
+                onChosen.accept(filteredData.get(0), finalMessage.getTextChannel());
+            } else {
+                sendMultipleMessage(filteredData, finalMessage.getTextChannel(), userToWait, onChosen);
+
+            }
+
+        }));
+        emojis.keySet().forEach((emote -> emote.react(finalMessage).queue()));
+
+
+    }
+
     @Override
     public CommandCategory getCategory() {
         return CommandCategory.CODE_BLOCK;
@@ -101,66 +161,6 @@ public abstract class AbstractSingleQueryCommand extends Command {
             event.getChannel().sendMessage(builder.build()).queue();
 
         }
-    }
-
-    public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Duplicate actions detected!");
-
-        HashMap<BasicReaction, SimpleData> emojis = new HashMap<>();
-
-
-        // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first.
-        Class<? extends SimpleData> classReference = actions.get(0).getClass();
-
-        if (actions.stream().allMatch((simpleData -> simpleData.getClass().isAssignableFrom(classReference)))) {
-            // If here all of the types are the same
-            emojis = actions.get(0).getEnum().getEmbedBuilder().generateDupeEmojis(actions);
-        } else {
-            // We have special types, we need to filter those out.
-            for (SimpleData data : actions) {
-                emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
-            }
-        }
-
-
-        builder.setDescription("What you are searching for contains a duplicate entry, please react accordingly so I can figure out what you are looking for.");
-        builder.addField("Options:", emojis.entrySet().stream()
-                        .map((dataEntry -> "\n" + dataEntry.getKey().toString() + " - " + dataEntry.getValue().getMainName()))
-                        .collect(Collectors.joining()),
-                false);
-        Message message;
-        try {
-            message = channel.sendMessage((builder.build())).submit().get();
-        } catch (InterruptedException | ConcurrentModificationException | ExecutionException exception) {
-            exception.printStackTrace();
-            Util.error(exception, "Failed to fetch message sent!");
-            return;
-        }
-
-
-        HashMap<BasicReaction, SimpleData> finalEmojis = emojis;
-        Message finalMessage = message;
-
-        ReactionHandler.waitReaction(userToWait, message, (event -> {
-            finalMessage.delete().queue();
-
-            ArrayList<SimpleData> filteredData = finalEmojis.entrySet().stream()
-                    .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
-                    .map(Map.Entry::getValue)
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            if (filteredData.size() == 1) {
-                onChosen.accept(filteredData.get(0), finalMessage.getTextChannel());
-            } else {
-                sendMultipleMessage(filteredData, finalMessage.getTextChannel(), userToWait, onChosen);
-
-            }
-
-        }));
-        emojis.keySet().forEach((emote -> emote.react(finalMessage).queue()));
-
-
     }
 
 }

@@ -7,7 +7,6 @@ import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.instance.BotInstance;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -20,13 +19,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class PlotCommand extends Command {
 
 
     private static HashMap<String, String> plotTags = new HashMap<>();
     private static HashMap<Integer, String> plotSizes = new HashMap<>();
+
     static {
         plotTags.put("ac", "Arcade");
         plotTags.put("vs", "Versus");
@@ -82,7 +81,7 @@ public class PlotCommand extends Command {
                     statement.setInt(1, plotID);
                 })
                 .onQuery((resultTablePlot) -> {
-                    builder.addField("Name", StringUtil.stripColorCodes(resultTablePlot.getString("name")), true);
+                    builder.addField("Name", StringUtil.display(resultTablePlot.getString("name")), true);
                     builder.addField("Owner", resultTablePlot.getString("owner_name"), true);
                     builder.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
                     builder.addField("Plot Size", plotSizes.get(resultTablePlot.getInt("plotsize")), true);

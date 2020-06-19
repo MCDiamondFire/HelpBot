@@ -18,6 +18,12 @@ public class RankCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"rank"};
+    }
+
+
+    @Override
     public String getDescription() {
         return "Search actions/game values by how they are unlocked.";
     }

@@ -14,6 +14,11 @@ public class ParticleListCommand extends AbstractFileListCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"particlelist"};
+    }
+
+    @Override
     public String getDescription() {
         return "Generates a file that contains all current particles.";
     }

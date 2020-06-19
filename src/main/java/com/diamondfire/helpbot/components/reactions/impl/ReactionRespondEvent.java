@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.components.reactions.impl;
 
 import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class ReactionRespondEvent {
+
     private ReactionWait wait;
     private MessageReaction event;
 

@@ -18,6 +18,11 @@ public class ActivePlotsCommand extends Command {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"nowplaying"};
+    }
+
+    @Override
     public String getDescription() {
         return "Gets current active plots.";
     }
@@ -46,7 +51,7 @@ public class ActivePlotsCommand extends Command {
                 .onQuery((resultTable) -> {
                     do {
                         builder.addField(StringUtil.stripColorCodes(resultTable.getString("name")) +
-                                String.format(" **(%s)**", resultTable.getInt("id")),
+                                        String.format(" **(%s)**", resultTable.getInt("id")),
                                 "Players: " + resultTable.getInt("player_count"), false);
                     } while (resultTable.next());
                 }).execute();

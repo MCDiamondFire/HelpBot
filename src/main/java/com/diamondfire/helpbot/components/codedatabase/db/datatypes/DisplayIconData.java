@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
-import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.CompressionUtil;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonArray;
@@ -8,11 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 
 public class DisplayIconData {
 

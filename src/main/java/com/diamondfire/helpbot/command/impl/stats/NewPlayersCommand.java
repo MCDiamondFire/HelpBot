@@ -9,23 +9,17 @@ import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
-public class CpTopCommand extends Command {
+public class NewPlayersCommand extends Command {
 
     @Override
     public String getName() {
-        return "cptop";
-    }
-
-    @Override
-    public String[] getAliases() {
-        return new String[]{"cpleaderboard"};
+        return "newplayers";
     }
 
     @Override
     public String getDescription() {
-        return "Gets current CP leaderboard.";
+        return "Gets the new players who have joined today.";
     }
 
     @Override
@@ -46,20 +40,20 @@ public class CpTopCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("CP Leaderboard");
+        builder.setTitle("Players who have joined in last 24 hours");
         new SingleQueryBuilder()
-                .query("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10")
+                .query("SELECT players.name, approved_users.time FROM approved_users " +
+                        "LEFT JOIN players ON approved_users.uuid = players.uuid " +
+                        "WHERE time > CURRENT_TIMESTAMP() - INTERVAL 1 DAY ORDER BY time DESC LIMIT 20")
                 .onQuery((resultTable) -> {
                     do {
-                        builder.addField(StringUtil.display(resultTable.getString("name")),
-                                "CP: " + resultTable.getInt("points"), false);
+                        builder.addField(StringUtil.display(resultTable.getString("name")), resultTable.getTimestamp("time").toString(), false);
                     } while (resultTable.next());
                 }).execute();
 
         event.getChannel().sendMessage(builder.build()).queue();
 
     }
-
 
 }
 

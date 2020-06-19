@@ -14,6 +14,11 @@ public class SoundListCommand extends AbstractFileListCommand {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"soundlist"};
+    }
+
+    @Override
     public String getDescription() {
         return "Generates a file that contains all current sounds.";
     }
