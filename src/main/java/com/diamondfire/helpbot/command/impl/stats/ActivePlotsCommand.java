@@ -50,7 +50,7 @@ public class ActivePlotsCommand extends Command {
                 .query("SELECT * FROM plots WHERE player_count > 0 AND whitelist = 0 ORDER BY player_count DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
-                        builder.addField(StringUtil.stripColorCodes(resultTable.getString("name")) +
+                        builder.addField(StringUtil.display(resultTable.getString("name")) +
                                         String.format(" **(%s)**", resultTable.getInt("id")),
                                 "Players: " + resultTable.getInt("player_count"), false);
                     } while (resultTable.next());
