@@ -148,7 +148,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                         .collect(Collectors.toCollection(ArrayList::new));
 
                 builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
-                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.ESCAPE)));
 
 
                 event.getChannel().sendMessage(builder.build()).queue();
@@ -157,7 +157,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             // If possible choices is empty, meaning none can be found.
         } else {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.REMOVE)));
+            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.ESCAPE)));
             event.getChannel().sendMessage(builder.build()).queue();
 
         }

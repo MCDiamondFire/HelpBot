@@ -60,7 +60,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
     }
 
     protected String getSearchQuery(CommandEvent event) {
-        return MarkdownSanitizer.sanitize(event.getParsedArgs(), MarkdownSanitizer.SanitizationStrategy.REMOVE);
+        return MarkdownSanitizer.sanitize(event.getParsedArgs(), MarkdownSanitizer.SanitizationStrategy.ESCAPE);
     }
 
 }

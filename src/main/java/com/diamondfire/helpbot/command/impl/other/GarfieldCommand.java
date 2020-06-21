@@ -29,7 +29,7 @@ public class GarfieldCommand extends Command {
 
     @Override
     public CommandCategory getCategory() {
-        return CommandCategory.HIDDEN;
+        return CommandCategory.OTHER;
     }
 
     @Override
