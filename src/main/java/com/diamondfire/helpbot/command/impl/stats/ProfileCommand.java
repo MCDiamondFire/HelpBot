@@ -132,7 +132,7 @@ public class ProfileCommand extends AbstractPlayerCommand {
                     builder.addField("UUID", playerUUID, false);
 
                     String whois = table.getString("whois");
-                    builder.addField("Whois", StringUtil.stripColorCodes(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    builder.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
                     new SingleQueryBuilder()
                             .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
