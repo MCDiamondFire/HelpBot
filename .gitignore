@@ -2,4 +2,3 @@
 .idea
 gradle
 build
-/src/main/java/com/diamondfire/helpbot/util/SensitiveData.java
