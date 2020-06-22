@@ -7,9 +7,9 @@ import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
 import com.diamondfire.helpbot.command.impl.other.*;
 import com.diamondfire.helpbot.command.impl.query.*;
 import com.diamondfire.helpbot.command.impl.stats.*;
+import com.diamondfire.helpbot.components.config.Config;
 import com.diamondfire.helpbot.events.MessageEvent;
 import com.diamondfire.helpbot.events.ReactionEvent;
-import com.diamondfire.helpbot.util.BotConstants;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -21,8 +21,11 @@ public class BotInstance {
 
     private static final CommandHandler handler = new CommandHandler();
     private static JDA jda;
+    private static Config config;
 
     public static void start() throws InterruptedException, LoginException {
+
+        config = new Config();
         handler.register(
                 // query commands
                 new CodeCommand(),
@@ -41,6 +44,7 @@ public class BotInstance {
                 new EvalCommand(),
                 new GarfieldCommand(),
                 new HelpCommand(),
+                new RestartCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -60,7 +64,7 @@ public class BotInstance {
                 new NewPlayersCommand()
         );
 
-        JDABuilder builder = JDABuilder.createDefault(BotConstants.TOKEN);
+        JDABuilder builder = JDABuilder.createDefault(config.getToken());
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("for ?help"));
         builder.addEventListeners(new MessageEvent(), new ReactionEvent());
@@ -77,5 +81,7 @@ public class BotInstance {
         return handler;
     }
 
-
+    public static Config getConfig() {
+        return config;
+    }
 }

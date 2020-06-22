@@ -28,6 +28,11 @@ public enum ExternalFile {
     SAM_DIR(new ExternalFileBuilder()
             .isDirectory(true)
             .setName("samquotes")
+            .buildFile()),
+    CONFIG(new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("config")
+            .setFileType("json")
             .buildFile());
 
     private final File file;

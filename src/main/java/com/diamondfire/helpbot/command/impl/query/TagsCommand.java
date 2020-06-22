@@ -8,6 +8,7 @@ import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.File;

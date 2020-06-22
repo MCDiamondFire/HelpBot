@@ -54,7 +54,7 @@ public class JoinBadCommand extends Command {
                 .onQuery((resultTable) -> {
                     HashMap<String, String> staff = new HashMap<>();
                     do {
-                        staff.put(resultTable.getString("uuid"), StringUtil.display(resultTable.getString("uuid")));
+                        staff.put(resultTable.getString("uuid"), StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
                     new SingleQueryBuilder()

@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceH
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.SensitiveData;
+import com.diamondfire.helpbot.instance.BotInstance;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
 import com.github.steveice10.mc.protocol.MinecraftConstants;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
@@ -37,8 +37,8 @@ import java.util.ArrayList;
 
 public class FetchDataCommand extends Command {
 
-    private static final String USERNAME = SensitiveData.USER_EMAIL;
-    private static final String PASSWORD = SensitiveData.USER_PASS;
+    private static final String USERNAME = BotInstance.getConfig().getMcEmail();
+    private static final String PASSWORD = BotInstance.getConfig().getMcPassword();
     private final ArrayList<String> queue = new ArrayList<>();
     private boolean ready = false;
 

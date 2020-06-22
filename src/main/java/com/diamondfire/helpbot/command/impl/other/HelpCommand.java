@@ -11,7 +11,6 @@ import com.diamondfire.helpbot.command.permissions.PermissionHandler;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.instance.BotInstance;
-import com.diamondfire.helpbot.util.BotConstants;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -73,7 +72,7 @@ public class HelpCommand extends Command {
                     EmbedBuilder embedBuilder = categories.get(category);
                     Argument argument = command.getArgument();
                     String arg = argument instanceof NoArg ? "" : String.format(" <%s>", argument);
-                    embedBuilder.addField(BotConstants.PREFIX + command.getName() + arg, command.getDescription(), false);
+                    embedBuilder.addField(BotInstance.getConfig().getPrefix() + command.getName() + arg, command.getDescription(), false);
 
                 }
 
