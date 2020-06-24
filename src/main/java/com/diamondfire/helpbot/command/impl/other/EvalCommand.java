@@ -47,7 +47,7 @@ public class EvalCommand extends Command {
     public void run(CommandEvent event) {
 
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
-        if (!System.getProperty("os.name").contains("linux")) {
+        if (!System.getProperty("os.name").contains("Linux")) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("No.");
             builder.setColor(Color.red);
