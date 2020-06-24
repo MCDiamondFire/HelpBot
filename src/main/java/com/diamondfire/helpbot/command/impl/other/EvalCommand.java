@@ -56,13 +56,14 @@ public class EvalCommand extends Command {
             return;
         }
 
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName(args[0]);
+        String engineType = event.getArguments()[0];
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName(engineType);
 
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
 
-        String code = event.getParsedArgs().replace(args[0] + " ", "").replaceAll("([^(]+?)\\s*->", "function($1)");
+        String code = event.getParsedArgs().replace(engineType + " ", "").replaceAll("([^(]+?)\\s*->", "function($1)");
         EmbedBuilder builder = new EmbedBuilder();
         builder.addField("Code", String.format("```js\n%s```", code), true);
 

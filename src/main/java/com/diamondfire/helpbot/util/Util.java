@@ -77,23 +77,18 @@ public class Util {
 
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
-            File file;
-            if (fileName.endsWith("spawn_egg")) {
-                file = new File(ExternalFile.IMAGES_DIR.getFile(), "spawn_egg.png");
-            } else {
-                file = new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
-            }
+            File file =  new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
 
             if (file.exists()) {
                 return file;
             } else {
-                return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
+                return new File(ExternalFile.IMAGES_DIR.getFile(), "BARRIER.png");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new File(ExternalFile.IMAGES_DIR.getFile(), "unknown_texture.png");
+        return new File(ExternalFile.IMAGES_DIR.getFile(), "BARRIER.png");
     }
 
     public static File getPlayerHead(String player) {

@@ -5,6 +5,7 @@ import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceH
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 
 import javax.security.auth.login.LoginException;
+import java.util.stream.Collectors;
 
 public class InstanceHandler {
 
@@ -13,6 +14,5 @@ public class InstanceHandler {
         CodeDatabase.initialize();
         CodeDifferenceHandler.refresh();
         AutoRefreshDBTask.initialize();
-
     }
 }

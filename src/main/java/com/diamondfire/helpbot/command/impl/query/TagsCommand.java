@@ -57,7 +57,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         File customHead = data.getItem().getHead();
 
         if (customHead == null) {
-            material = data.getItem().getMaterial().toLowerCase();
+            material = data.getItem().getMaterial().toUpperCase();
             actionIcon = Util.fetchMinecraftTextureFile(material);
         } else {
             actionIcon = customHead;

@@ -113,7 +113,7 @@ public class PlotCommand extends Command {
                     if (plotIcon.startsWith("h")) {
                         icon = Util.getPlayerHead(plotIcon.substring(1));
                     } else {
-                        icon = Util.fetchMinecraftTextureFile(plotIcon.toLowerCase());
+                        icon = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
                     }
                     builder.setTitle(String.format("Plot Information (%s)", plotID));
                     builder.setThumbnail("attachment://" + icon.getName() + ".png");

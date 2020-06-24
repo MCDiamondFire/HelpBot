@@ -178,7 +178,10 @@ public class ProfileCommand extends AbstractPlayerCommand {
                                         .onNotFound(() -> {
                                             builder.addField("Date Joined", StringUtil.formatDate(joinDate), false);
                                         }).execute();
-                            }).execute();
+                            }).onNotFound(() -> {
+                        builder.addField("Date Joined", "A long time ago...", false);
+
+                    }).execute();
 
 
                     builder.setAuthor(StringUtil.display(playerName), null, "https://mc-heads.net/head/" + playerUUID);
