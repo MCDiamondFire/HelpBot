@@ -59,6 +59,13 @@ public class EvalCommand extends Command {
         String engineType = event.getArguments()[0];
         ScriptEngine engine = new ScriptEngineManager().getEngineByName(engineType);
 
+        if (engine == null) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("Script Engine not found!");
+            event.getChannel().sendMessage(builder.build()).queue();
+            return;
+        }
+
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
