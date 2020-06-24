@@ -47,7 +47,7 @@ public class EvalCommand extends Command {
     public void run(CommandEvent event) {
 
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
-        if (!System.getProperty("os.name").contains("Linux")) {
+        if (!System.getProperty("os.name").contains("linux")) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("No.");
             builder.setColor(Color.red);
@@ -56,13 +56,13 @@ public class EvalCommand extends Command {
             return;
         }
 
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName("Nashorn");
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName(args[0]);
 
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
 
-        String code = event.getParsedArgs().replaceAll("([^(]+?)\\s*->", "function($1)");
+        String code = event.getParsedArgs().replace(args[0] + " ", "").replaceAll("([^(]+?)\\s*->", "function($1)");
         EmbedBuilder builder = new EmbedBuilder();
         builder.addField("Code", String.format("```js\n%s```", code), true);
 
