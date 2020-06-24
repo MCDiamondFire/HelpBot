@@ -56,21 +56,13 @@ public class EvalCommand extends Command {
             return;
         }
 
-        String engineType = event.getArguments()[0];
-        ScriptEngine engine = new ScriptEngineManager().getEngineByName(engineType);
-
-        if (engine == null) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle("Script Engine not found!");
-            event.getChannel().sendMessage(builder.build()).queue();
-            return;
-        }
+        ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
 
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
 
-        String code = event.getParsedArgs().replace(engineType + " ", "").replaceAll("([^(]+?)\\s*->", "function($1)");
+        String code = event.getParsedArgs().replaceAll("([^(]+?)\\s*->", "function($1)");
         EmbedBuilder builder = new EmbedBuilder();
         builder.addField("Code", String.format("```js\n%s```", code), true);
 
