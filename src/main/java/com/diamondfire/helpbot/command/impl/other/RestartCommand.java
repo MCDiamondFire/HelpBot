@@ -1,15 +1,13 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.components.externalfile.ExternalFile;
+import com.diamondfire.helpbot.components.restart.RestartHandler;
 import com.diamondfire.helpbot.events.CommandEvent;
-
-import java.io.File;
-import java.util.Random;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 public class RestartCommand extends Command {
 
@@ -24,18 +22,15 @@ public class RestartCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Restarts command";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Restarts bot")
+                .category(CommandCategory.OTHER);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.OTHER;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -45,7 +40,15 @@ public class RestartCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        System.exit(0);
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Restarting!");
+        builder.setDescription("This may take a moment");
+
+        event.getChannel().sendMessage(builder.build()).queue((msg) -> {
+            RestartHandler.logRestart(msg);
+            System.exit(0);
+        });
+
     }
 
 }

@@ -1,11 +1,12 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.components.dfranks.Ranks;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -13,6 +14,9 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RetiredListCommand extends Command {
 
@@ -27,18 +31,15 @@ public class RetiredListCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets current retired staff members.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets current retired staff members.")
+                .category(CommandCategory.STATS);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -51,29 +52,26 @@ public class RetiredListCommand extends Command {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
+        new SingleQueryBuilder()
+                .query("SELECT * FROM ranks, players WHERE ranks.uuid = players.uuid " +
+                        "AND ranks.retirement > 0 " +
+                        "AND ranks.moderation = 0 " +
+                        "AND ranks.support = 0")
+                .onQuery((resultTable) -> {
+                    Map<Integer, List<String>> retiredList = new HashMap<>();
+                    retiredList.put(Ranks.RETIRED.getNumber(), new ArrayList<>());
+                    retiredList.put(Ranks.EMERITUS.getNumber(), new ArrayList<>());
 
-        new SingleQueryBuilder()
-                .query("SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.retirement = 1 AND ranks.moderation = 0 AND ranks.support = 0")
-                .onQuery((resultTable) -> {
-                    ArrayList<String> retired = new ArrayList<>();
                     do {
-                        retired.add(StringUtil.display(resultTable.getString("name")));
+                        retiredList.get(resultTable.getInt("retirement")).add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
-                    builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retired, "", ""));
-                }).execute();
-        new SingleQueryBuilder()
-                .query("SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.retirement = 2 AND ranks.moderation = 0 AND ranks.support = 0")
-                .onQuery((resultTable) -> {
-                    ArrayList<String> retired = new ArrayList<>();
-                    do {
-                        retired.add(StringUtil.display(resultTable.getString("name")));
-                    } while (resultTable.next());
-                    builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retired, "", ""));
+
+                    builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retiredList.get(Ranks.RETIRED.getNumber()), "", ""));
+                    builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retiredList.get(Ranks.EMERITUS.getNumber()), "", ""));
                 }).execute();
         builder.build().send();
 
     }
-
 
 }
 

@@ -1,12 +1,13 @@
 package com.diamondfire.helpbot.instance;
 
 import com.diamondfire.helpbot.command.CommandHandler;
+import com.diamondfire.helpbot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.command.impl.filespitter.ParticleListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.PotionListCommand;
 import com.diamondfire.helpbot.command.impl.filespitter.SoundListCommand;
 import com.diamondfire.helpbot.command.impl.other.*;
-import com.diamondfire.helpbot.command.impl.query.*;
 import com.diamondfire.helpbot.command.impl.stats.*;
+import com.diamondfire.helpbot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.components.config.Config;
 import com.diamondfire.helpbot.events.MessageEvent;
 import com.diamondfire.helpbot.events.ReactionEvent;
@@ -14,6 +15,9 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 
@@ -45,6 +49,9 @@ public class BotInstance {
                 new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
+                new FetchDumpCommand(),
+                new RawCommand(),
+                new SamQuotesCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -55,18 +62,31 @@ public class BotInstance {
                 new TrendingPlotsCommand(),
                 new PlotsCommand(),
                 new CpTopCommand(),
-                new SamQuotesCommand(),
                 new RetiredListCommand(),
                 new StaffListCommand(),
                 new SessionTopCommand(),
                 new LastJoinedCommand(),
                 new SessionStatsCommand(),
-                new NewPlayersCommand()
+                new NewPlayersCommand(),
+                new StatsGraphCommand(),
+                new NewJoinGraphCommand(),
+                new PlayersCommand(),
+                new BoostersCommand(),
+                new DiscordBoostersCommand(),
+                new TimeTopCommand(),
+                new QueueCommand(),
+                new WhoHelpedCommand(),
+                new HelpedByCommand(),
+                new NamesCommand(),
+                new PlayerJoinGraphCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         builder.setStatus(OnlineStatus.ONLINE);
+        builder.setMemberCachePolicy(MemberCachePolicy.NONE);
         builder.setActivity(Activity.watching("for ?help"));
+        builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS);
         builder.addEventListeners(new MessageEvent(), new ReactionEvent());
 
         jda = builder.build();

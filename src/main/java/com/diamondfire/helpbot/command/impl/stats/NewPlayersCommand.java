@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -18,18 +18,15 @@ public class NewPlayersCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets the new players who have joined today.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets the first 25 new players who have joined in the last 24 hours.")
+                .category(CommandCategory.STATS);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override

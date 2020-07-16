@@ -1,12 +1,10 @@
 package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
-import net.dv8tion.jda.api.utils.MarkdownUtil;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class StringUtil {
@@ -15,11 +13,9 @@ public class StringUtil {
         if (array.length == 0) {
             return "";
         }
-
         String list = ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
 
-
-        return sanitize ? MarkdownSanitizer.escape(list) : list;
+        return sanitize ? StringUtil.display(list) : list;
     }
 
     public static String asciidocStyle(HashMap<String, Integer> hashes) {
@@ -111,12 +107,25 @@ public class StringUtil {
 
     }
 
+    public static String formatTime(long duration, TimeUnit unit) {
+        return formatMilliTime(unit.toMillis(duration));
+    }
+
     public static String display(String string) {
         return MarkdownSanitizer.escape(stripColorCodes(string));
     }
 
-    @SuppressWarnings("deprecation")
     public static String formatDate(Date date) {
-        return (date.getMonth() + 1) + "/" + (date.toLocalDate().getDayOfMonth()) + "/" + (date.getYear() + 1900);
+        DateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+        return format.format(date);
+    }
+
+    public static List<String> splitBy(String string, int byAmt) {
+        List<String> parts = new ArrayList<>();
+        int length = string.length();
+        for (int i = 0; i < length; i += byAmt) {
+            parts.add(string.substring(i, Math.min(length, i + byAmt)));
+        }
+        return parts;
     }
 }

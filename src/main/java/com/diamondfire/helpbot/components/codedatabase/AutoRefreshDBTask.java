@@ -3,6 +3,8 @@ package com.diamondfire.helpbot.components.codedatabase;
 import com.diamondfire.helpbot.command.impl.other.FetchDataCommand;
 import com.diamondfire.helpbot.instance.BotInstance;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -10,12 +12,21 @@ import java.util.concurrent.TimeUnit;
 public class AutoRefreshDBTask implements Runnable {
 
     public static void initialize() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRun = now.withHour(0).withMinute(0).withSecond(0);
+
+        if (now.compareTo(nextRun) > 0) {
+            nextRun = nextRun.plusDays(1);
+        }
+
+        Duration duration = Duration.between(now, nextRun);
+        long timeTillMidnight = duration.getSeconds();
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(new AutoRefreshDBTask(),
-                1,
-                1,
-                TimeUnit.DAYS);
+                timeTillMidnight,
+                TimeUnit.DAYS.toSeconds(1),
+                TimeUnit.SECONDS);
     }
 
     @Override

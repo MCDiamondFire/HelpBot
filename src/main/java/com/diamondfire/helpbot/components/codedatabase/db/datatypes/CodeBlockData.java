@@ -56,5 +56,4 @@ public class CodeBlockData extends SimpleData {
         return DataTypes.CODEBLOCK;
     }
 
-
 }

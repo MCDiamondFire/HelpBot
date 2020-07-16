@@ -1,14 +1,15 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.ArrayList;
-
-public class PlotsCommand extends AbstractPlayerCommand {
+public class PlotsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String getName() {
@@ -21,8 +22,15 @@ public class PlotsCommand extends AbstractPlayerCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets current plots owned by user.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets current plots owned by a certain user. (Max of 25)")
+                .category(CommandCategory.STATS)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("player|uuid")
+                                .optional()
+                );
     }
 
     @Override
@@ -39,11 +47,12 @@ public class PlotsCommand extends AbstractPlayerCommand {
                     statement.setString(2, player);
                 })
                 .onQuery((resultTablePlot) -> {
+                    builder.setTitle(resultTablePlot.getString("owner_name") + "'s Plots");
                     do {
-                        ArrayList<String> stats = new ArrayList<>();
-                        builder.setTitle(resultTablePlot.getString("owner_name") + "'s Plots");
-                        stats.add("Votes: " + resultTablePlot.getInt("votes"));
-                        stats.add("Players: " + resultTablePlot.getInt("player_count"));
+                        String[] stats = {
+                                "Votes: " + resultTablePlot.getInt("votes"),
+                                "Players: " + resultTablePlot.getInt("player_count")
+                        };
                         builder.addField(StringUtil.display(resultTablePlot.getString("name")) +
                                         String.format(" **(%s)**", resultTablePlot.getInt("id")),
                                 String.join("\n", stats), false);
@@ -52,12 +61,10 @@ public class PlotsCommand extends AbstractPlayerCommand {
                 })
                 .onNotFound(() -> {
                     builder.setTitle("Error!");
-                    builder.setDescription("Player was not found");
+                    builder.setDescription("Player was not found, or they have no plots.");
                 }).execute();
         event.getChannel().sendMessage(builder.build()).queue();
-
     }
-
 
 }
 

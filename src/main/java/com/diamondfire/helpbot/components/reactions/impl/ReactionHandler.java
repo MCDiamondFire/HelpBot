@@ -19,7 +19,7 @@ public class ReactionHandler {
         }
 
         ReactionWait wait = new ReactionWait(user, message.getChannel().getIdLong(), message.getIdLong(), responder);
-        timer.schedule(wait, 20000);
+        timer.schedule(wait, 50000);
 
         reactionWaitHashMap.put(user, wait);
 
@@ -31,7 +31,7 @@ public class ReactionHandler {
         }
 
         ReactionWait wait = new ReactionWait(user, message.getChannel().getIdLong(), message.getIdLong(), responder, multiUse);
-        timer.schedule(wait, 20000);
+        timer.schedule(wait, 50000);
 
         reactionWaitHashMap.put(user, wait);
 
@@ -53,7 +53,7 @@ public class ReactionHandler {
             if (wait.isMultiUse()) {
                 //Remake wait instance
                 ReactionWait waitNew = new ReactionWait(wait.getUser(), wait.getChannel(), wait.getMessage(), wait.getResponder(), wait.isMultiUse());
-                timer.schedule(waitNew, 20000);
+                timer.schedule(waitNew, 50000);
                 reactionWaitHashMap.put(user.getIdLong(), waitNew);
                 wait = waitNew;
             }

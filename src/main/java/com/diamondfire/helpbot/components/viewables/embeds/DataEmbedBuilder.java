@@ -29,13 +29,13 @@ public abstract class DataEmbedBuilder {
         String footerText = builder.build().getFooter() == null ? "" : builder.build().getFooter().getText();
         StringBuilder footer = new StringBuilder(footerText);
 
-        if (icon.getRequiredCredits() && !icon.getRequiredRank().equals("Default")) {
+        if (icon.getRequiredCredits() && !icon.getRequiredRank().equals("")) {
             if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits OR ").append(icon.getRequiredRank());
         } else if (icon.getRequiredCredits()) {
             if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits");
-        } else if (!icon.getRequiredRank().equals("Default")) {
+        } else if (!icon.getRequiredRank().equals("")) {
             if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with " + icon.getRequiredRank());
         }
@@ -49,11 +49,10 @@ public abstract class DataEmbedBuilder {
     abstract protected EmbedBuilder buildDataEmbed(SimpleData data);
 
     public LinkedHashMap<BasicReaction, SimpleData> generateDupeEmojis(List<SimpleData> dataArrayList) {
-        LinkedList<String> nums = Util.getUnicodeNumbers();
-
         if (dataArrayList.size() > 10) {
             throw new IllegalStateException("Not enough emojis to map 10 objects!");
         }
+        LinkedList<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, SimpleData> dataHashed = new LinkedHashMap<>();
         for (SimpleData data : dataArrayList) {
             dataHashed.put(new BasicReaction(nums.pop()), data);

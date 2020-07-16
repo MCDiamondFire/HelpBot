@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -23,18 +23,15 @@ public class GarfieldCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Garfield comic, now!";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets a random garfield comic from Ottelino's garfield API.")
+                .category(CommandCategory.OTHER);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.OTHER;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class GarfieldCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         try {
-            URL url = new URL("https://garfield-api.glitch.me/v1/link");
+            URL url = new URL("https://labscore.vercel.app/api/v1/garfield/link");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
                 String line = in.readLine();
 

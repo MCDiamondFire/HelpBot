@@ -1,9 +1,11 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.value.StringArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -24,18 +26,20 @@ public class EvalCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Executes given code.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Executes given code.")
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("code")
+                );
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.OTHER;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new StringArg("Code", true);
+    public ArgumentSet getArguments() {
+        return new ArgumentSet()
+                .addArgument("code", new StringArgument());
     }
 
     @Override
@@ -45,6 +49,7 @@ public class EvalCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
+        String code = event.getArgument("code");
 
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
         if (!System.getProperty("os.name").contains("Linux")) {
@@ -57,12 +62,10 @@ public class EvalCommand extends Command {
         }
 
         ScriptEngine engine = new ScriptEngineManager().getEngineByName("js");
-
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
-
-        String code = event.getParsedArgs().replaceAll("([^(]+?)\\s*->", "function($1)");
+        code.replaceAll("([^(]+?)\\s*->", "function($1)");
         EmbedBuilder builder = new EmbedBuilder();
         builder.addField("Code", String.format("```js\n%s```", code), true);
 

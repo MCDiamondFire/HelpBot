@@ -14,4 +14,9 @@ public class ExternalFileUtil {
         file.createNewFile();
         return file;
     }
+
+    public static File getFile(String name) throws IOException {
+        File file = new File(ExternalFile.OTHER_CACHE_DIR.getFile(), name);
+        return file;
+    }
 }

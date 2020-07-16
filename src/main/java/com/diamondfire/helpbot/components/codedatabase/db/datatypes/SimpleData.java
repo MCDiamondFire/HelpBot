@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 public abstract class SimpleData {
 
     protected final JsonObject data;
-
     protected final String mainName;
 
     public SimpleData(JsonObject data, String mainName) {
@@ -27,4 +26,8 @@ public abstract class SimpleData {
     }
 
     public abstract DataTypes getEnum();
+
+    public JsonObject getJson() {
+        return data;
+    }
 }

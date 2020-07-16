@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -20,18 +20,15 @@ public class TrendingPlotsCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets current trending plots.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets current trending plots")
+                .category(CommandCategory.STATS);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -44,13 +41,13 @@ public class TrendingPlotsCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Trending Plots");
         new SingleQueryBuilder()
-                .query("SELECT * FROM plots WHERE whitelist = 0 ORDER BY votes DESC LIMIT 10")
+                .query("SELECT * FROM plots WHERE whitelist != 0 ORDER BY votes DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
+                        int count = resultTable.getInt("player_count");
                         ArrayList<String> stats = new ArrayList<>();
                         stats.add("Votes: " + resultTable.getInt("votes"));
 
-                        int count = resultTable.getInt("player_count");
                         if (count > 0) {
                             stats.add("Players: " + count);
                         }
@@ -63,9 +60,7 @@ public class TrendingPlotsCommand extends Command {
 
         event.getChannel().sendMessage(builder.build()).queue();
 
-
     }
-
 
 }
 

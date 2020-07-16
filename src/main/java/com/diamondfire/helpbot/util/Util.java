@@ -56,7 +56,7 @@ public class Util {
             String dataName = strings.get(i);
 
             queue.add(dataName);
-            list = StringUtil.listView(queue.toArray(new String[0]), pointer, true);
+            list = StringUtil.display(StringUtil.listView(queue.toArray(new String[0]), pointer, false));
 
             if (i == strings.size() - 1) {
                 builder.addField(firstField ? name : "", list, false);
@@ -77,7 +77,7 @@ public class Util {
 
     public static File fetchMinecraftTextureFile(String fileName) {
         try {
-            File file =  new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
+            File file = new File(ExternalFile.IMAGES_DIR.getFile(), fileName + ".png");
 
             if (file.exists()) {
                 return file;

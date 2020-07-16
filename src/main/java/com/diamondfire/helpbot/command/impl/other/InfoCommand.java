@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
@@ -23,18 +23,15 @@ public class InfoCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Get info on the current active code database";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets info on the current active code database.")
+                .category(CommandCategory.CODE_BLOCK);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.CODE_BLOCK;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -44,9 +41,8 @@ public class InfoCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        LinkedHashMap<String, Integer> dataStats = new LinkedHashMap<>();
         EmbedBuilder builder = new EmbedBuilder();
-
+        LinkedHashMap<String, Integer> dataStats = new LinkedHashMap<>();
         dataStats.put("CodeBlocks", CodeDatabase.getCodeBlocks().size());
         dataStats.put("Actions", CodeDatabase.getActions().size());
         dataStats.put("Sounds", CodeDatabase.getSounds().size());

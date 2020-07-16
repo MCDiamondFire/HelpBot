@@ -27,46 +27,36 @@ public class CommandHandler {
     }
 
     public void run(CommandEvent e) {
-        Command commandToRun = commands.get(e.getCommand().toLowerCase());
-        if (commandToRun == null) {
-            commandToRun = aliases.get(e.getCommand().toLowerCase());
-        }
+        Command command = e.getCommand();
 
-        if (commandToRun != null) {
-            if (!commandToRun.getPermission().hasPermission(e.getMember())) {
+        if (command != null) {
+            if (!command.getPermission().hasPermission(e.getMember())) {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setTitle("No Permission!");
                 builder.setDescription("Sorry, you do not have permission to use this command. Commands that you are able to use are listed in ?help.");
+                builder.setFooter("Permission Required: " + command.getPermission().name());
                 e.getChannel().sendMessage(builder.build()).queue();
                 return;
             }
 
-            if (commandToRun.getArgument().validate(e.getParsedArgs())) {
-                Command finalCommandToRun = commandToRun;
-                CompletableFuture.runAsync(
-                        () -> {
-                            try {
-                                finalCommandToRun.run(e);
-                            } catch (Exception error) {
-                                Util.error(error, "Command error!");
-                                error.printStackTrace();
-                            }
-                        }, POOL
-                );
-
-
-            } else {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setTitle("Invalid Arguments!");
-                builder.setDescription(commandToRun.getArgument().failMessage());
-                e.getChannel().sendMessage(builder.build()).queue();
-            }
-
+            CompletableFuture.runAsync(() -> {
+                        try {
+                            command.run(e);
+                        } catch (Exception error) {
+                            Util.error(error, "Command error!");
+                            error.printStackTrace();
+                        }
+                    }, POOL
+            );
         }
 
     }
 
     public HashMap<String, Command> getCommands() {
         return commands;
+    }
+
+    public HashMap<String, Command> getAliases() {
+        return aliases;
     }
 }

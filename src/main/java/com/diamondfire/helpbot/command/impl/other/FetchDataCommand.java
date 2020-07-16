@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.command.impl.other;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
@@ -48,18 +48,15 @@ public class FetchDataCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Fetches data from node beta.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Fetches data from node beta, then saves it as the current db.")
+                .category(CommandCategory.OTHER);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.OTHER;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override

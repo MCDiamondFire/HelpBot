@@ -10,10 +10,13 @@ public class MessageEvent extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-
-        if (event.getMessage().getContentDisplay().startsWith(BotInstance.getConfig().getPrefix())) {
-            CommandEvent commandEvent = new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage());
-            BotInstance.getHandler().run(commandEvent);
+        if (event.getMessage().getContentDisplay().startsWith(BotInstance.getConfig().getPrefix()) && !event.getAuthor().isBot()) {
+            //TODO Handle the illegal arguments somewhere else.
+            try {
+                CommandEvent commandEvent = new CommandEvent(event.getJDA(), event.getResponseNumber(), event.getMessage());
+                BotInstance.getHandler().run(commandEvent);
+            } catch (IllegalArgumentException ignored) {
+            }
 
         }
 

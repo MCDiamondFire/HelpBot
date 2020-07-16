@@ -1,20 +1,24 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.components.dfranks.Ranks;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StaffListCommand extends Command {
@@ -30,18 +34,15 @@ public class StaffListCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets current staff members.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets current staff members.")
+                .category(CommandCategory.STATS);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -51,92 +52,80 @@ public class StaffListCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
+        EmbedBuilder devEmbed = new EmbedBuilder();
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
-
         new SingleQueryBuilder()
-                .query("SELECT players.name AS name, ranks.support AS support FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support > 0 AND ranks.moderation = 0 && ranks.retirement = 0")
+                .query("SELECT * FROM ranks, players " +
+                        "WHERE ranks.uuid = players.uuid " +
+                        "AND (ranks.support > 0 || ranks.moderation > 0 || ranks.developer = 1 || ranks.builder = 1) AND ranks.retirement = 0")
                 .onQuery((resultTable) -> {
-                    HashMap<String, Integer> supports = new HashMap<>();
-                    do {
-                        supports.put(resultTable.getString("name"), resultTable.getInt("support"));
-                    } while (resultTable.next());
-                    EmbedBuilder page = new EmbedBuilder();
-                    ArrayList<String> jrHelpers = new ArrayList<>();
-                    ArrayList<String> helpers = new ArrayList<>();
-                    ArrayList<String> experts = new ArrayList<>();
-
-                    for (Map.Entry<String, Integer> player : supports.entrySet()) {
-                        switch (player.getValue()) {
-                            case 1:
-                                jrHelpers.add(StringUtil.display(player.getKey()));
-                                break;
-                            case 2:
-                                helpers.add(StringUtil.display(player.getKey()));
-                                break;
-                            case 3:
-                                experts.add(StringUtil.display(player.getKey()));
-                                break;
-                        }
-                    }
-
-                    Util.addFields(page, experts, "Experts", "");
-                    Util.addFields(page, helpers, "Helpers", "");
-                    Util.addFields(page, jrHelpers, "JrHelpers", "");
-                    builder.addPage("Support", page);
-                }).execute();
-        new SingleQueryBuilder()
-                .query("SELECT players.name AS name, ranks.moderation AS mod_rank FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.moderation > 0 && ranks.retirement = 0")
-                .onQuery((resultTable) -> {
-                    HashMap<String, Integer> moderators = new HashMap<>();
-                    do {
-                        moderators.put(resultTable.getString("name"), resultTable.getInt("mod_rank"));
-                    } while (resultTable.next());
+                    EmbedBuilder helperPage = new EmbedBuilder();
                     EmbedBuilder modPage = new EmbedBuilder();
                     EmbedBuilder adminPage = new EmbedBuilder();
-                    ArrayList<String> jrMods = new ArrayList<>();
-                    ArrayList<String> mods = new ArrayList<>();
-                    ArrayList<String> admins = new ArrayList<>();
-                    ArrayList<String> owners = new ArrayList<>();
+                    Map<Integer, List<String>> support = new HashMap<>();
+                    Map<Integer, List<String>> moderation = new HashMap<>();
+                    List<String> devs = new ArrayList<>();
 
-                    for (Map.Entry<String, Integer> player : moderators.entrySet()) {
-                        switch (player.getValue()) {
-                            case 1:
-                                jrMods.add(StringUtil.display(player.getKey()));
-                                break;
-                            case 2:
-                                mods.add(StringUtil.display(player.getKey()));
-                                break;
-                            case 3:
-                                admins.add(StringUtil.display(player.getKey()));
-                                break;
-                            case 4:
-                                owners.add(StringUtil.display(player.getKey()));
-                                break;
+
+                    support.put(Ranks.JRHELPER.getNumber(), new ArrayList<>());
+                    support.put(Ranks.HELPER.getNumber(), new ArrayList<>());
+                    support.put(Ranks.EXPERT.getNumber(), new ArrayList<>());
+                    moderation.put(Ranks.JRMOD.getNumber(), new ArrayList<>());
+                    moderation.put(Ranks.MOD.getNumber(), new ArrayList<>());
+                    moderation.put(Ranks.ADMIN.getNumber(), new ArrayList<>());
+                    moderation.put(Ranks.OWNER.getNumber(), new ArrayList<>());
+
+                    do {
+                        String name = StringUtil.display(resultTable.getString("name"));
+                        int supportNum = resultTable.getInt("support");
+                        int moderationNum = resultTable.getInt("moderation");
+                        int developerNum = resultTable.getInt("developer");
+
+                        if (developerNum != 0) {
+                            devs.add(name);
                         }
-                    }
+                        if (moderationNum == 0 && supportNum > 0) {
+                            support.get(supportNum).add(name);
+                        } else if (moderationNum > 0) {
+                            moderation.get(moderationNum).add(name);
+                        }
 
-                    Util.addFields(modPage, mods, "Mods", "");
-                    Util.addFields(modPage, jrMods, "JrMods", "");
+                    } while (resultTable.next());
+
+                    Util.addFields(helperPage, support.get(Ranks.EXPERT.getNumber()), "Experts", "");
+                    Util.addFields(helperPage, support.get(Ranks.HELPER.getNumber()), "Helpers", "");
+                    Util.addFields(helperPage, support.get(Ranks.JRHELPER.getNumber()), "JrHelpers", "");
+                    builder.addPage("Support", helperPage);
+
+                    Util.addFields(modPage, moderation.get(Ranks.MOD.getNumber()), "Mods", "");
+                    Util.addFields(modPage, moderation.get(Ranks.JRMOD.getNumber()), "JrMods", "");
                     builder.addPage("Moderation", modPage);
 
-                    Util.addFields(adminPage, owners, "Owner", "");
-                    Util.addFields(adminPage, admins, "Admins", "");
+                    Util.addFields(adminPage, moderation.get(Ranks.OWNER.getNumber()), "Owner", "");
+                    Util.addFields(adminPage, moderation.get(Ranks.ADMIN.getNumber()), "Admins", "");
                     builder.addPage("Administration", adminPage);
 
+                    Util.addFields(devEmbed, devs, "DiamondFire Developers", "");
                 }).execute();
 
-        // Not pretty, ik. But it would require me to cache things and that is yucky.
-        EmbedBuilder devEmbed = new EmbedBuilder();
+        Guild guild = event.getGuild();
+        Role botDev = guild.getRoleById(589238520145510400L);
 
-        Util.addFields(devEmbed, Arrays.asList("K_Sasha", "S4nders", "RedDaedalus"), "DiamondFire Developers", "");
-        Util.addFields(devEmbed, Arrays.asList("RedDaedalus", "Owen1212055", "Ottelino", "Tomoli", "EnjoyYourBan"), "Bot Developers", "");
-        builder.addPage("Developers", devEmbed);
+        guild.findMembers((member -> member.getRoles().contains(botDev))).onSuccess((members) -> {
+            List<String> memberNames = new ArrayList<>();
+            for (Member member : members) {
+                if (!member.getUser().isBot()) {
+                    memberNames.add(member.getEffectiveName());
+                }
+            }
 
-        builder.build().send();
-
-
+            Util.addFields(devEmbed, memberNames, "Bot Developers", "");
+            guild.pruneMemberCache();
+            builder.addPage("Developers", devEmbed);
+            builder.build().send();
+        });
     }
 
 

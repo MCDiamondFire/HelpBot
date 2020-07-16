@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.filespitter;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -19,13 +19,10 @@ public class ParticleListCommand extends AbstractFileListCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Generates a file that contains all current particles.";
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Generates a file that contains all particles.")
+                .category(CommandCategory.OTHER);
     }
 
     @Override

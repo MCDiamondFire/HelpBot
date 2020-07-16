@@ -109,4 +109,16 @@ public class SingleQueryBuilder {
             e.printStackTrace();
         }
     }
+
+    public void executeRaw() {
+        try (Connection connection = ConnectionGiver.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            if (preparedStatement != null) {
+                preparedStatement.run(statement);
+            }
+            statement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

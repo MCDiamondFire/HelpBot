@@ -1,15 +1,14 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 public class CpTopCommand extends Command {
 
@@ -24,18 +23,15 @@ public class CpTopCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets current CP leaderboard.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets the current CP leaderboard.")
+                .category(CommandCategory.STATS);
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -59,7 +55,6 @@ public class CpTopCommand extends Command {
         event.getChannel().sendMessage(builder.build()).queue();
 
     }
-
 
 }
 

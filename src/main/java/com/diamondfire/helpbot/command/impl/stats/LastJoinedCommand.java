@@ -1,11 +1,14 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class LastJoinedCommand extends AbstractPlayerCommand {
+public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String getName() {
@@ -18,14 +21,20 @@ public class LastJoinedCommand extends AbstractPlayerCommand {
     }
 
     @Override
-    public String getDescription() {
-        return "Gets the time when someone last joined.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets the last date when a user joined.")
+                .category(CommandCategory.STATS)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("player|uuid")
+                                .optional()
+                );
     }
 
     @Override
     protected void execute(CommandEvent event, String player) {
         EmbedBuilder builder = new EmbedBuilder();
-
         new SingleQueryBuilder()
                 .query("SELECT players.uuid FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
                     statement.setString(1, player);
@@ -48,8 +57,6 @@ public class LastJoinedCommand extends AbstractPlayerCommand {
                 .onNotFound(() -> builder.setTitle("Player not found!")).execute();
 
         event.getChannel().sendMessage(builder.build()).queue();
-
-
     }
 
 }

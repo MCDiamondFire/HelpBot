@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -62,9 +63,8 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
             params.append(line);
 
             // Generate the description of the argument (skip the first index)
-            for (int i = 1; i < arg.getDescription().length; i++) {
-                params.append(arg.getDescription()[i]);
-            }
+            String[] description = arg.getDescription();
+            params.append(String.join(" ", Arrays.copyOfRange(description, 1, description.length)));
 
             // Generate extra notes that appear under the argument.
             params.append(StringUtil.listView(arg.getExtraNotes(), "> ", true));

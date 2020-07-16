@@ -1,9 +1,11 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.arguments.value.IntegerArg;
-import com.diamondfire.helpbot.command.arguments.value.ValueArgument;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.command.argument.impl.types.IntegerArgument;
+import com.diamondfire.helpbot.command.help.CommandCategory;
+import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -52,18 +54,21 @@ public class PlotCommand extends Command {
     }
 
     @Override
-    public String getDescription() {
-        return "Get info on a certain plot.";
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Gets information on a certain plot.")
+                .category(CommandCategory.STATS)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("plot id")
+                );
     }
 
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.STATS;
-    }
-
-    @Override
-    public ValueArgument<Integer> getArgument() {
-        return new IntegerArg("Plot ID", true);
+    public ArgumentSet getArguments() {
+        return new ArgumentSet()
+                .addArgument("id",
+                        new IntegerArgument());
     }
 
     @Override
@@ -74,7 +79,7 @@ public class PlotCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        int plotID = getArgument().getArg(event.getParsedArgs());
+        int plotID = event.getArgument("id");
 
         new SingleQueryBuilder()
                 .query("SELECT * FROM plots where ID = ?;", (statement) -> {
@@ -95,7 +100,6 @@ public class PlotCommand extends Command {
                         for (String tag : tags.split(",")) {
                             tagList.add(plotTags.get(tag));
                         }
-
                         builder.addField("Plot Tags", StringUtil.listView(tagList.toArray(new String[0]), ">", true), true);
                     }
 

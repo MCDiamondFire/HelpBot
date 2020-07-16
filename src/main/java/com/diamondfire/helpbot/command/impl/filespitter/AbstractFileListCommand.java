@@ -1,9 +1,7 @@
 package com.diamondfire.helpbot.command.impl.filespitter;
 
-import com.diamondfire.helpbot.command.arguments.Argument;
-import com.diamondfire.helpbot.command.arguments.NoArg;
+import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.impl.CommandCategory;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.components.externalfile.ExternalFileUtil;
@@ -18,15 +16,9 @@ import java.util.List;
 
 public abstract class AbstractFileListCommand extends Command {
 
-
     @Override
-    public CommandCategory getCategory() {
-        return CommandCategory.HIDDEN;
-    }
-
-    @Override
-    public Argument getArgument() {
-        return new NoArg();
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
