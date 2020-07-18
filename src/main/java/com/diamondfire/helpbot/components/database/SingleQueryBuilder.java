@@ -1,13 +1,9 @@
 package com.diamondfire.helpbot.components.database;
 
 import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 /**
  * <h1>SingleQueryBuilder</h1>

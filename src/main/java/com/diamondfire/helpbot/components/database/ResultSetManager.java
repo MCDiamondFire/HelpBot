@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 @FunctionalInterface
 public interface ResultSetManager {

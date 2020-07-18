@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.argument.impl.types.MessageArgument;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;

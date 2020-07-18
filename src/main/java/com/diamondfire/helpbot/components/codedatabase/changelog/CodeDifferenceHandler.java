@@ -2,17 +2,12 @@ package com.diamondfire.helpbot.components.codedatabase.changelog;
 
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.Util;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.nio.file.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CodeDifferenceHandler {

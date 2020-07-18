@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.command.permissions;
 
 import net.dv8tion.jda.api.entities.Member;
 
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 public class PermissionHandler {
 

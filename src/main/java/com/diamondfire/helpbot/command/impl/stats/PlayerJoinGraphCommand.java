@@ -1,16 +1,12 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.command.argument.impl.types.ClampedIntegerArgument;
-import com.diamondfire.helpbot.command.argument.impl.types.DefinedStringArgument;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
-import com.diamondfire.helpbot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.components.graph.graphable.GraphableEntry;
-import com.diamondfire.helpbot.components.graph.graphable.StringEntry;
+import com.diamondfire.helpbot.components.graph.graphable.*;
 import com.diamondfire.helpbot.components.graph.impl.ChartGraphBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 

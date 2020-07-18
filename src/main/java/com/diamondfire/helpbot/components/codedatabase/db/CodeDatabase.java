@@ -3,16 +3,11 @@ package com.diamondfire.helpbot.components.codedatabase.db;
 import com.diamondfire.helpbot.components.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.util.Util;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CodeDatabase {

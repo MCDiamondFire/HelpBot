@@ -10,8 +10,7 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public abstract class AbstractMultiQueryCommand extends Command {

@@ -1,17 +1,14 @@
 package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 
 

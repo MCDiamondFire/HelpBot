@@ -1,20 +1,13 @@
 package com.diamondfire.helpbot.components.viewables.embeds;
 
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionArgumentData;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.CodeBlockActionData;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.components.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.components.viewables.BasicReaction;
 import com.diamondfire.helpbot.instance.BotInstance;
-import com.diamondfire.helpbot.util.ParamConverter;
-import com.diamondfire.helpbot.util.StringUtil;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 

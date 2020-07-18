@@ -1,9 +1,7 @@
 package com.diamondfire.helpbot.components.viewables;
 
 import com.diamondfire.helpbot.instance.BotInstance;
-import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.RestAction;
 
 public class BasicReaction {

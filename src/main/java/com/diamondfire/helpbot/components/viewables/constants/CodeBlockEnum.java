@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.components.viewables.constants;
 
 import java.awt.*;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public enum CodeBlockEnum {
     PLAYER_EVENT("event", "3DE0E5", 688643535842705408L),

@@ -2,12 +2,9 @@ package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.argument.impl.types.DefinedStringArgument;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
-import com.diamondfire.helpbot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
-import com.diamondfire.helpbot.command.permissions.Permission;
-import com.diamondfire.helpbot.command.permissions.PermissionHandler;
+import com.diamondfire.helpbot.command.permissions.*;
 import com.diamondfire.helpbot.components.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.instance.BotInstance;

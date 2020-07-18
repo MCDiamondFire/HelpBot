@@ -2,9 +2,7 @@ package com.diamondfire.helpbot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.argument.impl.types.ClampedIntegerArgument;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
-import com.diamondfire.helpbot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
@@ -12,8 +10,7 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SessionTopCommand extends Command {
 

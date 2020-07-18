@@ -1,11 +1,9 @@
 package com.diamondfire.helpbot.components.config;
 
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.stream.Collectors;
 
 public class Config {

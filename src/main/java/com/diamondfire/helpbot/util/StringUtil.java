@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 

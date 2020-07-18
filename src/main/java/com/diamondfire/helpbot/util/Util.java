@@ -4,20 +4,14 @@ import com.diamondfire.helpbot.components.externalfile.ExternalFile;
 import com.diamondfire.helpbot.instance.BotInstance;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
-import java.io.File;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.LinkedList;
+import java.nio.file.*;
 import java.util.List;
+import java.util.*;
 
 public class Util {
 

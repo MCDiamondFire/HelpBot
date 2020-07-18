@@ -1,8 +1,6 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
-import com.diamondfire.helpbot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.dfranks.Ranks;
@@ -10,8 +8,7 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class ProfileCommand extends AbstractPlayerUUIDCommand {

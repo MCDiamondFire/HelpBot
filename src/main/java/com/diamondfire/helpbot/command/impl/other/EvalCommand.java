@@ -2,20 +2,16 @@ package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.argument.impl.types.StringArgument;
-import com.diamondfire.helpbot.command.help.CommandCategory;
-import com.diamondfire.helpbot.command.help.HelpContext;
-import com.diamondfire.helpbot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import javax.script.*;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 
 
 public class EvalCommand extends Command {

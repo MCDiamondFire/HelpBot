@@ -1,11 +1,8 @@
 package com.diamondfire.helpbot.components.viewables.embeds;
 
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.util.StringUtil;
-import com.diamondfire.helpbot.util.Util;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.diamondfire.helpbot.components.codedatabase.db.datatypes.*;
+import com.diamondfire.helpbot.util.*;
+import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 

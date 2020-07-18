@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.externalfile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 public class ExternalFileUtil {
 

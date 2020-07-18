@@ -4,8 +4,7 @@ import com.diamondfire.helpbot.command.argument.impl.ArgumentContainer;
 import com.diamondfire.helpbot.command.argument.impl.types.Argument;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ArgumentSet {
 

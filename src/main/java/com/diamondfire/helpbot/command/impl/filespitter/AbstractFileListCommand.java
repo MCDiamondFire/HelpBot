@@ -8,10 +8,7 @@ import com.diamondfire.helpbot.components.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 public abstract class AbstractFileListCommand extends Command {

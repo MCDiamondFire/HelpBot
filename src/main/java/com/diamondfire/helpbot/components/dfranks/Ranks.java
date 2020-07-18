@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.dfranks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public enum Ranks {
     // Ranks

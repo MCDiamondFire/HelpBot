@@ -1,11 +1,8 @@
 package com.diamondfire.helpbot.components.reactions.impl;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.*;
 
-import java.util.HashMap;
-import java.util.Timer;
+import java.util.*;
 
 public class ReactionHandler {
 

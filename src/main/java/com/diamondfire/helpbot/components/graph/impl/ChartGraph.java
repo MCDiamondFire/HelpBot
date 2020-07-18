@@ -5,10 +5,7 @@ import com.diamondfire.helpbot.components.graph.graphable.GraphableEntry;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ChartGraph extends Graph {
 

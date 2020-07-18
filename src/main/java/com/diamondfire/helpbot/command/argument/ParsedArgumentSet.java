@@ -3,8 +3,7 @@ package com.diamondfire.helpbot.command.argument;
 import com.diamondfire.helpbot.command.argument.impl.ArgumentContainer;
 import com.diamondfire.helpbot.command.argument.impl.types.MessageArgument;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ParsedArgumentSet {
 

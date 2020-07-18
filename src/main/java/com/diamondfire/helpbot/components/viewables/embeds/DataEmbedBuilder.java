@@ -1,14 +1,11 @@
 package com.diamondfire.helpbot.components.viewables.embeds;
 
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.DisplayIconData;
-import com.diamondfire.helpbot.components.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.components.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.components.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public abstract class DataEmbedBuilder {
 

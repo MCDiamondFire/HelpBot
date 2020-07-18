@@ -1,11 +1,8 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CodeBlockTagData {
 

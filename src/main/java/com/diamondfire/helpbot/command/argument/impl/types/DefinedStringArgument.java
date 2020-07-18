@@ -4,9 +4,7 @@ package com.diamondfire.helpbot.command.argument.impl.types;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DefinedStringArgument extends Argument<String> {
 

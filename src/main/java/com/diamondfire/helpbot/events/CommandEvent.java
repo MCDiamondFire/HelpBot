@@ -3,14 +3,12 @@ package com.diamondfire.helpbot.events;
 import com.diamondfire.helpbot.command.argument.ParsedArgumentSet;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.instance.BotInstance;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
 

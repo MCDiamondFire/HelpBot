@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.components.codedatabase.db.datatypes;
 
-import com.diamondfire.helpbot.components.viewables.constants.CodeBlockEnum;
-import com.diamondfire.helpbot.components.viewables.constants.DataTypes;
+import com.diamondfire.helpbot.components.viewables.constants.*;
 import com.google.gson.JsonObject;
 
 public class CodeBlockData extends SimpleData {
