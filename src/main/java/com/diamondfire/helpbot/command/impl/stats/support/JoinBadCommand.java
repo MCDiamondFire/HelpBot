@@ -66,7 +66,7 @@ public class JoinBadCommand extends Command {
                         staff.add(resultTableJoins.getString("name"));
                     } while (resultTableJoins.next());
 
-                    Util.addFields(builder, staff, "", "");
+                    Util.addFields(builder, staff, "", "", true);
                     event.getChannel().sendMessage(builder.build()).queue();
 
                 })

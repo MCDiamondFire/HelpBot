@@ -30,15 +30,20 @@ public class Util {
         return nums;
     }
 
-    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name) {
-        return addFields(builder, strings, "> ");
-    }
 
     public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings) {
-        return addFields(builder, strings, "", "> ");
+        return addFields(builder, strings, "", "> ", false);
+    }
+
+    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, boolean sanatize) {
+        return addFields(builder, strings, "", "> ", sanatize);
     }
 
     public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
+        return addFields(builder, strings, name, "> ", false);
+    }
+
+    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer, boolean sanatize) {
 
         String list;
         String lastList = null;
@@ -50,7 +55,7 @@ public class Util {
             String dataName = strings.get(i);
 
             queue.add(dataName);
-            list = StringUtil.display(StringUtil.listView(queue.toArray(new String[0]), pointer, false));
+            list = StringUtil.display(StringUtil.listView(queue.toArray(new String[0]), pointer, sanatize));
 
             if (i == strings.size() - 1) {
                 builder.addField(firstField ? name : "", list, false);

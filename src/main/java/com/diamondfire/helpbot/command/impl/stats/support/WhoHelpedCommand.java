@@ -52,7 +52,7 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                         sessions.add(query.getInt("total") + " " + query.getString("staff"));
                     } while (query.next());
 
-                    Util.addFields(builder, sessions);
+                    Util.addFields(builder, sessions, true);
                     event.getChannel().sendMessage(builder.build()).queue();
 
                 })

@@ -52,7 +52,7 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                         sessions.add(query.getInt("total") + " " + query.getString("name"));
                     } while (query.next());
 
-                    Util.addFields(builder, sessions);
+                    Util.addFields(builder, sessions, true);
                     event.getChannel().sendMessage(builder.build()).queue();
 
                 })

@@ -29,6 +29,9 @@ public class InBadCommand extends Command {
                 .addArgument(
                         new HelpContextArgument()
                                 .name("sessions")
+                                .optional(),
+                        new HelpContextArgument()
+                                .name("days")
                                 .optional()
                 );
     }
@@ -37,7 +40,9 @@ public class InBadCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("count",
-                        new ClampedIntegerArgument(1, Integer.MAX_VALUE).optional(5));
+                        new ClampedIntegerArgument(1, Integer.MAX_VALUE).optional(5))
+                .addArgument("days",
+                        new ClampedIntegerArgument(1, Integer.MAX_VALUE).optional(30));
     }
 
     @Override
@@ -48,22 +53,26 @@ public class InBadCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         int num = event.getArgument("count");
+        int days = event.getArgument("days");
+
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(String.format("People with less than %s sessions this month:", num));
+        builder.setTitle(String.format("People who have done %s or less sessions in the last %s days:", num, days));
         builder.setColor(Color.RED);
 
         new SingleQueryBuilder()
                 .query("SELECT * FROM (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer IS NULL) a " +
-                                "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL 30 DAY GROUP BY staff HAVING COUNT(staff) >= ?)",
-                        (statement -> statement.setInt(1, num)))
+                                "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)",
+                        statement -> {
+                            statement.setInt(1, days);
+                            statement.setInt(2, num);
+                        })
                 .onQuery((resultTable) -> {
                     List<String> staff = new ArrayList<>();
                     do {
                         staff.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
-
-                    Util.addFields(builder, staff, "", "");
+                    Util.addFields(builder, staff, "", "", true);
                     event.getChannel().sendMessage(builder.build()).queue();
                 })
                 .onNotFound(() -> {
