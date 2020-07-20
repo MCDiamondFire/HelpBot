@@ -55,15 +55,13 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     statement.setString(2, player);
                 })
                 .onQuery(table -> {
-                    String playerName = table.getString("name");
-                    String uuid = table.getString("name");
                     int points = table.getInt("points");
                     int rank = table.getInt("cur_rank");
                     CreatorLevel level = CreatorLevel.getLevel(rank);
                     CreatorLevel nextLevel = CreatorLevel.getNextLevel(CreatorLevel.getLevel(rank));
                     int nextLevelReq = nextLevel.getRequirementProvider().getRequirement();
 
-                    embed.addField("Current Rank", level.toString(), false);
+                    embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", points + "", false);
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> {
@@ -74,7 +72,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                             }).execute();
 
                     if (level != CreatorLevel.DIAMOND) {
-                        embed.addField("Next Rank", nextLevel.toString(), true);
+                        embed.addField("Next Rank", nextLevel.display(true), true);
                         embed.addField("Next Rank Points", nextLevelReq + String.format(" (%s to go)", nextLevelReq - points), false);
                     }
 

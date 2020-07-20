@@ -49,7 +49,7 @@ public class CpRequirementsCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         embed.setFooter("*Level requirement is based on a top % of players.");
         for (CreatorLevel level : CreatorLevel.values()) {
-            embed.addField(level.toString(), "CP Required: " + level.getRequirementProvider().getRequirement(), true);
+            embed.addField(level.display(), "CP Required: " + level.getRequirementProvider().getRequirement(), true);
         }
 
         // Even it out

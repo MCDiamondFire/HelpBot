@@ -51,8 +51,10 @@ public enum CreatorLevel {
         return emoji;
     }
 
-    @Override
-    public String toString() {
-        return String.format("<:%s:%s>", getName().toLowerCase(), getEmoji()) + " " + getName() + (requirementProvider instanceof DynamicRequirementProvider ? "*" : "");
+    public String display() {
+        return display(false);
+    }
+    public String display(boolean hideStar) {
+        return String.format("<:%s:%s>", getName().toLowerCase(), getEmoji()) + " " + getName() + (requirementProvider instanceof DynamicRequirementProvider && hideStar ? "*" : "");
     }
 }
