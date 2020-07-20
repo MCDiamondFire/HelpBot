@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -40,8 +42,11 @@ public class BoostersCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Current Boosters:");
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Current Boosters", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
                 .query("SELECT * FROM xp_boosters WHERE FROM_UNIXTIME(end_time * 0.001) > CURRENT_TIMESTAMP()")
@@ -50,9 +55,9 @@ public class BoostersCommand extends Command {
                     int multiplier = resultTable.getInt("multiplier");
                     String durationName = StringUtil.formatMilliTime(resultTable.getLong("end_time") - System.currentTimeMillis());
 
-                    builder.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
-                }).onNotFound(() -> builder.addField("None!", "How sad... :(", false)).execute();
-        event.getChannel().sendMessage(builder.build()).queue();
+                    embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
+                }).onNotFound(() -> embed.addField("None!", "How sad... :(", false)).execute();
+        event.reply(preset);
 
     }
 

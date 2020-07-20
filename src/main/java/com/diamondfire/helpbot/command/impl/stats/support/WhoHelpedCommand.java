@@ -3,6 +3,9 @@ package com.diamondfire.helpbot.command.impl.stats.support;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
@@ -37,6 +40,12 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new MinecraftUserPreset(player),
+                        new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + player, null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
                 .query("SELECT COUNT(staff) AS total, staff FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> {
@@ -44,24 +53,18 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                 })
                 .onQuery((query) -> {
                     List<String> sessions = new ArrayList<>();
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setTitle("Players who have helped " + player);
-                    builder.setAuthor(player, null, "https://mc-heads.net/head/" + player);
 
                     do {
                         sessions.add(query.getInt("total") + " " + query.getString("staff"));
                     } while (query.next());
 
-                    Util.addFields(builder, sessions, true);
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    Util.addFields(embed, sessions, true);
 
                 })
                 .onNotFound(() -> {
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setTitle("Hmm.. It seems like nobody has helped " + player);
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    embed.setDescription("Nobody!");
                 }).execute();
-
+        event.reply(preset);
     }
 
 }

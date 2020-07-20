@@ -5,6 +5,8 @@ import com.diamondfire.helpbot.command.argument.impl.types.ClampedIntegerArgumen
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
@@ -55,9 +57,12 @@ public class InBadCommand extends Command {
         int num = event.getArgument("count");
         int days = event.getArgument("days");
 
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(String.format("People who have done %s or less sessions in the last %s days:", num, days));
-        builder.setColor(Color.RED);
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, String.format("People who have done %s or less sessions in the last %s days:", num, days), null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
+        embed.setColor(Color.RED);
 
         new SingleQueryBuilder()
                 .query("SELECT * FROM (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer IS NULL) a " +
@@ -72,12 +77,11 @@ public class InBadCommand extends Command {
                         staff.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
-                    Util.addFields(builder, staff, "", "", true);
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    Util.addFields(embed, staff, "", "", true);
                 })
                 .onNotFound(() -> {
-                    builder.setDescription("");
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    embed.setDescription("");
                 }).execute();
+        event.reply(preset);
     }
 }

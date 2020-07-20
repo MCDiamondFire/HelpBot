@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.components.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.components.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.components.externalfile.ExternalFile;
@@ -40,7 +41,9 @@ public class InfoCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder();
+        EmbedBuilder embed = preset.getEmbed();
+
         LinkedHashMap<String, Integer> dataStats = new LinkedHashMap<>();
         dataStats.put("CodeBlocks", CodeDatabase.getCodeBlocks().size());
         dataStats.put("Actions", CodeDatabase.getActions().size());
@@ -51,12 +54,12 @@ public class InfoCommand extends Command {
         dataStats.put("Legacy Actions", CodeDatabase.getDeprecatedActions().size());
         dataStats.put("Legacy Game Values", CodeDatabase.getDeprecatedGameValues().size());
 
-        builder.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
-        builder.addField("What's New on Beta?", String.format("```%s```", StringUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
-        builder.setFooter("Database Last Updated");
-        builder.setDescription("The database is updated automatically every 24h.");
-        builder.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
-        event.getChannel().sendMessage(builder.build()).queue();
+        embed.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
+        embed.addField("What's New on Beta?", String.format("```%s```", StringUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
+        embed.setFooter("Database Last Updated");
+        embed.setDescription("The database is updated automatically every 24h.");
+        embed.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
 
+        event.reply(preset);
     }
 }

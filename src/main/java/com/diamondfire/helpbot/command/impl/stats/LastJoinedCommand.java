@@ -1,6 +1,9 @@
 package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.help.*;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -32,7 +35,12 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new MinecraftUserPreset(player),
+                        new InformativeReply(InformativeReplyType.INFO, null, null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
                 .query("SELECT players.uuid FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
                     statement.setString(1, player);
@@ -44,17 +52,18 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                                 statement.setString(1, resultTable.getString("uuid"));
                             })
                             .onQuery((resultTableDate) -> {
-                                builder.setAuthor(StringUtil.display(player), null, "https://mc-heads.net/head/" + player);
-                                builder.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false);
+                                embed.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false);
                             })
                             .onNotFound(() -> {
-                                builder.setAuthor(StringUtil.display(player), null, "https://mc-heads.net/head/" + player);
-                                builder.addField("Last Seen", "A long time ago...", false);
+                                embed.addField("Last Seen", "A long time ago...", false);
                             }).execute();
                 })
-                .onNotFound(() -> builder.setTitle("Player not found!")).execute();
+                .onNotFound(() -> {
+                    embed.clear();
+                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
+                }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
+        event.reply(preset);
     }
 
 }

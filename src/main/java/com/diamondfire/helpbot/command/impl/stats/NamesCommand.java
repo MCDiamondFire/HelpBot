@@ -2,6 +2,9 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
@@ -43,6 +46,12 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Name Changes", player), null),
+                        new MinecraftUserPreset(player)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         try {
             URL profile = new URL("https://mc-heads.net/minecraft/profile/" + player);
             URLConnection connection = profile.openConnection();
@@ -77,15 +86,11 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
             }
             Collections.reverse(names);
 
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(String.format("%s's Name Changes", displayName));
-            builder.setAuthor(player, null, "https://mc-heads.net/head/" + player);
-
-            Util.addFields(builder, names);
-            event.getChannel().sendMessage(builder.build()).queue();
+            Util.addFields(embed, names);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        event.reply(preset);
     }
 
 }

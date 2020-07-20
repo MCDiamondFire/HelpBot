@@ -91,8 +91,8 @@ public class PlayerJoinGraphCommand extends Command {
             case "monthly":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time FROM player_join_log " +
-                                        "WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? MONTH, '%y-%m-%d')) a GROUP BY time;"
-                                , statement -> statement.setInt(1, amount))
+                                        "WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? MONTH, '%y-%m-%d')) a GROUP BY time;",
+                                statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
                                 for (int i = 0; i < resultTable.getInt("count") + 1; i++) {

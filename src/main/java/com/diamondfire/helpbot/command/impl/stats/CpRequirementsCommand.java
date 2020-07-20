@@ -6,22 +6,27 @@ import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
 import com.diamondfire.helpbot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.components.creator.CreatorLevel;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class NewPlayersCommand extends Command {
+
+public class CpRequirementsCommand extends Command {
 
     @Override
     public String getName() {
-        return "newplayers";
+        return "cprequirements";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"cpreq", "cpneeded", "creatorreq"};
     }
 
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets the first 25 new players who have joined in the last 24 hours.")
+                .description("Gets the current CP level requirements.")
                 .category(CommandCategory.STATS);
     }
 
@@ -39,19 +44,16 @@ public class NewPlayersCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Players who have joined in last 24 hours:", null)
+                        new InformativeReply(InformativeReplyType.INFO, "CP Requirements", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT players.name, approved_users.time FROM approved_users " +
-                        "LEFT JOIN players ON approved_users.uuid = players.uuid " +
-                        "WHERE time > CURRENT_TIMESTAMP() - INTERVAL 1 DAY ORDER BY time DESC LIMIT 20")
-                .onQuery((resultTable) -> {
-                    do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")), resultTable.getTimestamp("time").toString(), false);
-                    } while (resultTable.next());
-                }).execute();
+        embed.setFooter("*Level requirement is based on a top % of players.");
+        for (CreatorLevel level : CreatorLevel.values()) {
+            embed.addField(level.toString(), "CP Required: " + level.getRequirementProvider().getRequirement(), true);
+        }
 
+        // Even it out
+        embed.addBlankField(true);
         event.reply(preset);
     }
 

@@ -2,10 +2,12 @@ package com.diamondfire.helpbot.events;
 
 import com.diamondfire.helpbot.command.argument.ParsedArgumentSet;
 import com.diamondfire.helpbot.command.impl.Command;
+import com.diamondfire.helpbot.command.reply.*;
 import com.diamondfire.helpbot.instance.BotInstance;
 import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.awt.*;
 import java.util.*;
@@ -14,6 +16,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     private ParsedArgumentSet parsedArgumentSet = null;
     private Command command = null;
+    private ReplyHandler reply = new ReplyHandler();
 
     public CommandEvent(JDA api, long responseNumber, Message message) {
         super(api, responseNumber, message);
@@ -50,6 +53,22 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     public Command getCommand() {
         return command;
+    }
+
+    public void reply(PresetBuilder preset) {
+        reply.reply(preset.getEmbed(), getChannel()).queue();
+    }
+
+    public void reply(PresetBuilder preset, TextChannel channel) {
+        reply.reply(preset.getEmbed(), channel).queue();
+    }
+
+    public MessageAction replyA(PresetBuilder preset) {
+        return reply.reply(preset.getEmbed(), getChannel());
+    }
+
+    public MessageAction replyA(PresetBuilder preset, TextChannel channel) {
+        return reply.reply(preset.getEmbed(), channel);
     }
 
     @SuppressWarnings("unchecked")

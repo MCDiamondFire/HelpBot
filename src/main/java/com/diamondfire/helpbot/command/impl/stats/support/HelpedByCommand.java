@@ -3,9 +3,12 @@ package com.diamondfire.helpbot.command.impl.stats.support;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -21,7 +24,7 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets the first 100 players that were helped by a certain staff member.")
+                .description("Gets the first 25 players that were helped by a certain staff member.")
                 .category(CommandCategory.SUPPORT)
                 .addArgument(
                         new HelpContextArgument()
@@ -37,6 +40,12 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Players %s has Helped", StringUtil.display(player)), null),
+                        new MinecraftUserPreset(player)
+                );
+        EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
                 .query("SELECT COUNT(name) AS total, name FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> {
@@ -44,24 +53,19 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                 })
                 .onQuery((query) -> {
                     List<String> sessions = new ArrayList<>();
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setTitle(String.format("Players %s has Helped", player));
-                    builder.setAuthor(player, null, "https://mc-heads.net/head/" + player);
 
                     do {
                         sessions.add(query.getInt("total") + " " + query.getString("name"));
                     } while (query.next());
 
-                    Util.addFields(builder, sessions, true);
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    Util.addFields(embed, sessions, true);
 
                 })
                 .onNotFound(() -> {
-                    EmbedBuilder builder = new EmbedBuilder();
-                    builder.setTitle("Hmm.. It seems like " + player + " hasn't helped anybody.");
-                    event.getChannel().sendMessage(builder.build()).queue();
+                    embed.setDescription("Nobody!");
                 }).execute();
 
+        event.reply(preset);
     }
 
 }

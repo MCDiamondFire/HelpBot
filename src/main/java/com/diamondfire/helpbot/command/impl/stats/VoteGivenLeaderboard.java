@@ -11,17 +11,23 @@ import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class NewPlayersCommand extends Command {
+
+public class VoteGivenLeaderboard extends Command {
 
     @Override
     public String getName() {
-        return "newplayers";
+        return "votetop";
+    }
+
+    @Override
+    public String[] getAliases() {
+        return new String[]{"vgiventop", "votesgiventop"};
     }
 
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets the first 25 new players who have joined in the last 24 hours.")
+                .description("Gets top 10 players who have given out the most votes.")
                 .category(CommandCategory.STATS);
     }
 
@@ -39,22 +45,19 @@ public class NewPlayersCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Players who have joined in last 24 hours:", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Votes Given Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
+
         new SingleQueryBuilder()
-                .query("SELECT players.name, approved_users.time FROM approved_users " +
-                        "LEFT JOIN players ON approved_users.uuid = players.uuid " +
-                        "WHERE time > CURRENT_TIMESTAMP() - INTERVAL 1 DAY ORDER BY time DESC LIMIT 20")
+                .query("SELECT COUNT(plot_votes.uuid) AS given, name FROM plot_votes, players WHERE players.uuid = plot_votes.uuid GROUP BY plot_votes.uuid ORDER BY COUNT(plot_votes.uuid) DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")), resultTable.getTimestamp("time").toString(), false);
+                        embed.addField(StringUtil.display(resultTable.getString("name")),
+                                "Votes Given: " + resultTable.getInt("given"), false);
                     } while (resultTable.next());
                 }).execute();
-
         event.reply(preset);
     }
 
 }
-
-

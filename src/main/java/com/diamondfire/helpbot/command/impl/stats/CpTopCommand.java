@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -40,19 +42,21 @@ public class CpTopCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("CP Leaderboard");
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "CP Leaderboard", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
                 .query("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
-                        builder.addField(StringUtil.display(resultTable.getString("name")),
+                        embed.addField(StringUtil.display(resultTable.getString("name")),
                                 "CP: " + resultTable.getInt("points"), false);
                     } while (resultTable.next());
                 }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
-
+        event.reply(preset);
     }
 
 }

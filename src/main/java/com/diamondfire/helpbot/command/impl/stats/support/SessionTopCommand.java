@@ -5,6 +5,8 @@ import com.diamondfire.helpbot.command.argument.impl.types.ClampedIntegerArgumen
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -50,9 +52,12 @@ public class SessionTopCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Top Support Members in %s days", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         int days = event.getArgument("days");
-        builder.setTitle(String.format("Top Support Members in %s days", days));
 
         new SingleQueryBuilder()
                 .query("SELECT DISTINCT staff, COUNT(*) as sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> {
@@ -65,16 +70,13 @@ public class SessionTopCommand extends Command {
                     } while (resultTable.next());
 
                     for (Map.Entry<String, Integer> stat : stats.entrySet()) {
-                        builder.addField(stat.getKey(), "\nSessions: " + stat.getValue(), false);
+                        embed.addField(stat.getKey(), "\nSessions: " + stat.getValue(), false);
                     }
 
                 }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
-
-
+        event.reply(preset);
     }
-
 
 }
 

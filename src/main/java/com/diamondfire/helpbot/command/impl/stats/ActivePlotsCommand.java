@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -40,22 +42,23 @@ public class ActivePlotsCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Active Plots");
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Active Plots", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
                 .query("SELECT * FROM plots WHERE player_count > 0 AND whitelist = 0 ORDER BY player_count DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
-                        builder.addField(StringUtil.display(resultTable.getString("name")) +
+                        embed.addField(StringUtil.display(resultTable.getString("name")) +
                                         String.format(" **(%s)**", resultTable.getInt("id")),
                                 "Players: " + resultTable.getInt("player_count"), false);
                     } while (resultTable.next());
                 }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
-
+        event.reply(preset);
     }
-
 
 }
 

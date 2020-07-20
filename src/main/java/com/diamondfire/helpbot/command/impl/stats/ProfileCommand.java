@@ -2,6 +2,9 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.components.dfranks.Ranks;
 import com.diamondfire.helpbot.events.CommandEvent;
@@ -42,7 +45,9 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder();
+        preset.withPreset(new InformativeReply(InformativeReplyType.INFO, "Profile", null));
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
                 .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, player);
@@ -53,10 +58,10 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     String playerUUID = table.getString("uuid");
                     String whois = table.getString("whois");
 
-                    builder.setAuthor(playerName, null, "https://mc-heads.net/head/" + playerUUID);
-                    builder.addField("Name", StringUtil.display(playerName), false);
-                    builder.addField("UUID", playerUUID, false);
-                    builder.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    preset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
+                    embed.addField("Name", StringUtil.display(playerName), false);
+                    embed.addField("UUID", playerUUID, false);
+                    embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
                     new SingleQueryBuilder()
                             .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
@@ -78,7 +83,25 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                     ranksList.add(String.format("[%s]", rank.getRankName()));
                                 }
 
-                                builder.addField("Ranks", String.join(" ", ranksList), false);
+                                embed.addField("Ranks", String.join(" ", ranksList), false);
+                            }).execute();
+
+                    new SingleQueryBuilder()
+                            .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> {
+                                statement.setString(1, playerUUID);
+                            })
+                            .onQuery((resultTable) -> {
+                                embed.addField("Votes Given", resultTable.getInt("count") + "", false);
+                            }).onNotFound(() -> {
+                        embed.addField("Votes Given", "0", false);
+                    }).execute();
+
+                    new SingleQueryBuilder()
+                            .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> {
+                                statement.setString(1, playerUUID);
+                            })
+                            .onQuery((resultTable) -> {
+                                embed.addField("Credits", resultTable.getInt("credits") + "", false);
                             }).execute();
 
                     new SingleQueryBuilder()
@@ -86,14 +109,14 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 statement.setString(1, playerUUID);
                             })
                             .onQuery((resultTable) -> {
-                                builder.addField("Join Date", StringUtil.formatDate(resultTable.getDate("date")), false);
+                                embed.addField("Join Date", StringUtil.formatDate(resultTable.getDate("date")), false);
                             }).onNotFound(() -> {
-                        builder.addField("Join Date", "Not Found", false);
+                        embed.addField("Join Date", "Not Found", false);
                     }).execute();
 
                 })
-                .onNotFound(() -> builder.addField("Error!", "Player was not found", false)).execute();
-        event.getChannel().sendMessage(builder.build()).queue();
+                .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found"))).execute();
+        event.reply(preset);
     }
 
 }

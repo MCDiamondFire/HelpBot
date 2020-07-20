@@ -73,7 +73,10 @@ public class BotInstance {
                 new WhoHelpedCommand(),
                 new HelpedByCommand(),
                 new NamesCommand(),
-                new PlayerJoinGraphCommand()
+                new PlayerJoinGraphCommand(),
+                new CpCommand(),
+                new CpRequirementsCommand(),
+                new VoteGivenLeaderboard()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());

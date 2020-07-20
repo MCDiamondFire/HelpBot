@@ -3,6 +3,9 @@ package com.diamondfire.helpbot.command.impl.stats.support;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -37,7 +40,12 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new MinecraftUserPreset(player),
+                        new InformativeReply(InformativeReplyType.INFO, "Support Stats", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
                 .query("SELECT COUNT(*) AS count," +
@@ -49,12 +57,11 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                 })
                 .onQuery((resultTable) -> {
                     if (resultTable.getInt("count") == 0) {
-                        builder.clearFields();
-                        builder.setTitle("Player has no stats!");
+                        embed.clear();
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player does not have any stats!"));
+                        event.reply(preset);
                         return;
                     }
-                    builder.setAuthor(player, null, "https://mc-heads.net/head/" + player);
-                    builder.setTitle("Support Stats");
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count," +
@@ -64,9 +71,9 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 statement.setString(2, player);
                             })
                             .onQuery((resultBadTable) -> {
-                                builder.addField("Monthly Sessions", resultBadTable.getInt("count") + "", true);
+                                embed.addField("Monthly Sessions", resultBadTable.getInt("count") + "", true);
                                 if (resultBadTable.getBoolean("support")) {
-                                    builder.addField("Bad?", resultBadTable.getInt("bad") == 1 ? "Yes!" : "No", true);
+                                    embed.addField("Bad?", resultBadTable.getInt("bad") == 1 ? "Yes!" : "No", true);
                                     new SingleQueryBuilder()
                                             .query(" SELECT (time + INTERVAL 30 DAY) AS bad_time " +
                                                     "FROM support_sessions WHERE staff = ?" +
@@ -77,20 +84,20 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                                 Date date = resultBadTableTime.getDate("bad_time");
 
                                                 if (date.toLocalDate().isBefore(LocalDate.now())) {
-                                                    builder.addField("Entered Bad", StringUtil.formatDate(date), true);
+                                                    embed.addField("Entered Bad", StringUtil.formatDate(date), true);
                                                 } else {
-                                                    builder.addField("Enters Bad", StringUtil.formatDate(date), true);
+                                                    embed.addField("Enters Bad", StringUtil.formatDate(date), true);
                                                 }
                                             }).execute();
                                 }
                             }).execute();
 
 
-                    builder.addField("Total Sessions", resultTable.getInt("count") + "", true);
-                    builder.addField("Unique Players", resultTable.getInt("unique_helped") + "", true);
-                    builder.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
-                    builder.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), true);
-                    builder.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), true);
+                    embed.addField("Total Sessions", resultTable.getInt("count") + "", true);
+                    embed.addField("Unique Players", resultTable.getInt("unique_helped") + "", true);
+                    embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
+                    embed.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), true);
+                    embed.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), true);
 
                     new SingleQueryBuilder()
                             .query("SELECT AVG(duration) AS average_duration," +
@@ -100,16 +107,15 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 statement.setString(1, player);
                             })
                             .onQuery((resultTableTime) -> {
-                                builder.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
-                                builder.addField("Shortest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
-                                builder.addField("Longest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
+                                embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
+                                embed.addField("Shortest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
+                                embed.addField("Longest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
                             }).execute();
 
                 }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
+        event.reply(preset);
 
     }
-
 
 }

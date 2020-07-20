@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -44,18 +46,20 @@ public class DiscordBoostersCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         Guild guild = event.getGuild();
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Current Discord Boosters");
-        builder.setThumbnail("https://cdn.discordapp.com/emojis/699936318398136341.png?v=1");
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Current Discord Boosters", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
+        embed.setThumbnail("https://cdn.discordapp.com/emojis/699936318398136341.png?v=1");
 
         event.getGuild().findMembers((member -> member.getTimeBoosted() != null)).onSuccess((members) -> {
-            builder.setDescription(StringUtil.listView(members.stream()
+            embed.setDescription(StringUtil.listView(members.stream()
                     .sorted(Comparator.comparing(Member::getTimeBoosted))
                     .map(Member::getEffectiveName)
                     .toArray(String[]::new), ">", true));
-            builder.setColor(new Color(255, 115, 250));
-            event.getChannel().sendMessage(builder.build()).queue();
-
+            embed.setColor(new Color(255, 115, 250));
+            event.reply(preset);
             guild.pruneMemberCache();
         });
     }

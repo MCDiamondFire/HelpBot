@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -36,25 +37,27 @@ public class QueueCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder();
+        EmbedBuilder embed = preset.getEmbed();
+
         new SingleQueryBuilder()
                 .query("SELECT player,plot,node, (TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) + 0) AS enter FROM support_queue ORDER BY enter_time LIMIT 25;")
                 .onQuery((resultTableQueue) -> {
                     int i = 0;
                     do {
-                        builder.addField(resultTableQueue.getString("player"), StringUtil.formatTime(resultTableQueue.getLong("enter"), TimeUnit.SECONDS), false);
+                        embed.addField(resultTableQueue.getString("player"), StringUtil.formatTime(resultTableQueue.getLong("enter"), TimeUnit.SECONDS), false);
                         i++;
                     } while (resultTableQueue.next());
-                    builder.setTitle(String.format("Players in Queue (%s)", i));
-                    builder.setColor(colorAmt(i));
+                    embed.setTitle(String.format("Players in Queue (%s)", i));
+                    embed.setColor(colorAmt(i));
                 })
                 .onNotFound(() -> {
-                    builder.setTitle("Queue is Empty!");
-                    builder.setDescription("Keep up the good work");
-                    builder.setColor(new Color(0, 234, 23));
+                    embed.setTitle("Queue is Empty!");
+                    embed.setDescription("Keep up the good work");
+                    embed.setColor(new Color(0, 234, 23));
                 }).execute();
-        event.getChannel().sendMessage(builder.build()).queue();
 
+        event.reply(preset);
     }
 
     private Color colorAmt(int index) {

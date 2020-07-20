@@ -2,6 +2,9 @@ package com.diamondfire.helpbot.command.impl.stats;
 
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.MinecraftUserPreset;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -38,30 +41,34 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        EmbedBuilder builder = new EmbedBuilder();
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null),
+                        new MinecraftUserPreset(player)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
                 .query("SELECT * FROM plots WHERE owner_name = ? OR owner = ? LIMIT 25;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
                 })
                 .onQuery((resultTablePlot) -> {
-                    builder.setTitle(resultTablePlot.getString("owner_name") + "'s Plots");
                     do {
                         String[] stats = {
                                 "Votes: " + resultTablePlot.getInt("votes"),
                                 "Players: " + resultTablePlot.getInt("player_count")
                         };
-                        builder.addField(StringUtil.display(resultTablePlot.getString("name")) +
+                        embed.addField(StringUtil.display(resultTablePlot.getString("name")) +
                                         String.format(" **(%s)**", resultTablePlot.getInt("id")),
                                 String.join("\n", stats), false);
 
                     } while (resultTablePlot.next());
                 })
                 .onNotFound(() -> {
-                    builder.setTitle("Error!");
-                    builder.setDescription("Player was not found, or they have no plots.");
+                    embed.clear();
+                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found, or they have no plots."));
                 }).execute();
-        event.getChannel().sendMessage(builder.build()).queue();
+        event.reply(preset);
     }
 
 }

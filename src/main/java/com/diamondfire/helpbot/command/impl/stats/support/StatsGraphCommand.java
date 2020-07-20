@@ -42,7 +42,6 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-
         new SingleQueryBuilder()
                 .query("SELECT * FROM support_sessions WHERE staff = ? ORDER BY time", (statement) -> {
                     statement.setString(1, player);

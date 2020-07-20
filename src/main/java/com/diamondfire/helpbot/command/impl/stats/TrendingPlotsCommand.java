@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -37,10 +39,13 @@ public class TrendingPlotsCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Trending Plots");
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Trending Plots", null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
-                .query("SELECT * FROM plots WHERE whitelist != 0 ORDER BY votes DESC LIMIT 10")
+                .query("SELECT * FROM plots WHERE whitelist = 0 ORDER BY votes DESC LIMIT 10")
                 .onQuery((resultTable) -> {
                     do {
                         int count = resultTable.getInt("player_count");
@@ -51,14 +56,13 @@ public class TrendingPlotsCommand extends Command {
                             stats.add("Players: " + count);
                         }
 
-                        builder.addField(StringUtil.display(resultTable.getString("name")) +
+                        embed.addField(StringUtil.display(resultTable.getString("name")) +
                                         String.format(" **(%s)**", resultTable.getInt("id")),
                                 String.join("\n", stats), false);
                     } while (resultTable.next());
                 }).execute();
 
-        event.getChannel().sendMessage(builder.build()).queue();
-
+        event.reply(preset);
     }
 
 }

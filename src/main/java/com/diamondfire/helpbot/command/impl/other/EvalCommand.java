@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.command.impl.other;
 
 import com.diamondfire.helpbot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.command.argument.impl.types.MessageArgument;
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
@@ -35,7 +35,7 @@ public class EvalCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("code", new StringArgument());
+                .addArgument("code", new MessageArgument());
     }
 
     @Override

@@ -5,6 +5,8 @@ import com.diamondfire.helpbot.command.argument.impl.types.ClampedIntegerArgumen
 import com.diamondfire.helpbot.command.help.*;
 import com.diamondfire.helpbot.command.impl.Command;
 import com.diamondfire.helpbot.command.permissions.Permission;
+import com.diamondfire.helpbot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.components.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -16,12 +18,12 @@ public class TimeTopCommand extends Command {
 
     @Override
     public String getName() {
-        return "toptime";
+        return "timetop";
     }
 
     @Override
     public String[] getAliases() {
-        return new String[]{"timetop"};
+        return new String[]{"toptime"};
     }
 
     @Override
@@ -50,9 +52,12 @@ public class TimeTopCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder builder = new EmbedBuilder();
         int days = event.getArgument("days");
-        builder.setTitle(String.format("Top Support Member's time in %s days", days));
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Top Support Member's time in %s days", days), null)
+                );
+        EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
                 .query("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> {
@@ -65,16 +70,12 @@ public class TimeTopCommand extends Command {
                     } while (resultTable.next());
 
                     for (Map.Entry<String, Long> stat : stats.entrySet()) {
-                        builder.addField(stat.getKey(), "\nTotal Duration: " + StringUtil.formatMilliTime(stat.getValue()), false);
+                        embed.addField(stat.getKey(), "\nTotal Duration: " + StringUtil.formatMilliTime(stat.getValue()), false);
                     }
 
                 }).execute();
-
-        event.getChannel().sendMessage(builder.build()).queue();
-
-
+        event.reply(preset);
     }
-
 
 }
 
