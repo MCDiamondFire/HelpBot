@@ -55,6 +55,6 @@ public enum CreatorLevel {
         return display(false);
     }
     public String display(boolean hideStar) {
-        return String.format("<:%s:%s>", getName().toLowerCase(), getEmoji()) + " " + getName() + (requirementProvider instanceof DynamicRequirementProvider && hideStar ? "*" : "");
+        return String.format("<:%s:%s>", getName().toLowerCase(), getEmoji()) + " " + getName() + (requirementProvider instanceof DynamicRequirementProvider && !hideStar ? "*" : "");
     }
 }
