@@ -26,7 +26,7 @@ public class HelpBotInstance {
     public static void initialize() throws InterruptedException, LoginException {
 
         handler.register(
-                // query commands
+                // codeblock commands
                 new CodeCommand(),
                 new RankCommand(),
                 new BlockCommand(),
@@ -47,6 +47,7 @@ public class HelpBotInstance {
                 new FetchDumpCommand(),
                 new RawCommand(),
                 new SamQuotesCommand(),
+                new PolicyCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),

@@ -90,7 +90,6 @@ public class HelpCommand extends Command {
             selector.build().send(event.getJDA());
         } else {
             Command command = HelpBotInstance.getHandler().getCommands().get(helpInfo);
-            ArgumentSet argument = command.getArguments();
             HelpContext context = command.getHelpContext();
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Command Information");

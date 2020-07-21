@@ -46,9 +46,12 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        PresetBuilder preset = new PresetBuilder();
-        preset.withPreset(new InformativeReply(InformativeReplyType.INFO, "Profile", null));
+        PresetBuilder preset = new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Profile", null)
+                );
         EmbedBuilder embed = preset.getEmbed();
+
         new SingleQueryBuilder()
                 .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, player);
