@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.util;
 
-import com.diamondfire.helpbot.components.externalfile.ExternalFile;
-import com.diamondfire.helpbot.instance.BotInstance;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -126,7 +126,7 @@ public class Util {
     }
 
     public static void error(Exception e, String title) {
-        TextChannel channel = BotInstance.getJda().getTextChannelById(705205549498892299L);
+        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(705205549498892299L);
         StringWriter sw = new StringWriter();
         EmbedBuilder embed = new EmbedBuilder();
         PrintWriter pw = new PrintWriter(sw);
@@ -143,7 +143,7 @@ public class Util {
     }
 
     public static void log(MessageEmbed embed) {
-        TextChannel channel = BotInstance.getJda().getTextChannelById(705205549498892299L);
+        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(705205549498892299L);
         channel.sendMessage(embed).queue();
     }
 

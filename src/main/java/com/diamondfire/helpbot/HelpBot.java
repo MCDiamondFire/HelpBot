@@ -1,14 +1,20 @@
 package com.diamondfire.helpbot;
 
-import com.diamondfire.helpbot.instance.InstanceHandler;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.AutoRefreshDBTask;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.restart.RestartHandler;
 
 import javax.security.auth.login.LoginException;
 
 public class HelpBot {
 
-    public static final InstanceHandler instance = new InstanceHandler();
-
     public static void main(String[] args) throws LoginException, InterruptedException {
-        instance.startup();
+        HelpBotInstance.initialize();
+        CodeDatabase.initialize();
+        CodeDifferenceHandler.refresh();
+        AutoRefreshDBTask.initialize();
+        RestartHandler.recover();
     }
 }
