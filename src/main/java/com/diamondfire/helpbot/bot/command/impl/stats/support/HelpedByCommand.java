@@ -40,19 +40,20 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        PresetBuilder preset = new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("Players %s has Helped", StringUtil.display(player)), null),
-                        new MinecraftUserPreset(player)
-                );
+        PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT COUNT(name) AS total, name FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> {
+                .query("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> {
                     statement.setString(1, player);
                 })
                 .onQuery((query) -> {
                     List<String> sessions = new ArrayList<>();
+                    String formattedName = query.getString("staff");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName),
+                            new InformativeReply(InformativeReplyType.INFO, "Players %s has Helped" + formattedName, null)
+                    );
 
                     do {
                         sessions.add(query.getInt("total") + " " + query.getString("name"));

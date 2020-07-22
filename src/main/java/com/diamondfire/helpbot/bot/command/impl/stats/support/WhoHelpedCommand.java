@@ -48,11 +48,16 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT COUNT(staff) AS total, staff FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> {
+                .query("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> {
                     statement.setString(1, player);
                 })
                 .onQuery((query) -> {
                     List<String> sessions = new ArrayList<>();
+                    String formattedName = query.getString("name");
+                    preset.withPreset(
+                                    new MinecraftUserPreset(formattedName),
+                                    new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
+                            );
 
                     do {
                         sessions.add(query.getInt("total") + " " + query.getString("staff"));

@@ -6,8 +6,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -42,7 +42,6 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new MinecraftUserPreset(player),
                         new InformativeReply(InformativeReplyType.INFO, "Support Stats", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
@@ -52,7 +51,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT name) AS unique_helped FROM support_sessions WHERE staff = ?;", (statement) -> {
+                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ?;", (statement) -> {
                     statement.setString(1, player);
                 })
                 .onQuery((resultTable) -> {
@@ -62,6 +61,11 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         event.reply(preset);
                         return;
                     }
+
+                    String formattedName = resultTable.getString("name");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName)
+                    );
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count," +

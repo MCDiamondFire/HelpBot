@@ -44,8 +44,7 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null),
-                        new MinecraftUserPreset(player)
+                        new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
@@ -54,6 +53,11 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                     statement.setString(2, player);
                 })
                 .onQuery((resultTablePlot) -> {
+                    String formattedName = resultTablePlot.getString("owner_name");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName)
+                    );
+
                     do {
                         String[] stats = {
                                 "Votes: " + resultTablePlot.getInt("votes"),

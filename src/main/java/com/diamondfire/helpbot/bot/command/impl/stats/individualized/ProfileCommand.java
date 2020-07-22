@@ -119,7 +119,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     }).execute();
 
                 })
-                .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found"))).execute();
+                .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."))).execute();
         event.reply(preset);
     }
 

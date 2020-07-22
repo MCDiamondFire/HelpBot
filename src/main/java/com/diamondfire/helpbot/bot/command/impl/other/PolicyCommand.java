@@ -26,7 +26,7 @@ public class PolicyCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets the bots Private Policy.")
+                .description("Gets the bot's privacy policy.")
                 .category(CommandCategory.OTHER);
     }
 

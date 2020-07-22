@@ -19,7 +19,7 @@ public class DefinedStringArgument extends Argument<String> {
     public String getValue(@NotNull String msg) throws IllegalArgumentException {
         String option = getClosestOption(msg);
         if (option == null)
-            throw new IllegalArgumentException("Invalid argument provided! Please pick from the following: " + String.join(", ", options));
+            throw new IllegalArgumentException("Please pick from the following: " + String.join(", ", options));
 
         return option;
     }

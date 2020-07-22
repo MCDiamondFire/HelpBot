@@ -77,7 +77,8 @@ public class HelpBotInstance {
                 new PlayerJoinGraphCommand(),
                 new CpCommand(),
                 new CpRequirementsCommand(),
-                new VoteGivenLeaderboard()
+                new VoteGivenLeaderboard(),
+                new SkinCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());

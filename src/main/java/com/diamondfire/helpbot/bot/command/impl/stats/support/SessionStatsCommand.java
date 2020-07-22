@@ -44,8 +44,7 @@ public class SessionStatsCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Session Stats", null),
-                        new MinecraftUserPreset(player)
+                        new InformativeReply(InformativeReplyType.INFO, "Session Stats", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
 
@@ -54,7 +53,7 @@ public class SessionStatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT staff) AS unique_helped FROM support_sessions WHERE name = ?;", (statement) -> {
+                        "COUNT(DISTINCT staff) AS unique_helped, name FROM support_sessions WHERE name = ?;", (statement) -> {
                     statement.setString(1, player);
                 })
                 .onQuery((resultTable) -> {
@@ -64,6 +63,11 @@ public class SessionStatsCommand extends AbstractPlayerUUIDCommand {
                         event.reply(preset);
                         return;
                     }
+                    String formattedName = resultTable.getString("name");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName)
+                    );
+
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count FROM support_sessions " +
                                     "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {

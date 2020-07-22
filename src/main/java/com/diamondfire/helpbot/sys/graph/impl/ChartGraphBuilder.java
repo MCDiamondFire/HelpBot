@@ -23,7 +23,7 @@ public class ChartGraphBuilder {
     }
 
     public File createGraph(Collection<? extends GraphableEntry<?>> entryList) {
-        Graph graph = new ChartGraph(graphName);
+        BoxGraph graph = new ChartGraph(graphName);
         File graphFile;
         try {
             graphFile = ExternalFileUtil.generateFile("graph.png");

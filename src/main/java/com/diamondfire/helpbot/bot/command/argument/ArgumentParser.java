@@ -7,7 +7,7 @@ import java.util.*;
 
 public class ArgumentParser {
 
-    public Map<String, ?> parse(ArgumentSet set, String[] args) {
+    public Map<String, ?> parse(ArgumentSet set, String[] args) throws IllegalArgumentException {
         Map<String, ?> arguments = new HashMap<>();
         int argNum = 0;
         for (Map.Entry<String, ArgumentContainer> map : set.getArguments().entrySet()) {
@@ -18,7 +18,7 @@ public class ArgumentParser {
                     arguments.put(map.getKey(), container.getArgument().getDefaultValue());
                     continue;
                 }
-                throw new IllegalArgumentException(String.format("Expected argument at position %s.", argNum));
+                throw new IllegalArgumentException(String.format("Expected argument at position %s.",  argNum + 1));
             }
             try {
                 //TODO Add plural argument handling
@@ -34,7 +34,7 @@ public class ArgumentParser {
                 if (container.getArgument().isOptional()) {
                     arguments.put(map.getKey(), container.getArgument().getDefaultValue());
                 }
-                throw new IllegalArgumentException(String.format("Invalid argument at position %s.", argNum));
+                throw new IllegalArgumentException(String.format("Invalid argument at position %s: %s", argNum + 1, exception.getMessage()));
             }
             argNum++;
         }

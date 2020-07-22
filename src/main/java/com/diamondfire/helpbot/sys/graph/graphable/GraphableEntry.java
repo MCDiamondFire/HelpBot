@@ -3,10 +3,10 @@ package com.diamondfire.helpbot.sys.graph.graphable;
 import java.util.Objects;
 
 // Graphable Entries are displayed at bottom, and the amount of entries that are the same are calculated
-// and put onto the app.graph.
+// and put onto the graph.
 public abstract class GraphableEntry<T> {
 
-    private T entry;
+    private final T entry;
 
     public GraphableEntry(T entry) {
         this.entry = entry;

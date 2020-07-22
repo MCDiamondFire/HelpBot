@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.sys.graph.graphable;
 
+import java.text.*;
 import java.util.Date;
 
 public class DateEntry extends GraphableEntry<Date> {
@@ -9,10 +10,9 @@ public class DateEntry extends GraphableEntry<Date> {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public String toString() {
         Date date = getEntry();
-        return (date.getMonth() + 1) + "/" + (date.getDate()) + "/" + (date.getYear() + 1900);
+        return new SimpleDateFormat("dd/MM/yy").format(date);
     }
 
 }

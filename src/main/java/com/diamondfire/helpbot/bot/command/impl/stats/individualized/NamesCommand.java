@@ -47,11 +47,7 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        PresetBuilder preset = new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Name Changes", player), null),
-                        new MinecraftUserPreset(player)
-                );
+        PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
         try {
             URL profile = new URL("https://mc-heads.net/minecraft/profile/" + player);
@@ -77,6 +73,11 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
             for (JsonElement nameElement : element.get("name_history").getAsJsonArray()) {
                 JsonObject obj = nameElement.getAsJsonObject();
                 JsonElement changedAt = obj.get("changedToAt");
+
+                preset.withPreset(
+                        new MinecraftUserPreset(displayName),
+                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Name Changes", displayName), null)
+                );
 
                 if (changedAt == null) {
                     names.add(String.format("%s", obj.get("name").getAsString()));

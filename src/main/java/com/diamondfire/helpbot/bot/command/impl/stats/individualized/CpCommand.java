@@ -45,7 +45,6 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new MinecraftUserPreset(player),
                         new InformativeReply(InformativeReplyType.INFO, "CP Info", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
@@ -61,6 +60,11 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     CreatorLevel level = CreatorLevel.getLevel(rank);
                     CreatorLevel nextLevel = CreatorLevel.getNextLevel(CreatorLevel.getLevel(rank));
                     int nextLevelReq = nextLevel.getRequirementProvider().getRequirement();
+
+                    String formattedName = table.getString("name");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName)
+                    );
 
                     embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", points + "", false);
@@ -80,7 +84,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                 })
                 .onNotFound(() -> {
                     embed.clear();
-                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found!"));
+                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
                 }).execute();
         event.reply(preset);
     }

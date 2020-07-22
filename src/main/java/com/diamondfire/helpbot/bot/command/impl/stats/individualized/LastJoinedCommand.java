@@ -43,11 +43,16 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                 );
         EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
-                .query("SELECT players.uuid FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
+                .query("SELECT players.uuid,players.name FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
                 })
                 .onQuery((resultTable) -> {
+                    String formattedName = resultTable.getString("name");
+                    preset.withPreset(
+                            new MinecraftUserPreset(formattedName)
+                    );
+
                     new SingleQueryBuilder()
                             .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> {
                                 statement.setString(1, resultTable.getString("uuid"));

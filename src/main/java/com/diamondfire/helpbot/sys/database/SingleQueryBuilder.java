@@ -56,7 +56,7 @@ public class SingleQueryBuilder {
      * This is because TableSet#next() shifts the table forward, and using a while loop will cause it do shift again when we start accessing the data.
      * However, using a do while loop will ensure that the first time it is iterated through that the data isn't shifted.
      * <pre>
-     *     if (table.next() {
+     *  if (table.next() {
      *
      *     // Bad
      *     while (table.next()) {
@@ -68,7 +68,7 @@ public class SingleQueryBuilder {
      *
      *     } while(table.next());
      *
-     *     }
+     *  }
      * </pre>
      */
 
