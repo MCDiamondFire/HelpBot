@@ -19,7 +19,7 @@ public class RestartHandler {
         try {
             File restart = ExternalFileUtil.generateFile("restart_cache");
             try (FileWriter writer = new FileWriter(restart)) {
-                writer.append(msg + ":" + channel + ":" + System.currentTimeMillis());
+                writer.append(String.valueOf(msg)).append(":").append(String.valueOf(channel)).append(":").append(String.valueOf(System.currentTimeMillis()));
             }
         } catch (IOException ignored) {
         }

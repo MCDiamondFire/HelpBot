@@ -61,7 +61,7 @@ public class EvalCommand extends Command {
         engine.put("jda", event.getJDA());
         engine.put("event", event);
 
-        code.replaceAll("([^(]+?)\\s*->", "function($1)");
+        code = code.replaceAll("([^(]+?)\\s*->", "function($1)");
         EmbedBuilder builder = new EmbedBuilder();
         builder.addField("Code", String.format("```js\n%s```", code), true);
 

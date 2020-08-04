@@ -18,7 +18,8 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
             StringBuilder footer = new StringBuilder();
 
             if (tags.length != 0) {
-                footer.append(tags.length + Util.sCheck(" Tag", tags.length));
+                footer.append(tags.length)
+                        .append(Util.sCheck(" Tag", tags.length));
             }
 
             builder.setFooter(footer.toString());

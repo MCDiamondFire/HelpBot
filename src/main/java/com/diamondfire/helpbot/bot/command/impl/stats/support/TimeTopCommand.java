@@ -58,9 +58,7 @@ public class TimeTopCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> {
-                    statement.setInt(1, days);
-                })
+                .query("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days))
                 .onQuery((resultTable) -> {
                     do {
                         embed.addField(StringUtil.display(resultTable.getString("staff")), "\nTotal Duration: " + StringUtil.formatMilliTime(resultTable.getLong("sessions")), false);

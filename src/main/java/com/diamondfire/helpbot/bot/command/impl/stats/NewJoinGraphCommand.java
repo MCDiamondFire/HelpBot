@@ -24,7 +24,7 @@ public class NewJoinGraphCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Generates a graph representing how many new players joined in a certain timeframe.")
+                .description("Generates a graph representing how many new players joined in a certain time frame.")
                 .category(CommandCategory.STATS)
                 .addArgument(
                         new HelpContextArgument()

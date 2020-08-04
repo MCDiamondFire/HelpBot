@@ -12,8 +12,6 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.*;
-
 public class SessionTopCommand extends Command {
 
     @Override
@@ -60,9 +58,7 @@ public class SessionTopCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT DISTINCT staff, COUNT(*) as sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> {
-                    statement.setInt(1, days);
-                })
+                .query("SELECT DISTINCT staff, COUNT(*) as sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days))
                 .onQuery((resultTable) -> {
                     do {
                         embed.addField(StringUtil.display(resultTable.getString("staff")),

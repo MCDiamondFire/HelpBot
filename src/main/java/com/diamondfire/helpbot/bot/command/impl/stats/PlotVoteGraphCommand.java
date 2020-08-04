@@ -11,13 +11,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
-import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.File;
-import java.sql.Date;
-import java.time.*;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class PlotVoteGraphCommand extends Command {
@@ -56,9 +50,7 @@ public class PlotVoteGraphCommand extends Command {
     public void run(CommandEvent event) {
         int plotID = event.getArgument("id");
         new SingleQueryBuilder()
-                .query("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ?;", (statement) -> {
-                    statement.setInt(1, plotID);
-                })
+                .query("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ?;", (statement) -> statement.setInt(1, plotID))
                 .onQuery((resultTable) -> {
                     List<GraphableEntry<?>> entries = new ArrayList<>();
                     do {

@@ -29,7 +29,7 @@ public class StringUtil {
 
         ArrayList<String> strings = new ArrayList<>();
         hashes.entrySet().forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
-                        Util.repeat("", " ", (longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
+                        " ".repeat((longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
 
         return String.join("\n", strings);
     }
@@ -58,17 +58,17 @@ public class StringUtil {
 
         for (String word : words) {
             if (word.length() < 2) {
-                builder.append(word.toLowerCase() + " ");
+                builder.append(word.toLowerCase()).append(" ");
                 continue;
             }
 
-            builder.append(word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ");
+            builder.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase()).append(" ");
         }
         return builder.toString();
     }
 
     public static String stripColorCodes(String text) {
-        return text.replaceAll("[&§][(a-z)(A-Z)(0-9)]", "");
+        return text.replaceAll("[&§][a-zA-Z0-9]", "");
     }
 
     public static String formatMilliTime(long millis) {
@@ -76,25 +76,25 @@ public class StringUtil {
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         if (days > 0) {
-            builder.append(days + "d ");
+            builder.append(days).append("d ");
         }
 
         long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
         if (hours > 0) {
-            builder.append(hours + "h ");
+            builder.append(hours).append("h ");
         }
 
         long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
         if (mins > 0) {
-            builder.append(mins + "m ");
+            builder.append(mins).append("m ");
         }
 
         long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         if (secs != 0) {
-            builder.append(secs + "s ");
+            builder.append(secs).append("s ");
         } else {
             if (builder.length() == 0) {
-                builder.append("0." + TimeUnit.MILLISECONDS.toMillis(millis) + "s");
+                builder.append("0.").append(TimeUnit.MILLISECONDS.toMillis(millis)).append("s");
             }
         }
         return builder.toString();

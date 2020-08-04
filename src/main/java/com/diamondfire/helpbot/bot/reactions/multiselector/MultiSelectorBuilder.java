@@ -7,7 +7,7 @@ import java.util.*;
 
 public class MultiSelectorBuilder {
 
-    private ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
+    private final ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
     private long channel;
     private long userID;
 
@@ -29,7 +29,7 @@ public class MultiSelectorBuilder {
         return this;
     }
 
-    @Contract("_,_, -> this")
+    @Contract("_,_,_ -> this")
     public MultiSelectorBuilder addPage(String name, EmbedBuilder EmbedBuilder, String customEmote) {
         pages.add(new MultiSelectorPage(name, EmbedBuilder, customEmote, false));
         return this;

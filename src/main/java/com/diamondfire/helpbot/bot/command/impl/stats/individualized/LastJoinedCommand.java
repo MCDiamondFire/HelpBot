@@ -54,15 +54,9 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                     );
 
                     new SingleQueryBuilder()
-                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> {
-                                statement.setString(1, resultTable.getString("uuid"));
-                            })
-                            .onQuery((resultTableDate) -> {
-                                embed.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false);
-                            })
-                            .onNotFound(() -> {
-                                embed.addField("Last Seen", "A long time ago...", false);
-                            }).execute();
+                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, resultTable.getString("uuid")))
+                            .onQuery((resultTableDate) -> embed.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false))
+                            .onNotFound(() -> embed.addField("Last Seen", "A long time ago...", false)).execute();
                 })
                 .onNotFound(() -> {
                     embed.clear();

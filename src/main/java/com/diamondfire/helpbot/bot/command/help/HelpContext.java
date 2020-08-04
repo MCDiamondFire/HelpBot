@@ -6,7 +6,7 @@ public class HelpContext {
 
     String description = null;
     CommandCategory commandCategory = null;
-    List<HelpContextArgument> arguments = new ArrayList<>();
+    final List<HelpContextArgument> arguments = new ArrayList<>();
 
     public HelpContext description(String description) {
         this.description = description;

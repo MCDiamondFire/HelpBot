@@ -61,9 +61,7 @@ public class JoinBadCommand extends Command {
                 .query("SELECT DISTINCT uuid,name FROM" +
                         "(SELECT players.name, players.uuid FROM ranks,players WHERE ranks.uuid = players.uuid AND ranks.support > 0 | ranks.moderation > 0) a " +
                         "WHERE uuid NOT IN" +
-                        "(SELECT DISTINCT uuid from  player_join_log where time > CURRENT_TIMESTAMP - INTERVAL ? DAY)", statement -> {
-                    statement.setInt(1, num);
-                })
+                        "(SELECT DISTINCT uuid from  player_join_log where time > CURRENT_TIMESTAMP - INTERVAL ? DAY)", statement -> statement.setInt(1, num))
                 .onQuery((resultTableJoins) -> {
                     List<String> staff = new ArrayList<>();
                     do {
@@ -72,9 +70,7 @@ public class JoinBadCommand extends Command {
 
                     Util.addFields(embed, staff, "", "", true);
                 })
-                .onNotFound(() -> {
-                    embed.setDescription("");
-                }).execute();
+                .onNotFound(() -> embed.setDescription("")).execute();
 
         event.reply(preset);
 

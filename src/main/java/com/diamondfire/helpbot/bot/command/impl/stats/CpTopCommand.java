@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -27,12 +28,16 @@ public class CpTopCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current CP leaderboard.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.STATS)
+                .addArgument(new HelpContextArgument().name("Leaderboard Place").optional());
     }
 
     @Override
     public ArgumentSet getArguments() {
-        return new ArgumentSet();
+        return new ArgumentSet().addArgument("place",
+                new ClampedIntegerArgument(1)
+                        .optional(1)
+        );
     }
 
     @Override
@@ -42,17 +47,20 @@ public class CpTopCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
+        int startingPlace = event.getArgument("place");
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "CP Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
         new SingleQueryBuilder()
-                .query("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10")
+                .query("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10 OFFSET ?", (statement -> statement.setInt(1, startingPlace - 1)))
                 .onQuery((resultTable) -> {
+                    int place = startingPlace;
                     do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")),
-                                "CP: " + resultTable.getInt("points"), false);
+                        embed.addField(String.format("%s. ", StringUtil.formatNumber(place)) + StringUtil.display(resultTable.getString("name")),
+                                "CP: " + StringUtil.formatNumber(resultTable.getInt("points")), false);
+                        place++;
                     } while (resultTable.next());
                 }).execute();
 

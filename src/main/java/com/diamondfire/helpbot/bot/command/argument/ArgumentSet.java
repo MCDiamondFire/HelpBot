@@ -10,7 +10,7 @@ public class ArgumentSet {
 
     private final Map<String, ArgumentContainer> arguments = new LinkedHashMap<>();
 
-    public ArgumentSet addArgument(@NotNull String name, @NotNull Argument argument) {
+    public ArgumentSet addArgument(@NotNull String name, @NotNull Argument<?> argument) {
         arguments.put(name, new ArgumentContainer(argument));
         return this;
     }

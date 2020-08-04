@@ -79,9 +79,7 @@ public class InBadCommand extends Command {
 
                     Util.addFields(embed, staff, "", "", true);
                 })
-                .onNotFound(() -> {
-                    embed.setDescription("");
-                }).execute();
+                .onNotFound(() -> embed.setDescription("")).execute();
         event.reply(preset);
     }
 }

@@ -6,7 +6,7 @@ import java.text.*;
 import java.util.Date;
 
 public class DateArgument extends Argument<Date> {
-    public SimpleDateFormat format;
+    public final SimpleDateFormat format;
 
     public DateArgument() {
         this.format = new SimpleDateFormat("MM/dd/yy");

@@ -86,12 +86,7 @@ public class JoinDataCommand extends Command {
                 (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
-                }).onQuery((table) -> {
-
-            embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), String.valueOf(table.getInt("count")), false);
-        }).onNotFound(() -> {
-            embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), "None...", false);
-        }).execute();
+                }).onQuery((table) -> embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), "None...", false)).execute();
 
 
         Map<Integer, Integer> ranks = new LinkedHashMap<>();
@@ -104,7 +99,7 @@ public class JoinDataCommand extends Command {
                         "WHERE time BETWEEN ? AND ?) GROUP BY donor;",
                 (statement) -> {
                     statement.setDate(1, sqlDate);
-                    statement.setDate(2, sqlDateTo);;
+                    statement.setDate(2, sqlDateTo);
                 }).onQuery((table) -> {
             do {
                 ranks.put(table.getInt("donor"), table.getInt("count"));
@@ -142,11 +137,7 @@ public class JoinDataCommand extends Command {
                     statement.setInt(3, days);
                     statement.setDate(4, new java.sql.Date(between1.toInstant().toEpochMilli()));
                     statement.setDate(5, new java.sql.Date(between2.toInstant().toEpochMilli()));
-                }).onQuery((table) -> {
-            embed.addField(String.format("Players that joined again between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false);
-        }).onNotFound(() -> {
-            embed.addField(String.format("Players that joined again between between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), "None...", false);
-        }).execute();
+                }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), "None...", false)).execute();
 
         event.reply(builder);
     }

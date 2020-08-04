@@ -11,6 +11,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class ActivePlotsCommand extends Command {
 
     @Override

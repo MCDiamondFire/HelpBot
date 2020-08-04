@@ -58,35 +58,27 @@ public class TotalStatsCommand extends Command {
                     .onQuery((resultTable) -> {
                         new SingleQueryBuilder()
                                 .query("SELECT COUNT(*) AS count FROM support_sessions WHERE time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;")
-                                .onQuery((resultBadTable) -> {
-                                    embed.addField("Monthly Sessions", StringUtil.formatNumber(resultBadTable.getInt("count")), false);
-                                }).execute();
+                                .onQuery((resultBadTable) -> embed.addField("Monthly Sessions", StringUtil.formatNumber(resultBadTable.getInt("count")), false)).execute();
 
                         new SingleQueryBuilder()
                                 .query("SELECT DISTINCT staff, " +
                                         "COUNT(*) as total FROM support_sessions " +
                                         "GROUP BY staff ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    embed.addField("Total Sessions", StringUtil.formatNumber(resultTable.getInt("count")) +
-                                            String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatNumber(set.getInt("total"))), false);
-                                }).execute();
+                                .onQuery((set) -> embed.addField("Total Sessions", StringUtil.formatNumber(resultTable.getInt("count")) +
+                                        String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatNumber(set.getInt("total"))), false)).execute();
 
                         new SingleQueryBuilder()
                                 .query("SELECT staff, COUNT(name) AS total FROM " +
                                         "(SELECT UNIQUE name, staff FROM support_sessions WHERE duration != 0) a " +
                                         "GROUP BY staff ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    embed.addField("Unique Players", StringUtil.formatNumber(resultTable.getInt("unique_helped")) +
-                                            String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatNumber(set.getInt("total"))), false);
-                                }).execute();
+                                .onQuery((set) -> embed.addField("Unique Players", StringUtil.formatNumber(resultTable.getInt("unique_helped")) +
+                                        String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatNumber(set.getInt("total"))), false)).execute();
 
 
                         new SingleQueryBuilder()
                                 .query("SELECT DISTINCT staff, SUM(duration) as total FROM support_sessions GROUP BY staff ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")) +
-                                            String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false);
-                                }).execute();
+                                .onQuery((set) -> embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")) +
+                                        String.format("\nHighest: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false)).execute();
 
                         embed.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), false);
                         embed.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), false);
@@ -96,26 +88,18 @@ public class TotalStatsCommand extends Command {
                                 .query("SELECT staff, AVG(duration) AS total FROM " +
                                         "(SELECT staff, duration FROM support_sessions WHERE duration != 0) a " +
                                         "GROUP BY staff ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    new SingleQueryBuilder()
-                                            .query("SELECT AVG(duration) AS average_duration FROM support_sessions WHERE duration != 0")
-                                            .onQuery((resultTableTime) -> {
-                                                embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")) +
-                                                        String.format("\nHighest Average: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false);
-                                            }).execute();
-                                }).execute();
+                                .onQuery((set) -> new SingleQueryBuilder()
+                                        .query("SELECT AVG(duration) AS average_duration FROM support_sessions WHERE duration != 0")
+                                        .onQuery((resultTableTime) -> embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")) +
+                                                    String.format("\nHighest Average: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false)).execute()).execute();
                         new SingleQueryBuilder()
                                 .query("SELECT DISTINCT staff, MIN(duration) as total FROM support_sessions WHERE duration != 0 ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    embed.addField("Shortest Session Time", StringUtil.formatMilliTime(set.getLong("total")) +
-                                            String.format("\nHeld By: %s", set.getString("staff")), false);
-                                }).execute();
+                                .onQuery((set) -> embed.addField("Shortest Session Time", StringUtil.formatMilliTime(set.getLong("total")) +
+                                        String.format("\nHeld By: %s", set.getString("staff")), false)).execute();
                         new SingleQueryBuilder()
                                 .query("SELECT DISTINCT staff, MAX(duration) AS total FROM support_sessions GROUP BY staff ORDER BY total DESC LIMIT 1;")
-                                .onQuery((set) -> {
-                                    embed.addField("Longest Session Time", StringUtil.formatMilliTime(set.getLong("total")) +
-                                            String.format("\nHeld By: %s", set.getString("staff")), false);
-                                }).execute();
+                                .onQuery((set) -> embed.addField("Longest Session Time", StringUtil.formatMilliTime(set.getLong("total")) +
+                                        String.format("\nHeld By: %s", set.getString("staff")), false)).execute();
 
                     }).execute();
 

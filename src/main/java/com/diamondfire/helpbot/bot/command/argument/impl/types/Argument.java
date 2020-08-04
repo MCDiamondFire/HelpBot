@@ -20,8 +20,8 @@ public abstract class Argument<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getDefaultValue() {
-        return (T) defaultValue;
+    public <D> D getDefaultValue() {
+        return (D) defaultValue;
     }
 }
  

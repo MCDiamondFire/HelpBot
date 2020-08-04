@@ -48,9 +48,7 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> {
-                    statement.setString(1, player);
-                })
+                .query("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player))
                 .onQuery((query) -> {
                     List<String> sessions = new ArrayList<>();
                     String formattedName = query.getString("name");
@@ -66,9 +64,7 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                     Util.addFields(embed, sessions, true);
 
                 })
-                .onNotFound(() -> {
-                    embed.setDescription("Nobody!");
-                }).execute();
+                .onNotFound(() -> embed.setDescription("Nobody!")).execute();
         event.reply(preset);
     }
 

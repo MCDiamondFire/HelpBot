@@ -70,12 +70,8 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", StringUtil.formatNumber(points), false);
                     new SingleQueryBuilder()
-                            .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> {
-                                statement.setInt(1, points);
-                            })
-                            .onQuery((tableSet) -> {
-                                embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false);
-                            }).execute();
+                            .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points))
+                            .onQuery((tableSet) -> embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false)).execute();
 
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);

@@ -1,25 +1,23 @@
 package com.diamondfire.helpbot.df.punishments;
 
-import com.diamondfire.helpbot.df.punishments.fetcher.providers.StaticPunishmentProvider;
-import com.diamondfire.helpbot.df.punishments.fetcher.providers.types.KickProvider;
 import com.diamondfire.helpbot.util.StringUtil;
 
 import java.util.Date;
 
 public class Punishment {
 
-    public PunishmentType type;
-    public String uuid;
-    public String reason;
-    public String staffUUID;
-    public String staffName;
-    public Date startTime;
-    public Date untilTime;
-    public boolean silent;
-    public boolean active;
-    public String removeByUUID;
-    public String removeByName;
-    public Date removeDate;
+    public final PunishmentType type;
+    public final String uuid;
+    public final String reason;
+    public final String staffUUID;
+    public final String staffName;
+    public final Date startTime;
+    public final Date untilTime;
+    public final boolean silent;
+    public final boolean active;
+    public final String removeByUUID;
+    public final String removeByName;
+    public final Date removeDate;
 
     public Punishment(PunishmentType type, String uuid, String reason, String staffUUID, String staffName, Date startTime, Date untilTime, boolean silent, boolean active, String removeByUUID, String removeByName, Date removeDate) {
         this.type = type;

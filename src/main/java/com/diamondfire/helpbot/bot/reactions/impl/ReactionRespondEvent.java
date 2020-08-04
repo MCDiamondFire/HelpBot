@@ -4,8 +4,8 @@ import net.dv8tion.jda.api.entities.MessageReaction;
 
 public class ReactionRespondEvent {
 
-    private ReactionWait wait;
-    private MessageReaction event;
+    private final ReactionWait wait;
+    private final MessageReaction event;
 
     public ReactionRespondEvent(ReactionWait wait, MessageReaction event) {
         this.wait = wait;

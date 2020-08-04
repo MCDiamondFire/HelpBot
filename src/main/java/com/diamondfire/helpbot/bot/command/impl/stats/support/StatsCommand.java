@@ -51,9 +51,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ?;", (statement) -> {
-                    statement.setString(1, player);
-                })
+                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ?;", (statement) -> statement.setString(1, player))
                 .onQuery((resultTable) -> {
                     if (resultTable.getInt("count") == 0) {
                         embed.clear();
@@ -80,9 +78,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                     new SingleQueryBuilder()
                                             .query(" SELECT (time + INTERVAL 30 DAY) AS bad_time " +
                                                     "FROM support_sessions WHERE staff = ?" +
-                                                    "ORDER BY TIME DESC LIMIT 1 OFFSET 4;", (statement) -> {
-                                                statement.setString(1, player);
-                                            })
+                                                    "ORDER BY TIME DESC LIMIT 1 OFFSET 4;", (statement) -> statement.setString(1, player))
                                             .onQuery((resultBadTableTime) -> {
                                                 Date date = resultBadTableTime.getDate("bad_time");
 
@@ -106,9 +102,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                             .query("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
                                     "MAX(duration) AS longest_duration " +
-                                    "FROM support_sessions WHERE duration != 0 AND staff = ?;", (statement) -> {
-                                statement.setString(1, player);
-                            })
+                                    "FROM support_sessions WHERE duration != 0 AND staff = ?;", (statement) -> statement.setString(1, player))
                             .onQuery((resultTableTime) -> {
                                 embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
                                 embed.addField("Shortest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);

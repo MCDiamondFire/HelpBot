@@ -68,9 +68,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
                     new SingleQueryBuilder()
-                            .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
+                            .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> statement.setString(1, playerUUID))
                             .onQuery((resultTablePlot) -> {
                                 Ranks[] ranks = Ranks.getAllRanks(
                                         resultTablePlot.getInt("donor"),
@@ -91,32 +89,16 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                             }).execute();
 
                     new SingleQueryBuilder()
-                            .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
-                            .onQuery((resultTable) -> {
-                                embed.addField("Votes Given", resultTable.getInt("count") + "", false);
-                            }).onNotFound(() -> {
-                        embed.addField("Votes Given", "0", false);
-                    }).execute();
+                            .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
+                            .onQuery((resultTable) -> embed.addField("Votes Given", resultTable.getInt("count") + "", false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
 
                     new SingleQueryBuilder()
-                            .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
-                            .onQuery((resultTable) -> {
-                                embed.addField("Credits", resultTable.getInt("credits") + "", false);
-                            }).execute();
+                            .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
+                            .onQuery((resultTable) -> embed.addField("Credits", resultTable.getInt("credits") + "", false)).execute();
 
                     new SingleQueryBuilder()
-                            .query("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date ASC LIMIT 1", (statement) -> {
-                                statement.setString(1, playerUUID);
-                            })
-                            .onQuery((resultTable) -> {
-                                embed.addField("Join Date", StringUtil.formatDate(resultTable.getDate("date")), false);
-                            }).onNotFound(() -> {
-                        embed.addField("Join Date", "Not Found", false);
-                    }).execute();
+                            .query("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID))
+                            .onQuery((resultTable) -> embed.addField("Join Date", StringUtil.formatDate(resultTable.getDate("date")), false)).onNotFound(() -> embed.addField("Join Date", "Not Found", false)).execute();
 
                 })
                 .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."))).execute();

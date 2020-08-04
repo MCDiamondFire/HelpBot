@@ -42,9 +42,9 @@ public enum Ranks {
         }
     }
 
-    private String rankName;
-    private int number;
-    private RankCategories category;
+    private final String rankName;
+    private final int number;
+    private final RankCategories category;
 
     Ranks(String rankName, int number, RankCategories category) {
         this.rankName = rankName;

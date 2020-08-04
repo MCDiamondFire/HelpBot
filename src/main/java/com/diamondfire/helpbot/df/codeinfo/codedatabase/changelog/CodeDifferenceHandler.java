@@ -113,13 +113,12 @@ public class CodeDifferenceHandler {
         try {
             // Setup the reader to prevent parsing problems.
             HashMap<String, JsonObject> objectHashMap = generateHashMap(array, keyName);
-
             HashMap<String, JsonObject> objectHashMap2 = generateHashMap(oldArray, keyName);
 
             for (String key : objectHashMap.keySet()) {
                 if (!objectHashMap2.containsKey(key)) {
                     //That means that a new action has appeared!
-                    differences.append("\n+ New " + key);
+                    differences.append("\n+ New ").append(key);
 
                 } else {
                     if (!objectHashMap.get(key).equals(objectHashMap2.get(key))) {
@@ -131,7 +130,7 @@ public class CodeDifferenceHandler {
             for (String key : objectHashMap2.keySet()) {
                 if (!objectHashMap.containsKey(key)) {
                     //That means that an action was deleted.
-                    differences.append("\n- Removed " + key);
+                    differences.append("\n- Removed ").append(key);
                 }
             }
         } catch (Exception e) {

@@ -33,9 +33,7 @@ public class ReactionWait extends TimerTask {
 
     @Override
     public void run() {
-        jda.getTextChannelById(this.channel).retrieveMessageById(this.message).queue((message) -> {
-            message.clearReactions().queue();
-        });
+        jda.getTextChannelById(this.channel).retrieveMessageById(this.message).queue((message) -> message.clearReactions().queue());
     }
 
     public long getUser() {

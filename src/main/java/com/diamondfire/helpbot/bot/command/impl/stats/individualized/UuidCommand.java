@@ -4,15 +4,9 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.df.ranks.Ranks;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
-import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.util.*;
 
 
 //Command exists for easy mobile copy and pasting
@@ -44,7 +38,7 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
                 .onQuery(table -> {
                     String playerUUID = table.getString("uuid");
 
-                    event.getChannel().sendMessage(playerUUID);
+                    event.getChannel().sendMessage(playerUUID).queue();
                 })
                 .onNotFound(() -> {
                     PresetBuilder preset = new PresetBuilder();

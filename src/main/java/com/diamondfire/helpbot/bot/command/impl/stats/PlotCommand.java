@@ -83,9 +83,7 @@ public class PlotCommand extends Command {
 
 
         new SingleQueryBuilder()
-                .query("SELECT * FROM plots where ID = ?;", (statement) -> {
-                    statement.setInt(1, plotID);
-                })
+                .query("SELECT * FROM plots where ID = ?;", (statement) -> statement.setInt(1, plotID))
                 .onQuery((resultTablePlot) -> {
                     embed.addField("Name", StringUtil.display(resultTablePlot.getString("name")), true);
                     embed.addField("Owner", resultTablePlot.getString("owner_name"), true);

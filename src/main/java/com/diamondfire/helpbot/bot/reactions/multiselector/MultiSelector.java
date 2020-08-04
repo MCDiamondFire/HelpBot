@@ -9,9 +9,9 @@ import java.util.*;
 
 public class MultiSelector {
 
-    private MultiSelectorPage[] pages;
-    private long channel;
-    private long user;
+    private final MultiSelectorPage[] pages;
+    private final long channel;
+    private final long user;
 
     public MultiSelector(long channel, long user, List<MultiSelectorPage> pages) {
         this.pages = pages.toArray(new MultiSelectorPage[0]);
@@ -32,7 +32,7 @@ public class MultiSelector {
                 throw new IllegalStateException("Not enough emojis to map 10 objects!");
             }
             String emoji = page.getCustomEmote() != null ? page.getCustomEmote() : nums.pop();
-            stringBuilder.append("\n" + emoji + " " + page.getName());
+            stringBuilder.append("\n").append(emoji).append(" ").append(page.getName());
             pagesHash.put(new BasicReaction(emoji), page);
         }
 

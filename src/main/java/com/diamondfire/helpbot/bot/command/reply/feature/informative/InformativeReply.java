@@ -8,9 +8,9 @@ import java.awt.*;
 
 public class InformativeReply implements ReplyPreset {
 
-    String title;
-    String description;
-    Color color;
+    final String title;
+    final String description;
+    final Color color;
 
     public InformativeReply(InformativeReplyType type, String description) {
         this.color = type.getColor();

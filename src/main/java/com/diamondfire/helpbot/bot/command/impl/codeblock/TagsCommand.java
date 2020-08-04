@@ -40,7 +40,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         for (CodeBlockTagData tag : actionData.getTags()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (String option : tag.getOptions()) {
-                stringBuilder.append("\n\\> " + (option.equals(tag.getDefaultValue()) ? String.format("**%s**", option) : option));
+                stringBuilder.append("\n\\> ").append(option.equals(tag.getDefaultValue()) ? String.format("**%s**", option) : option);
             }
             builder.addField(tag.getName(), stringBuilder.toString(), true);
         }

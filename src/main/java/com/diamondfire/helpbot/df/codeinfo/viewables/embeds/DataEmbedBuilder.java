@@ -34,7 +34,7 @@ public abstract class DataEmbedBuilder {
             footer.append("Unlock with Credits");
         } else if (!icon.getRequiredRank().equals("")) {
             if (footerText.length() != 0) footer.append(" | ");
-            footer.append("Unlock with " + icon.getRequiredRank());
+            footer.append("Unlock with ").append(icon.getRequiredRank());
         }
 
         builder.setFooter(footer.toString());
