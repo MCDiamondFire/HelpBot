@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
-import java.awt.*;
 import java.util.*;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
@@ -43,15 +42,23 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         reply.reply(preset.getEmbed(), getChannel()).queue();
     }
 
-    public void reply(PresetBuilder preset, TextChannel channel) {
+    public void reply(PresetBuilder preset, MessageChannel channel) {
         reply.reply(preset.getEmbed(), channel).queue();
+    }
+
+    public void reply(EmbedBuilder builder) {
+        reply.reply(builder, getChannel()).queue();
+    }
+
+    public void reply(EmbedBuilder builder, MessageChannel channel) {
+        reply.reply(builder, channel).queue();
     }
 
     public MessageAction replyA(PresetBuilder preset) {
         return reply.reply(preset.getEmbed(), getChannel());
     }
 
-    public MessageAction replyA(PresetBuilder preset, TextChannel channel) {
+    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
         return reply.reply(preset.getEmbed(), channel);
     }
 

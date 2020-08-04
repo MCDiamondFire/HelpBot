@@ -61,8 +61,13 @@ public class RetiredListCommand extends Command {
                         retiredList.get(resultTable.getInt("retirement")).add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
-                    builder.addPage("Retired", Util.addFields(new EmbedBuilder(), retiredList.get(Ranks.RETIRED.getNumber()), "", ""));
-                    builder.addPage("Emeritus", Util.addFields(new EmbedBuilder(), retiredList.get(Ranks.EMERITUS.getNumber()), "", ""));
+                    EmbedBuilder retired = new EmbedBuilder();
+                    Util.addFields(retired, retiredList.get(Ranks.RETIRED.getNumber()), "", "");
+                    EmbedBuilder emeritus = new EmbedBuilder();
+                    Util.addFields(emeritus, retiredList.get(Ranks.EMERITUS.getNumber()), "", "");
+
+                    builder.addPage("Retired", retired);
+                    builder.addPage("Emeritus", emeritus);
                 }).execute();
         builder.build().send(event.getJDA());
 

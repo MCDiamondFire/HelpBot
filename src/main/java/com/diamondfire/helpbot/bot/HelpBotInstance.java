@@ -48,6 +48,7 @@ public class HelpBotInstance {
                 new RawCommand(),
                 new SamQuotesCommand(),
                 new PolicyCommand(),
+                new SkinCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -78,7 +79,12 @@ public class HelpBotInstance {
                 new CpCommand(),
                 new CpRequirementsCommand(),
                 new VoteGivenLeaderboard(),
-                new SkinCommand()
+                new PlotVoteGraphCommand(),
+                new JoinDataCommand(),
+                new TotalStatsCommand(),
+                new CreditTopCommand(),
+                new HistoryCommand(),
+                new UuidCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());
@@ -91,6 +97,7 @@ public class HelpBotInstance {
 
         jda = builder.build();
         jda.awaitReady();
+
     }
 
     public static JDA getJda() {

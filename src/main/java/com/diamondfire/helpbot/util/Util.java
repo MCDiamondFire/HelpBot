@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.util;
 
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -31,47 +31,59 @@ public class Util {
     }
 
 
-    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings) {
-        return addFields(builder, strings, "", "> ", false);
+    public static void addFields(EmbedBuilder builder, List<String> strings) {
+        addFields(builder, strings, "", "> ", false);
     }
 
-    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, boolean sanatize) {
-        return addFields(builder, strings, "", "> ", sanatize);
+    public static void addFields(EmbedBuilder builder, List<String> strings, boolean sanitize) {
+        addFields(builder, strings, "", "> ", sanitize);
     }
 
-    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
-        return addFields(builder, strings, name, "> ", false);
+    public static void addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
+        addFields(builder, strings, name, "> ", false);
     }
 
-    public static EmbedBuilder addFields(EmbedBuilder builder, List<String> strings, String name, String pointer, boolean sanatize) {
+    public static void addFields(EmbedBuilder builder, List<String> strings, String name, String pointer, boolean sanitize) {
+        // Because it is repeated from the end, we want to reverse the list to keep it in "correct" order.
+        Collections.reverse(strings);
 
-        String list;
-        String lastList = null;
-        LinkedList<String> queue = new LinkedList<>();
         boolean firstField = true;
-
+        Stack<String> queue = new Stack<>();
+        Stack<String> currentSelection = new Stack<>();
+        queue.addAll(strings);
 
         for (int i = 0; i < strings.size(); i++) {
-            String dataName = strings.get(i);
+            currentSelection.push(queue.peek());
 
-            queue.add(dataName);
-            list = StringUtil.display(StringUtil.listView(queue.toArray(new String[0]), pointer, sanatize));
+            // We check with the checkView to see if the size is too large.
+            String checkView = StringUtil.display(StringUtil.listView(currentSelection.toArray(new String[0]), pointer, sanitize));
+            if (checkView.length() > 1024 || queue.size() == 1) {
+                String overflowView = null;
 
-            if (i == strings.size() - 1) {
-                builder.addField(firstField ? name : "", list, false);
+                // If we are on the last index and the length is too much, we will add an overflow view that contains that entry only.
+                if (queue.size() == 1 && checkView.length() > 1024) {
+                    overflowView = StringUtil.display(StringUtil.listView(new String[]{currentSelection.pop()}, pointer, sanitize));
+                }
+                // If we are NOT on last then we will just remove the element we just tested from the currentSelection stack, as it seems to be too big.
+                else if (queue.size() != 1) {
+                    currentSelection.pop();
+                }
+
+                builder.addField(firstField ? name : "", StringUtil.display(StringUtil.listView(currentSelection.toArray(new String[0]), pointer, sanitize)), false);
                 firstField = false;
-            } else if (list.length() >= 1000) {
-                queue.removeFirst();
-                builder.addField(firstField ? name : "", lastList, false);
-                firstField = false;
+                currentSelection.clear();
 
-                queue.clear();
-                queue.add(dataName);
+                if (overflowView != null) {
+                    builder.addField("", overflowView, false);
+                }
+
+            } else {
+                // Remove element because it's big enough.
+                queue.pop();
             }
-            lastList = list;
 
         }
-        return builder;
+
     }
 
     public static File fetchMinecraftTextureFile(String fileName) {

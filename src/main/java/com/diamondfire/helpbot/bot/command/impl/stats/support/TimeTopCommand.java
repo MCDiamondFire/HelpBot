@@ -7,12 +7,10 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.util.*;
 
 public class TimeTopCommand extends Command {
 
@@ -64,16 +62,12 @@ public class TimeTopCommand extends Command {
                     statement.setInt(1, days);
                 })
                 .onQuery((resultTable) -> {
-                    LinkedHashMap<String, Long> stats = new LinkedHashMap<>();
                     do {
-                        stats.put(StringUtil.display(resultTable.getString("staff")), resultTable.getLong("sessions"));
+                        embed.addField(StringUtil.display(resultTable.getString("staff")), "\nTotal Duration: " + StringUtil.formatMilliTime(resultTable.getLong("sessions")), false);
                     } while (resultTable.next());
 
-                    for (Map.Entry<String, Long> stat : stats.entrySet()) {
-                        embed.addField(stat.getKey(), "\nTotal Duration: " + StringUtil.formatMilliTime(stat.getValue()), false);
-                    }
-
                 }).execute();
+
         event.reply(preset);
     }
 

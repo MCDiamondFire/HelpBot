@@ -108,8 +108,8 @@ public class PlotCommand extends Command {
                     embed.addField("Auto Clear Date", StringUtil.formatDate(new Date(LocalDateTime.now().plus(weeksTillClear, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC).toEpochMilli())) + String.format(" (%s weeks)", weeksTillClear), true);
                     embed.addField("Last Active Date", StringUtil.formatDate(resultTablePlot.getDate("active_time")), true);
                     embed.addField("Whitelisted", (resultTablePlot.getInt("whitelist") == 1) + "", true);
-                    embed.addField("Player Count", resultTablePlot.getInt("player_count") + "", true);
-                    embed.addField("Current Votes", resultTablePlot.getInt("votes") + "", true);
+                    embed.addField("Player Count", StringUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
+                    embed.addField("Current Votes", StringUtil.formatNumber(resultTablePlot.getInt("votes")), true);
 
                     // Creates the icon for the plot
                     String plotIcon = resultTablePlot.getString("icon");
@@ -122,13 +122,13 @@ public class PlotCommand extends Command {
                     }
                     embed.setTitle(String.format("Plot Information (%s)", plotID));
                     embed.setThumbnail("attachment://" + icon.getName() + ".png");
+
                     event.replyA(preset).addFile(icon, icon.getName() + ".png").queue();
                 })
                 .onNotFound(() -> {
                     preset.withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")
                     );
-
                     event.reply(preset);
                 }).execute();
     }

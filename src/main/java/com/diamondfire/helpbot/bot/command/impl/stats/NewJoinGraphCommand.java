@@ -5,12 +5,14 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NewJoinGraphCommand extends Command {
 
@@ -48,14 +50,21 @@ public class NewJoinGraphCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
         String mode = event.getArgument("mode");
         int amount = event.getArgument("amount");
+
+        generateGraph(mode, amount, event.getChannel());
+    }
+
+    public static void generateGraph(String mode, int amount, TextChannel channel) {
+        ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
+        AtomicReference<ChartGraphBuilder> builder = new AtomicReference<>();
+
         switch (mode) {
             case "daily":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM approved_users WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? DAY, '%y-%m-%d')) a " +
+                                "FROM approved_users WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? DAY, '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -65,15 +74,14 @@ public class NewJoinGraphCommand extends Command {
 
                             } while (resultTable.next());
 
-                            event.getChannel().sendFile(new ChartGraphBuilder()
-                                    .setGraphName("New players per day")
-                                    .createGraph(entries)).queue();
+                            builder.set(new ChartGraphBuilder()
+                                    .setGraphName("New players per day"));
                         }).execute();
                 break;
             case "weekly":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM approved_users WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? WEEK , '%y-%m-%d')) a " +
+                                "FROM approved_users WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? WEEK , '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -83,15 +91,14 @@ public class NewJoinGraphCommand extends Command {
 
                             } while (resultTable.next());
 
-                            event.getChannel().sendFile(new ChartGraphBuilder()
-                                    .setGraphName("New players per week")
-                                    .createGraph(entries)).queue();
+                            builder.set(new ChartGraphBuilder()
+                                    .setGraphName("New players per week"));
                         }).execute();
                 break;
             case "monthly":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time FROM approved_users " +
-                                        "WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? MONTH, '%y-%m-%d')) a GROUP BY time;"
+                                        "WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? MONTH, '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a GROUP BY time;"
                                 , statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -101,14 +108,14 @@ public class NewJoinGraphCommand extends Command {
 
                             } while (resultTable.next());
 
-                            event.getChannel().sendFile(new ChartGraphBuilder()
-                                    .setGraphName("New players per month")
-                                    .createGraph(entries)).queue();
+                            builder.set(new ChartGraphBuilder()
+                                    .setGraphName("New players per month"));
                         }).execute();
                 break;
 
         }
 
+        channel.sendFile(builder.get().createGraph(entries)).queue();
     }
 
 }

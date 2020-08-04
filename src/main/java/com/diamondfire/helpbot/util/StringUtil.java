@@ -9,12 +9,15 @@ import java.util.concurrent.TimeUnit;
 public class StringUtil {
 
     public static String listView(String[] array, String pointer, boolean sanitize) {
+        String view = listView(array,pointer);
+        return sanitize ? StringUtil.display(view) : view;
+    }
+
+    public static String listView(String[] array, String pointer) {
         if (array.length == 0) {
             return "";
         }
-        String list = ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
-
-        return sanitize ? StringUtil.display(list) : list;
+        return ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
     }
 
     public static String asciidocStyle(HashMap<String, Integer> hashes) {
@@ -25,9 +28,7 @@ public class StringUtil {
         String longest = hashes.keySet().stream().max(Comparator.comparingInt(String::length)).orElse(null);
 
         ArrayList<String> strings = new ArrayList<>();
-
-        hashes.entrySet()
-                .forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
+        hashes.entrySet().forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
                         Util.repeat("", " ", (longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
 
         return String.join("\n", strings);
@@ -64,46 +65,39 @@ public class StringUtil {
             builder.append(word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ");
         }
         return builder.toString();
-
     }
 
     public static String stripColorCodes(String text) {
-        return text.replaceAll("&[(a-z)(A-Z)(0-9)]", "");
+        return text.replaceAll("[&§][(a-z)(A-Z)(0-9)]", "");
     }
 
     public static String formatMilliTime(long millis) {
         StringBuilder builder = new StringBuilder();
-        boolean disallowDecimal = false;
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         if (days > 0) {
             builder.append(days + "d ");
-            disallowDecimal = true;
         }
 
         long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
         if (hours > 0) {
-            builder.append(" " + hours + "h");
-            disallowDecimal = true;
+            builder.append(hours + "h ");
         }
 
         long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
         if (mins > 0) {
-            builder.append(" " + mins + "m");
-            disallowDecimal = true;
+            builder.append(mins + "m ");
         }
 
         long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         if (secs != 0) {
-            builder.append(" " + secs + "s");
+            builder.append(secs + "s ");
         } else {
-            if (!disallowDecimal) {
+            if (builder.length() == 0) {
                 builder.append("0." + TimeUnit.MILLISECONDS.toMillis(millis) + "s");
             }
         }
-
         return builder.toString();
-
     }
 
     public static String formatTime(long duration, TimeUnit unit) {
@@ -126,5 +120,17 @@ public class StringUtil {
             parts.add(string.substring(i, Math.min(length, i + byAmt)));
         }
         return parts;
+    }
+
+    public static String formatNumber(long number) {
+        return getFormat().format(number);
+    }
+
+    public static String formatNumber(double number) {
+        return getFormat().format(number);
+    }
+
+    private static NumberFormat getFormat() {
+        return NumberFormat.getInstance(new Locale("en", "US"));
     }
 }

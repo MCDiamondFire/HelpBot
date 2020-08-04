@@ -36,15 +36,13 @@ public class BasicReaction {
 
     public RestAction<Void> react(Message message) {
         if (isUnicode) return message.addReaction(getUnicode());
-        if (!isUnicode) return message.addReaction(getEmote());
-        return null;
+        return message.addReaction(getEmote());
     }
 
     @Override
     public String toString() {
         if (isUnicode) return getUnicode();
-        if (!isUnicode) return getEmote().getAsMention();
-        return "?";
+        return getEmote().getAsMention();
     }
 
     public boolean equalToReaction(MessageReaction.ReactionEmote reaction) {
@@ -53,7 +51,6 @@ public class BasicReaction {
             return false;
         }
 
-        //TODO if reaction isEmoji and this is emoji isn't same return false.
         if (reaction.isEmoji()) return getUnicode().equals(reaction.getEmoji());
         if (!reaction.isEmoji()) return getEmote().getIdLong() == reaction.getIdLong();
         return false;

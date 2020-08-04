@@ -6,28 +6,27 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.df.creator.CreatorLevel;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-
-public class CpRequirementsCommand extends Command {
+public class CreditTopCommand extends Command {
 
     @Override
     public String getName() {
-        return "cprequirements";
+        return "credittop";
     }
 
     @Override
     public String[] getAliases() {
-        return new String[]{"cpreq", "cpneeded", "creatorreq"};
+        return new String[]{"creditleaderboard"};
     }
 
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets the current CP level requirements.")
+                .description("Gets the current credit leaderboard.")
                 .category(CommandCategory.STATS);
     }
 
@@ -45,16 +44,18 @@ public class CpRequirementsCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "CP Requirements", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Credit Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        embed.setFooter("*Level requirement is based on a top % of players.");
-        for (CreatorLevel level : CreatorLevel.values()) {
-            embed.addField(level.display(), "CP Required: " + StringUtil.formatNumber(level.getRequirementProvider().getRequirement()), true);
-        }
+        new SingleQueryBuilder()
+                .query("SELECT name, credits FROM players,player_credits WHERE players.uuid = player_credits.uuid ORDER BY credits DESC LIMIT 10")
+                .onQuery((resultTable) -> {
+                    do {
+                        embed.addField(StringUtil.display(resultTable.getString("name")),
+                                "Credits: " + StringUtil.formatNumber(resultTable.getInt("credits")), false);
+                    } while (resultTable.next());
+                }).execute();
 
-        // Even it out
-        embed.addBlankField(true);
         event.reply(preset);
     }
 

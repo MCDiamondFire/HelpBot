@@ -64,14 +64,10 @@ public class SessionTopCommand extends Command {
                     statement.setInt(1, days);
                 })
                 .onQuery((resultTable) -> {
-                    LinkedHashMap<String, Integer> stats = new LinkedHashMap<>();
                     do {
-                        stats.put(StringUtil.display(resultTable.getString("staff")), resultTable.getInt("sessions"));
+                        embed.addField(StringUtil.display(resultTable.getString("staff")),
+                                "\nSessions: " + StringUtil.formatNumber(resultTable.getInt("sessions")), false);
                     } while (resultTable.next());
-
-                    for (Map.Entry<String, Integer> stat : stats.entrySet()) {
-                        embed.addField(stat.getKey(), "\nSessions: " + stat.getValue(), false);
-                    }
 
                 }).execute();
 

@@ -54,7 +54,7 @@ public class ChartGraph extends BoxGraph {
             sideTickRegistry.putIfAbsent(i, y);
 
             if (currentTickBound >= y) {
-                currentTickBound = y - graphics.getFontMetrics().getHeight();
+                currentTickBound = y - graphics.getFontMetrics().getHeight() + 5;
                 renderSideTick(graphics, X_OFFSET + (BORDER_SIZE / 2), y, i + "");
             }
 

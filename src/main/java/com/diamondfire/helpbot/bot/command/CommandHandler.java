@@ -1,8 +1,9 @@
 package com.diamondfire.helpbot.bot.command;
 
 import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.HashMap;
@@ -10,15 +11,15 @@ import java.util.concurrent.*;
 
 public class CommandHandler {
 
-    private final HashMap<String, Command> commands = new HashMap<>();
-    private final HashMap<String, Command> aliases = new HashMap<>();
+    private final HashMap<String, Command> CMDS = new HashMap<>();
+    private final HashMap<String, Command> ALIASES = new HashMap<>();
     private final ExecutorService POOL = Executors.newCachedThreadPool();
 
     public void register(Command... commands) {
         for (Command command : commands) {
-            this.commands.put(command.getName().toLowerCase(), command);
+            this.CMDS.put(command.getName().toLowerCase(), command);
             for (String alias : command.getAliases()) {
-                this.aliases.put(alias.toLowerCase(), command);
+                this.ALIASES.put(alias.toLowerCase(), command);
             }
         }
 
@@ -41,8 +42,10 @@ public class CommandHandler {
                         try {
                             command.run(e);
                         } catch (Exception error) {
-                            Util.error(error, "Command error!");
                             error.printStackTrace();
+
+                            PresetBuilder builder = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "This command failed to execute, sorry for the inconvenience."));
+                            e.reply(builder);
                         }
                     }, POOL
             );
@@ -51,10 +54,10 @@ public class CommandHandler {
     }
 
     public HashMap<String, Command> getCommands() {
-        return commands;
+        return CMDS;
     }
 
     public HashMap<String, Command> getAliases() {
-        return aliases;
+        return ALIASES;
     }
 }

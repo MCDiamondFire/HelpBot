@@ -54,7 +54,7 @@ public class VoteGivenLeaderboard extends Command {
                 .onQuery((resultTable) -> {
                     do {
                         embed.addField(StringUtil.display(resultTable.getString("name")),
-                                "Votes Given: " + resultTable.getInt("given"), false);
+                                "Votes Given: " + StringUtil.formatNumber(resultTable.getInt("given")), false);
                     } while (resultTable.next());
                 }).execute();
         event.reply(preset);

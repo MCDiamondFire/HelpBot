@@ -1,23 +1,25 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
 import com.github.steveice10.mc.protocol.*;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.*;
 import com.github.steveice10.packetlib.*;
 import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
 import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
@@ -120,47 +122,65 @@ public class FetchDataCommand extends Command {
         client.getSession().addListener(new SessionAdapter() {
             @Override
             public void packetReceived(PacketReceivedEvent event) {
-                Packet packet = event.getPacket();
+                try {
+                    Packet packet = event.getPacket();
 
-                if (packet instanceof ServerJoinGamePacket) {
-                    status(message, "Joined server!");
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    event.getSession().send(new ClientChatPacket("/chat none"));
-                    event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
-                }
-
-                if (packet instanceof ServerChatPacket) {
-                    ServerChatPacket chatPacket = event.getPacket();
-                    String text = chatPacket.getMessage().getFullText();
-                    if (chatPacket.getType() == MessageType.NOTIFICATION) return;
-
-                    if (text.contains("Unknown command!")) {
-                        throw new IllegalStateException("Command not found!");
+                    if (packet instanceof ServerJoinGamePacket) {
+                        status(message, "Joined server!");
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        event.getSession().send(new ClientChatPacket("/chat none"));
+                        event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
                     }
 
-                    if (text.startsWith("{")) {
-                        status(message, "Receiving data...");
-                        ready = true;
-                    } else if (text.startsWith("}")) {
-                        session.disconnect("HelpBot data collection has concluded. ");
+                    if (packet instanceof ServerChatPacket) {
+                        ServerChatPacket chatPacket = event.getPacket();
+                        String text;
+                        {
+                            com.github.steveice10.mc.protocol.data.message.Message message = chatPacket.getMessage();
+                                StringBuilder builder = new StringBuilder();
+                                for (com.github.steveice10.mc.protocol.data.message.Message message1 : message.getExtra()) {
+                                    TextMessage rawText = (TextMessage) message1;
+
+                                    if (rawText.getText() == null) continue;
+
+                                    builder.append(rawText.getText());
+                                }
+                                text = builder.toString();
+
+                        }
+
+                        if (chatPacket.getType() == MessageType.NOTIFICATION) return;
+
+                        if (text.contains("Unknown command!")) {
+                            throw new IllegalStateException("Command not found!");
+                        }
+
+                        if (text.startsWith("{")) {
+                            status(message, "Receiving data...");
+                            ready = true;
+                        } else if (text.startsWith("}")) {
+                            session.disconnect("HelpBot data collection has concluded. ");
+                        }
+
+                        if (ready) {
+                            queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
+                        }
+
+
                     }
-
-                    if (ready) {
-                        queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
-                    }
-
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
         while (session.isConnected()) {
             try {
-                Thread.sleep(5);
+                Thread.sleep(1);
             } catch (Exception ignored) {
             }
         }

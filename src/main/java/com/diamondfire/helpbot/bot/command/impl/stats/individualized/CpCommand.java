@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.df.creator.CreatorLevel;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 
@@ -67,18 +68,18 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     );
 
                     embed.addField("Current Rank", level.display(true), false);
-                    embed.addField("Current Points", points + "", false);
+                    embed.addField("Current Points", StringUtil.formatNumber(points), false);
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> {
                                 statement.setInt(1, points);
                             })
                             .onQuery((tableSet) -> {
-                                embed.addField("Current Leaderboard Place", tableSet.getInt("place") + "", false);
+                                embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false);
                             }).execute();
 
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);
-                        embed.addField("Next Rank Points", nextLevelReq + String.format(" (%s to go)", nextLevelReq - points), false);
+                        embed.addField("Next Rank Points", StringUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", StringUtil.formatNumber(nextLevelReq - points)), false);
                     }
 
                 })

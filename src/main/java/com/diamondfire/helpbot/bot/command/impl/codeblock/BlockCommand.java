@@ -31,7 +31,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
                 .category(CommandCategory.CODE_BLOCK)
                 .addArgument(
                         new HelpContextArgument()
-                                .name("codeblock|action|game value")
+                                .name("codeblock")
                 );
     }
 

@@ -58,11 +58,10 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                     if (resultTable.getInt("count") == 0) {
                         embed.clear();
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player does not have any stats!"));
-                        event.reply(preset);
                         return;
                     }
 
-                    String formattedName = resultTable.getString("name");
+                    String formattedName = resultTable.getString("staff");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
@@ -75,7 +74,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 statement.setString(2, player);
                             })
                             .onQuery((resultBadTable) -> {
-                                embed.addField("Monthly Sessions", resultBadTable.getInt("count") + "", true);
+                                embed.addField("Monthly Sessions", StringUtil.formatNumber(resultBadTable.getInt("count")), true);
                                 if (resultBadTable.getBoolean("support")) {
                                     embed.addField("Bad?", resultBadTable.getInt("bad") == 1 ? "Yes!" : "No", true);
                                     new SingleQueryBuilder()
@@ -97,8 +96,8 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                             }).execute();
 
 
-                    embed.addField("Total Sessions", resultTable.getInt("count") + "", true);
-                    embed.addField("Unique Players", resultTable.getInt("unique_helped") + "", true);
+                    embed.addField("Total Sessions", StringUtil.formatNumber(resultTable.getInt("count")), true);
+                    embed.addField("Unique Players", StringUtil.formatNumber(resultTable.getInt("unique_helped")), true);
                     embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
                     embed.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), true);
                     embed.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), true);

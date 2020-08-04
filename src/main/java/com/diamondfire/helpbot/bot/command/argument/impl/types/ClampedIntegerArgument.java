@@ -8,6 +8,13 @@ public class ClampedIntegerArgument extends IntegerArgument {
     final int min;
     final int max;
 
+    public ClampedIntegerArgument(int min) {
+        super();
+
+        this.min = min;
+        this.max = Integer.MAX_VALUE;
+    }
+
     public ClampedIntegerArgument(int min, int max) {
         super();
 
