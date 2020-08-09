@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 
 public enum InformativeReplyType {
+    SUCCESS("Success!", Color.GREEN),
     INFO("Notice!", null),
     ERROR("Error!", Color.RED);
 

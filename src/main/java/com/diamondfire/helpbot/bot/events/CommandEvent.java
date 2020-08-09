@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.events;
 
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ParsedArgumentSet;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
@@ -21,14 +22,9 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         super(api, responseNumber, message);
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
-        Command command = HelpBotInstance.getHandler().getCommands().get(commandPrefix);
+        Command command = CommandHandler.getCommand(commandPrefix);
 
-        if (command == null) {
-            command = HelpBotInstance.getHandler().getAliases().get(commandPrefix);
-            if (command == null) {
-                return;
-            }
-        }
+        if (command == null) return;
 
         this.command = command;
         this.parsedArgumentSet = new ParsedArgumentSet(command.getArguments(), Arrays.copyOfRange(rawArgs, 1, rawArgs.length));

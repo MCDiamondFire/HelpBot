@@ -41,11 +41,11 @@ public class QueueCommand extends AbstractPlayerUUIDCommand {
         EmbedBuilder embed = preset.getEmbed();
 
         new SingleQueryBuilder()
-                .query("SELECT player,plot,node, (TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) + 0) AS enter FROM support_queue ORDER BY enter_time LIMIT 25;")
+                .query("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM hypercube.support_queue ORDER BY enter_time LIMIT 25;")
                 .onQuery((resultTableQueue) -> {
                     int i = 0;
                     do {
-                        embed.addField(resultTableQueue.getString("player"), StringUtil.formatTime(resultTableQueue.getLong("enter"), TimeUnit.SECONDS), false);
+                        embed.addField(resultTableQueue.getString("player"), StringUtil.formatMilliTime(resultTableQueue.getTime("time").getTime()), false);
                         i++;
                     } while (resultTableQueue.next());
                     embed.setTitle(String.format("Players in Queue (%s)", i));

@@ -58,7 +58,6 @@ public class SessionStatsCommand extends AbstractPlayerUUIDCommand {
                     if (resultTable.getInt("count") == 0) {
                         embed.clear();
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player has not been in a session!"));
-                        event.reply(preset);
                         return;
                     }
                     String formattedName = resultTable.getString("name");

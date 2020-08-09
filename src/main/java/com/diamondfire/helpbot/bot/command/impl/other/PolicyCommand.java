@@ -17,6 +17,11 @@ public class PolicyCommand extends Command {
     }
 
     @Override
+    public String[] getAliases() {
+        return new String[]{"privacy"};
+    }
+
+    @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the bot's privacy policy.")
@@ -43,7 +48,6 @@ public class PolicyCommand extends Command {
         embed.addField("Data Collection", "HelpBot does not store any data from its users.", false);
         embed.addField("Where does my data come from?", "HelpBot receives information from DiamondFire. Sensitive data on a user is not provided by the bot, only public information that is typically available to everyone on DiamondFire already.", false);
         embed.addField("Can I get my data removed?", "As stated before, all data is provided by DiamondFire. If you would like your data removed from DiamondFire, you will need to contact an administrator.", true);
-
 
         event.reply(preset);
     }

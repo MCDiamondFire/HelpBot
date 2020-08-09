@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -35,11 +36,6 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 .category(CommandCategory.STATS);
     }
 
-//    @Override
-//    public ArgumentSet getArguments() {
-//        return new ArgumentSet();
-//    }
-
     @Override
     public Permission getPermission() {
         return Permission.USER;
@@ -47,19 +43,24 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
+
+        if (!Permission.MODERATION.hasPermission(event.getMember())) {
+          player = event.getMember().getEffectiveName();
+        }
+
         PresetBuilder recapPreset = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
                 );
-
         //TODO Add tempban warn info
         //30 mins = 4 warnings
         //1 hour = 5 warnings
         //12 hours = 6 warnings
+        String finalPlayer = player;
         new SingleQueryBuilder()
                 .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
+                    statement.setString(1, finalPlayer);
+                    statement.setString(2, finalPlayer);
                 })
                 .onQuery(table -> {
                     String playerName = table.getString("name");
@@ -94,7 +95,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                 embeds.add(history);
                             } else {
                                 try {
-                                    sendFile = ExternalFileUtil.generateFile("ban_history.txt");
+                                    sendFile = ExternalFileUtil.generateFile("history.txt");
                                     Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();

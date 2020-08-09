@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
-import com.diamondfire.helpbot.bot.command.impl.filespitter.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
@@ -32,10 +31,6 @@ public class HelpBotInstance {
                 new BlockCommand(),
                 new SearchCommand(),
                 new TagsCommand(),
-                //file listers
-                new SoundListCommand(),
-                new ParticleListCommand(),
-                new PotionListCommand(),
                 // others
                 new MimicCommand(),
                 new FetchDataCommand(),
@@ -44,11 +39,16 @@ public class HelpBotInstance {
                 new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
-                new FetchDumpCommand(),
+                new ActionDumpCommand(),
                 new RawCommand(),
                 new SamQuotesCommand(),
                 new PolicyCommand(),
                 new SkinCommand(),
+                new DisableCommand(),
+                new EnableCommand(),
+                new DisableCommand(),
+                new ImageDumpCommand(),
+                new SoundListCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),

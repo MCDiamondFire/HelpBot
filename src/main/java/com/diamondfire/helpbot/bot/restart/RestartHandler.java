@@ -35,7 +35,7 @@ public class RestartHandler {
             String[] restartMSG = Files.readAllLines(restart.toPath()).get(0).split(":");
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Restart Successful!");
-            builder.setDescription("Restarted in: " + StringUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
+            builder.setDescription("Restarted in " + StringUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
 
             HelpBotInstance.getJda().getTextChannelById(restartMSG[1]).editMessageById(restartMSG[0], builder.build()).override(true).queue();
             restart.delete();

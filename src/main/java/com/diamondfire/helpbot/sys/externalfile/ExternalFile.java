@@ -33,6 +33,11 @@ public enum ExternalFile {
             .isDirectory(false)
             .setName("config")
             .setFileType("json")
+            .buildFile()),
+    DISABLED_COMMANDS(new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("disabled_commands")
+            .setFileType("txt")
             .buildFile());
 
     private final File file;

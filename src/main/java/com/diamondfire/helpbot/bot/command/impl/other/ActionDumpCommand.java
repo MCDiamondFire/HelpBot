@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-public class FetchDumpCommand extends Command {
+public class ActionDumpCommand extends Command {
 
     @Override
     public String getName() {
@@ -17,7 +17,7 @@ public class FetchDumpCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Sends over the action dump file.")
+                .description("Provides over the action dump file. This file provides a dump of all the data HelpBot uses. This is automatically updated every 24 hours.")
                 .category(CommandCategory.OTHER);
     }
 
@@ -28,7 +28,7 @@ public class FetchDumpCommand extends Command {
 
     @Override
     public Permission getPermission() {
-        return Permission.BOT_DEVELOPER;
+        return Permission.USER;
     }
 
     @Override

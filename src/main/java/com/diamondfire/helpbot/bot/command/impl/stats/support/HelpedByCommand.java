@@ -60,7 +60,10 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                     Util.addFields(embed, sessions, true);
 
                 })
-                .onNotFound(() -> embed.setDescription("Nobody!")).execute();
+                .onNotFound(() -> {
+                    preset.withPreset(new MinecraftUserPreset(player));
+                    embed.setDescription("Nobody!");
+                }).execute();
 
         event.reply(preset);
     }
