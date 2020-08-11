@@ -35,7 +35,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public Permission getPermission() {
-        return Permission.SUPPORT;
+        return Permission.RETIRED_SUPPORT;
     }
 
     @Override

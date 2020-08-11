@@ -34,28 +34,34 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         return command;
     }
 
+
+    // Soon, probs should clean this up.
+    public void reply(String content) {
+        reply.textReply(content, getChannel()).queue();
+    }
+
     public void reply(PresetBuilder preset) {
-        reply.reply(preset.getEmbed(), getChannel()).queue();
+        reply.embedReply(preset.getEmbed(), getChannel()).queue();
     }
 
     public void reply(PresetBuilder preset, MessageChannel channel) {
-        reply.reply(preset.getEmbed(), channel).queue();
+        reply.embedReply(preset.getEmbed(), channel).queue();
     }
 
     public void reply(EmbedBuilder builder) {
-        reply.reply(builder, getChannel()).queue();
+        reply.embedReply(builder, getChannel()).queue();
     }
 
     public void reply(EmbedBuilder builder, MessageChannel channel) {
-        reply.reply(builder, channel).queue();
+        reply.embedReply(builder, channel).queue();
     }
 
     public MessageAction replyA(PresetBuilder preset) {
-        return reply.reply(preset.getEmbed(), getChannel());
+        return reply.embedReply(preset.getEmbed(), getChannel());
     }
 
     public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        return reply.reply(preset.getEmbed(), channel);
+        return reply.embedReply(preset.getEmbed(), channel);
     }
 
     @SuppressWarnings("unchecked")

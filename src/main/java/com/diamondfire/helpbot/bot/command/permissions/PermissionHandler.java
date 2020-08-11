@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.permissions;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.Member;
 
 import java.util.*;
@@ -12,6 +13,10 @@ public class PermissionHandler {
         if (permsCache.containsKey(member.getIdLong())) {
             return permsCache.get(member.getIdLong());
         }
+        // Return user if guild isn't df guild.
+        if (member.getGuild().getIdLong() != 180793115223916544L) {
+           return Permission.USER;
+        }
 
         //Calculates the highest permission that the member has access to.
         Permission perm = member.getRoles().stream()
@@ -22,4 +27,5 @@ public class PermissionHandler {
         permsCache.put(member.getIdLong(), perm);
         return perm;
     }
+
 }

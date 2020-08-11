@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;
+import com.diamondfire.helpbot.bot.command.impl.other.extra.RyanLandCommand;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
@@ -49,6 +50,7 @@ public class HelpBotInstance {
                 new DisableCommand(),
                 new ImageDumpCommand(),
                 new SoundListCommand(),
+                new RyanLandCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
