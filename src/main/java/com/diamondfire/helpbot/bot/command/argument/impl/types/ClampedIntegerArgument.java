@@ -23,8 +23,8 @@ public class ClampedIntegerArgument extends IntegerArgument {
     }
 
     @Override
-    public Integer getValue(@NotNull String msg) throws IllegalArgumentException {
-        int num = super.getValue(msg);
+    public Integer parseValue(@NotNull String msg) throws IllegalArgumentException {
+        int num = super.parseValue(msg);
 
         if (num <= max && num >= min) {
             return num;

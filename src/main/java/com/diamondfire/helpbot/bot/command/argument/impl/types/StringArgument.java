@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class StringArgument extends Argument<String> {
 
     @Override
-    public String getValue(@NotNull String msg) throws IllegalArgumentException {
+    public String parseValue(@NotNull String msg) throws IllegalArgumentException {
         return msg;
     }
 }

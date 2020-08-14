@@ -16,7 +16,7 @@ public class DefinedStringArgument extends Argument<String> {
     }
 
     @Override
-    public String getValue(@NotNull String msg) throws IllegalArgumentException {
+    public String parseValue(@NotNull String msg) throws IllegalArgumentException {
         String option = getClosestOption(msg);
         if (option == null)
             throw new IllegalArgumentException("Please pick from the following: " + String.join(", ", options));

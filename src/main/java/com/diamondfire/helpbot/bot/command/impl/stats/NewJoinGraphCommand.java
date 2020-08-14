@@ -40,7 +40,7 @@ public class NewJoinGraphCommand extends Command {
                 .addArgument("mode",
                         new DefinedStringArgument("daily", "weekly", "monthly"))
                 .addArgument("amount",
-                        new ClampedIntegerArgument(1, 99999999));
+                        new ClampedIntegerArgument(1));
     }
 
     @Override

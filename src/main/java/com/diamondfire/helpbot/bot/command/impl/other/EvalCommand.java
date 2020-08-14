@@ -1,7 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.MessageArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import javax.script.*;
 import java.awt.*;
 import java.io.*;
+import java.util.List;
 
 
 public class EvalCommand extends Command {
@@ -35,7 +37,7 @@ public class EvalCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("code", new MessageArgument());
+                .addArgument("code", new MultiArgumentContainer<>(new StringArgument()));
     }
 
     @Override
@@ -45,7 +47,8 @@ public class EvalCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        String code = event.getArgument("code");
+        List<String> args = event.getArgument("code");
+        String code = String.join(" ", args);
 
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
         if (!System.getProperty("os.name").contains("Linux")) {

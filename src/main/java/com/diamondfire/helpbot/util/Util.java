@@ -15,8 +15,8 @@ import java.util.*;
 
 public class Util {
 
-    public static LinkedList<String> getUnicodeNumbers() {
-        LinkedList<String> nums = new LinkedList<>();
+    public static Deque<String> getUnicodeNumbers() {
+        Deque<String> nums = new ArrayDeque<>();
         nums.add("\u0031\uFE0F\u20E3");
         nums.add("\u0032\uFE0F\u20E3");
         nums.add("\u0033\uFE0F\u20E3");
@@ -40,17 +40,15 @@ public class Util {
     }
 
     public static void addFields(EmbedBuilder builder, List<String> strings, String name, String pointer) {
-        addFields(builder, strings, name, "> ", false);
+        addFields(builder, strings, name, pointer, false);
     }
 
     public static void addFields(EmbedBuilder builder, List<String> strings, String name, String pointer, boolean sanitize) {
-        // Because it is repeated from the end, we want to reverse the list to keep it in "correct" order.
-        Collections.reverse(strings);
 
         boolean firstField = true;
-        Stack<String> queue = new Stack<>();
+        //Current selection must be a stack to keep order.
         Stack<String> currentSelection = new Stack<>();
-        queue.addAll(strings);
+        Deque<String> queue = new ArrayDeque<>(strings);
 
         for (int i = 0; i < strings.size(); i++) {
             currentSelection.push(queue.peek());

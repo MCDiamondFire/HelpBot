@@ -11,22 +11,22 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class SessionStatsCommand extends AbstractPlayerUUIDCommand {
+public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String getName() {
-        return "sessionstats";
+        return "supporteestats";
     }
 
     @Override
     public String[] getAliases() {
-        return new String[]{"sesstats"};
+        return new String[]{"sesstats", "sessionstats"};
     }
 
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets a current users session stats. Name changes are not counted, so use ?names to find previous names. Please note, these are sessions the user has been in with a staff member.")
+                .description("Gets a users stats in which they were helped by a support member. Name changes are not counted, so use ?names to find previous names. Please note, these are sessions the user has been in with a staff member.")
                 .category(CommandCategory.SUPPORT)
                 .addArgument(
                         new HelpContextArgument()

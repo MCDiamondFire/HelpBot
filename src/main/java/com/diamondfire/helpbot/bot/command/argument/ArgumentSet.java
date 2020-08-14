@@ -1,21 +1,32 @@
 package com.diamondfire.helpbot.bot.command.argument;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.ArgumentContainer;
+
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentNode;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 
 public class ArgumentSet {
 
-    private final Map<String, ArgumentContainer> arguments = new LinkedHashMap<>();
+    private final List<ArgumentNode<?>> arguments = new ArrayList<>();
 
+    @Contract("_,_ -> this")
     public ArgumentSet addArgument(@NotNull String name, @NotNull Argument<?> argument) {
-        arguments.put(name, new ArgumentContainer(argument));
+        arguments.add(new ArgumentNode<>(name, new SingleArgumentContainer<>(argument)));
         return this;
     }
 
-    public Map<String, ArgumentContainer> getArguments() {
+    @Contract("_,_ -> this")
+    public ArgumentSet addArgument(@NotNull String name, @NotNull ArgumentContainer<?> argument) {
+        arguments.add(new ArgumentNode<>(name, argument));
+        return this;
+    }
+
+
+    @Contract(pure = true)
+    public List<ArgumentNode<?>> getArguments() {
         return arguments;
     }
 

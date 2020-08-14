@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot;
 
+import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.AutoRefreshDBTask;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;

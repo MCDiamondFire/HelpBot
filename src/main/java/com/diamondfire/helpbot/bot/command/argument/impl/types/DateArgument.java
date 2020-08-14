@@ -6,6 +6,7 @@ import java.text.*;
 import java.util.Date;
 
 public class DateArgument extends Argument<Date> {
+
     public final SimpleDateFormat format;
 
     public DateArgument() {
@@ -17,7 +18,7 @@ public class DateArgument extends Argument<Date> {
     }
 
     @Override
-    public Date getValue(@NotNull String msg) throws IllegalArgumentException {
+    public Date parseValue(@NotNull String msg) throws IllegalArgumentException {
         try {
             return format.parse(msg);
         } catch (ParseException parseException) {

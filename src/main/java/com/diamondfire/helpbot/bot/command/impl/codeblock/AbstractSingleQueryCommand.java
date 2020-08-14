@@ -1,7 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.MessageArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
@@ -71,7 +72,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("name", new MessageArgument());
+                .addArgument("name", new MultiArgumentContainer<>(new StringArgument()));
     }
 
     @Override
@@ -82,7 +83,8 @@ public abstract class AbstractSingleQueryCommand extends Command {
     public abstract BiConsumer<SimpleData, TextChannel> onDataReceived();
 
     protected void getData(CommandEvent event, BiConsumer<SimpleData, TextChannel> onChosen) {
-        String argumentsParsed = event.getArgument("name");
+        List<String> args = event.getArgument("name");
+        String argumentsParsed = String.join(" ", args);
 
         //Generate a bunch of "favorable" actions.
         Map<SimpleData, Double> possibleChoices = new HashMap<>();

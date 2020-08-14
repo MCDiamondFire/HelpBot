@@ -49,7 +49,7 @@ public abstract class DataEmbedBuilder {
         if (dataArrayList.size() > 10) {
             throw new IllegalStateException("Not enough emojis to map 10 objects!");
         }
-        LinkedList<String> nums = Util.getUnicodeNumbers();
+        Deque<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, SimpleData> dataHashed = new LinkedHashMap<>();
         for (SimpleData data : dataArrayList) {
             dataHashed.put(new BasicReaction(nums.pop()), data);

@@ -21,7 +21,7 @@ public class MultiSelector {
 
     public void send(JDA jda) {
         StringBuilder stringBuilder = new StringBuilder();
-        LinkedList<String> nums = Util.getUnicodeNumbers();
+        Deque<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, MultiSelectorPage> pagesHash = new LinkedHashMap<>();
 
         for (MultiSelectorPage page : this.pages) {
