@@ -103,8 +103,10 @@ public class PlotCommand extends Command {
                     }
 
                     int weeksTillClear = resultTablePlot.getInt("immunity_level");
-                    embed.addField("Auto Clear Date", StringUtil.formatDate(new Date(LocalDateTime.now().plus(weeksTillClear, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC).toEpochMilli())) + String.format(" (%s weeks)", weeksTillClear), true);
-                    embed.addField("Last Active Date", StringUtil.formatDate(resultTablePlot.getDate("active_time")), true);
+                    Date activeTime = resultTablePlot.getDate("active_time")
+                        
+                    embed.addField("Auto Clear Date", StringUtil.formatDate(new Date(activeTime.plus(weeksTillClear, ChronoUnit.WEEKS).toInstant(ZoneOffset.UTC).toEpochMilli())) + String.format(" (%s weeks)", weeksTillClear), true);
+                    embed.addField("Last Active Date", StringUtil.formatDate(activeTime), true);
                     embed.addField("Whitelisted", (resultTablePlot.getInt("whitelist") == 1) + "", true);
                     embed.addField("Player Count", StringUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
                     embed.addField("Current Votes", StringUtil.formatNumber(resultTablePlot.getInt("votes")), true);
