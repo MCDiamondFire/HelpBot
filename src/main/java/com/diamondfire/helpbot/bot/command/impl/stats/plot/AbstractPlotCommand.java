@@ -71,7 +71,7 @@ public abstract class AbstractPlotCommand extends Command {
             }
 
             int weeksTillClear = resultTablePlot.getInt("immunity_level");
-            LocalDate activeTime = DateUtil.toLocalDate(resultTablePlot.getDate("active_time"));
+            LocalDate activeTime = resultTablePlot.getDate("active_time").toLocalDate();
 
             embed.addField("Auto Clear Date", StringUtil.formatDate(DateUtil.toDate(activeTime.plus(weeksTillClear, ChronoUnit.WEEKS))) + String.format(" (%s weeks)", weeksTillClear), true);
             embed.addField("Last Active Date", StringUtil.formatDate(DateUtil.toDate(activeTime)), true);

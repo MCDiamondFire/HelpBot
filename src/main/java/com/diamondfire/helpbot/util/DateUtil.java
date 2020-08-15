@@ -17,11 +17,8 @@ public class DateUtil {
         return calendar.getTime();
     }
 
-    public static LocalDate toLocalDate(java.sql.Date sqlDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(sqlDate);
-
-        return LocalDate.ofInstant(calendar.toInstant(), ZoneOffset.UTC);
+    public static java.sql.Date toSqlDate(Date date) {
+        return new java.sql.Date(date.toInstant().toEpochMilli());
     }
 
 

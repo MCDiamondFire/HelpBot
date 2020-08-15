@@ -23,7 +23,7 @@ public class HelpBotInstance {
     private static JDA jda;
     private static final Config config = new Config();
 
-    public static void initialize() throws InterruptedException, LoginException {
+    public static void initialize() throws LoginException {
 
         handler.register(
                 // codeblock commands
@@ -97,10 +97,9 @@ public class HelpBotInstance {
         builder.setMemberCachePolicy(MemberCachePolicy.NONE);
         builder.setActivity(Activity.watching("for ?help"));
         builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS);
-        builder.addEventListeners(new MessageEvent(), new ReactionEvent());
+        builder.addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
 
         jda = builder.build();
-        jda.awaitReady();
 
     }
 

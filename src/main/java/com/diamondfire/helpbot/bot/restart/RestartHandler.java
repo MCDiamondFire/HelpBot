@@ -26,7 +26,7 @@ public class RestartHandler {
 
     }
 
-    public static void recover() {
+    public static void recover(JDA jda) {
         try {
             File restart = ExternalFileUtil.getFile("restart_cache");
             if (!restart.exists()) {
@@ -37,7 +37,7 @@ public class RestartHandler {
             builder.setTitle("Restart Successful!");
             builder.setDescription("Restarted in " + StringUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
 
-            HelpBotInstance.getJda().getTextChannelById(restartMSG[1]).editMessageById(restartMSG[0], builder.build()).override(true).queue();
+            jda.getTextChannelById(restartMSG[1]).editMessageById(restartMSG[0], builder.build()).override(true).queue();
             restart.delete();
         } catch (IOException | ArrayIndexOutOfBoundsException ignored) {
         }

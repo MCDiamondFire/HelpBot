@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -69,13 +69,13 @@ public class JoinDataCommand extends Command {
 
         int days = event.getArgument("days");
         Date date = event.getArgument("date");
-        java.sql.Date sqlDate = new java.sql.Date(date.toInstant().toEpochMilli());
+        java.sql.Date sqlDate = DateUtil.toSqlDate(date);
 
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DAY_OF_MONTH, days);
 
-        java.sql.Date sqlDateTo = new java.sql.Date(c.getTime().toInstant().toEpochMilli());
+        java.sql.Date sqlDateTo = DateUtil.toSqlDate(date);
 
         // convert calendar to date
         String dateFrom = StringUtil.formatDate(date);

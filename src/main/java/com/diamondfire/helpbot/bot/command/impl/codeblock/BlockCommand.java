@@ -38,7 +38,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet().
-                addArgument("codeblock", new DefinedObjectArgument(CodeDatabase.getCodeBlocks().stream()
+                addArgument("codeblock", new DefinedObjectArgument<>(CodeDatabase.getCodeBlocks().stream()
                         .filter((codeBlockData -> codeBlockData.getAssociatedAction() == null))
                         .map(CodeBlockData::getName)
                         .toArray(String[]::new)));

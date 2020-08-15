@@ -15,14 +15,11 @@ import java.io.File;
 
 public class HelpBot {
 
-    public static void main(String[] args) throws LoginException, InterruptedException {
+    public static void main(String[] args) throws LoginException {
         HelpBotInstance.initialize();
         CodeDatabase.initialize();
         CodeDifferenceHandler.refresh();
         DisableCommandHandler.initialize();
-        AutoRefreshDBTask.initialize();
-        RestartHandler.recover();
-
     }
 
 }
