@@ -38,7 +38,7 @@ public class NewJoinGraphCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("mode",
-                        new DefinedStringArgument("daily", "weekly", "monthly"))
+                        new DefinedObjectArgument("daily", "weekly", "monthly"))
                 .addArgument("amount",
                         new ClampedIntegerArgument(1));
     }

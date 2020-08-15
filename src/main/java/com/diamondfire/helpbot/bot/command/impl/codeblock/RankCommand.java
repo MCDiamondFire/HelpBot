@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedStringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
@@ -38,7 +38,7 @@ public class RankCommand extends AbstractMultiQueryCommand {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("Rank",
-                        new DefinedStringArgument("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
+                        new DefinedObjectArgument("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
     }
 
     @Override

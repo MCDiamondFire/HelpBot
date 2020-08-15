@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedStringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
@@ -38,7 +38,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet().
-                addArgument("codeblock", new DefinedStringArgument(CodeDatabase.getCodeBlocks().stream()
+                addArgument("codeblock", new DefinedObjectArgument(CodeDatabase.getCodeBlocks().stream()
                         .filter((codeBlockData -> codeBlockData.getAssociatedAction() == null))
                         .map(CodeBlockData::getName)
                         .toArray(String[]::new)));

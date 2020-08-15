@@ -60,7 +60,7 @@ public class QueryCommand extends Command {
                         HashMap<String, String> entries = new HashMap<>();
                         for (int i = 1; i <= width; i++) {
                             String columnName = set.getMetaData().getColumnName(i);
-                            entries.put(columnName, set.getObject(i).toString());
+                            entries.put(columnName, String.valueOf(set.getObject(i)));
                         }
                         objects.add(StringUtil.asciidocStyle(entries));
                     } while (set.next());
@@ -75,7 +75,7 @@ public class QueryCommand extends Command {
                     StringWriter sw = new StringWriter();
                     e.printStackTrace(new PrintWriter(sw));
                     String sStackTrace = sw.toString();
-                    builder.setTitle("Query failed!");
+                    builder.setTitle("Query failed! " + e.getClass().getName());
                     event.getChannel().sendMessage(builder.build()).queue();
                     event.getChannel().sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
 

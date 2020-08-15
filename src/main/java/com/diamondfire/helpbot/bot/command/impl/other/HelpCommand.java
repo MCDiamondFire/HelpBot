@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedStringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.*;
@@ -12,7 +12,6 @@ import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class HelpCommand extends Command {
@@ -37,7 +36,7 @@ public class HelpCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet().addArgument("help",
-                new DefinedStringArgument(HelpBotInstance.getHandler().getCommands().values().stream()
+                new DefinedObjectArgument(HelpBotInstance.getHandler().getCommands().values().stream()
                         .map(Command::getName)
                         .toArray(String[]::new)).optional(null));
     }

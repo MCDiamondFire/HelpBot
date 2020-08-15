@@ -5,6 +5,7 @@ import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;

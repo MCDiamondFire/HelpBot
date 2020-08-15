@@ -7,30 +7,33 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class DefinedStringArgument extends Argument<String> {
+public class DefinedObjectArgument<T> extends Argument<T> {
 
-    final String[] options;
+    private final Map<String,T> objectMap = new HashMap<>();
 
-    public DefinedStringArgument(@NotNull String... options) {
+    public DefinedObjectArgument(@NotNull T... options) {
         super();
-        this.options = options;
+
+        for (T option : options) {
+            objectMap.put(option.toString(), option);
+        }
     }
 
     @Override
-    public String parseValue(@NotNull String msg) throws ArgumentException {
-        String option = getClosestOption(msg);
+    public T parseValue(@NotNull String msg) throws ArgumentException {
+        T option = getClosestOption(msg);
         if (option == null) {
-            throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", options));
+            throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", objectMap.keySet()));
         }
 
 
         return option;
     }
 
-    private String getClosestOption(String args) {
+    private T getClosestOption(String args) {
         //Generate a bunch of "favorable" actions.
         Map<String, Double> possibleChoices = new HashMap<>();
-        for (String option : options) {
+        for (String option : objectMap.keySet()) {
             possibleChoices.put(option, JaroWinkler.score(args, option));
         }
 
@@ -39,6 +42,6 @@ public class DefinedStringArgument extends Argument<String> {
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .orElse(null);
 
-        return closestAction.getValue() >= 0.85 ? closestAction.getKey() : null;
+        return closestAction.getValue() >= 0.85 ? objectMap.get(closestAction.getKey()) : null;
     }
 }

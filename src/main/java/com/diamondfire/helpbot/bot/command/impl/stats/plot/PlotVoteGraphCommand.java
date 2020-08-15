@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.stats;
+package com.diamondfire.helpbot.bot.command.impl.stats.plot;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.IntegerArgument;
