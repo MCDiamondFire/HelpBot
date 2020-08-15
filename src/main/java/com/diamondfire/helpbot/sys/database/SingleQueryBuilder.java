@@ -4,6 +4,7 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.*;
 
 import java.sql.*;
+import java.util.function.*;
 
 /**
  * <h1>SingleQueryBuilder</h1>
@@ -36,7 +37,8 @@ public class SingleQueryBuilder {
     String query;
     PreparedStatementManager preparedStatement;
     ResultSetManager onQuery;
-    Runnable onFail;
+    Runnable onNotFound;
+    Consumer<Exception> onException;
 
     @Contract("_,_, -> this")
     public SingleQueryBuilder query(@NotNull @Language("SQL") String query, @NotNull PreparedStatementManager statement) {
@@ -80,7 +82,13 @@ public class SingleQueryBuilder {
 
     @Contract("_, -> this")
     public SingleQueryBuilder onNotFound(@Nullable Runnable onFail) {
-        this.onFail = onFail;
+        this.onNotFound = onFail;
+        return this;
+    }
+
+    @Contract("_, -> this")
+    public SingleQueryBuilder onException(@Nullable Consumer<Exception> onException) {
+        this.onException = onException;
         return this;
     }
 
@@ -95,13 +103,16 @@ public class SingleQueryBuilder {
             if (set.next()) {
                 onQuery.run(set);
             } else {
-                if (onFail != null) {
-                    onFail.run();
+                if (onNotFound != null) {
+                    onNotFound.run();
                 }
             }
             set.close();
 
         } catch (Exception e) {
+            if (onException != null) {
+                onException.accept(e);
+            }
             e.printStackTrace();
         }
     }
@@ -114,6 +125,9 @@ public class SingleQueryBuilder {
             }
             statement.execute();
         } catch (Exception e) {
+            if (onException != null) {
+                onException.accept(e);
+            }
             e.printStackTrace();
         }
     }

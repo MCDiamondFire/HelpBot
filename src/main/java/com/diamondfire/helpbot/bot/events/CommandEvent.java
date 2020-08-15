@@ -2,10 +2,12 @@ package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ParsedArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -15,27 +17,26 @@ import java.util.*;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
 
+    //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
-    private Command command = null;
+    private final Command command;
     private final ReplyHandler reply = new ReplyHandler();
 
-    public CommandEvent(JDA api, long responseNumber, Message message) throws IllegalArgumentException {
+    public CommandEvent(JDA api, long responseNumber, Message message){
         super(api, responseNumber, message);
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
-        Command command = CommandHandler.getCommand(commandPrefix);
 
-        if (command == null) return;
+        this.command = CommandHandler.getCommand(commandPrefix);
+    }
 
-        this.command = command;
-
-        this.parsedArgumentSet = ArgumentParser.parseArgs(command.getArguments(), Arrays.copyOfRange(rawArgs, 1, rawArgs.length));
+    public void pushArguments(String[] rawArgs) throws ArgumentException {
+        this.parsedArgumentSet = ArgumentParser.parseArgs(command, Arrays.copyOfRange(rawArgs, 1, rawArgs.length));
     }
 
     public Command getCommand() {
         return command;
     }
-
 
     // Soon, probs should clean this up.
     public void reply(String content) {

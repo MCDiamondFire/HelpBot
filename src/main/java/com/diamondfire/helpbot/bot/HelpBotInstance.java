@@ -49,6 +49,7 @@ public class HelpBotInstance {
                 new DisableCommand(),
                 new ImageDumpCommand(),
                 new SoundListCommand(),
+                new QueryCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -84,7 +85,9 @@ public class HelpBotInstance {
                 new TotalStatsCommand(),
                 new CreditTopCommand(),
                 new HistoryCommand(),
-                new UuidCommand()
+                new UuidCommand(),
+                new CpGraphCommand(),
+                new PlotLocCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());

@@ -90,11 +90,11 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Votes Given", resultTable.getInt("count") + "", false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
+                            .onQuery((resultTable) -> embed.addField("Votes Given",  StringUtil.formatNumber(resultTable.getInt("count")), false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
 
                     new SingleQueryBuilder()
                             .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Credits", resultTable.getInt("credits") + "", false)).execute();
+                            .onQuery((resultTable) -> embed.addField("Credits", StringUtil.formatNumber(resultTable.getInt("credits")), false)).execute();
 
                     new SingleQueryBuilder()
                             .query("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID))

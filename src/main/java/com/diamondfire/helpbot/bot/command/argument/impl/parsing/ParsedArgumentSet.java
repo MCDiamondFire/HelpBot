@@ -10,7 +10,6 @@ public class ParsedArgumentSet {
         for (Map.Entry<String, ParsedArgument<?>> argument : finalizedArguments.entrySet()) {
             arguments.put(argument.getKey(), argument.getValue());
         }
-        arguments.forEach((entry, va) -> System.out.println(entry + ": " + va));
     }
 
     public Map<String, ?> getArguments() {

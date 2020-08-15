@@ -22,7 +22,10 @@ public class MimicCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Removes your message and replaces it with its own.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument().name("message")
+                );
     }
 
     @Override

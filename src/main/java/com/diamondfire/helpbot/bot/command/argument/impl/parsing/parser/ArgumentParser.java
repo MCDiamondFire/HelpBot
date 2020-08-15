@@ -1,17 +1,18 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.ArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
+import com.diamondfire.helpbot.bot.command.impl.Command;
 
 import java.util.*;
 
 public interface ArgumentParser {
 
-    static ParsedArgumentSet parseArgs(ArgumentSet set, String[] args) throws IllegalArgumentException {
+    static ParsedArgumentSet parseArgs(Command command, String[] args) throws ArgumentException {
         Map<String, ParsedArgument<?>> parsedArgs = new HashMap<>();
-        ArgumentStack stack = new ArgumentStack(set.getArguments(), Arrays.asList(args));
+        ArgumentStack stack = new ArgumentStack(command.getArguments().getArguments(), Arrays.asList(args));
         int arguments = stack.getArguments().size();
 
         for (int i = 0; i < arguments; i++) {
@@ -21,20 +22,22 @@ public interface ArgumentParser {
 
             try {
                 parsedArgs.put(identifier, argumentContainer.getParser().parse(argument, stack));
-            } catch (NullPointerException exception) {
+            } catch (MissingArgumentException exception) {
                 Argument<?> arg = argumentContainer.getArgument();
                 if (arg.isOptional()) {
                     parsedArgs.put(identifier, new ParsedArgument<>(identifier, arg.getDefaultValue()));
                 } else {
-                    throw new IllegalArgumentException(String.format("Expected argument at position %s.", i + 1));
+                    exception.setContext(command,i);
+                    throw exception;
                 }
-            } catch (IllegalArgumentException exception) {
-                throw new IllegalArgumentException(String.format("Exception while trying to parse argument at position %s: ", i + 1) + exception.getMessage());
+            } catch (MalformedArgumentException exception) {
+                exception.setContext(command, i);
+                throw exception;
             }
         }
 
         return new ParsedArgumentSet(parsedArgs);
     }
 
-    <T> ParsedArgument<?> parse(ArgumentNode<T> currentNode, ArgumentStack stack) throws IllegalArgumentException;
+    <T> ParsedArgument<?> parse(ArgumentNode<T> currentNode, ArgumentStack stack) throws ArgumentException;
 }

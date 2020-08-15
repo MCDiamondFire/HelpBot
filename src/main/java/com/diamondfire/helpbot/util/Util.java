@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.util;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.*;
 import com.google.gson.JsonArray;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -163,6 +163,20 @@ public class Util {
 
     public static int clamp(int num, int min, int max) {
         return Math.max(min, Math.min(num, max));
+    }
+
+    public static File getFileFromSite(String url, String name) {
+        try (InputStream in = new URL(url).openStream();) {
+            File tempFile = ExternalFileUtil.generateFile(name);
+
+            Files.write(tempFile.toPath(), in.readAllBytes(), StandardOpenOption.WRITE);
+
+            return tempFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

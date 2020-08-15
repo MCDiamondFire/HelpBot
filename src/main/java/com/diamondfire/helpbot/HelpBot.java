@@ -7,9 +7,11 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.restart.RestartHandler;
 import com.diamondfire.helpbot.sys.disablecmds.DisableCommandHandler;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 
 public class HelpBot {
 

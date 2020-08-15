@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.*;
@@ -18,11 +19,11 @@ public class DateArgument extends Argument<Date> {
     }
 
     @Override
-    public Date parseValue(@NotNull String msg) throws IllegalArgumentException {
+    public Date parseValue(@NotNull String msg) throws ArgumentException {
         try {
             return format.parse(msg);
         } catch (ParseException parseException) {
-            throw new IllegalArgumentException("Invalid date provided! Format is " + format.toPattern());
+            throw new MalformedArgumentException("Invalid date provided, this date argument's format is " + format.toPattern());
         }
     }
 }

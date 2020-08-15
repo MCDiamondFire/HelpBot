@@ -20,7 +20,7 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String[] getAliases() {
-        return new String[]{"ownedplots"};
+        return new String[]{"ownedplots", "plotlist"};
     }
 
     @Override

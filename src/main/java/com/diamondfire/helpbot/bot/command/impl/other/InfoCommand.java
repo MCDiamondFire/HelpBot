@@ -13,7 +13,7 @@ import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.Instant;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 public class InfoCommand extends Command {
 
@@ -44,15 +44,15 @@ public class InfoCommand extends Command {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
 
-        LinkedHashMap<String, Integer> dataStats = new LinkedHashMap<>();
-        dataStats.put("CodeBlocks", CodeDatabase.getCodeBlocks().size());
-        dataStats.put("Actions", CodeDatabase.getActions().size());
-        dataStats.put("Sounds", CodeDatabase.getSounds().size());
-        dataStats.put("Particles", CodeDatabase.getParticles().size());
-        dataStats.put("Potions", CodeDatabase.getPotions().size());
-        dataStats.put("Game Value", CodeDatabase.getGameValues().size());
-        dataStats.put("Legacy Actions", CodeDatabase.getDeprecatedActions().size());
-        dataStats.put("Legacy Game Values", CodeDatabase.getDeprecatedGameValues().size());
+        LinkedHashMap<String, String> dataStats = new LinkedHashMap<>();
+        dataStats.put("CodeBlocks", get(CodeDatabase.getCodeBlocks()));
+        dataStats.put("Actions", get(CodeDatabase.getActions()));
+        dataStats.put("Sounds", get(CodeDatabase.getSounds()));
+        dataStats.put("Particles", get(CodeDatabase.getParticles()));
+        dataStats.put("Potions", get(CodeDatabase.getPotions()));
+        dataStats.put("Game Value", get(CodeDatabase.getGameValues()));
+        dataStats.put("Legacy Actions", get(CodeDatabase.getDeprecatedActions()));
+        dataStats.put("Legacy Game Values", get(CodeDatabase.getDeprecatedGameValues()));
 
         embed.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
         embed.addField("What's New on Beta?", String.format("```%s```", StringUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
@@ -61,5 +61,9 @@ public class InfoCommand extends Command {
         embed.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
 
         event.reply(preset);
+    }
+
+    private String get(Collection<?> collection) {
+        return StringUtil.formatNumber(collection.size());
     }
 }

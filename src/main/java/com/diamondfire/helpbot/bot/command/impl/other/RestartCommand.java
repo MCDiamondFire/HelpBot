@@ -23,7 +23,7 @@ public class RestartCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Restarts bot")
+                .description("Restarts the bot.")
                 .category(CommandCategory.OTHER);
     }
 

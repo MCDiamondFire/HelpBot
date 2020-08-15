@@ -1,5 +1,8 @@
 package com.diamondfire.helpbot.util;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.impl.Command;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.text.*;
@@ -9,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class StringUtil {
 
     public static String listView(String[] array, String pointer, boolean sanitize) {
-        String view = listView(array,pointer);
+        String view = listView(array, pointer);
         return sanitize ? StringUtil.display(view) : view;
     }
 
@@ -20,7 +23,7 @@ public class StringUtil {
         return ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
     }
 
-    public static String asciidocStyle(HashMap<String, Integer> hashes) {
+    public static String asciidocStyle(Map<String, String> hashes) {
         if (hashes.size() == 0) {
             return "";
         }
@@ -29,7 +32,7 @@ public class StringUtil {
 
         ArrayList<String> strings = new ArrayList<>();
         hashes.entrySet().forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
-                        " ".repeat((longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
+                " ".repeat((longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
 
         return String.join("\n", strings);
     }
@@ -132,5 +135,19 @@ public class StringUtil {
 
     private static NumberFormat getFormat() {
         return NumberFormat.getInstance(new Locale("en", "US"));
+    }
+
+    public static String displayArguments(HelpContext context) {
+        return String.join(" ", StringUtil.getArgumentDisplay(context));
+    }
+
+    public static String[] getArgumentDisplay(HelpContext context) {
+        return context.getArguments().stream()
+                .map(argument -> argument.isOptional() ? String.format("[<%s>]", argument.getArgumentName()) : String.format("<%s>", argument.getArgumentName()))
+                .toArray(String[]::new);
+    }
+
+    public static String displayCommand(Command cmd) {
+        return HelpBotInstance.getConfig().getPrefix() + cmd.getName();
     }
 }

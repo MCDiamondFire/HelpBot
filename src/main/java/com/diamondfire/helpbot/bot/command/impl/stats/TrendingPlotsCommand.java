@@ -23,7 +23,7 @@ public class TrendingPlotsCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets current trending plots")
+                .description("Gets current trending plots.")
                 .category(CommandCategory.STATS);
     }
 

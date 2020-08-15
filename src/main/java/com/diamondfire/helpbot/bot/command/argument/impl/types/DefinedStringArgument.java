@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,10 +17,12 @@ public class DefinedStringArgument extends Argument<String> {
     }
 
     @Override
-    public String parseValue(@NotNull String msg) throws IllegalArgumentException {
+    public String parseValue(@NotNull String msg) throws ArgumentException {
         String option = getClosestOption(msg);
-        if (option == null)
-            throw new IllegalArgumentException("Please pick from the following: " + String.join(", ", options));
+        if (option == null) {
+            throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", options));
+        }
+
 
         return option;
     }

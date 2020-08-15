@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 
 import java.util.*;
@@ -8,7 +9,7 @@ import java.util.*;
 public class MultiArgumentParser implements ArgumentParser {
 
     @Override
-    public <T> ParsedArgument<?> parse(ArgumentNode<T> currentNode, ArgumentStack stack) throws IllegalArgumentException {
+    public <T> ParsedArgument<?> parse(ArgumentNode<T> currentNode, ArgumentStack stack) throws ArgumentException {
         Deque<String> args = stack.getRawArguments();
         List<T> approvedArgumentValues = new ArrayList<>();
         Argument<T> arg = currentNode.getContainer().getArgument();
@@ -25,7 +26,7 @@ public class MultiArgumentParser implements ArgumentParser {
         }
 
         if (approvedArgumentValues.isEmpty()) {
-            throw new IllegalArgumentException("No valid arguments were provided.");
+            throw new MissingArgumentException("No valid arguments were provided.");
         }
 
         return new ParsedArgument<>(currentNode.getIdentifier(), approvedArgumentValues);
