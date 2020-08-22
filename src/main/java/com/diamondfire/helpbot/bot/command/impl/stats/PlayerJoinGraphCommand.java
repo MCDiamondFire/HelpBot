@@ -64,7 +64,7 @@ public class PlayerJoinGraphCommand extends Command {
             case "daily":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM player_join_log WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? DAY, '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                                "FROM hypercube.player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -81,8 +81,8 @@ public class PlayerJoinGraphCommand extends Command {
                 break;
             case "weekly":
                 new SingleQueryBuilder()
-                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM player_join_log WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? WEEK, '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
+                                "FROM hypercube.player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -98,9 +98,9 @@ public class PlayerJoinGraphCommand extends Command {
                 break;
             case "monthly":
                 new SingleQueryBuilder()
-                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time FROM player_join_log " +
-                                        "WHERE time > DATE_FORMAT(CURRENT_TIMESTAMP - INTERVAL ? MONTH, '%y-%m-%d') AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a GROUP BY time;",
-                                statement -> statement.setInt(1, amount))
+                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
+                                "FROM hypercube.player_join_log WHERE time > CURRENT_TIMESTAMP - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                                "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
                                 for (int i = 0; i < resultTable.getInt("count") + 1; i++) {

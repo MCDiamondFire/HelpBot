@@ -51,6 +51,7 @@ public class HelpBotInstance {
                 new ImageDumpCommand(),
                 new SoundListCommand(),
                 new QueryCommand(),
+                new RulesCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -100,7 +101,6 @@ public class HelpBotInstance {
         builder.addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
 
         jda = builder.build();
-
     }
 
     public static JDA getJda() {

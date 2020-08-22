@@ -4,15 +4,15 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
-import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -20,54 +20,6 @@ import java.util.stream.Collectors;
 
 
 public abstract class AbstractSingleQueryCommand extends Command {
-
-    public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
-        // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
-        Class<? extends SimpleData> classReference = actions.get(0).getClass();
-        HashMap<BasicReaction, SimpleData> emojis = new HashMap<>();
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Duplicate actions detected!");
-        builder.setDescription("What you are searching for contains a duplicate entry, please react accordingly so I can figure out what you are looking for.");
-
-        if (actions.stream().allMatch((simpleData -> simpleData.getClass().isAssignableFrom(classReference)))) {
-            // If here all of the types are the same
-            emojis = actions.get(0).getEnum().getEmbedBuilder().generateDupeEmojis(actions);
-        } else {
-            // We have special types, we need to filter those out.
-            for (SimpleData data : actions) {
-                emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
-            }
-        }
-        builder.addField("Options:", emojis.entrySet().stream()
-                        .map((dataEntry -> "\n" + dataEntry.getKey().toString() + " - " + dataEntry.getValue().getMainName()))
-                        .collect(Collectors.joining()),
-                false);
-
-
-        HashMap<BasicReaction, SimpleData> finalEmojis = emojis;
-        channel.sendMessage((builder.build())).queue((message) -> {
-            ReactionHandler.waitReaction(userToWait, message, (event -> {
-                message.delete().queue();
-
-                // when msg is deleted causes nullpointer when tries to remove reactions! FIX
-                ArrayList<SimpleData> filteredData = finalEmojis.entrySet().stream()
-                        .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
-                        .map(Map.Entry::getValue)
-                        .collect(Collectors.toCollection(ArrayList::new));
-
-                if (filteredData.size() == 1) {
-                    if (filteredData.get(0) == null) return;
-                    onChosen.accept(filteredData.get(0), message.getTextChannel());
-                } else {
-                    sendMultipleMessage(filteredData, message.getTextChannel(), userToWait, onChosen);
-
-                }
-
-            }));
-            finalEmojis.keySet().forEach((emote -> emote.react(message).queue()));
-        });
-
-    }
 
     @Override
     public ArgumentSet getArguments() {
@@ -82,15 +34,77 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
     public abstract BiConsumer<SimpleData, TextChannel> onDataReceived();
 
+
+    public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
+        // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
+        SimpleData referenceData = actions.get(0);
+        Class<? extends SimpleData> classReference = referenceData.getClass();
+        Map<BasicReaction, SimpleData> emojis = new HashMap<>();
+        PresetBuilder preset = new PresetBuilder();
+        preset.withPreset(
+                new InformativeReply(InformativeReplyType.INFO, "Duplicate Objects Detected!",
+                        "What you are searching for contains a duplicate entry, please react accordingly so I can figure out what you are looking for.")
+        );
+
+        boolean isSameType = true;
+        for (SimpleData data : actions) {
+            if (!data.getClass().isAssignableFrom(classReference)) {
+                isSameType = false;
+                break;
+            }
+        }
+        //If they are the same type, use the dupe emojis for that certain action type.
+        if (isSameType) {
+            emojis.putAll(referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions));
+        } else {
+            for (SimpleData data : actions) {
+                emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
+            }
+        }
+
+        List<String> options = new ArrayList<>();
+        for (Map.Entry<BasicReaction, SimpleData> emoji : emojis.entrySet()) {
+            options.add(emoji.getKey().toString() + " - " + emoji.getValue().getMainName());
+        }
+        preset.getEmbed().addField("**Options**", StringUtil.listView("", options), false);
+
+        channel.sendMessage(preset.getEmbed().build()).queue((message) -> {
+            ReactionHandler.waitReaction(userToWait, message, (event) -> {
+                message.delete().queue();
+
+                // when msg is deleted causes nullpointer when tries to remove reactions! FIX
+                List<SimpleData> filteredData = new ArrayList<>();
+
+                for (Map.Entry<BasicReaction, SimpleData> emoji : emojis.entrySet()) {
+                    if (emoji.getKey().equalToReaction(event.getReactionEvent().getReactionEmote())) {
+                        filteredData.add(emoji.getValue());
+                    }
+                }
+
+                if (filteredData.size() == 1) {
+                    onChosen.accept(filteredData.get(0), message.getTextChannel());
+                } else {
+                    sendMultipleMessage(filteredData, message.getTextChannel(), userToWait, onChosen);
+                }
+
+            });
+            for (BasicReaction reaction : emojis.keySet()) {
+                reaction.react(message).queue();
+            }
+        });
+
+    }
+
     protected void getData(CommandEvent event, BiConsumer<SimpleData, TextChannel> onChosen) {
         List<String> args = event.getArgument("name");
         String argumentsParsed = String.join(" ", args);
+        PresetBuilder preset = new PresetBuilder();
 
         //Generate a bunch of "favorable" actions.
         Map<SimpleData, Double> possibleChoices = new HashMap<>();
         for (SimpleData data : CodeDatabase.getSimpleData()) {
             double compScore = JaroWinkler.score(argumentsParsed, data.getMainName());
-            if (compScore >= 0.85) {
+            if (compScore >= 0.8) {
                 possibleChoices.put(data, compScore);
             }
         }
@@ -102,46 +116,46 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
         // (Prevents random words from being picked when there is a wide variety of close choices too)
         if (closestAction != null) {
-            if (possibleChoices.size() < 10 || closestAction.getKey().getMainName().toLowerCase().equals(argumentsParsed.toLowerCase())) {
+            // Ensure has less than 10 close possible actions OR is exact.
+            if (possibleChoices.size() < 10 || closestAction.getValue() == 1) {
                 // Find actions that are exactly the same
-                List<SimpleData> sameActions = possibleChoices.keySet().stream()
-                        .filter(data -> data.getMainName().equals(closestAction.getKey().getMainName()))
-                        .collect(Collectors.toList());
+                List<SimpleData> sameActions = new ArrayList<>();
+                for (SimpleData data : possibleChoices.keySet()) {
+                    if (data.getMainName().equalsIgnoreCase(closestAction.getKey().getMainName())) {
+                        sameActions.add(data);
+                    }
+                }
 
                 // If none, proceed. Else we need to special case that.
                 if (sameActions.size() == 1) {
                     onChosen.accept(sameActions.get(0), event.getChannel());
                 } else if (sameActions.size() > 1) {
-                    try {
-                        sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
-                    } catch (Exception e) {
-                        Util.error(e, "Error while sending multi-reaction msg!");
-                        e.printStackTrace();
-                    }
+                    sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
                 }
+                return;
 
                 // Either there are too many similar actions or there is no close action.
             } else {
+                preset.withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
+                );
+                List<String> similarActionNames = possibleChoices.entrySet().stream()
+                        .sorted(Comparator.comparingDouble(Map.Entry::getValue))
+                        .map((entry) -> entry.getKey().getMainName())
+                        .collect(Collectors.toList());
+                Collections.reverse(similarActionNames);
 
-                EmbedBuilder builder = new EmbedBuilder();
-                Collection<String> similarActionNames = possibleChoices.keySet().stream()
-                        .map(SimpleData::getMainName)
-                        .collect(Collectors.toCollection(ArrayList::new));
 
-                builder.setDescription("\\> " + String.join("\n \\> ", similarActionNames));
-                builder.setTitle(String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.ESCAPE)));
-
-
-                event.getChannel().sendMessage(builder.build()).queue();
+                Util.addFields(preset.getEmbed(), similarActionNames);
             }
 
-            // If possible choices is empty, meaning none can be found.
         } else {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(String.format("I couldn't find anything that matched `%s`!", MarkdownSanitizer.sanitize(StringUtil.titleSafe(argumentsParsed), MarkdownSanitizer.SanitizationStrategy.ESCAPE)));
-            event.getChannel().sendMessage(builder.build()).queue();
-
+            preset.withPreset(
+                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
+            );
         }
+        event.reply(preset);
     }
+
 
 }

@@ -6,8 +6,12 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.google.gson.JsonParser;
+import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.File;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
 import java.util.Random;
 
 public class SamQuotesCommand extends Command {
@@ -45,8 +49,12 @@ public class SamQuotesCommand extends Command {
     public void run(CommandEvent event) {
         String[] strings = ExternalFile.SAM_DIR.getFile().list();
         File file = new File(ExternalFile.SAM_DIR.getFile(), strings[random.nextInt(strings.length)]);
-        event.getChannel().sendFile(file).queue();
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Sam Quote");
+        builder.setImage("attachment://quote.png");
+        builder.setColor(new Color(87,177,71));
 
+        event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
     }
 
 }

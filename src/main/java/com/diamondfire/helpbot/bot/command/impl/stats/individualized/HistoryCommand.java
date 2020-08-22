@@ -82,6 +82,22 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         }
                         punishments.removeAll(activePunishments);
 
+
+                        if (activePunishments.size() > 0) {
+                            List<String> activePunishmentStrings = new ArrayList<>();
+
+                            for (Punishment punishment : activePunishments) {
+                                activePunishmentStrings.add(punishment.toString());
+                            }
+
+                            EmbedBuilder active = new EmbedBuilder();
+                            active.setColor(Color.RED);
+                            active.setTitle("\u26A0 Active Punishments");
+                            active.setDescription(String.join("\n", activePunishmentStrings.toArray(new String[0])));
+                            embeds.add(active);
+                        }
+
+
                         if (punishments.size() > 0) {
                             List<String> punishmentStrings = new ArrayList<>();
                             for (Punishment punishment : punishments) {
@@ -103,32 +119,21 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                             }
                         }
 
-                        if (activePunishments.size() > 0) {
-                            List<String> activePunishmentStrings = new ArrayList<>();
-
-                            for (Punishment punishment : activePunishments) {
-                                activePunishmentStrings.add(punishment.toString());
-                            }
-
-                            EmbedBuilder active = new EmbedBuilder();
-                            active.setColor(Color.RED);
-                            active.setTitle("\u26A0 Active Punishments");
-                            active.setDescription(String.join("\n", activePunishmentStrings.toArray(new String[0])));
-                            embeds.add(active);
-                        }
-
-                        if (punishments.size() == 0) {
-                            recapPreset.getEmbed().clear();
-                            recapPreset.withPreset(
-                                    new MinecraftUserPreset(playerName, playerUUID),
-                                    new InformativeReply(InformativeReplyType.INFO, "History Recap",
-                                            "No punishments here, good job and keep up the good work!")
-                            );
-                        }
-
                         File finalSendFile = sendFile;
                         event.replyA(recapPreset, privateChannel).queue((msg) -> {
-                            if (punishments.size() != 0) {
+                            PresetBuilder reply = new PresetBuilder();
+                            reply.withPreset(new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!"));
+                            event.reply(reply);
+
+                            if (punishments.size() == 0 && activePunishments.size() == 0) {
+                                recapPreset.getEmbed().clear();
+                                recapPreset.withPreset(
+                                        new MinecraftUserPreset(playerName, playerUUID),
+                                        new InformativeReply(InformativeReplyType.INFO, "History Recap",
+                                                "No punishments here, good job and keep up the good work!")
+                                );
+                                event.reply(recapPreset);
+                            } else {
                                 for (EmbedBuilder builder : embeds) {
                                     event.reply(builder, privateChannel);
                                 }
@@ -137,9 +142,6 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                 }
                             }
 
-                            PresetBuilder reply = new PresetBuilder();
-                            reply.withPreset(new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!"));
-                            event.reply(reply);
 
                         }, (error) -> {
                             PresetBuilder errorMSG = new PresetBuilder();

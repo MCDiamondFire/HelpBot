@@ -9,7 +9,6 @@ public abstract class SimpleData {
     protected final String mainName;
 
     public SimpleData(JsonObject data, String mainName) {
-
         this.data = data;
         this.mainName = mainName;
     }

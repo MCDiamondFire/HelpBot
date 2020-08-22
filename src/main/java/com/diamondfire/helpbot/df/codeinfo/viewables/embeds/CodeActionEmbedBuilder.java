@@ -61,7 +61,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
             params.append(String.join(" ", Arrays.copyOfRange(description, 1, description.length)));
 
             // Generate extra notes that appear under the argument.
-            params.append(StringUtil.listView(arg.getExtraNotes(), "> ", true));
+            params.append(StringUtil.listView( "> ", true, arg.getExtraNotes()));
 
         }
         if (icon.getParameters().length == 0) {

@@ -54,10 +54,10 @@ public class DiscordBoostersCommand extends Command {
         embed.setThumbnail("https://cdn.discordapp.com/emojis/699936318398136341.png?v=1");
 
         event.getGuild().findMembers((member -> member.getTimeBoosted() != null)).onSuccess((members) -> {
-            embed.setDescription(StringUtil.listView(members.stream()
+            embed.setDescription(StringUtil.listView(">", true, members.stream()
                     .sorted(Comparator.comparing(Member::getTimeBoosted))
                     .map(Member::getEffectiveName)
-                    .toArray(String[]::new), ">", true));
+                    .toArray(String[]::new)));
             embed.setColor(new Color(255, 115, 250));
             event.reply(preset);
             guild.pruneMemberCache();

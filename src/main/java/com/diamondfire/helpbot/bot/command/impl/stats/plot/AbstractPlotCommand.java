@@ -67,7 +67,7 @@ public abstract class AbstractPlotCommand extends Command {
                 for (String tag : tags.split(",")) {
                     tagList.add(plotTags.get(tag));
                 }
-                embed.addField("Plot Tags", StringUtil.listView(tagList.toArray(new String[0]), ">", true), true);
+                embed.addField("Plot Tags", StringUtil.listView(">", true, tagList.toArray(new String[0])), true);
             }
 
             int weeksTillClear = resultTablePlot.getInt("immunity_level");

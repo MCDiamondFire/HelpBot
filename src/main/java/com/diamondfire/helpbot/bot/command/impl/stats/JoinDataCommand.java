@@ -56,7 +56,7 @@ public class JoinDataCommand extends Command {
 
     @Override
     public Permission getPermission() {
-        return Permission.USER;
+        return Permission.ADMINISTRATOR;
     }
 
     @Override
@@ -133,10 +133,10 @@ public class JoinDataCommand extends Command {
                         "(SELECT DISTINCT uuid FROM player_join_log WHERE time BETWEEN ? AND ?);",
                 (statement) -> {
                     statement.setDate(1, sqlDate);
-                    statement.setDate(2, sqlDate);
-                    statement.setInt(3, days);
-                    statement.setDate(4, new java.sql.Date(between1.toInstant().toEpochMilli()));
-                    statement.setDate(5, new java.sql.Date(between2.toInstant().toEpochMilli()));
+                    statement.setDate(2, sqlDateTo);
+                    statement.setDate(3, DateUtil.toSqlDate(between1));
+                    statement.setDate(4,DateUtil.toSqlDate(between2));
+                    statement.setInt(5, days);
                 }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), "None...", false)).execute();
 
         event.reply(builder);

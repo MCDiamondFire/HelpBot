@@ -11,16 +11,30 @@ import java.util.concurrent.TimeUnit;
 
 public class StringUtil {
 
-    public static String listView(String[] array, String pointer, boolean sanitize) {
-        String view = listView(array, pointer);
+    public static String listView(String pointer, boolean sanitize, Iterable<? extends CharSequence> array) {
+        String view = listView(pointer,array);
         return sanitize ? StringUtil.display(view) : view;
     }
 
-    public static String listView(String[] array, String pointer) {
-        if (array.length == 0) {
+    public static String listView(String pointer, boolean sanitize, CharSequence... elements) {
+        String view = listView(pointer, elements);
+        return sanitize ? StringUtil.display(view) : view;
+    }
+
+    public static String listView(String pointer, Iterable<? extends CharSequence> array) {
+        if (!array.iterator().hasNext()) {
             return "";
         }
+
         return ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
+    }
+
+    public static String listView(String pointer, CharSequence... elements) {
+        if (elements.length == 0) {
+            return "";
+        }
+
+        return ("\n%s% " + String.join("\n%s% ", elements)).replaceAll("%s%", pointer);
     }
 
     public static String asciidocStyle(Map<String, String> hashes) {

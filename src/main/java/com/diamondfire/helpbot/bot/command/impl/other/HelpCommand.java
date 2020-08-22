@@ -50,6 +50,7 @@ public class HelpCommand extends Command {
     public void run(CommandEvent event) {
         String helpInfo = event.getArgument("help");
         if (helpInfo == null) {
+
             Map<CommandCategory, EmbedBuilder> categories = new LinkedHashMap<>();
             MultiSelectorBuilder selector = new MultiSelectorBuilder();
             selector.setUser(event.getAuthor().getIdLong());

@@ -5,6 +5,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -42,17 +43,17 @@ public class GarfieldCommand extends Command {
         try {
             URL url = new URL("https://labscore.vercel.app/api/v1/garfield/link");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                String line = in.readLine();
+                String link = JsonParser.parseString(in.readLine()).getAsJsonObject().get("link").getAsString();
 
-                if (line == null) {
+                if (link == null) {
                     throw new IOException();
                 } else {
                     builder.setTitle("Random Garfield Comic");
-                    builder.setImage(line);
+                    builder.setImage(link);
                     builder.setColor(new Color(252, 166, 28));
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             builder.setTitle(":rotating_light: API BROKE :rotating_light:");
             builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
         }
