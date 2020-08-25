@@ -65,7 +65,7 @@ public class InBadCommand extends Command {
         embed.setColor(Color.RED);
 
         new SingleQueryBuilder()
-                .query("SELECT * FROM (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer IS NULL) a " +
+                .query("SELECT * FROM (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer != 0) a " +
                                 "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)",
                         statement -> {
                             statement.setInt(1, days);

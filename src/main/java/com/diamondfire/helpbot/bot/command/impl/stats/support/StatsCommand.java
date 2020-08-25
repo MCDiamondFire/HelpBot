@@ -66,7 +66,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count," +
-                                    "? IN (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer IS NULL) AS support," +
+                                    "? IN (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer != 1) AS support," +
                                     "(COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {
                                 statement.setString(1, player);
                                 statement.setString(2, player);

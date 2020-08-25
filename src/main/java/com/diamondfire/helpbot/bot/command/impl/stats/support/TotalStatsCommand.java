@@ -35,6 +35,7 @@ public class TotalStatsCommand extends Command {
         return Permission.SUPPORT;
     }
 
+    // It would be nice if someone with more SQL experience could remake these to be more condensed.
     @Override
     public void run(CommandEvent event) {
         PresetBuilder presetBefore = new PresetBuilder()

@@ -97,6 +97,7 @@ public class HelpBotInstance {
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.NONE);
         builder.setActivity(Activity.watching("for ?help"));
+        builder.setGatewayEncoding(GatewayEncoding.ETF);
         builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS);
         builder.addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
 
