@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.ClampedIntegerArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -39,7 +40,7 @@ public class JoinBadCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("days",
-                        new ClampedIntegerArgument(2, 100).optional(30));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(2, 100)).optional(30));
     }
 
     @Override

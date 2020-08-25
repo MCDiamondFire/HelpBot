@@ -23,9 +23,8 @@ public interface ArgumentParser {
             try {
                 parsedArgs.put(identifier, argumentContainer.getParser().parse(argument, stack));
             } catch (MissingArgumentException exception) {
-                Argument<?> arg = argumentContainer.getArgument();
-                if (arg.isOptional()) {
-                    parsedArgs.put(identifier, new ParsedArgument<>(identifier, arg.getDefaultValue()));
+                if (argumentContainer.isOptional()) {
+                    parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue()));
                 } else {
                     exception.setContext(command,i);
                     throw exception;

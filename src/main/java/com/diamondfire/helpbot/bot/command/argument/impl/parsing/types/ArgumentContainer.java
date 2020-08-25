@@ -9,6 +9,8 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 public abstract class ArgumentContainer<T> {
 
     private final Argument<T> argument;
+    private T defaultValue;
+    private boolean isOptional;
 
     public ArgumentContainer(Argument<T> argument) {
         this.argument = argument;
@@ -19,4 +21,18 @@ public abstract class ArgumentContainer<T> {
     }
 
     public abstract ArgumentParser getParser();
+
+    public ArgumentContainer<T> optional(T defaultValue) {
+        this.defaultValue = defaultValue;
+        this.isOptional = true;
+        return this;
+    }
+
+    public boolean isOptional() {
+        return isOptional;
+    }
+
+    public T getDefaultValue() {
+        return defaultValue;
+    }
 }

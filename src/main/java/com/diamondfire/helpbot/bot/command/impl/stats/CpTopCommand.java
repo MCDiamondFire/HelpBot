@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -35,8 +36,7 @@ public class CpTopCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet().addArgument("place",
-                new ClampedIntegerArgument(1)
-                        .optional(1)
+                new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(1)
         );
     }
 

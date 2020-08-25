@@ -12,6 +12,7 @@ public class ArgumentSet {
 
     private final List<ArgumentNode<?>> arguments = new ArrayList<>();
 
+    //Convenience method
     @Contract("_,_ -> this")
     public ArgumentSet addArgument(@NotNull String name, @NotNull Argument<?> argument) {
         arguments.add(new ArgumentNode<>(name, new SingleArgumentContainer<>(argument)));

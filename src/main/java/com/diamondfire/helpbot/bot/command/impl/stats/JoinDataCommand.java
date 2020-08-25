@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -46,11 +47,11 @@ public class JoinDataCommand extends Command {
                 .addArgument("date",
                         new DateArgument())
                 .addArgument("days",
-                        new ClampedIntegerArgument(1).optional(7))
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(7))
                 .addArgument("daterejoin",
-                        new DateArgument().optional(null))
+                        new SingleArgumentContainer<>(new DateArgument()).optional(null))
                 .addArgument("daysrejoin",
-                        new ClampedIntegerArgument(1).optional(null));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(null));
 
     }
 

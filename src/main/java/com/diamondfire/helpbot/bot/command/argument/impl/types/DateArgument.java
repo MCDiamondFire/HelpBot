@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.*;
 import java.util.Date;
 
-public class DateArgument extends Argument<Date> {
+public class DateArgument implements Argument<Date> {
 
     public final SimpleDateFormat format;
 

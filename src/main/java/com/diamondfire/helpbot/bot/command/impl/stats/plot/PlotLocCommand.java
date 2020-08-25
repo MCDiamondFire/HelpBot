@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.plot;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -40,7 +41,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                 .addArgument("z",
                         new IntegerArgument())
                 .addArgument("node",
-                        new DefinedObjectArgument<>(1, 2, 3, 4).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4)).optional(null));
     }
 
     @Override

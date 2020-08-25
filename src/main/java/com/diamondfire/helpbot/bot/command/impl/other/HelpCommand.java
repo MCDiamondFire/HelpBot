@@ -1,13 +1,14 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.*;
-import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -36,9 +37,9 @@ public class HelpCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet().addArgument("help",
-                new DefinedObjectArgument<>(HelpBotInstance.getHandler().getCommands().values().stream()
+                new SingleArgumentContainer<>(new DefinedObjectArgument<>(HelpBotInstance.getHandler().getCommands().values().stream()
                         .map(Command::getName)
-                        .toArray(String[]::new)).optional(null));
+                        .toArray(String[]::new))).optional(null));
     }
 
     @Override

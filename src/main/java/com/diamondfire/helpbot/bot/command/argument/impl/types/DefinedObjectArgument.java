@@ -7,12 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class DefinedObjectArgument<T> extends Argument<T> {
+public class DefinedObjectArgument<T> implements Argument<T> {
 
     private final Map<String,T> objectMap = new HashMap<>();
 
     public DefinedObjectArgument(@NotNull T... options) {
-        super();
 
         for (T option : options) {
             objectMap.put(option.toString(), option);

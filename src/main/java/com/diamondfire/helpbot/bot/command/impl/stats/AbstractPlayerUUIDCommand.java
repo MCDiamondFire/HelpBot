@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -12,7 +13,7 @@ public abstract class AbstractPlayerUUIDCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("player",
-                        new StringArgument().optional(null));
+                        new SingleArgumentContainer<>(new StringArgument()).optional(null));
     }
 
     @Override

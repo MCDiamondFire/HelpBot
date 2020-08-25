@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.ClampedIntegerArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -42,9 +43,9 @@ public class InBadCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("count",
-                        new ClampedIntegerArgument(1, Integer.MAX_VALUE).optional(5))
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, Integer.MAX_VALUE)).optional(5))
                 .addArgument("days",
-                        new ClampedIntegerArgument(1, Integer.MAX_VALUE).optional(30));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, Integer.MAX_VALUE)).optional(30));
     }
 
     @Override
