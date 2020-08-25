@@ -12,9 +12,9 @@ import java.util.*;
 public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(SimpleData data) {
+    protected EmbedBuilder buildDataEmbed(CodeObject data) {
 
-        CodeBlockActionData actionData = (CodeBlockActionData) data;
+        ActionData actionData = (ActionData) data;
 
         EmbedBuilder builder = new EmbedBuilder();
         generateParameters(data, builder);
@@ -38,11 +38,11 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 
     }
 
-    private void generateParameters(SimpleData data, EmbedBuilder builder) {
+    private void generateParameters(CodeObject data, EmbedBuilder builder) {
         StringBuilder params = new StringBuilder();
-        DisplayIconData icon = data.getItem();
+        DisplayIcon icon = data.getItem();
 
-        for (CodeBlockActionArgumentData arg : icon.getParameters()) {
+        for (DisplayIcon.Argument arg : icon.getParameters()) {
             params.append("\n");
             if (arg.getText() != null) {
                 params.append(arg.getText());
@@ -73,10 +73,10 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
     }
 
     @Override
-    public LinkedHashMap<BasicReaction, SimpleData> generateDupeEmojis(List<SimpleData> dataArrayList) {
-        LinkedHashMap<BasicReaction, SimpleData> dataHashed = new LinkedHashMap<>();
-        for (SimpleData data : dataArrayList) {
-            CodeBlockActionData actionData = (CodeBlockActionData) data;
+    public LinkedHashMap<BasicReaction, CodeObject> generateDupeEmojis(List<CodeObject> dataArrayList) {
+        LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
+        for (CodeObject data : dataArrayList) {
+            ActionData actionData = (ActionData) data;
             dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji()), data);
         }
 

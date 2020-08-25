@@ -31,7 +31,7 @@ public class SoundListCommand extends AbstractFileListCommand {
 
     @Override
     public void run(CommandEvent event) {
-        super.generate(event, CodeDatabase.getSounds());
+        super.generate(event, CodeDatabase.getRegistry(CodeDatabase.SOUNDS));
     }
 
 }

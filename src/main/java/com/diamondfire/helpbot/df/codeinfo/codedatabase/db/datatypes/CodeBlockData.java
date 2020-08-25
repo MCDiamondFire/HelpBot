@@ -3,46 +3,32 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 import com.diamondfire.helpbot.df.codeinfo.viewables.constants.*;
 import com.google.gson.JsonObject;
 
-public class CodeBlockData extends SimpleData {
+public class CodeBlockData extends CodeObject {
 
-    private CodeBlockActionData associatedAction;
+    private ActionData associatedAction;
 
-    /**
-     * Creates a main codeblock that goes into the players inventory.
-     *
-     * @param data The information
-     */
     public CodeBlockData(JsonObject data) {
         super(data, data.get("name").getAsString());
     }
 
-    /**
-     * @return The name of the codeblock.
-     */
     public String getName() {
-        return this.data.get("name").getAsString();
+        return data.get("name").getAsString();
     }
 
-    /**
-     * @return The identifier of the codeblock. (internal ID)
-     */
     public String getIdentifier() {
-        return this.data.get("identifier").getAsString();
+        return data.get("identifier").getAsString();
     }
 
-    /**
-     * @return The item of the codeblock that is in the players inventory.
-     */
     @Override
-    public DisplayIconData getItem() {
-        return new DisplayIconData(this.data.get("item").getAsJsonObject());
+    public DisplayIcon getItem() {
+        return new DisplayIcon(data.get("item").getAsJsonObject());
     }
 
-    public void assignAction(CodeBlockActionData data) {
+    public void assignAction(ActionData data) {
         associatedAction = data;
     }
 
-    public CodeBlockActionData getAssociatedAction() {
+    public ActionData getAssociatedAction() {
         return associatedAction;
     }
 

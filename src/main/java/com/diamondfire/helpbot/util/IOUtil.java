@@ -1,31 +1,15 @@
 package com.diamondfire.helpbot.util;
 
+import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.Base64;
+import java.util.stream.Collectors;
 import java.util.zip.*;
 
-public class CompressionUtil {
-
-    /**
-     * Decompresses Base64
-     *
-     * @param Base64F Compressed Data
-     * @return Decompressed Data
-     */
-    public static byte[] fromBase64(byte[] Base64F) {
-        return Base64.getDecoder().decode(Base64F);
-    }
-
-    /**
-     * Compresses Base64
-     *
-     * @param Base64F Data
-     * @return Compressed Data
-     */
-    public static byte[] toBase64(byte[] Base64F) {
-        return Base64.getEncoder().encode(Base64F);
-    }
+public class IOUtil {
 
     /**
      * Decompresses GZIP data
@@ -62,6 +46,31 @@ public class CompressionUtil {
         gzip.close();
         obj.close();
         return obj.toByteArray();
+    }
+
+
+    public static File zipFile(Path path, String fileName) throws IOException {
+        File zipped = ExternalFileUtil.generateFile(fileName);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipped));
+        for (Path innerPath : Files.walk(path).collect(Collectors.toSet())) {
+
+            //Ignore parent file, for some reason that's included
+            if (innerPath.getParent() == null) continue;
+
+            try {
+                zipOutputStream.putNextEntry(new ZipEntry(innerPath.toString()));
+                byte[] bytes = Files.readAllBytes(innerPath);
+                zipOutputStream.write(bytes, 0, bytes.length);
+                zipOutputStream.closeEntry();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        zipOutputStream.finish();
+        zipOutputStream.close();
+
+        return zipped;
     }
 
 

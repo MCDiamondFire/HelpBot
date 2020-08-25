@@ -4,11 +4,11 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -37,11 +37,19 @@ public class BlockCommand extends AbstractMultiQueryCommand {
 
     @Override
     public ArgumentSet getArguments() {
+        List<CodeBlockData> codeBlocks = CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS);
+        List<String> strings = new ArrayList<>();
+
+        for (CodeBlockData codeBlock : codeBlocks) {
+            if (codeBlock == null) {
+                strings.add(codeBlock.getName());
+            }
+        }
+
         return new ArgumentSet().
-                addArgument("codeblock", new DefinedObjectArgument<>(CodeDatabase.getCodeBlocks().stream()
-                        .filter((codeBlockData -> codeBlockData.getAssociatedAction() == null))
-                        .map(CodeBlockData::getName)
-                        .toArray(String[]::new)));
+                addArgument("codeblock",
+                        new DefinedObjectArgument<>(strings.toArray(new String[0]))
+                );
     }
 
     @Override
@@ -50,12 +58,17 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
-    protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
-        return data.stream()
-                .filter(simpleData -> simpleData instanceof CodeBlockActionData)
-                .filter((simpleData -> ((CodeBlockActionData) simpleData).getCodeblockName().equalsIgnoreCase(event.getArgument("codeblock"))))
-                .map(SimpleData::getMainName)
-                .collect(Collectors.toList());
+    protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
+        List<String> filteredObjects = new ArrayList<>();
+        for (CodeObject object : data) {
+            if (object instanceof ActionData) {
+                if (((ActionData) object).getCodeblockName().equals(event.getArgument("codeblock"))) {
+                    filteredObjects.add(object.getName());
+                }
+            }
+        }
+
+        return filteredObjects;
     }
 
     @Override

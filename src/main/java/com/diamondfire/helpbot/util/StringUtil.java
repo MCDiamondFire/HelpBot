@@ -164,4 +164,24 @@ public class StringUtil {
     public static String displayCommand(Command cmd) {
         return HelpBotInstance.getConfig().getPrefix() + cmd.getName();
     }
+
+    /**
+     * Decodes from Base64
+     *
+     * @param Base64F Compressed Data
+     * @return Decoded Data
+     */
+    public static byte[] fromBase64(byte[] Base64F) {
+        return Base64.getDecoder().decode(Base64F);
+    }
+
+    /**
+     * Encodes into Base64
+     *
+     * @param Base64F Data
+     * @return Encoded Data
+     */
+    public static byte[] toBase64(byte[] Base64F) {
+        return Base64.getEncoder().encode(Base64F);
+    }
 }

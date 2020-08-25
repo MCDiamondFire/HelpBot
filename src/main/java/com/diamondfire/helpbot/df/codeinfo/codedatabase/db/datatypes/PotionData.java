@@ -4,24 +4,14 @@ import com.diamondfire.helpbot.df.codeinfo.viewables.constants.DataTypes;
 import com.google.gson.JsonObject;
 
 
-public class PotionData extends SimpleData {
+public class PotionData extends CodeObject {
 
-
-    /**
-     * Creates a new potion, which represents the data of a potion.
-     *
-     * @param data The information
-     */
     public PotionData(JsonObject data) {
         super(data, data.get("potion").getAsString());
     }
 
-
-    /**
-     * @return The type of potion.
-     */
     public String getPotion() {
-        return this.data.get("potion").getAsString();
+        return data.get("potion").getAsString();
     }
 
     @Override

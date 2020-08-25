@@ -6,41 +6,31 @@ import com.diamondfire.helpbot.util.Util;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
-import java.io.*;
+import java.io.FileReader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CodeDatabase {
 
-    private static final List<CodeBlockData> codeBlocks = new ArrayList<>();
-    private static final List<CodeBlockActionData> actions = new ArrayList<>();
-    private static final List<CodeBlockActionData> deprecatedActions = new ArrayList<>();
-    private static final List<GameValueData> deprecatedGameValues = new ArrayList<>();
-    private static final List<SoundData> sounds = new ArrayList<>();
-    private static final List<PotionData> potions = new ArrayList<>();
-    private static final List<ParticleData> particles = new ArrayList<>();
-    private static final List<GameValueData> gameValues = new ArrayList<>();
+    private static final Map<String, List<? extends CodeObject>> registry = new HashMap<>();
+
+    public static final String CODEBLOCKS = "codeblocks";
+    public static final String ACTIONS = "actions";
+    public static final String DEPRECATED_ACTIONS = "dactions";
+    public static final String POTIONS = "potions";
+    public static final String SOUNDS = "sounds";
+    public static final String PARTICLES = "particles";
+    public static final String GAME_VALUES = "gamevalues";
+    public static final String DEPRECATED_GAME_VALUES = "dgamevalues";
 
 
     public static void initialize() {
-        codeBlocks.clear();
-        actions.clear();
-        deprecatedActions.clear();
-        sounds.clear();
-        potions.clear();
-        gameValues.clear();
-        deprecatedGameValues.clear();
+        registry.clear();
 
         System.out.println("Starting code database...");
-        try (BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
-             JsonReader reader = new JsonReader(new StringReader(txtReader.lines().collect(Collectors.joining())))) {
-
+        try (JsonReader reader = new JsonReader(new FileReader(ExternalFile.DB.getFile()))) {
             reader.setLenient(true);
-            // Setup the reader to prevent parsing problems.
-            JsonObject mainMap = JsonParser.parseReader(reader).getAsJsonObject();
-            CodeDatabase.initDatabase(mainMap);
 
-
+            CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
         } catch (Exception e) {
             System.out.println("Could not start codeblock database! Exception occurred....");
             Util.error(e, "Could not start codeblock database!");
@@ -49,24 +39,41 @@ public class CodeDatabase {
         System.out.println("Database loaded!");
     }
 
-
     private static void generateCodeblocks(JsonObject data) {
+        List<CodeBlockData> codeBlocks = newRegistry(CODEBLOCKS);
+
         for (JsonElement codeBlock : data.getAsJsonArray("codeblocks")) {
             CodeBlockData finalCodeBlock = new CodeBlockData(codeBlock.getAsJsonObject());
             codeBlocks.add(finalCodeBlock);
         }
     }
 
+    public static List<CodeObject> getStandardObjects() {
+        List<CodeObject> objects = new ArrayList<>();
+        objects.addAll(getRegistry(CODEBLOCKS));
+        objects.addAll(getRegistry(ACTIONS));
+        objects.addAll(getRegistry(GAME_VALUES));
+
+        return objects;
+    }
 
     private static void generateActions(JsonObject data) {
-        for (JsonElement action : data.get("actions").getAsJsonArray()) {
-            CodeBlockActionData finalAction = new CodeBlockActionData(action.getAsJsonObject());
+        List<ActionData> actions = newRegistry(ACTIONS);
+        List<ActionData> deprecatedActions = newRegistry(DEPRECATED_ACTIONS);
 
-            if (associationCheck(finalAction)) {
-                CodeBlockData codeblockData = getCodeBlocks().stream()
-                        .filter((codeBlockData -> codeBlockData.getName().equals(finalAction.getCodeblockName())))
-                        .findFirst()
-                        .orElse(null);
+        for (JsonElement action : data.get("actions").getAsJsonArray()) {
+            ActionData finalAction = new ActionData(action.getAsJsonObject());
+
+            if (finalAction.getName().equals("dynamic")) {
+                List<CodeBlockData> codeBlocks = getRegistry(CODEBLOCKS);
+                CodeBlockData codeblockData = null;
+
+                for (CodeBlockData codeBlock : codeBlocks) {
+                    if (codeBlock.getName().equals(finalAction.getCodeblockName())) {
+                        codeblockData = codeBlock;
+                        break;
+                    }
+                }
 
                 if (codeblockData == null) {
                     System.out.println("CodeblockAction " + finalAction + " tripped association check but none could be found.");
@@ -74,7 +81,6 @@ public class CodeDatabase {
                     codeblockData.assignAction(finalAction);
                 }
                 continue;
-
             }
 
             if (deprecationCheck(finalAction)) {
@@ -84,21 +90,16 @@ public class CodeDatabase {
             }
 
         }
+
     }
 
 
-    private static boolean deprecationCheck(SimpleData data) {
+    private static boolean deprecationCheck(CodeObject data) {
         return !data.getItem().getMaterial().equals("STONE");
     }
 
-
-    private static boolean associationCheck(CodeBlockActionData data) {
-        return data.getName().equals("dynamic");
-
-    }
-
-
     private static void generateSounds(JsonObject data) {
+        List<SoundData> sounds = newRegistry(SOUNDS);
         for (JsonElement sound : data.get("sounds").getAsJsonArray()) {
             SoundData finalAction = new SoundData(sound.getAsJsonObject());
             sounds.add(finalAction);
@@ -107,6 +108,7 @@ public class CodeDatabase {
 
 
     private static void generatePotions(JsonObject data) {
+        List<PotionData> potions = newRegistry(POTIONS);
         for (JsonElement potion : data.get("potions").getAsJsonArray()) {
             PotionData finalPotion = new PotionData(potion.getAsJsonObject());
             potions.add(finalPotion);
@@ -115,6 +117,7 @@ public class CodeDatabase {
 
 
     private static void generateParticles(JsonObject data) {
+        List<ParticleData> particles = newRegistry(PARTICLES);
         for (JsonElement particle : data.get("particles").getAsJsonArray()) {
             ParticleData finalParticle = new ParticleData(particle.getAsJsonObject());
             particles.add(finalParticle);
@@ -123,6 +126,9 @@ public class CodeDatabase {
 
 
     private static void generateGameValues(JsonObject data) {
+        List<GameValueData> gameValues = newRegistry(GAME_VALUES);
+        List<GameValueData> deprecatedGameValues = newRegistry(DEPRECATED_GAME_VALUES);
+
         for (JsonElement gameValue : data.get("gameValues").getAsJsonArray()) {
             GameValueData finalGameValue = new GameValueData(gameValue.getAsJsonObject());
             if (deprecationCheck(finalGameValue)) {
@@ -141,50 +147,18 @@ public class CodeDatabase {
         generatePotions(data);
         generateSounds(data);
         generateGameValues(data);
-
     }
 
+    private static <T extends CodeObject> List<T> newRegistry(String name) {
+        List<T> list = new ArrayList<>();
+        registry.put(name, list);
 
-    public static List<CodeBlockActionData> getActions() {
-        return actions;
+        return list;
     }
 
-
-    public static List<SimpleData> getSimpleData() {
-        ArrayList<SimpleData> array = new ArrayList<>();
-        array.addAll(getCodeBlocks());
-        array.addAll(getActions());
-        array.addAll(getGameValues());
-
-        return array;
-    }
-
-    public static List<CodeBlockData> getCodeBlocks() {
-        return codeBlocks;
-    }
-
-    public static List<ParticleData> getParticles() {
-        return particles;
-    }
-
-    public static List<PotionData> getPotions() {
-        return potions;
-    }
-
-    public static List<SoundData> getSounds() {
-        return sounds;
-    }
-
-    public static List<GameValueData> getGameValues() {
-        return gameValues;
-    }
-
-    public static List<CodeBlockActionData> getDeprecatedActions() {
-        return deprecatedActions;
-    }
-
-    public static List<GameValueData> getDeprecatedGameValues() {
-        return deprecatedGameValues;
+    @SuppressWarnings("unchecked")
+    public static <T extends CodeObject> List<T> getRegistry(String name) {
+        return (List<T>) registry.get(name);
     }
 }
 

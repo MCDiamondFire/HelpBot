@@ -11,14 +11,14 @@ import java.util.Arrays;
 public class IconEmbedBuilder extends DataEmbedBuilder {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(SimpleData data) {
+    protected EmbedBuilder buildDataEmbed(CodeObject data) {
         EmbedBuilder builder = new EmbedBuilder();
         generateInfo(data, builder);
         return builder;
     }
 
-    protected void generateInfo(SimpleData data, EmbedBuilder builder) {
-        DisplayIconData icon = data.getItem();
+    protected void generateInfo(CodeObject data, EmbedBuilder builder) {
+        DisplayIcon icon = data.getItem();
         if (icon.getAdditionalInfo().size() != 0) {
             StringBuilder additionalInfo = new StringBuilder();
 

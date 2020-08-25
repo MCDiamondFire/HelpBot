@@ -9,12 +9,12 @@ import java.util.*;
 
 public abstract class DataEmbedBuilder {
 
-    public EmbedBuilder generateEmbed(SimpleData data) {
+    public EmbedBuilder generateEmbed(CodeObject data) {
         EmbedBuilder builder = buildDataEmbed(data);
-        DisplayIconData icon = data.getItem();
+        DisplayIcon icon = data.getItem();
 
         String iconName = icon.getItemName();
-        String dataName = data.getMainName();
+        String dataName = data.getName();
         if (!iconName.equals(dataName)) {
             builder.setTitle(iconName + " | " + dataName);
         } else {
@@ -26,10 +26,10 @@ public abstract class DataEmbedBuilder {
         String footerText = builder.build().getFooter() == null ? "" : builder.build().getFooter().getText();
         StringBuilder footer = new StringBuilder(footerText);
 
-        if (icon.getRequiredCredits() && !icon.getRequiredRank().equals("")) {
+        if (icon.requiresCredits() && !icon.getRequiredRank().equals("")) {
             if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits OR ").append(icon.getRequiredRank());
-        } else if (icon.getRequiredCredits()) {
+        } else if (icon.requiresCredits()) {
             if (footerText.length() != 0) footer.append(" | ");
             footer.append("Unlock with Credits");
         } else if (!icon.getRequiredRank().equals("")) {
@@ -43,15 +43,15 @@ public abstract class DataEmbedBuilder {
         return builder;
     }
 
-    abstract protected EmbedBuilder buildDataEmbed(SimpleData data);
+    abstract protected EmbedBuilder buildDataEmbed(CodeObject data);
 
-    public LinkedHashMap<BasicReaction, SimpleData> generateDupeEmojis(List<SimpleData> dataArrayList) {
+    public LinkedHashMap<BasicReaction, CodeObject> generateDupeEmojis(List<CodeObject> dataArrayList) {
         if (dataArrayList.size() > 10) {
             throw new IllegalStateException("Not enough emojis to map 10 objects!");
         }
         Deque<String> nums = Util.getUnicodeNumbers();
-        LinkedHashMap<BasicReaction, SimpleData> dataHashed = new LinkedHashMap<>();
-        for (SimpleData data : dataArrayList) {
+        LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
+        for (CodeObject data : dataArrayList) {
             dataHashed.put(new BasicReaction(nums.pop()), data);
         }
 

@@ -45,14 +45,14 @@ public class InfoCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
 
         LinkedHashMap<String, String> dataStats = new LinkedHashMap<>();
-        dataStats.put("CodeBlocks", get(CodeDatabase.getCodeBlocks()));
-        dataStats.put("Actions", get(CodeDatabase.getActions()));
-        dataStats.put("Sounds", get(CodeDatabase.getSounds()));
-        dataStats.put("Particles", get(CodeDatabase.getParticles()));
-        dataStats.put("Potions", get(CodeDatabase.getPotions()));
-        dataStats.put("Game Value", get(CodeDatabase.getGameValues()));
-        dataStats.put("Legacy Actions", get(CodeDatabase.getDeprecatedActions()));
-        dataStats.put("Legacy Game Values", get(CodeDatabase.getDeprecatedGameValues()));
+        dataStats.put("CodeBlocks", get(CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS)));
+        dataStats.put("Actions", get(CodeDatabase.getRegistry(CodeDatabase.ACTIONS)));
+        dataStats.put("Sounds", get(CodeDatabase.getRegistry(CodeDatabase.SOUNDS)));
+        dataStats.put("Particles", get(CodeDatabase.getRegistry(CodeDatabase.PARTICLES)));
+        dataStats.put("Potions", get(CodeDatabase.getRegistry(CodeDatabase.POTIONS)));
+        dataStats.put("Game Value", get(CodeDatabase.getRegistry(CodeDatabase.GAME_VALUES)));
+        dataStats.put("Legacy Actions", get(CodeDatabase.getRegistry(CodeDatabase.DEPRECATED_ACTIONS)));
+        dataStats.put("Legacy Game Values", get(CodeDatabase.getRegistry(CodeDatabase.DEPRECATED_GAME_VALUES)));
 
         embed.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
         embed.addField("What's New on Beta?", String.format("```%s```", StringUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);

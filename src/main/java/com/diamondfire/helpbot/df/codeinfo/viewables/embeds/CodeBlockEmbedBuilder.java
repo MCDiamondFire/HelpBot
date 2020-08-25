@@ -7,11 +7,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(SimpleData data) {
+    protected EmbedBuilder buildDataEmbed(CodeObject data) {
         CodeBlockData codeBlockData = (CodeBlockData) data;
         EmbedBuilder builder = new EmbedBuilder();
         generateInfo(data, builder);
-
 
         if (codeBlockData.getAssociatedAction() != null) {
             CodeBlockTagData[] tags = codeBlockData.getAssociatedAction().getTags();
@@ -24,11 +23,9 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
 
             builder.setFooter(footer.toString());
         }
+
         builder.setColor(codeBlockData.getCodeblockEnum().getColor());
-
         return builder;
-
-
     }
 
 }

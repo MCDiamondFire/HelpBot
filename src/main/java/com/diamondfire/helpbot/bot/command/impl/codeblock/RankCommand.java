@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 import java.util.List;
@@ -48,17 +48,17 @@ public class RankCommand extends AbstractMultiQueryCommand {
 
 
     @Override
-    protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
+    protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         String closestArg = event.getArgument("Rank");
         if (closestArg.equals("Credits")) {
             return data.stream()
-                    .filter((action) -> action.getItem().getRequiredCredits())
-                    .map(SimpleData::getMainName)
+                    .filter((action) -> action.getItem().requiresCredits())
+                    .map(CodeObject::getName)
                     .collect(Collectors.toList());
         }
         return data.stream()
                 .filter((simpleData -> simpleData.getItem().getRequiredRank().equalsIgnoreCase(closestArg)))
-                .map(SimpleData::getMainName)
+                .map(CodeObject::getName)
                 .collect(Collectors.toList());
     }
 

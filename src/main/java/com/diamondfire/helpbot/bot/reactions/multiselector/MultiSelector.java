@@ -24,7 +24,7 @@ public class MultiSelector {
         Deque<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, MultiSelectorPage> pagesHash = new LinkedHashMap<>();
 
-        for (MultiSelectorPage page : this.pages) {
+        for (MultiSelectorPage page : pages) {
             if (page.isHidden()) {
                 continue;
             }
@@ -36,7 +36,7 @@ public class MultiSelector {
             pagesHash.put(new BasicReaction(emoji), page);
         }
 
-        for (MultiSelectorPage page : this.pages) {
+        for (MultiSelectorPage page : pages) {
             EmbedBuilder pageBuilder = page.getPage();
             pageBuilder.addField("Pages", stringBuilder.toString(), false);
             pageBuilder.setTitle(page.getName());

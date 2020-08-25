@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
@@ -18,7 +18,7 @@ import java.util.*;
 
 public abstract class AbstractMultiQueryCommand extends Command {
 
-    protected abstract List<String> filterData(List<SimpleData> data, CommandEvent event);
+    protected abstract List<String> filterData(List<CodeObject> data, CommandEvent event);
 
     @Override
     public ArgumentSet getArguments() {
@@ -28,7 +28,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        List<String> names = filterData(CodeDatabase.getSimpleData(), event);
+        List<String> names = filterData(CodeDatabase.getStandardObjects(), event);
         Collections.sort(names);
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder builder = preset.getEmbed();

@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.*;
@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 
 public class RawCommand extends AbstractSingleQueryCommand {
 
-    private static void sendRawMessage(SimpleData data, TextChannel channel) {
+    private static void sendRawMessage(CodeObject data, TextChannel channel) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(data.getJson());
 
@@ -55,7 +55,7 @@ public class RawCommand extends AbstractSingleQueryCommand {
     }
 
     @Override
-    public BiConsumer<SimpleData, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
         return RawCommand::sendRawMessage;
     }
 

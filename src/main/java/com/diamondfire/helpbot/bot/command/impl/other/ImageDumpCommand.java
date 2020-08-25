@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
-import com.diamondfire.helpbot.util.FileUtil;
+import com.diamondfire.helpbot.util.IOUtil;
 
 import java.io.*;
 
@@ -43,7 +43,7 @@ public class ImageDumpCommand extends Command {
         builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
         event.replyA(builder).queue((msg) -> {
             try {
-                File zip = FileUtil.zipFile(images.toPath(), "images.zip");
+                File zip = IOUtil.zipFile(images.toPath(), "images.zip");
                 event.getChannel().sendFile(zip).queue((fileMsg) -> {
                     msg.delete().queue();
                 });

@@ -8,80 +8,64 @@ public class CodeBlockTagData {
 
     private final JsonObject data;
 
-
     public CodeBlockTagData(JsonObject data) {
         this.data = data;
     }
 
-    /**
-     * Parses a list of raw tag data and converts them into tag objects.
-     *
-     * @param data5 An array list of JsonObjects to parse into codeblock tag ArrayList.
-     * @return A list of tag objects that was the raw data.
-     */
-    public static CodeBlockTagData[] parse(JsonArray data5) {
-        List<CodeBlockTagData> info = new ArrayList<>();
-        for (JsonElement er : data5) {
-            info.add(new CodeBlockTagData(er.getAsJsonObject()));
-        }
-        return info.toArray(new CodeBlockTagData[]{});
-    }
-
-    /**
-     * @return The name of the tag.
-     */
     public String getName() {
-        return this.data.get("name").getAsString();
+        return data.get("name").getAsString();
     }
 
-    /**
-     * @return The options that the tag has.
-     */
-    public String[] getOptions() {
-        List<String> option = new ArrayList<>();
-        for (JsonElement info : data.get("options").getAsJsonArray()) {
-            option.add(new CodeBlockTagOption(info.getAsJsonObject()).getName());
+    public String[] getStringOptions() {
+        List<String> options = new ArrayList<>();
+        for (CodeBlockTagOption option : getOptions()) {
+            options.add(option.getName());
         }
-        return option.toArray(new String[]{});
+
+        return options.toArray(new String[]{});
     }
 
-    public CodeBlockTagOption[] getTagChoices() {
+    public CodeBlockTagOption[] getOptions() {
         List<CodeBlockTagOption> option = new ArrayList<>();
         for (JsonElement info : data.get("options").getAsJsonArray()) {
             option.add(new CodeBlockTagOption(info.getAsJsonObject()));
         }
+
         return option.toArray(new CodeBlockTagOption[]{});
     }
 
-    /**
-     * @return The main icon of the tag.
-     */
-    public DisplayIconData getItem() {
-        return new DisplayIconData((JsonObject) this.data.get("icon"));
+    public static CodeBlockTagData[] parseTags(JsonArray tags) {
+        List<CodeBlockTagData> options = new ArrayList<>();
+        for (JsonElement tag : tags) {
+            options.add(new CodeBlockTagData(tag.getAsJsonObject()));
+        }
+
+        return options.toArray(new CodeBlockTagData[]{});
     }
 
-    /**
-     * @return What the tag is set to on default.
-     */
+    public DisplayIcon getItem() {
+        return new DisplayIcon((JsonObject) data.get("icon"));
+    }
+
     public String getDefaultValue() {
-        return this.data.get("defaultOption").getAsString();
+        return data.get("defaultOption").getAsString();
     }
 
-}
+    public static class CodeBlockTagOption {
 
-class CodeBlockTagOption {
+        private final JsonObject optionData;
 
-    private final JsonObject optionData;
+        CodeBlockTagOption(JsonObject optionData) {
+            this.optionData = optionData;
+        }
 
-    CodeBlockTagOption(JsonObject optionData) {
-        this.optionData = optionData;
+        public String getName() {
+            return optionData.get("name").getAsString();
+        }
+
+        public DisplayIcon getIcon() {
+            return new DisplayIcon(optionData.get("icon").getAsJsonObject());
+        }
     }
 
-    public String getName() {
-        return optionData.get("name").getAsString();
-    }
-
-    public DisplayIconData getIcon() {
-        return new DisplayIconData(optionData.get("icon").getAsJsonObject());
-    }
 }

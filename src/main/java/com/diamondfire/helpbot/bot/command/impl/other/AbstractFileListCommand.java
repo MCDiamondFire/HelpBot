@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.other;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -23,7 +23,7 @@ public abstract class AbstractFileListCommand extends Command {
         return Permission.USER;
     }
 
-    protected void generate(CommandEvent event, List<? extends SimpleData> data) {
+    protected void generate(CommandEvent event, List<? extends CodeObject> data) {
 
         File file;
         try {

@@ -2,8 +2,8 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 
 import java.util.*;
 
@@ -37,13 +37,13 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
-    protected List<String> filterData(List<SimpleData> data, CommandEvent event) {
+    protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         ArrayList<String> list = new ArrayList<>();
         List<String> rawArgs = event.getArgument("name");
         String args = String.join(" ", rawArgs).toLowerCase();
 
-        for (SimpleData simpleData : data) {
-            String dataName = simpleData.getMainName();
+        for (CodeObject simpleData : data) {
+            String dataName = simpleData.getName();
             String itemName = simpleData.getItem().getItemName();
 
             if (itemName.toLowerCase().contains(args) || dataName.toLowerCase().contains(args)) {

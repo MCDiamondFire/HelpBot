@@ -22,26 +22,35 @@ public class BasicReaction {
 
 
     public String getUnicode() {
-        if (!isUnicode) throw new IllegalStateException("Emoji is not a unicode char!");
+        if (!isUnicode) {
+            throw new IllegalStateException("Emoji is not a unicode char!");
+        }
 
         return unicode;
-
     }
 
     public Emote getEmote() {
-        if (isUnicode) throw new IllegalStateException("Emoji is a unicode char!");
+        if (isUnicode) {
+            throw new IllegalStateException("Emoji is a unicode char!");
+        }
 
         return HelpBotInstance.getJda().getEmoteById(id);
     }
 
     public RestAction<Void> react(Message message) {
-        if (isUnicode) return message.addReaction(getUnicode());
+        if (isUnicode) {
+            return message.addReaction(getUnicode());
+        }
+
         return message.addReaction(getEmote());
     }
 
     @Override
     public String toString() {
-        if (isUnicode) return getUnicode();
+        if (isUnicode) {
+            return getUnicode();
+        }
+
         return getEmote().getAsMention();
     }
 

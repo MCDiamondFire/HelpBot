@@ -14,15 +14,15 @@ import java.util.function.BiConsumer;
 
 public class TagsCommand extends AbstractSingleQueryCommand {
 
-    private static void sendTagMessage(SimpleData data, TextChannel channel) {
+    private static void sendTagMessage(CodeObject data, TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        CodeBlockActionData actionData;
+        ActionData actionData;
 
         // Handle codeblocks that have actions associated with them.
         if (data instanceof CodeBlockData && ((CodeBlockData) data).getAssociatedAction() != null) {
             actionData = ((CodeBlockData) data).getAssociatedAction();
-        } else if (data instanceof CodeBlockActionData) {
-            actionData = (CodeBlockActionData) data;
+        } else if (data instanceof ActionData) {
+            actionData = (ActionData) data;
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
@@ -39,7 +39,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
 
         for (CodeBlockTagData tag : actionData.getTags()) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (String option : tag.getOptions()) {
+            for (String option : tag.getStringOptions()) {
                 stringBuilder.append("\n\\> ").append(option.equals(tag.getDefaultValue()) ? String.format("**%s**", option) : option);
             }
             builder.addField(tag.getName(), stringBuilder.toString(), true);
@@ -58,7 +58,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         }
 
         builder.setThumbnail("attachment://" + material + ".png");
-        builder.setTitle("Tags for: " + data.getMainName());
+        builder.setTitle("Tags for: " + data.getName());
         channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
     }
 
@@ -94,7 +94,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
 
     @Override
-    public BiConsumer<SimpleData, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
         return TagsCommand::sendTagMessage;
     }
 }

@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.SimpleData;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -32,14 +32,14 @@ public abstract class AbstractSingleQueryCommand extends Command {
         getData(event, onDataReceived());
     }
 
-    public abstract BiConsumer<SimpleData, TextChannel> onDataReceived();
+    public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
 
 
-    public static void sendMultipleMessage(List<SimpleData> actions, TextChannel channel, long userToWait, BiConsumer<SimpleData, TextChannel> onChosen) {
+    public static void sendMultipleMessage(List<CodeObject> actions, TextChannel channel, long userToWait, BiConsumer<CodeObject, TextChannel> onChosen) {
         // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
-        SimpleData referenceData = actions.get(0);
-        Class<? extends SimpleData> classReference = referenceData.getClass();
-        Map<BasicReaction, SimpleData> emojis = new HashMap<>();
+        CodeObject referenceData = actions.get(0);
+        Class<? extends CodeObject> classReference = referenceData.getClass();
+        Map<BasicReaction, CodeObject> emojis = new HashMap<>();
         PresetBuilder preset = new PresetBuilder();
         preset.withPreset(
                 new InformativeReply(InformativeReplyType.INFO, "Duplicate Objects Detected!",
@@ -47,7 +47,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
         );
 
         boolean isSameType = true;
-        for (SimpleData data : actions) {
+        for (CodeObject data : actions) {
             if (!data.getClass().isAssignableFrom(classReference)) {
                 isSameType = false;
                 break;
@@ -57,14 +57,14 @@ public abstract class AbstractSingleQueryCommand extends Command {
         if (isSameType) {
             emojis.putAll(referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions));
         } else {
-            for (SimpleData data : actions) {
+            for (CodeObject data : actions) {
                 emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
             }
         }
 
         List<String> options = new ArrayList<>();
-        for (Map.Entry<BasicReaction, SimpleData> emoji : emojis.entrySet()) {
-            options.add(emoji.getKey().toString() + " - " + emoji.getValue().getMainName());
+        for (Map.Entry<BasicReaction, CodeObject> emoji : emojis.entrySet()) {
+            options.add(emoji.getKey().toString() + " - " + emoji.getValue().getName());
         }
         preset.getEmbed().addField("**Options**", StringUtil.listView("", options), false);
 
@@ -73,9 +73,8 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 message.delete().queue();
 
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
-                List<SimpleData> filteredData = new ArrayList<>();
-
-                for (Map.Entry<BasicReaction, SimpleData> emoji : emojis.entrySet()) {
+                List<CodeObject> filteredData = new ArrayList<>();
+                for (Map.Entry<BasicReaction, CodeObject> emoji : emojis.entrySet()) {
                     if (emoji.getKey().equalToReaction(event.getReactionEvent().getReactionEmote())) {
                         filteredData.add(emoji.getValue());
                     }
@@ -95,33 +94,34 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
     }
 
-    protected void getData(CommandEvent event, BiConsumer<SimpleData, TextChannel> onChosen) {
+    protected void getData(CommandEvent event, BiConsumer<CodeObject, TextChannel> onChosen) {
         List<String> args = event.getArgument("name");
         String argumentsParsed = String.join(" ", args);
         PresetBuilder preset = new PresetBuilder();
 
         //Generate a bunch of "favorable" actions.
-        Map<SimpleData, Double> possibleChoices = new HashMap<>();
-        for (SimpleData data : CodeDatabase.getSimpleData()) {
-            double compScore = JaroWinkler.score(argumentsParsed, data.getMainName());
-            if (compScore >= 0.8) {
-                possibleChoices.put(data, compScore);
+        Map<CodeObject, Double> possibleChoices = new HashMap<>();
+        for (CodeObject data : CodeDatabase.getStandardObjects()) {
+            double nameScore = JaroWinkler.score(argumentsParsed, data.getName());
+            double iconNameScore = JaroWinkler.score(argumentsParsed, data.getItem().getItemName());
+            if (nameScore >= 0.8 || iconNameScore >= 0.8) {
+                possibleChoices.put(data, Math.max(nameScore,iconNameScore));
             }
         }
 
         //Get the most similar action possible.
-        Map.Entry<SimpleData, Double> closestAction = possibleChoices.entrySet().stream()
+        Map.Entry<CodeObject, Double> closestAction = possibleChoices.entrySet().stream()
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .orElse(null);
 
         // (Prevents random words from being picked when there is a wide variety of close choices too)
         if (closestAction != null) {
-            // Ensure has less than 10 close possible actions OR is exact.
-            if (possibleChoices.size() < 10 || closestAction.getValue() == 1) {
+            // If it isn't accurate enough
+            if (closestAction.getValue() >= 0.90) {
                 // Find actions that are exactly the same
-                List<SimpleData> sameActions = new ArrayList<>();
-                for (SimpleData data : possibleChoices.keySet()) {
-                    if (data.getMainName().equalsIgnoreCase(closestAction.getKey().getMainName())) {
+                List<CodeObject> sameActions = new ArrayList<>();
+                for (CodeObject data : possibleChoices.keySet()) {
+                    if (data.getName().equalsIgnoreCase(closestAction.getKey().getName())) {
                         sameActions.add(data);
                     }
                 }
@@ -132,19 +132,18 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 } else if (sameActions.size() > 1) {
                     sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
                 }
-                return;
 
+                return;
                 // Either there are too many similar actions or there is no close action.
             } else {
                 preset.withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("Too many actions were too similar to `%s`\nhere are some similar actions.", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
+                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
                 );
                 List<String> similarActionNames = possibleChoices.entrySet().stream()
                         .sorted(Comparator.comparingDouble(Map.Entry::getValue))
-                        .map((entry) -> entry.getKey().getMainName())
+                        .map((entry) -> entry.getKey().getName())
                         .collect(Collectors.toList());
                 Collections.reverse(similarActionNames);
-
 
                 Util.addFields(preset.getEmbed(), similarActionNames);
             }
