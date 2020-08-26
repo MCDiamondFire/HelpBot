@@ -1,7 +1,5 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
-import com.diamondfire.helpbot.HelpBot;
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
@@ -11,11 +9,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.disablecmds.DisableCommandHandler;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
-
-import java.io.File;
-import java.util.Random;
+import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 
 public class DisableCommand extends Command {
 

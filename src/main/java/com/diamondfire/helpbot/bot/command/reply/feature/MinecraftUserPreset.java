@@ -2,6 +2,9 @@ package com.diamondfire.helpbot.bot.command.reply.feature;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class MinecraftUserPreset implements ReplyPreset {
 
     private final String uuid;
@@ -19,6 +22,6 @@ public class MinecraftUserPreset implements ReplyPreset {
 
     @Override
     public void applyFeature(EmbedBuilder builder) {
-        builder.setAuthor(player, null, "https://mc-heads.net/head/" + (uuid == null ? player : uuid));
+        builder.setAuthor(player, null, "https://mc-heads.net/head/" + URLEncoder.encode((uuid == null ? player : uuid), StandardCharsets.UTF_8));
     }
 }

@@ -15,6 +15,7 @@ public class CommandExecutor {
     private final CommandCheck[] checks = new CommandCheck[]{
             new DisabledCheck(),
             new PermissionCheck(),
+            new CommandLog()
     };
 
     public void run(CommandEvent e) {

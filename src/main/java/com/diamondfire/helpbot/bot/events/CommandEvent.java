@@ -20,6 +20,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
     private final Command command;
+    private String aliasedUsed = null;
     private final ReplyHandler reply = new ReplyHandler();
 
     public CommandEvent(JDA api, long responseNumber, Message message){
@@ -27,8 +28,16 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
 
-        this.command = CommandHandler.getCommand(commandPrefix);
+
+        Command cmd = HelpBotInstance.getHandler().getCommands().get(commandPrefix.toLowerCase());
+        if (cmd == null) {
+            this.aliasedUsed = commandPrefix.toLowerCase();
+            cmd = HelpBotInstance.getHandler().getAliases().get(commandPrefix.toLowerCase());
+        }
+
+        this.command = cmd;
     }
+
 
     public void pushArguments(String[] rawArgs) throws ArgumentException {
         this.parsedArgumentSet = ArgumentParser.parseArgs(command, Arrays.copyOfRange(rawArgs, 1, rawArgs.length));
@@ -74,5 +83,9 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     public Map<String, ?> getArguments() {
         return parsedArgumentSet.getArguments();
+    }
+
+    public String getAliasUsed() {
+        return aliasedUsed;
     }
 }

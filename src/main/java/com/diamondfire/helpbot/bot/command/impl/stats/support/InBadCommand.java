@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.ClampedIntegerArgument;
@@ -66,7 +67,7 @@ public class InBadCommand extends Command {
         embed.setColor(Color.RED);
 
         new SingleQueryBuilder()
-                .query("SELECT * FROM (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.developer != 0) a " +
+                .query("SELECT * FROM (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) a " +
                                 "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)",
                         statement -> {
                             statement.setInt(1, days);

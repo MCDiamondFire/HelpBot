@@ -1,6 +1,5 @@
-package com.diamondfire.helpbot.sys.disablecmds;
+package com.diamondfire.helpbot.bot.command.disable;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
