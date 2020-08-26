@@ -122,17 +122,21 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         File finalSendFile = sendFile;
                         event.replyA(recapPreset, privateChannel).queue((msg) -> {
                             PresetBuilder reply = new PresetBuilder();
-                            reply.withPreset(new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!"));
+                            reply.withPreset(
+                                    new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!")
+                            );
                             event.reply(reply);
 
                             if (punishments.size() == 0 && activePunishments.size() == 0) {
+                                // temp fix
+                                msg.delete().queue();
                                 recapPreset.getEmbed().clear();
                                 recapPreset.withPreset(
                                         new MinecraftUserPreset(playerName, playerUUID),
                                         new InformativeReply(InformativeReplyType.INFO, "History Recap",
                                                 "No punishments here, good job and keep up the good work!")
                                 );
-                                event.reply(recapPreset);
+                                event.reply(recapPreset, privateChannel);
                             } else {
                                 for (EmbedBuilder builder : embeds) {
                                     event.reply(builder, privateChannel);

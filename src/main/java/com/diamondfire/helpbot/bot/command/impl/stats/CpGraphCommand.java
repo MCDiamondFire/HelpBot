@@ -38,7 +38,7 @@ public class CpGraphCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public Permission getPermission() {
-        return Permission.BOT_DEVELOPER;
+        return Permission.USER;
     }
 
     @Override
@@ -64,21 +64,20 @@ public class CpGraphCommand extends AbstractPlayerUUIDCommand {
                                 } while (resultTable.next());
 
                                 event.getChannel().sendFile(new ChartGraphBuilder()
-                                        .setGraphName(name + "%s's CP Graph")
+                                        .setGraphName(name + "'s CP Graph")
                                         .createGraph(entries)).queue();
                             })
                             .onNotFound(() -> {
                                 preset.withPreset(
-                                        new InformativeReply(InformativeReplyType.ERROR, "No data was found on this player.")
+                                        new InformativeReply(InformativeReplyType.ERROR, "No data was found on this player. Note, their cp must be above 4990 to start tracking.")
                                 );
-                                event.reply(preset);
                             }).execute();
                 })
                 .onNotFound(() -> {
                     preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
-                    event.reply(preset);
                 }).execute();
 
+        event.reply(preset);
     }
 
 }
