@@ -3,9 +3,9 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.viewables.constants.DataTypes;
 import com.diamondfire.helpbot.util.Util;
-import com.google.gson.*;
+import com.google.gson.JsonObject;
 
-import java.util.*;
+import java.util.List;
 
 public class ActionData extends CodeObject {
 

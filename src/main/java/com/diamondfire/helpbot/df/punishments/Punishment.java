@@ -34,6 +34,12 @@ public class Punishment {
         this.removeDate = removeDate;
     }
 
+    private static String formatUntil(Date date) {
+        if (date == null) return "Never";
+
+        return StringUtil.formatDate(date);
+    }
+
     @Override
     public String toString() {
         String given = "Given " + StringUtil.formatDate(startTime);
@@ -49,13 +55,7 @@ public class Punishment {
             duration = String.format("(Duration %s)", StringUtil.formatMilliTime(untilTime.getTime() - startTime.getTime()));
         }
 
-       return String.format("[%s] %s %s %s \n%s", type, given, expire, duration, reasonGiven);
-    }
-
-    private static String formatUntil(Date date) {
-        if (date == null) return "Never";
-
-        return StringUtil.formatDate(date);
+        return String.format("[%s] %s %s %s \n%s", type, given, expire, duration, reasonGiven);
     }
 }
 

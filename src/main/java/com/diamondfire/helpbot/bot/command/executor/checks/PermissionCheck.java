@@ -1,10 +1,8 @@
 package com.diamondfire.helpbot.bot.command.executor.checks;
 
-import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 public class PermissionCheck implements CommandCheck {
 

@@ -136,7 +136,7 @@ public class JoinDataCommand extends Command {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
                     statement.setDate(3, DateUtil.toSqlDate(between1));
-                    statement.setDate(4,DateUtil.toSqlDate(between2));
+                    statement.setDate(4, DateUtil.toSqlDate(between2));
                     statement.setInt(5, days);
                 }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), "None...", false)).execute();
 

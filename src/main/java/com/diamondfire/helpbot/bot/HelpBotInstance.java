@@ -20,8 +20,8 @@ import javax.security.auth.login.LoginException;
 public class HelpBotInstance {
 
     private static final CommandHandler handler = new CommandHandler();
-    private static JDA jda;
     private static final Config config = new Config();
+    private static JDA jda;
 
     public static void initialize() throws LoginException {
 

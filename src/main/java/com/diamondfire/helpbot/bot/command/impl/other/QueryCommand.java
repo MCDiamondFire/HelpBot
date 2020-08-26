@@ -10,7 +10,6 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.io.*;
 import java.util.*;

@@ -92,7 +92,7 @@ public class TotalStatsCommand extends Command {
                                 .onQuery((set) -> new SingleQueryBuilder()
                                         .query("SELECT AVG(duration) AS average_duration FROM support_sessions WHERE duration != 0")
                                         .onQuery((resultTableTime) -> embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")) +
-                                                    String.format("\nHighest Average: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false)).execute()).execute();
+                                                String.format("\nHighest Average: %s (%s)", set.getString("staff"), StringUtil.formatMilliTime(set.getLong("total"))), false)).execute()).execute();
                         new SingleQueryBuilder()
                                 .query("SELECT DISTINCT staff, MIN(duration) as total FROM support_sessions WHERE duration != 0 ORDER BY total DESC LIMIT 1;")
                                 .onQuery((set) -> embed.addField("Shortest Session Time", StringUtil.formatMilliTime(set.getLong("total")) +

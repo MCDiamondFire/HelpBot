@@ -6,8 +6,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 

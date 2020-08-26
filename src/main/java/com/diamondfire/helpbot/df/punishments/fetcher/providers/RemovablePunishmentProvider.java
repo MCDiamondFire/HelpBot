@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.df.punishments.fetcher.providers;
 
-import com.diamondfire.helpbot.df.punishments.*;
+import com.diamondfire.helpbot.df.punishments.Punishment;
 
 import java.sql.*;
 

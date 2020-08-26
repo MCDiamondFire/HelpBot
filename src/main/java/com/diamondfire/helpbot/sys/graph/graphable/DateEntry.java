@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.sys.graph.graphable;
 
-import java.text.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateEntry extends GraphableEntry<Date> {

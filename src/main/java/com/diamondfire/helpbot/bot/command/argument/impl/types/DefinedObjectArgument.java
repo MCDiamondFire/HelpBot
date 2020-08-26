@@ -9,7 +9,7 @@ import java.util.*;
 
 public class DefinedObjectArgument<T> implements Argument<T> {
 
-    private final Map<String,T> objectMap = new HashMap<>();
+    private final Map<String, T> objectMap = new HashMap<>();
 
     public DefinedObjectArgument(@NotNull T... options) {
 

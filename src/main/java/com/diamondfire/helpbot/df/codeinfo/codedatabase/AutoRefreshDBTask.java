@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase;
 
-import com.diamondfire.helpbot.bot.command.impl.other.FetchDataCommand;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.impl.other.FetchDataCommand;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;

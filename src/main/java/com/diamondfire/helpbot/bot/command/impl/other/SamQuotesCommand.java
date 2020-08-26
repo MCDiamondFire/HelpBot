@@ -4,14 +4,12 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.google.gson.JsonParser;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.io.*;
-import java.net.URL;
+import java.io.File;
 import java.util.Random;
 
 public class SamQuotesCommand extends Command {
@@ -52,7 +50,7 @@ public class SamQuotesCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Sam Quote");
         builder.setImage("attachment://quote.png");
-        builder.setColor(new Color(87,177,71));
+        builder.setColor(new Color(87, 177, 71));
 
         event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
     }

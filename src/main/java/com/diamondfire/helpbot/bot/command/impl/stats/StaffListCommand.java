@@ -4,10 +4,10 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.df.ranks.Ranks;
-import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
+import com.diamondfire.helpbot.df.ranks.Ranks;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -114,7 +114,7 @@ public class StaffListCommand extends Command {
                 }
             }
 
-            Util.addFields(devEmbed, memberNames,"", "Bot Developers");
+            Util.addFields(devEmbed, memberNames, "", "Bot Developers");
             guild.pruneMemberCache();
             builder.addPage("Developers", devEmbed);
             builder.build().send(event.getJDA());

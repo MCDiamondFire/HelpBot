@@ -11,8 +11,6 @@ import java.util.*;
 
 public class CodeDatabase {
 
-    private static final Map<String, List<? extends CodeObject>> registry = new HashMap<>();
-
     public static final String CODEBLOCKS = "codeblocks";
     public static final String ACTIONS = "actions";
     public static final String DEPRECATED_ACTIONS = "dactions";
@@ -21,7 +19,7 @@ public class CodeDatabase {
     public static final String PARTICLES = "particles";
     public static final String GAME_VALUES = "gamevalues";
     public static final String DEPRECATED_GAME_VALUES = "dgamevalues";
-
+    private static final Map<String, List<? extends CodeObject>> registry = new HashMap<>();
 
     public static void initialize() {
         registry.clear();

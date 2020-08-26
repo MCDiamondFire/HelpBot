@@ -3,7 +3,6 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.ArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 
 import java.util.*;
@@ -26,7 +25,7 @@ public interface ArgumentParser {
                 if (argumentContainer.isOptional()) {
                     parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue()));
                 } else {
-                    exception.setContext(command,i);
+                    exception.setContext(command, i);
                     throw exception;
                 }
             } catch (MalformedArgumentException exception) {

@@ -12,6 +12,15 @@ public class CodeBlockTagData {
         this.data = data;
     }
 
+    public static CodeBlockTagData[] parseTags(JsonArray tags) {
+        List<CodeBlockTagData> options = new ArrayList<>();
+        for (JsonElement tag : tags) {
+            options.add(new CodeBlockTagData(tag.getAsJsonObject()));
+        }
+
+        return options.toArray(new CodeBlockTagData[]{});
+    }
+
     public String getName() {
         return data.get("name").getAsString();
     }
@@ -32,15 +41,6 @@ public class CodeBlockTagData {
         }
 
         return option.toArray(new CodeBlockTagOption[]{});
-    }
-
-    public static CodeBlockTagData[] parseTags(JsonArray tags) {
-        List<CodeBlockTagData> options = new ArrayList<>();
-        for (JsonElement tag : tags) {
-            options.add(new CodeBlockTagData(tag.getAsJsonObject()));
-        }
-
-        return options.toArray(new CodeBlockTagData[]{});
     }
 
     public DisplayIcon getItem() {

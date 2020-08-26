@@ -96,10 +96,9 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     int oldPoints = table.getInt("points");
 
                     if (oldPoints > points) {
-                        text.insert(0,"<:red_down_arrow:743902462343118858> ");
+                        text.insert(0, "<:red_down_arrow:743902462343118858> ");
                         text.append(String.format(" (%s from %s)", StringUtil.formatNumber(points - oldPoints), StringUtil.formatDate(table.getDate("date"))));
-                    }
-                    else if (oldPoints < points) {
+                    } else if (oldPoints < points) {
                         text.insert(0, "<:green_up_arrow:743902461777018901> ");
                         text.append(String.format(" (+%s from %s)", StringUtil.formatNumber(points - oldPoints), StringUtil.formatDate(table.getDate("date"))));
                     }

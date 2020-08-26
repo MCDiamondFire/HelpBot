@@ -140,15 +140,15 @@ public class FetchDataCommand extends Command {
                         String text;
                         {
                             com.github.steveice10.mc.protocol.data.message.Message message = chatPacket.getMessage();
-                                StringBuilder builder = new StringBuilder();
-                                for (com.github.steveice10.mc.protocol.data.message.Message message1 : message.getExtra()) {
-                                    TextMessage rawText = (TextMessage) message1;
+                            StringBuilder builder = new StringBuilder();
+                            for (com.github.steveice10.mc.protocol.data.message.Message message1 : message.getExtra()) {
+                                TextMessage rawText = (TextMessage) message1;
 
-                                    if (rawText.getText() == null) continue;
+                                if (rawText.getText() == null) continue;
 
-                                    builder.append(rawText.getText());
-                                }
-                                text = builder.toString();
+                                builder.append(rawText.getText());
+                            }
+                            text = builder.toString();
 
                         }
 

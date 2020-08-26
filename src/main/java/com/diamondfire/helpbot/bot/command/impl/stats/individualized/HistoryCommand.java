@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -45,7 +44,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
 
         if (!Permission.MODERATION.hasPermission(event.getMember())) {
-          player = event.getMember().getEffectiveName();
+            player = event.getMember().getEffectiveName();
         }
 
         PresetBuilder recapPreset = new PresetBuilder()

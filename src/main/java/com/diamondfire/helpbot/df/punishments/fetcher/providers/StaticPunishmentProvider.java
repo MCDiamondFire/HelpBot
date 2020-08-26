@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.df.punishments.fetcher.providers;
 
-import com.diamondfire.helpbot.df.punishments.*;
+import com.diamondfire.helpbot.df.punishments.Punishment;
 
 import java.sql.*;
 
@@ -12,7 +12,7 @@ public abstract class StaticPunishmentProvider implements PunishmentProvider {
                 data.getString("banned_by_uuid"), data.getString("banned_by_name"),
                 data.getDate("time"), data.getDate("until"),
                 data.getBoolean("silent"), data.getBoolean("active"),
-                null,null,null);
+                null, null, null);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class DisableCommandHandler {
         try {
             List<String> lines = Files.readAllLines(ExternalFile.DISABLED_COMMANDS.getFile().toPath());
             for (String cmd : lines) {
-                    disable(CommandHandler.getCommand(cmd));
+                disable(CommandHandler.getCommand(cmd));
             }
 
         } catch (IOException e) {

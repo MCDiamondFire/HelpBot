@@ -1,13 +1,11 @@
 package com.diamondfire.helpbot.bot.events;
 
-import com.diamondfire.helpbot.bot.command.CommandHandler;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ParsedArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
-import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -17,13 +15,13 @@ import java.util.*;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
 
+    private final Command command;
+    private final ReplyHandler reply = new ReplyHandler();
     //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
-    private final Command command;
     private String aliasedUsed = null;
-    private final ReplyHandler reply = new ReplyHandler();
 
-    public CommandEvent(JDA api, long responseNumber, Message message){
+    public CommandEvent(JDA api, long responseNumber, Message message) {
         super(api, responseNumber, message);
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();

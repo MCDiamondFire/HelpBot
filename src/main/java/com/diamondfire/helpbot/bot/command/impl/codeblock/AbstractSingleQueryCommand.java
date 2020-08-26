@@ -21,20 +21,6 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSingleQueryCommand extends Command {
 
-    @Override
-    public ArgumentSet getArguments() {
-        return new ArgumentSet()
-                .addArgument("name", new MultiArgumentContainer<>(new StringArgument()));
-    }
-
-    @Override
-    public void run(CommandEvent event) {
-        getData(event, onDataReceived());
-    }
-
-    public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
-
-
     public static void sendMultipleMessage(List<CodeObject> actions, TextChannel channel, long userToWait, BiConsumer<CodeObject, TextChannel> onChosen) {
         // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
         CodeObject referenceData = actions.get(0);
@@ -94,6 +80,19 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
     }
 
+    @Override
+    public ArgumentSet getArguments() {
+        return new ArgumentSet()
+                .addArgument("name", new MultiArgumentContainer<>(new StringArgument()));
+    }
+
+    @Override
+    public void run(CommandEvent event) {
+        getData(event, onDataReceived());
+    }
+
+    public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
+
     protected void getData(CommandEvent event, BiConsumer<CodeObject, TextChannel> onChosen) {
         List<String> args = event.getArgument("name");
         String argumentsParsed = String.join(" ", args);
@@ -105,7 +104,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             double nameScore = JaroWinkler.score(argumentsParsed, data.getName());
             double iconNameScore = JaroWinkler.score(argumentsParsed, data.getItem().getItemName());
             if (nameScore >= 0.8 || iconNameScore >= 0.8) {
-                possibleChoices.put(data, Math.max(nameScore,iconNameScore));
+                possibleChoices.put(data, Math.max(nameScore, iconNameScore));
             }
         }
 

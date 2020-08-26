@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.bot.command.executor.checks;
 
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 

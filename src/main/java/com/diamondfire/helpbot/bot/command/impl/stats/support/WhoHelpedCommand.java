@@ -6,8 +6,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -53,9 +53,9 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                     List<String> sessions = new ArrayList<>();
                     String formattedName = query.getString("name");
                     preset.withPreset(
-                                    new MinecraftUserPreset(formattedName),
-                                    new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
-                            );
+                            new MinecraftUserPreset(formattedName),
+                            new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
+                    );
 
                     do {
                         sessions.add(query.getInt("total") + " " + query.getString("staff"));

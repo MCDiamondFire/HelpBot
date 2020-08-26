@@ -1,19 +1,13 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.IntegerArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.df.creator.CreatorLevel;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
 
 import java.util.*;
 

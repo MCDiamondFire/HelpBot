@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.sys.database;
 
-import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.config.Config;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.*;

@@ -13,6 +13,7 @@ public abstract class BoxGraph implements Graph {
     static final int BORDER_SIZE = 70;
     static final int X_OFFSET = 70;
     private final String name;
+    private final ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
 
     protected BoxGraph(String name) {
         this.name = name;
@@ -28,8 +29,6 @@ public abstract class BoxGraph implements Graph {
     }
 
     abstract void paintInner(Graphics2D graphics2D);
-
-    private final ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
 
     public ArrayList<GraphableEntry<?>> getEntries() {
         return entries;

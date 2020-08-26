@@ -9,7 +9,6 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class BlockCommand extends AbstractMultiQueryCommand {

@@ -1,8 +1,8 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
@@ -61,7 +61,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
             params.append(String.join(" ", Arrays.copyOfRange(description, 1, description.length)));
 
             // Generate extra notes that appear under the argument.
-            params.append(StringUtil.listView( "> ", true, arg.getExtraNotes()));
+            params.append(StringUtil.listView("> ", true, arg.getExtraNotes()));
 
         }
         if (icon.getParameters().length == 0) {

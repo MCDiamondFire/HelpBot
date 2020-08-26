@@ -16,46 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class NewJoinGraphCommand extends Command {
 
-    @Override
-    public String getName() {
-        return "joingraph";
-    }
-
-    @Override
-    public HelpContext getHelpContext() {
-        return new HelpContext()
-                .description("Generates a graph representing how many new players joined in a certain time frame.")
-                .category(CommandCategory.STATS)
-                .addArgument(
-                        new HelpContextArgument()
-                                .name("daily|amount|monthly"),
-                        new HelpContextArgument()
-                                .name("amount")
-                );
-    }
-
-    @Override
-    public ArgumentSet getArguments() {
-        return new ArgumentSet()
-                .addArgument("mode",
-                        new DefinedObjectArgument("daily", "weekly", "monthly"))
-                .addArgument("amount",
-                        new ClampedIntegerArgument(1));
-    }
-
-    @Override
-    public Permission getPermission() {
-        return Permission.USER;
-    }
-
-    @Override
-    public void run(CommandEvent event) {
-        String mode = event.getArgument("mode");
-        int amount = event.getArgument("amount");
-
-        generateGraph(mode, amount, event.getChannel());
-    }
-
     public static void generateGraph(String mode, int amount, TextChannel channel) {
         ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
         AtomicReference<ChartGraphBuilder> builder = new AtomicReference<>();
@@ -116,6 +76,46 @@ public class NewJoinGraphCommand extends Command {
         }
 
         channel.sendFile(builder.get().createGraph(entries)).queue();
+    }
+
+    @Override
+    public String getName() {
+        return "joingraph";
+    }
+
+    @Override
+    public HelpContext getHelpContext() {
+        return new HelpContext()
+                .description("Generates a graph representing how many new players joined in a certain time frame.")
+                .category(CommandCategory.STATS)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("daily|amount|monthly"),
+                        new HelpContextArgument()
+                                .name("amount")
+                );
+    }
+
+    @Override
+    public ArgumentSet getArguments() {
+        return new ArgumentSet()
+                .addArgument("mode",
+                        new DefinedObjectArgument("daily", "weekly", "monthly"))
+                .addArgument("amount",
+                        new ClampedIntegerArgument(1));
+    }
+
+    @Override
+    public Permission getPermission() {
+        return Permission.USER;
+    }
+
+    @Override
+    public void run(CommandEvent event) {
+        String mode = event.getArgument("mode");
+        int amount = event.getArgument("amount");
+
+        generateGraph(mode, amount, event.getChannel());
     }
 
 }

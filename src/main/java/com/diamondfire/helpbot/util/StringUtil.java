@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class StringUtil {
 
     public static String listView(String pointer, boolean sanitize, Iterable<? extends CharSequence> array) {
-        String view = listView(pointer,array);
+        String view = listView(pointer, array);
         return sanitize ? StringUtil.display(view) : view;
     }
 

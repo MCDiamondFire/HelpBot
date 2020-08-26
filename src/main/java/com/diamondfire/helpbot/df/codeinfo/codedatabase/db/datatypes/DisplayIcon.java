@@ -3,7 +3,6 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
 
-import javax.swing.*;
 import java.io.File;
 import java.util.*;
 

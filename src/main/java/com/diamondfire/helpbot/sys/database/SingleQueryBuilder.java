@@ -4,7 +4,7 @@ import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.*;
 
 import java.sql.*;
-import java.util.function.*;
+import java.util.function.Consumer;
 
 /**
  * <h1>SingleQueryBuilder</h1>

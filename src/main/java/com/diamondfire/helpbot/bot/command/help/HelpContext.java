@@ -4,9 +4,9 @@ import java.util.*;
 
 public class HelpContext {
 
+    final List<HelpContextArgument> arguments = new ArrayList<>();
     String description = null;
     CommandCategory commandCategory = null;
-    final List<HelpContextArgument> arguments = new ArrayList<>();
 
     public HelpContext description(String description) {
         this.description = description;

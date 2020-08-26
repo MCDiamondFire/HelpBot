@@ -13,6 +13,15 @@ public class CommandHandler {
     private final HashMap<String, Command> ALIASES = new HashMap<>();
     private final CommandExecutor executor = new CommandExecutor();
 
+    public static Command getCommand(String name) {
+        Command cmd = HelpBotInstance.getHandler().getCommands().get(name.toLowerCase());
+        if (cmd == null) {
+            cmd = HelpBotInstance.getHandler().getAliases().get(name.toLowerCase());
+        }
+
+        return cmd;
+    }
+
     public void register(Command... commands) {
         for (Command command : commands) {
             this.CMDS.put(command.getName().toLowerCase(), command);
@@ -25,15 +34,6 @@ public class CommandHandler {
 
     public void run(CommandEvent e) {
         executor.run(e);
-    }
-
-    public static Command getCommand(String name) {
-        Command cmd = HelpBotInstance.getHandler().getCommands().get(name.toLowerCase());
-        if (cmd == null) {
-            cmd = HelpBotInstance.getHandler().getAliases().get(name.toLowerCase());
-        }
-
-        return cmd;
     }
 
     public HashMap<String, Command> getCommands() {

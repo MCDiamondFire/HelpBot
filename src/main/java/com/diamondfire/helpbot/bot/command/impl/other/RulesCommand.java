@@ -98,7 +98,7 @@ public class RulesCommand extends Command {
     }
 
     private String list(String[] strings, String prefix) {
-        return prefix + " " + String.join(" \n" + prefix + " " , strings);
+        return prefix + " " + String.join(" \n" + prefix + " ", strings);
     }
 
 }

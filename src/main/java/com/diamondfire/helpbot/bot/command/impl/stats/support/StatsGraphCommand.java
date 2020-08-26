@@ -3,10 +3,10 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.graph.graphable.DateEntry;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 import java.util.ArrayList;
 
