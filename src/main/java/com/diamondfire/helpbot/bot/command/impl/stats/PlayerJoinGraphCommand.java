@@ -11,14 +11,14 @@ import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PlayerJoinGraphCommand extends Command {
 
     public static void generateGraph(String mode, int amount, TextChannel channel) {
-        ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
-        AtomicReference<ChartGraphBuilder> builder = new AtomicReference<>();
+        Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
+        ChartGraphBuilder builder = new ChartGraphBuilder();
 
         switch (mode) {
             case "daily":
@@ -28,15 +28,10 @@ public class PlayerJoinGraphCommand extends Command {
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
-                                for (int i = 0; i < resultTable.getInt("count") + 1; i++) {
-                                    entries.add(new StringEntry(resultTable.getString("time")));
-                                }
-
+                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
                             } while (resultTable.next());
 
-                            builder.set(new ChartGraphBuilder()
-                                    .setGraphName("Unique player joins per day"));
-
+                            builder.setGraphName("Unique player joins per day");
                         }).execute();
                 break;
             case "weekly":
@@ -46,14 +41,10 @@ public class PlayerJoinGraphCommand extends Command {
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
-                                for (int i = 0; i < resultTable.getInt("count") + 1; i++) {
-                                    entries.add(new StringEntry(resultTable.getString("time")));
-                                }
-
+                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
                             } while (resultTable.next());
 
-                            builder.set(new ChartGraphBuilder()
-                                    .setGraphName("Unique player joins per week"));
+                            builder.setGraphName("Unique player joins per week");
                         }).execute();
                 break;
             case "monthly":
@@ -63,19 +54,15 @@ public class PlayerJoinGraphCommand extends Command {
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
-                                for (int i = 0; i < resultTable.getInt("count") + 1; i++) {
-                                    entries.add(new StringEntry(resultTable.getString("time")));
-                                }
-
+                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
                             } while (resultTable.next());
 
-                            builder.set(new ChartGraphBuilder()
-                                    .setGraphName("Unique player joins per month"));
+                            builder.setGraphName("Unique player joins per month");
                         }).execute();
                 break;
 
         }
-        channel.sendFile(builder.get().createGraph(entries)).queue();
+        channel.sendFile(builder.createGraph(entries)).queue();
     }
 
     @Override

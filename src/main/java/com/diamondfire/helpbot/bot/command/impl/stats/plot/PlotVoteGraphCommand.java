@@ -60,7 +60,7 @@ public class PlotVoteGraphCommand extends Command {
 
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("Votes on plot %s this month", plotID))
-                            .createGraph(entries)).queue();
+                            .createGraphFromCollection(entries)).queue();
                 })
                 .onNotFound(() -> {
                     PresetBuilder preset = new PresetBuilder();

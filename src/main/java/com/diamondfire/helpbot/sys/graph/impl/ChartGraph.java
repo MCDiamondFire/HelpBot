@@ -19,11 +19,8 @@ public class ChartGraph extends BoxGraph {
         Map<Integer, Integer> sideTickRegistry = new HashMap<>();
 
         // First we need to get all the point and count the number of occurrences each one has.
-        LinkedHashMap<GraphableEntry<?>, Integer> points = new LinkedHashMap<>();
-        for (GraphableEntry<?> entry : getEntries()) {
-            points.computeIfPresent(entry, (key, value) -> value + 1);
-            points.putIfAbsent(entry, 1);
-        }
+        Map<GraphableEntry<?>, Integer> points = getEntries();
+
 
         int maxPoints = points.size() - 1;
         int valueIndex = 0;

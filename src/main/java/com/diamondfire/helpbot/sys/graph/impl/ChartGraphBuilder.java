@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Collection;
+import java.util.*;
 
 public class ChartGraphBuilder {
 
@@ -22,7 +22,17 @@ public class ChartGraphBuilder {
         return this;
     }
 
-    public File createGraph(Collection<? extends GraphableEntry<?>> entryList) {
+    public File createGraphFromCollection(Collection<? extends GraphableEntry<?>> entryList) {
+        Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
+        for (GraphableEntry<?> entry : entryList) {
+            entries.computeIfPresent(entry, (key, value) -> value + 1);
+            entries.putIfAbsent(entry, 1);
+        }
+        return createGraph(entries);
+    }
+
+
+    public File createGraph(Map<GraphableEntry<?>, Integer> entries) {
         BoxGraph graph = new ChartGraph(graphName);
         File graphFile;
         try {
@@ -40,7 +50,7 @@ public class ChartGraphBuilder {
         graphics.setFont(graphics.getFont().deriveFont(25F));
         graphics.setColor(new Color(53, 54, 59));
         graphics.fillRect(0, 0, 2250, 1420);
-        graph.getEntries().addAll(entryList);
+        graph.getEntries().putAll(entries);
         //graphics.drawRect(BORDER_WIDTH, BORDER_WIDTH, WIDTH, HEIGHT);
         graph.paintGraph(graphics);
         //Generate values and their numbers

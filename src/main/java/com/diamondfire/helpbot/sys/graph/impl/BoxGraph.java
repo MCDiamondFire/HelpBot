@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.sys.graph.impl;
 import com.diamondfire.helpbot.sys.graph.graphable.GraphableEntry;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public abstract class BoxGraph implements Graph {
 
@@ -13,7 +13,7 @@ public abstract class BoxGraph implements Graph {
     static final int BORDER_SIZE = 70;
     static final int X_OFFSET = 70;
     private final String name;
-    private final ArrayList<GraphableEntry<?>> entries = new ArrayList<>();
+    private final Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
 
     protected BoxGraph(String name) {
         this.name = name;
@@ -30,7 +30,7 @@ public abstract class BoxGraph implements Graph {
 
     abstract void paintInner(Graphics2D graphics2D);
 
-    public ArrayList<GraphableEntry<?>> getEntries() {
+    public Map<GraphableEntry<?>, Integer> getEntries() {
         return entries;
     }
 

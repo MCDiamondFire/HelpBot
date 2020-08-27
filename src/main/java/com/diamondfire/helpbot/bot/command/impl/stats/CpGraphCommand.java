@@ -39,6 +39,7 @@ public class CpGraphCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder();
         new SingleQueryBuilder()
+
                 .query("SELECT * FROM players WHERE uuid = ? OR name = ?;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
@@ -49,12 +50,9 @@ public class CpGraphCommand extends AbstractPlayerUUIDCommand {
                     new SingleQueryBuilder()
                             .query("SELECT DATE_FORMAT(date, '%d-%m') AS time,points FROM owen.creator_rankings_log WHERE uuid = ?;", (statement) -> statement.setString(1, uuid))
                             .onQuery((resultTable) -> {
-                                List<GraphableEntry<?>> entries = new ArrayList<>();
+                                Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
                                 do {
-                                    for (int i = 0; i < resultTable.getInt("points") + 1; i++) {
-                                        entries.add(new StringEntry(resultTable.getString("time")));
-                                    }
-
+                                    entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("points"));
                                 } while (resultTable.next());
 
                                 event.getChannel().sendFile(new ChartGraphBuilder()
