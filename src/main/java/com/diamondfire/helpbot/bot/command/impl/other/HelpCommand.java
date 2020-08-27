@@ -64,7 +64,8 @@ public class HelpCommand extends Command {
             selector.addPage("Home", homeBuilder, true);
 
             // Initialize the pages in advance so we can get a nice order.
-            categories.put(CommandCategory.STATS, new EmbedBuilder());
+            categories.put(CommandCategory.PLAYER_STATS, new EmbedBuilder());
+            categories.put(CommandCategory.GENERAL_STATS, new EmbedBuilder());
             categories.put(CommandCategory.SUPPORT, new EmbedBuilder());
             categories.put(CommandCategory.CODE_BLOCK, new EmbedBuilder());
             categories.put(CommandCategory.OTHER, new EmbedBuilder());

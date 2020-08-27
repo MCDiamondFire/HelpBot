@@ -22,11 +22,6 @@ public class SamQuotesCommand extends Command {
     }
 
     @Override
-    public String[] getAliases() {
-        return new String[]{"sam", "quote"};
-    }
-
-    @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a quote from Sam the Man.")

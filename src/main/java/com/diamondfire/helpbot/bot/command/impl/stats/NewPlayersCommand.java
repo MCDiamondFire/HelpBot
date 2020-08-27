@@ -11,6 +11,8 @@ import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.util.stream.Collectors;
+
 public class NewPlayersCommand extends Command {
 
     @Override
@@ -22,7 +24,7 @@ public class NewPlayersCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the first 25 new players who have joined in the last 24 hours.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

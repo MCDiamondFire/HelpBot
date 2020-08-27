@@ -28,7 +28,7 @@ public class VoteGivenLeaderboard extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets top 10 players who have given out the most votes.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

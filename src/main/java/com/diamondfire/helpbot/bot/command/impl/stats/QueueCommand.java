@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
+import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -10,7 +12,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 
-public class QueueCommand extends AbstractPlayerUUIDCommand {
+public class QueueCommand extends Command {
 
     @Override
     public String getName() {
@@ -26,7 +28,12 @@ public class QueueCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current queue.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
+    }
+
+    @Override
+    public ArgumentSet getArguments() {
+        return new ArgumentSet();
     }
 
     @Override
@@ -35,7 +42,7 @@ public class QueueCommand extends AbstractPlayerUUIDCommand {
     }
 
     @Override
-    protected void execute(CommandEvent event, String player) {
+    public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
 

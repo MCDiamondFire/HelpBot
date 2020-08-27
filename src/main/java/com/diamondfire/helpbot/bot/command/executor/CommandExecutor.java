@@ -20,7 +20,6 @@ public class CommandExecutor {
 
     public void run(CommandEvent e) {
         Command command = e.getCommand();
-
         if (command == null) {
             return;
         }
@@ -31,7 +30,7 @@ public class CommandExecutor {
                 for (CommandCheck check : checks) {
                     if (!check.check(e)) {
                         check.buildMessage(e, builder);
-                        throw new IllegalStateException("Command failed check.");
+                        throw new CommandCheckFailure();
                     }
                 }
 
@@ -41,8 +40,7 @@ public class CommandExecutor {
                 builder.withPreset(
                         new InformativeReply(InformativeReplyType.ERROR, "Invalid Argument!", exception.getEmbedMessage())
                 );
-            } catch (IllegalStateException ignored) {
-
+            } catch (CommandCheckFailure ignored) {
 
             } catch (Exception exception) {
                 exception.printStackTrace();

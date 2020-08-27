@@ -31,7 +31,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets information on a certain player.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.PLAYER_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")

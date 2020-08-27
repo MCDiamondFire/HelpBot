@@ -28,7 +28,7 @@ public class ActivePlotsCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current plots that people are playing.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

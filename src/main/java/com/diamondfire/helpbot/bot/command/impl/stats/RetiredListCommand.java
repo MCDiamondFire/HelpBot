@@ -29,7 +29,7 @@ public class RetiredListCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current retired staff members.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

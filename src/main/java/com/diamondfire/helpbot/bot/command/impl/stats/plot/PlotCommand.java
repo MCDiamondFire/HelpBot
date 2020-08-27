@@ -20,7 +20,7 @@ public class PlotCommand extends AbstractPlotCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets information on a certain plot.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.GENERAL_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("plot id")

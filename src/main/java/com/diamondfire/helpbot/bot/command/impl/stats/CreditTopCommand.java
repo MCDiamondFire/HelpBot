@@ -27,7 +27,7 @@ public class CreditTopCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current credit leaderboard.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

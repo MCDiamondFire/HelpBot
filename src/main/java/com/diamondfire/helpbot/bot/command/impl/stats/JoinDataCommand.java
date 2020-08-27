@@ -38,7 +38,7 @@ public class JoinDataCommand extends Command {
                         new HelpContextArgument()
                                 .name("join again days")
                                 .optional()
-                ).category(CommandCategory.STATS);
+                ).category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

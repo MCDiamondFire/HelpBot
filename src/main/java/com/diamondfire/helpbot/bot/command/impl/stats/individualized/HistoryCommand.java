@@ -32,7 +32,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Sends you your punishment history.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.PLAYER_STATS);
     }
 
     @Override

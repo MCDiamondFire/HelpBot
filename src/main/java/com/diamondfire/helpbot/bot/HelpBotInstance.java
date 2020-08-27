@@ -52,6 +52,7 @@ public class HelpBotInstance {
                 new SoundListCommand(),
                 new QueryCommand(),
                 new RulesCommand(),
+                new BulkExecuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),
@@ -88,7 +89,6 @@ public class HelpBotInstance {
                 new CreditTopCommand(),
                 new HistoryCommand(),
                 new UuidCommand(),
-                new CpGraphCommand(),
                 new PlotLocCommand()
         );
 

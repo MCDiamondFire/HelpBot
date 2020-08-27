@@ -121,58 +121,53 @@ public class FetchDataCommand extends Command {
         client.getSession().addListener(new SessionAdapter() {
             @Override
             public void packetReceived(PacketReceivedEvent event) {
-                try {
-                    Packet packet = event.getPacket();
+                Packet packet = event.getPacket();
 
-                    if (packet instanceof ServerJoinGamePacket) {
-                        status(message, "Joined server!");
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                if (packet instanceof ServerJoinGamePacket) {
+                    status(message, "Joined server!");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    event.getSession().send(new ClientChatPacket("/chat none"));
+                    event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
+                }
+
+                if (packet instanceof ServerChatPacket) {
+                    ServerChatPacket chatPacket = event.getPacket();
+                    String text;
+                    {
+                        com.github.steveice10.mc.protocol.data.message.Message message = chatPacket.getMessage();
+                        StringBuilder builder = new StringBuilder();
+                        for (com.github.steveice10.mc.protocol.data.message.Message message1 : message.getExtra()) {
+                            TextMessage rawText = (TextMessage) message1;
+
+                            if (rawText.getText() == null) continue;
+
+                            builder.append(rawText.getText());
                         }
-                        event.getSession().send(new ClientChatPacket("/chat none"));
-                        event.getSession().send(new ClientChatPacket("/dumpactioninfo"));
+                        text = builder.toString();
+
                     }
 
-                    if (packet instanceof ServerChatPacket) {
-                        ServerChatPacket chatPacket = event.getPacket();
-                        String text;
-                        {
-                            com.github.steveice10.mc.protocol.data.message.Message message = chatPacket.getMessage();
-                            StringBuilder builder = new StringBuilder();
-                            for (com.github.steveice10.mc.protocol.data.message.Message message1 : message.getExtra()) {
-                                TextMessage rawText = (TextMessage) message1;
+                    if (chatPacket.getType() == MessageType.NOTIFICATION) return;
 
-                                if (rawText.getText() == null) continue;
-
-                                builder.append(rawText.getText());
-                            }
-                            text = builder.toString();
-
-                        }
-
-                        if (chatPacket.getType() == MessageType.NOTIFICATION) return;
-
-                        if (text.contains("Unknown command!")) {
-                            throw new IllegalStateException("Command not found!");
-                        }
-
-                        if (text.startsWith("{")) {
-                            status(message, "Receiving data...");
-                            ready = true;
-                        } else if (text.startsWith("}")) {
-                            session.disconnect("HelpBot data collection has concluded. ");
-                        }
-
-                        if (ready) {
-                            queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
-                        }
-
-
+                    if (text.contains("Unknown command!")) {
+                        throw new IllegalStateException("Command not found!");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                    if (text.startsWith("{")) {
+                        status(message, "Receiving data...");
+                        ready = true;
+                    } else if (text.startsWith("}")) {
+                        session.disconnect("HelpBot data collection has concluded. ");
+                    }
+
+                    if (ready) {
+                        queue.add(new String(text.getBytes(StandardCharsets.UTF_8)));
+                    }
+
                 }
             }
         });

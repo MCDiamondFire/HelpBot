@@ -48,7 +48,7 @@ public class GarfieldCommand extends Command {
                 if (link == null) {
                     throw new IOException();
                 } else {
-                    builder.setTitle("Random Garfield Comic");
+                    builder.setTitle("Garfield Comic");
                     builder.setImage(link);
                     builder.setColor(new Color(252, 166, 28));
                 }

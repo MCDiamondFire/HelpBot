@@ -24,7 +24,7 @@ public class RulesCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Lists rules depending on the given category.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

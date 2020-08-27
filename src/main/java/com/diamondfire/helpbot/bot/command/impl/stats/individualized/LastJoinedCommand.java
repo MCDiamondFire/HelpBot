@@ -2,13 +2,16 @@ package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.*;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
@@ -19,14 +22,14 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String[] getAliases() {
-        return new String[]{"lastseen", "seen"};
+        return new String[]{"lastseen", "seen", "lastonline"};
     }
 
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the last date when a user joined.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.PLAYER_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")
@@ -52,10 +55,15 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
-
                     new SingleQueryBuilder()
                             .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, resultTable.getString("uuid")))
-                            .onQuery((resultTableDate) -> embed.addField("Last Seen", StringUtil.formatDate(resultTableDate.getDate("time")), false))
+                            .onQuery((resultTableDate) -> {
+                                Timestamp date = resultTableDate.getTimestamp("time");
+                                if (Permission.EXPERT.hasPermission(event.getMember())) {
+                                    embed.setTimestamp(date.toInstant());
+                                }
+                                embed.addField("Last Seen", StringUtil.formatDate(date), false);
+                            })
                             .onNotFound(() -> embed.addField("Last Seen", "A long time ago...", false)).execute();
                 })
                 .onNotFound(() -> {

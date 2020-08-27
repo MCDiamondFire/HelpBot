@@ -28,7 +28,7 @@ public class CpRequirementsCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current CP level requirements.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

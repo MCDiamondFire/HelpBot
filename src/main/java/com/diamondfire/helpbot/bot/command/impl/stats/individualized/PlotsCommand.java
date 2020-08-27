@@ -27,7 +27,7 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current plots owned by a certain user. (Max of 25)")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.PLAYER_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")

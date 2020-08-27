@@ -29,7 +29,7 @@ public class CpTopCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current CP leaderboard.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.GENERAL_STATS)
                 .addArgument(new HelpContextArgument().name("leaderboard place").optional());
     }
 

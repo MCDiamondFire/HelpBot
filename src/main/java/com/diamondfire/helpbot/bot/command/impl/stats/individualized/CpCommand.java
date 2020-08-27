@@ -9,8 +9,12 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.creator.CreatorLevel;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.graph.graphable.*;
+import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.util.*;
 
 
 public class CpCommand extends AbstractPlayerUUIDCommand {
@@ -29,7 +33,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets information on a certain player's CP.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.PLAYER_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")
@@ -70,21 +74,47 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
 
                     embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", genPointMetric(points, uuid), false);
+
+                    new SingleQueryBuilder()
+                            .query("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid))
+                            .onQuery((tableSet) -> embed.addField("Highest Point Count", StringUtil.formatNumber(tableSet.getInt("points")), false))
+                            .execute();
+
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points))
-                            .onQuery((tableSet) -> embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false)).execute();
+                            .onQuery((tableSet) -> embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false))
+                            .execute();
 
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);
                         embed.addField("Next Rank Points", StringUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", StringUtil.formatNumber(nextLevelReq - points)), false);
                     }
 
+                    new SingleQueryBuilder()
+                            .query("SELECT DATE_FORMAT(date, '%d-%m') AS time,points FROM owen.creator_rankings_log WHERE uuid = ?;", (statement) -> statement.setString(1, uuid))
+                            .onQuery((resultTable) -> {
+                                Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
+                                do {
+                                    entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("points"));
+                                } while (resultTable.next());
+
+                                embed.setImage("attachment://graph.png");
+                                event.replyA(preset)
+                                        .addFile(new ChartGraphBuilder()
+                                                .setGraphName(player + "'s CP Graph")
+                                                .createGraph(entries), "graph.png")
+                                        .queue();
+                            })
+                            .onNotFound(() -> {
+                                event.reply(preset);
+                            }).execute();
+
                 })
                 .onNotFound(() -> {
                     embed.clear();
                     preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
+                    event.reply(preset);
                 }).execute();
-        event.reply(preset);
     }
 
     private String genPointMetric(int points, String uuid) {

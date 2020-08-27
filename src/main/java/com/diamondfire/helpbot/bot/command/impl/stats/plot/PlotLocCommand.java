@@ -21,7 +21,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets information on a certain plot by giving loc.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.GENERAL_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("x"),

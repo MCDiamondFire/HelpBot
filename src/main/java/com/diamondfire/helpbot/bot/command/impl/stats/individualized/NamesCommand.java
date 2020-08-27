@@ -32,7 +32,7 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a user's previous names.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.PLAYER_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")

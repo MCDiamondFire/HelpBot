@@ -30,7 +30,7 @@ public class StaffListCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current staff members.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

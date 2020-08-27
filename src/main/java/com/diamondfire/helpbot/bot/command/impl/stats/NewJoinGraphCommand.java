@@ -23,7 +23,7 @@ public class NewJoinGraphCommand extends Command {
             case "daily":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -36,7 +36,7 @@ public class NewJoinGraphCommand extends Command {
             case "weekly":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_TIMESTAMP - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -49,7 +49,7 @@ public class NewJoinGraphCommand extends Command {
             case "monthly":
                 new SingleQueryBuilder()
                         .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_TIMESTAMP - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
                                 "GROUP BY time;", statement -> statement.setInt(1, amount))
                         .onQuery((resultTable) -> {
                             do {
@@ -78,7 +78,7 @@ public class NewJoinGraphCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Generates a graph representing how many new players joined in a certain time frame.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.GENERAL_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("daily|amount|monthly"),

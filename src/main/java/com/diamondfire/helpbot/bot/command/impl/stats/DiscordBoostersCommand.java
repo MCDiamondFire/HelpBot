@@ -30,7 +30,7 @@ public class DiscordBoostersCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current members who are boosting the discord server.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

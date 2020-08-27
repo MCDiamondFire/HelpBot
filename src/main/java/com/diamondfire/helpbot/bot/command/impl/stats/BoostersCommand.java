@@ -27,7 +27,7 @@ public class BoostersCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current active boosters on all nodes.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

@@ -36,7 +36,6 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         this.command = cmd;
     }
 
-
     public void pushArguments(String[] rawArgs) throws ArgumentException {
         this.parsedArgumentSet = ArgumentParser.parseArgs(command, Arrays.copyOfRange(rawArgs, 1, rawArgs.length));
     }

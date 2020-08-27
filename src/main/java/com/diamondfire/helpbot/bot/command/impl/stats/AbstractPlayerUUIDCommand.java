@@ -24,6 +24,7 @@ public abstract class AbstractPlayerUUIDCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         String player = event.getArgument("player");
+
         if (player == null) {
             execute(event, event.getMember().getEffectiveName());
         } else {

@@ -28,7 +28,7 @@ public class PlayersCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current player count on each node.")
-                .category(CommandCategory.STATS);
+                .category(CommandCategory.GENERAL_STATS);
     }
 
     @Override

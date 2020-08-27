@@ -22,7 +22,11 @@ public class EnableCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("This command enables a disabled command.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("cmd")
+                );
     }
 
     @Override

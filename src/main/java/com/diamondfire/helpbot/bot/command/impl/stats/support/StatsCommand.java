@@ -74,7 +74,6 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                             .onQuery((resultBadTable) -> {
                                 embed.addField("Monthly Sessions", StringUtil.formatNumber(resultBadTable.getInt("count")), true);
                                 if (resultBadTable.getBoolean("support")) {
-                                    embed.addField("Bad?", resultBadTable.getInt("bad") == 1 ? "Yes!" : "No", true);
                                     new SingleQueryBuilder()
                                             .query(" SELECT (time + INTERVAL 30 DAY) AS bad_time " +
                                                     "FROM support_sessions WHERE staff = ?" +
@@ -83,9 +82,9 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                                 Date date = resultBadTableTime.getDate("bad_time");
 
                                                 if (date.toLocalDate().isBefore(LocalDate.now())) {
-                                                    embed.addField("Entered Bad", StringUtil.formatDate(date), true);
+                                                    embed.addField("Is in support bad", "Entered bad on " + StringUtil.formatDate(date), true);
                                                 } else {
-                                                    embed.addField("Enters Bad", StringUtil.formatDate(date), true);
+                                                    embed.addField("Isn't in support bad", "Enters bad on " + StringUtil.formatDate(date), true);
                                                 }
                                             }).execute();
                                 }

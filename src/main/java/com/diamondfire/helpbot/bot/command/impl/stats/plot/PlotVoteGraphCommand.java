@@ -27,7 +27,7 @@ public class PlotVoteGraphCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Generates a graph showing how many people voted on certain days.")
-                .category(CommandCategory.STATS)
+                .category(CommandCategory.GENERAL_STATS)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("plot id")
