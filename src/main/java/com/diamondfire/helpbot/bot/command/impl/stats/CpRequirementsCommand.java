@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.creator.CreatorLevel;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 
@@ -50,7 +50,7 @@ public class CpRequirementsCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         embed.setFooter("*Level requirement is based on a top % of players.");
         for (CreatorLevel level : CreatorLevel.values()) {
-            embed.addField(level.display(), "CP Required: " + StringUtil.formatNumber(level.getRequirementProvider().getRequirement()), true);
+            embed.addField(level.display(), "CP Required: " + FormatUtil.formatNumber(level.getRequirementProvider().getRequirement()), true);
         }
 
         // Even it out

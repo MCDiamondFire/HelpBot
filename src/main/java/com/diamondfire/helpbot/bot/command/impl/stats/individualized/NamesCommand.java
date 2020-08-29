@@ -72,13 +72,13 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                 if (changedAt == null) {
                     names.add(String.format("%s", obj.get("name").getAsString()));
                 } else {
-                    names.add(obj.get("name").getAsString() + String.format(" (%s)", StringUtil.formatDate(DateUtil.toDate(changedAt.getAsLong()))));
+                    names.add(obj.get("name").getAsString() + String.format(" (%s)", FormatUtil.formatDate(DateUtil.toDate(changedAt.getAsLong()))));
                 }
 
             }
             Collections.reverse(names);
 
-            Util.addFields(embed, names);
+            EmbedUtils.addFields(embed, names);
         } catch (Exception e) {
             e.printStackTrace();
         }

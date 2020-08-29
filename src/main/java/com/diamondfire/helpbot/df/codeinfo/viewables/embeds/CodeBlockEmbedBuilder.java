@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
@@ -18,7 +18,7 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
 
             if (tags.length != 0) {
                 footer.append(tags.length)
-                        .append(Util.sCheck(" Tag", tags.length));
+                        .append(StringUtil.sCheck(" Tag", tags.length));
             }
 
             builder.setFooter(footer.toString());

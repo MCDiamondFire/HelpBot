@@ -87,20 +87,20 @@ public class StaffListCommand extends Command {
 
                     } while (resultTable.next());
 
-                    Util.addFields(helperPage, support.get(Ranks.EXPERT.getNumber()), "", "Experts");
-                    Util.addFields(helperPage, support.get(Ranks.HELPER.getNumber()), "", "Helpers");
-                    Util.addFields(helperPage, support.get(Ranks.JRHELPER.getNumber()), "", "JrHelpers");
+                    EmbedUtils.addFields(helperPage, support.get(Ranks.EXPERT.getNumber()), "", "Experts");
+                    EmbedUtils.addFields(helperPage, support.get(Ranks.HELPER.getNumber()), "", "Helpers");
+                    EmbedUtils.addFields(helperPage, support.get(Ranks.JRHELPER.getNumber()), "", "JrHelpers");
                     builder.addPage("Support", helperPage);
 
-                    Util.addFields(modPage, moderation.get(Ranks.MOD.getNumber()), "", "Mods");
-                    Util.addFields(modPage, moderation.get(Ranks.JRMOD.getNumber()), "", "JrMods");
+                    EmbedUtils.addFields(modPage, moderation.get(Ranks.MOD.getNumber()), "", "Mods");
+                    EmbedUtils.addFields(modPage, moderation.get(Ranks.JRMOD.getNumber()), "", "JrMods");
                     builder.addPage("Moderation", modPage);
 
-                    Util.addFields(adminPage, moderation.get(Ranks.OWNER.getNumber()), "", "Owner");
-                    Util.addFields(adminPage, moderation.get(Ranks.ADMIN.getNumber()), "", "Admins");
+                    EmbedUtils.addFields(adminPage, moderation.get(Ranks.OWNER.getNumber()), "", "Owner");
+                    EmbedUtils.addFields(adminPage, moderation.get(Ranks.ADMIN.getNumber()), "", "Admins");
                     builder.addPage("Administration", adminPage);
 
-                    Util.addFields(devEmbed, devs, "", "DiamondFire Developers");
+                    EmbedUtils.addFields(devEmbed, devs, "", "DiamondFire Developers");
                 }).execute();
 
         Guild guild = event.getGuild();
@@ -114,7 +114,7 @@ public class StaffListCommand extends Command {
                 }
             }
 
-            Util.addFields(devEmbed, memberNames, "", "Bot Developers");
+            EmbedUtils.addFields(devEmbed, memberNames, "", "Bot Developers");
             guild.pruneMemberCache();
             builder.addPage("Developers", devEmbed);
             builder.build().send(event.getJDA());

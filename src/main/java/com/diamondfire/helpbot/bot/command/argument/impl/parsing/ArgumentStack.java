@@ -11,7 +11,6 @@ public class ArgumentStack {
     public ArgumentStack(List<ArgumentNode<?>> args, Collection<String> rawArgs) {
         this.rawArgs = new ArrayDeque<>(rawArgs);
         this.args = new ArrayDeque<>(args);
-
     }
 
     public Deque<String> getRawArguments() {

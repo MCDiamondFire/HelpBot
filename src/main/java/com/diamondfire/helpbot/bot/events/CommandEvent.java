@@ -9,14 +9,13 @@ import com.diamondfire.helpbot.bot.command.reply.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.*;
 
 public class CommandEvent extends GuildMessageReceivedEvent {
 
     private final Command command;
-    private final ReplyHandler reply = new ReplyHandler();
+    private final ReplyHandler replyHandler = new ReplyHandler(getChannel());
     //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
     private String aliasedUsed = null;
@@ -44,33 +43,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         return command;
     }
 
-    // Soon, probs should clean this up.
-    public void reply(String content) {
-        reply.textReply(content, getChannel()).queue();
-    }
-
     public void reply(PresetBuilder preset) {
-        reply.embedReply(preset.getEmbed(), getChannel()).queue();
-    }
-
-    public void reply(PresetBuilder preset, MessageChannel channel) {
-        reply.embedReply(preset.getEmbed(), channel).queue();
-    }
-
-    public void reply(EmbedBuilder builder) {
-        reply.embedReply(builder, getChannel()).queue();
-    }
-
-    public void reply(EmbedBuilder builder, MessageChannel channel) {
-        reply.embedReply(builder, channel).queue();
-    }
-
-    public MessageAction replyA(PresetBuilder preset) {
-        return reply.embedReply(preset.getEmbed(), getChannel());
-    }
-
-    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        return reply.embedReply(preset.getEmbed(), channel);
+        replyHandler.reply(preset, getChannel());
     }
 
     @SuppressWarnings("unchecked")
@@ -80,6 +54,10 @@ public class CommandEvent extends GuildMessageReceivedEvent {
 
     public Map<String, ?> getArguments() {
         return parsedArgumentSet.getArguments();
+    }
+
+    public ReplyHandler getReplyHandler() {
+        return replyHandler;
     }
 
     public String getAliasUsed() {

@@ -43,9 +43,9 @@ public class InBadCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("count",
-                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, Integer.MAX_VALUE)).optional(5))
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(0)).optional(5))
                 .addArgument("days",
-                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, Integer.MAX_VALUE)).optional(30));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(0)).optional(30));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class InBadCommand extends Command {
 
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("People who have done %s or less sessions in the last %s days:", num, days), null)
+                        new InformativeReply(InformativeReplyType.INFO, String.format("People who have done %s or less sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
                 );
         EmbedBuilder embed = preset.getEmbed();
         embed.setColor(Color.RED);
@@ -78,7 +78,7 @@ public class InBadCommand extends Command {
                         staff.add(StringUtil.display(resultTable.getString("name")));
                     } while (resultTable.next());
 
-                    Util.addFields(embed, staff, "", "", true);
+                    EmbedUtils.addFields(embed, staff, "", "", true);
                 })
                 .onNotFound(() -> embed.setDescription("")).execute();
         event.reply(preset);

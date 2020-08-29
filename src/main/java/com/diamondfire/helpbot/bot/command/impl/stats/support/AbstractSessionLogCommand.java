@@ -1,12 +1,10 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
-import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 
 import java.io.File;
 import java.nio.file.*;
@@ -27,9 +25,9 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
         StringBuilder builder = new StringBuilder();
 
         for (Session session : sessions) {
-            builder.append(StringUtil.formatDate(session.getTaken()) + " ");
+            builder.append(FormatUtil.formatDate(session.getTaken()) + " ");
             builder.append(session.getSupportee() + " ");
-            builder.append('(' + StringUtil.formatMilliTime(session.getDuration()) + ')');
+            builder.append('(' + FormatUtil.formatMilliTime(session.getDuration()) + ')');
 
             builder.append("\n");
         }

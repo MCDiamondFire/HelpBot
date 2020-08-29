@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -51,7 +51,7 @@ public class QueueCommand extends Command {
                 .onQuery((resultTableQueue) -> {
                     int i = 0;
                     do {
-                        embed.addField(resultTableQueue.getString("player"), StringUtil.formatMilliTime(resultTableQueue.getTime("time").getTime()), false);
+                        embed.addField(resultTableQueue.getString("player"), FormatUtil.formatMilliTime(resultTableQueue.getTime("time").getTime()), false);
                         i++;
                     } while (resultTableQueue.next());
                     embed.setTitle(String.format("Players in Queue (%s)", i));

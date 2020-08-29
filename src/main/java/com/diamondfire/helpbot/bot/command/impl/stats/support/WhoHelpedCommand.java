@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -61,7 +61,7 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                         sessions.add(query.getInt("total") + " " + query.getString("staff"));
                     } while (query.next());
 
-                    Util.addFields(embed, sessions, true);
+                    EmbedUtils.addFields(embed, sessions, true);
 
                 })
                 .onNotFound(() -> embed.setDescription("Nobody!")).execute();

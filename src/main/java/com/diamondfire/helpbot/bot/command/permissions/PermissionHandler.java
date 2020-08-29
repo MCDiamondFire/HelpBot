@@ -27,4 +27,7 @@ public class PermissionHandler {
         return perm;
     }
 
+    public static void setPermission(long member, Permission permission) {
+        permsCache.put(member,permission);
+    }
 }

@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.restart;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -34,7 +34,7 @@ public class RestartHandler {
             String[] restartMSG = Files.readAllLines(restart.toPath()).get(0).split(":");
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Restart Successful!");
-            builder.setDescription("Restarted in " + StringUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
+            builder.setDescription("Restarted in " + FormatUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
 
             jda.getTextChannelById(restartMSG[1]).editMessageById(restartMSG[0], builder.build()).override(true).queue();
             restart.delete();

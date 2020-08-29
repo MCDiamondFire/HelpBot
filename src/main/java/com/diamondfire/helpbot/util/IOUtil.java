@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.util;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.stream.Collectors;
@@ -72,6 +73,20 @@ public class IOUtil {
         return zipped;
     }
 
+
+    public static File getFileFromSite(String url, String name) {
+        try (InputStream in = new URL(url).openStream();) {
+            File tempFile = ExternalFileUtil.generateFile(name);
+
+            Files.write(tempFile.toPath(), in.readAllBytes(), StandardOpenOption.WRITE);
+
+            return tempFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }
 

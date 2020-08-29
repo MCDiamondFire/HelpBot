@@ -2,17 +2,24 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
+import com.diamondfire.helpbot.sys.graph.impl.Graph;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
-public class MultiArgumentParser implements ArgumentParser {
+public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContainer<A>, A> {
+
+    public MultiArgumentParser(MultiArgumentContainer<A> container) {
+        super(container);
+    }
 
     @Override
-    public <T> ParsedArgument<?> parse(ArgumentNode<T> currentNode, ArgumentStack stack) throws ArgumentException {
+    public ParsedArgument<?> parse(String identifier, ArgumentStack stack) throws ArgumentException {
         Deque<String> args = stack.getRawArguments();
-        List<T> approvedArgumentValues = new ArrayList<>();
-        Argument<T> arg = currentNode.getContainer().getArgument();
+        List<A> approvedArgumentValues = new ArrayList<>();
+        Argument<A> arg = getContainer().getArgument();
         int arguments = args.size();
 
         for (int i = 0; i < arguments; i++) {
@@ -29,6 +36,8 @@ public class MultiArgumentParser implements ArgumentParser {
             throw new MissingArgumentException("No valid arguments were provided.");
         }
 
-        return new ParsedArgument<>(currentNode.getIdentifier(), approvedArgumentValues);
+        return new ParsedArgument<>(identifier, approvedArgumentValues);
     }
+
+
 }

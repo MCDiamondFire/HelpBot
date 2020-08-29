@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.sql.*;
+import java.sql.Timestamp;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
@@ -62,7 +62,7 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                                 if (Permission.EXPERT.hasPermission(event.getMember())) {
                                     embed.setTimestamp(date.toInstant());
                                 }
-                                embed.addField("Last Seen", StringUtil.formatDate(date), false);
+                                embed.addField("Last Seen", FormatUtil.formatDate(date), false);
                             })
                             .onNotFound(() -> embed.addField("Last Seen", "A long time ago...", false)).execute();
                 })

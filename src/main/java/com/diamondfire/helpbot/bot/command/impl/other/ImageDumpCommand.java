@@ -41,7 +41,7 @@ public class ImageDumpCommand extends Command {
         File images = ExternalFile.IMAGES_DIR.getFile();
         PresetBuilder builder = new PresetBuilder();
         builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
-        event.replyA(builder).queue((msg) -> {
+        event.getReplyHandler().replyA(builder).queue((msg) -> {
             try {
                 File zip = IOUtil.zipFile(images.toPath(), "images.zip");
                 event.getChannel().sendFile(zip).queue((fileMsg) -> {

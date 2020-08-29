@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -77,7 +77,7 @@ public class HelpCommand extends Command {
                 CommandCategory category = context.getCommandCategory();
                 if (category != null && command.getPermission().hasPermission(event.getMember())) {
                     EmbedBuilder embedBuilder = categories.get(category);
-                    embedBuilder.addField(StringUtil.displayCommand(command) + " " + StringUtil.displayArguments(context), context.getDescription(), false);
+                    embedBuilder.addField(FormatUtil.displayCommand(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
 
                 }
 
@@ -99,7 +99,7 @@ public class HelpCommand extends Command {
             builder.addField("Name", command.getName(), false);
             builder.addField("Description", context.getDescription(), false);
             builder.addField("Aliases", (command.getAliases().length == 0 ? "None" : String.join(", ", command.getAliases())), false);
-            builder.addField("Argument", StringUtil.displayArguments(context), true);
+            builder.addField("Argument", FormatUtil.displayArguments(context), true);
             builder.addField("Category", context.getCommandCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
 

@@ -44,6 +44,7 @@ public class QueryCommand extends Command {
         return Permission.BOT_DEVELOPER;
     }
 
+    @SuppressWarnings("LanguageMismatch")
     @Override
     public void run(CommandEvent event) {
         List<String> args = event.getArgument("query");

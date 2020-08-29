@@ -79,8 +79,8 @@ public class JoinDataCommand extends Command {
         java.sql.Date sqlDateTo = DateUtil.toSqlDate(date);
 
         // convert calendar to date
-        String dateFrom = StringUtil.formatDate(date);
-        String dateTo = StringUtil.formatDate(c.getTime());
+        String dateFrom = FormatUtil.formatDate(date);
+        String dateTo = FormatUtil.formatDate(c.getTime());
 
         // Players that joined within a week of a certain date
         new SingleQueryBuilder().query("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;",
@@ -138,7 +138,7 @@ public class JoinDataCommand extends Command {
                     statement.setDate(3, DateUtil.toSqlDate(between1));
                     statement.setDate(4, DateUtil.toSqlDate(between2));
                     statement.setInt(5, days);
-                }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", StringUtil.formatDate(between1), StringUtil.formatDate(between2)), "None...", false)).execute();
+                }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), "None...", false)).execute();
 
         event.reply(builder);
     }

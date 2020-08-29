@@ -8,10 +8,8 @@ import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.util.Date;
 
 public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
 
@@ -74,9 +72,9 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
 
                     embed.addField("Total Sessions", resultTable.getInt("count") + "", true);
                     embed.addField("Unique Support Members", resultTable.getInt("unique_helped") + "", true);
-                    embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
-                    embed.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), true);
-                    embed.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), true);
+                    embed.addField("Total Session Time", FormatUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
+                    embed.addField("Earliest Session", FormatUtil.formatDate(resultTable.getDate("earliest_time")), true);
+                    embed.addField("Latest Session", FormatUtil.formatDate(resultTable.getDate("latest_time")), true);
 
                     new SingleQueryBuilder()
                             .query("SELECT AVG(duration) AS average_duration," +
@@ -84,9 +82,9 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                                     "MAX(duration) AS longest_duration " +
                                     "FROM support_sessions WHERE duration != 0 AND name = ?;", (statement) -> statement.setString(1, player))
                             .onQuery((resultTableTime) -> {
-                                embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
-                                embed.addField("Shortest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
-                                embed.addField("Longest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
+                                embed.addField("Average Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
+                                embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
+                                embed.addField("Longest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
                             }).execute();
 
                 }).execute();

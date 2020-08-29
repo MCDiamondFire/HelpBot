@@ -31,7 +31,6 @@ public class CodeDatabase {
             CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
         } catch (Exception e) {
             System.out.println("Could not start codeblock database! Exception occurred....");
-            Util.error(e, "Could not start codeblock database!");
             e.printStackTrace();
         }
         System.out.println("Database loaded!");

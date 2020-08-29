@@ -4,25 +4,16 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.Argument
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 
 
-// ArgumentContainers contain an argument and a parser.
-// Arguments can parse given values using the ArgumentParser.
-public abstract class ArgumentContainer<T> {
+// Argument containers provide essential information for the argument.
+// These give a parser.
+public abstract class ArgumentContainer<T, P extends ArgumentParser<?, T>> {
 
-    private final Argument<T> argument;
     private T defaultValue;
     private boolean isOptional;
 
-    public ArgumentContainer(Argument<T> argument) {
-        this.argument = argument;
-    }
+    public abstract P getParser();
 
-    public Argument<T> getArgument() {
-        return argument;
-    }
-
-    public abstract ArgumentParser getParser();
-
-    public ArgumentContainer<T> optional(T defaultValue) {
+    public ArgumentContainer<T, P> optional(T defaultValue) {
         this.defaultValue = defaultValue;
         this.isOptional = true;
         return this;
@@ -35,4 +26,5 @@ public abstract class ArgumentContainer<T> {
     public T getDefaultValue() {
         return defaultValue;
     }
+
 }

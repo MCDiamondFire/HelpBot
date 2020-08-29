@@ -53,6 +53,7 @@ public class HelpBotInstance {
                 new QueryCommand(),
                 new RulesCommand(),
                 new BulkExecuteCommand(),
+                new SetPermissionCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),

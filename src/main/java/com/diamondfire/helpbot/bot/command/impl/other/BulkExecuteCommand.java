@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -70,7 +69,7 @@ public class BulkExecuteCommand extends Command {
                 field.trySetAccessible();
                 field.set(event, command1);
 
-                event.pushArguments(new String[]{"dummy",player});
+                event.pushArguments(new String[]{"dummy", player});
                 command1.run(event);
             } catch (Exception e) {
                 builder.withPreset(

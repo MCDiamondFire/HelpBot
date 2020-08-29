@@ -136,7 +136,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 // Either there are too many similar actions or there is no close action.
             } else {
                 preset.withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
+                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtils.titleSafe(argumentsParsed))))
                 );
                 List<String> similarActionNames = possibleChoices.entrySet().stream()
                         .sorted(Comparator.comparingDouble(Map.Entry::getValue))
@@ -144,12 +144,12 @@ public abstract class AbstractSingleQueryCommand extends Command {
                         .collect(Collectors.toList());
                 Collections.reverse(similarActionNames);
 
-                Util.addFields(preset.getEmbed(), similarActionNames);
+                EmbedUtils.addFields(preset.getEmbed(), similarActionNames);
             }
 
         } else {
             preset.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(StringUtil.titleSafe(argumentsParsed))))
+                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(EmbedUtils.titleSafe(argumentsParsed))))
             );
         }
         event.reply(preset);

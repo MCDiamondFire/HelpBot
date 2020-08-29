@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.Ranks;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -90,15 +90,15 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Votes Given", StringUtil.formatNumber(resultTable.getInt("count")), false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
+                            .onQuery((resultTable) -> embed.addField("Votes Given", FormatUtil.formatNumber(resultTable.getInt("count")), false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
 
                     new SingleQueryBuilder()
                             .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Credits", StringUtil.formatNumber(resultTable.getInt("credits")), false)).execute();
+                            .onQuery((resultTable) -> embed.addField("Credits", FormatUtil.formatNumber(resultTable.getInt("credits")), false)).execute();
 
                     new SingleQueryBuilder()
                             .query("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Join Date", StringUtil.formatDate(resultTable.getDate("date")), false)).onNotFound(() -> embed.addField("Join Date", "Not Found", false)).execute();
+                            .onQuery((resultTable) -> embed.addField("Join Date", FormatUtil.formatDate(resultTable.getDate("date")), false)).onNotFound(() -> embed.addField("Join Date", "Not Found", false)).execute();
 
                 })
                 .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."))).execute();

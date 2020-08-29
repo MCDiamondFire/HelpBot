@@ -11,8 +11,6 @@ import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.stream.Collectors;
-
 public class NewPlayersCommand extends Command {
 
     @Override

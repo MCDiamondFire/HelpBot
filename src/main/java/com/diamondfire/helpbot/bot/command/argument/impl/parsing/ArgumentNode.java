@@ -6,9 +6,9 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.ArgumentC
 public class ArgumentNode<T> {
 
     private final String identifier;
-    private final ArgumentContainer<T> container;
+    private final ArgumentContainer<T,?> container;
 
-    public ArgumentNode(String identifier, ArgumentContainer<T> container) {
+    public ArgumentNode(String identifier, ArgumentContainer<T,?> container) {
         this.identifier = identifier;
         this.container = container;
     }
@@ -17,7 +17,7 @@ public class ArgumentNode<T> {
         return identifier;
     }
 
-    public ArgumentContainer<T> getContainer() {
+    public ArgumentContainer<T,?> getContainer() {
         return container;
     }
 

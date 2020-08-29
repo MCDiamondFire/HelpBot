@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.df.punishments.Punishment;
 import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -105,7 +105,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
 
                             EmbedBuilder history = new EmbedBuilder();
                             history.setTitle("All Punishments");
-                            Util.addFields(history, punishmentStrings, "", "", true);
+                            EmbedUtils.addFields(history, punishmentStrings, "", "", true);
                             if (history.isValidLength()) {
                                 embeds.add(history);
                             } else {
@@ -119,7 +119,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         }
 
                         File finalSendFile = sendFile;
-                        event.replyA(recapPreset, privateChannel).queue((msg) -> {
+                        event.getReplyHandler().replyA(recapPreset, privateChannel).queue((msg) -> {
                             PresetBuilder reply = new PresetBuilder();
                             reply.withPreset(
                                     new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!")
@@ -135,10 +135,10 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                         new InformativeReply(InformativeReplyType.INFO, "History Recap",
                                                 "No punishments here, good job and keep up the good work!")
                                 );
-                                event.reply(recapPreset, privateChannel);
+                                event.getReplyHandler().reply(recapPreset, privateChannel);
                             } else {
                                 for (EmbedBuilder builder : embeds) {
-                                    event.reply(builder, privateChannel);
+                                    event.getReplyHandler().reply(builder, privateChannel);
                                 }
                                 if (finalSendFile != null) {
                                     privateChannel.sendFile(finalSendFile).queue();

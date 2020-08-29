@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
@@ -34,7 +34,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
         EmbedBuilder builder = preset.getEmbed();
 
         if (names.size() != 0) {
-            Util.addFields(preset.getEmbed(), names);
+            EmbedUtils.addFields(preset.getEmbed(), names);
 
             if (builder.getFields().size() >= 5) {
                 builder.clear();
@@ -52,7 +52,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
                     new InformativeReply(InformativeReplyType.ERROR, String.format("I couldn't find anything that matched `%s`!", getSearchQuery(event)))
             );
         }
-        builder.setFooter(String.format("%s %s found", names.size(), Util.sCheck("object", names.size())));
+        builder.setFooter(String.format("%s %s found", names.size(), StringUtil.sCheck("object", names.size())));
 
         event.reply(preset);
     }

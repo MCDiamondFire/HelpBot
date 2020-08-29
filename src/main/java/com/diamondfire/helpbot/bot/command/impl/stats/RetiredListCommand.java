@@ -62,9 +62,9 @@ public class RetiredListCommand extends Command {
                     } while (resultTable.next());
 
                     EmbedBuilder retired = new EmbedBuilder();
-                    Util.addFields(retired, retiredList.get(Ranks.RETIRED.getNumber()), "", "");
+                    EmbedUtils.addFields(retired, retiredList.get(Ranks.RETIRED.getNumber()), "", "");
                     EmbedBuilder emeritus = new EmbedBuilder();
-                    Util.addFields(emeritus, retiredList.get(Ranks.EMERITUS.getNumber()), "", "");
+                    EmbedUtils.addFields(emeritus, retiredList.get(Ranks.EMERITUS.getNumber()), "", "");
 
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);

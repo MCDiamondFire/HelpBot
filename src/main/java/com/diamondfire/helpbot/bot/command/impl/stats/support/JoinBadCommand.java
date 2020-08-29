@@ -10,7 +10,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -54,7 +54,7 @@ public class JoinBadCommand extends Command {
 
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have not joined in %s days:", num), null)
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have not joined in %s %s", num, StringUtil.sCheck("day", num)), null)
                 );
         EmbedBuilder embed = preset.getEmbed();
         embed.setColor(Color.RED);
@@ -69,7 +69,7 @@ public class JoinBadCommand extends Command {
                         staff.add(resultTableJoins.getString("name"));
                     } while (resultTableJoins.next());
 
-                    Util.addFields(embed, staff, "", "", true);
+                    EmbedUtils.addFields(embed, staff, "", "", true);
                 })
                 .onNotFound(() -> embed.setDescription("")).execute();
 

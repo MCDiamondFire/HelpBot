@@ -11,7 +11,6 @@ import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
 
-import javax.management.MBeanFeatureInfo;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -57,7 +56,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
         JsonArray array = profile.get("name_history").getAsJsonArray();
 
 
-        for (int i = array.size() - 1; i >= 0 ; i--) {
+        for (int i = array.size() - 1; i >= 0; i--) {
             JsonElement nameElement = array.get(i);
             JsonObject obj = nameElement.getAsJsonObject();
             JsonElement changedAt = obj.get("changedToAt");
@@ -79,7 +78,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                 new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
         );
 
-        event.replyA(loadingPreset).queue((msg) -> {
+        event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
             for (NameDateRange range : nameRanges) {
                 if (range.getAfter() == null) {
                     new SingleQueryBuilder()
@@ -102,7 +101,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                             .query("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
-                                statement.setDate(3,DateUtil.toSqlDate(range.getAfter()));
+                                statement.setDate(3, DateUtil.toSqlDate(range.getAfter()));
                             })
                             .onQuery((table) -> names.add(range.getName()))
                             .execute();
@@ -111,9 +110,9 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
 
             builder.withPreset(
                     new MinecraftUserPreset(mainName),
-                    new InformativeReply(InformativeReplyType.INFO,"Player has been helped on", null)
+                    new InformativeReply(InformativeReplyType.INFO, "Player has been helped on", null)
             );
-            Util.addFields(builder.getEmbed(), names);
+            EmbedUtils.addFields(builder.getEmbed(), names);
             if (names.isEmpty()) {
                 builder.getEmbed().addField("", "Player has been helped by anybody!", false);
             }

@@ -73,11 +73,11 @@ public abstract class AbstractPlotCommand extends Command {
             int weeksTillClear = resultTablePlot.getInt("immunity_level");
             LocalDate activeTime = resultTablePlot.getDate("active_time").toLocalDate();
 
-            embed.addField("Auto Clear Date", StringUtil.formatDate(DateUtil.toDate(activeTime.plus(weeksTillClear, ChronoUnit.WEEKS))) + String.format(" (%s weeks)", weeksTillClear), true);
-            embed.addField("Last Active Date", StringUtil.formatDate(DateUtil.toDate(activeTime)), true);
+            embed.addField("Auto Clear Date", FormatUtil.formatDate(DateUtil.toDate(activeTime.plus(weeksTillClear, ChronoUnit.WEEKS))) + String.format(" (%s weeks)", weeksTillClear), true);
+            embed.addField("Last Active Date", FormatUtil.formatDate(DateUtil.toDate(activeTime)), true);
             embed.addField("Whitelisted", (resultTablePlot.getInt("whitelist") == 1) + "", true);
-            embed.addField("Player Count", StringUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
-            embed.addField("Current Votes", StringUtil.formatNumber(resultTablePlot.getInt("votes")), true);
+            embed.addField("Player Count", FormatUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
+            embed.addField("Current Votes", FormatUtil.formatNumber(resultTablePlot.getInt("votes")), true);
 
             // Creates the icon for the plot
             String plotIcon = resultTablePlot.getString("icon");
@@ -91,7 +91,7 @@ public abstract class AbstractPlotCommand extends Command {
             embed.setTitle(String.format("Plot Information (%s)", plotID));
             embed.setThumbnail("attachment://" + icon.getName() + ".png");
 
-            event.replyA(preset).addFile(icon, icon.getName() + ".png").queue();
+            event.getReplyHandler().replyA(preset).addFile(icon, icon.getName() + ".png").queue();
         } catch (SQLException | IllegalStateException e) {
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")

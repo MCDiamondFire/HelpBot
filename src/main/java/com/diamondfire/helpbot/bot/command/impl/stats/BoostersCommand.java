@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class BoostersCommand extends Command {
@@ -53,7 +53,7 @@ public class BoostersCommand extends Command {
                 .onQuery((resultTable) -> {
                     String owner = resultTable.getString("owner_name");
                     int multiplier = resultTable.getInt("multiplier");
-                    String durationName = StringUtil.formatMilliTime(resultTable.getLong("end_time") - System.currentTimeMillis());
+                    String durationName = FormatUtil.formatMilliTime(resultTable.getLong("end_time") - System.currentTimeMillis());
 
                     embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
                 }).onNotFound(() -> embed.addField("None!", "How sad... :(", false)).execute();

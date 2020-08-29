@@ -24,7 +24,7 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         StringBuilder footer = new StringBuilder();
         if (actionData.getTags().length != 0) {
             footer.append(actionData.getTags().length)
-                    .append(Util.sCheck(" Tag", actionData.getTags().length));
+                    .append(StringUtil.sCheck(" Tag", actionData.getTags().length));
         }
 
         builder.setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor());

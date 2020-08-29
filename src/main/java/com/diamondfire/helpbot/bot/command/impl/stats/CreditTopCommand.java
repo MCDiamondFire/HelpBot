@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CreditTopCommand extends Command {
@@ -52,7 +52,7 @@ public class CreditTopCommand extends Command {
                 .onQuery((resultTable) -> {
                     do {
                         embed.addField(StringUtil.display(resultTable.getString("name")),
-                                "Credits: " + StringUtil.formatNumber(resultTable.getInt("credits")), false);
+                                "Credits: " + FormatUtil.formatNumber(resultTable.getInt("credits")), false);
                     } while (resultTable.next());
                 }).execute();
 

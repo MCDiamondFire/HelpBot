@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
-import com.diamondfire.helpbot.util.Util;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
@@ -23,7 +22,7 @@ public class CodeDifferenceHandler {
         try {
             generateDifferences();
         } catch (IOException e) {
-            Util.error(e, "Failed while generating differences!");
+            e.printStackTrace();
         }
     }
 
@@ -33,7 +32,7 @@ public class CodeDifferenceHandler {
             refresh();
 
         } catch (Exception e) {
-            Util.error(e, "Could not set main compare file!");
+            e.printStackTrace();
         }
     }
 

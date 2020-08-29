@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.Date;
@@ -65,14 +65,15 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                     );
 
                     new SingleQueryBuilder()
-                            .query("SELECT COUNT(*) AS count," +
+                            .query("SELECT COUNT(*) AS count, SUM(duration) AS total_time, " +
                                     "? IN (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) AS support," +
                                     "(COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {
                                 statement.setString(1, player);
                                 statement.setString(2, player);
                             })
                             .onQuery((resultBadTable) -> {
-                                embed.addField("Monthly Sessions", StringUtil.formatNumber(resultBadTable.getInt("count")), true);
+                                embed.addField("Monthly Sessions", FormatUtil.formatNumber(resultBadTable.getInt("count")), true);
+                                embed.addField("Monthly Time", FormatUtil.formatMilliTime(resultBadTable.getLong("total_time")), true);
                                 if (resultBadTable.getBoolean("support")) {
                                     new SingleQueryBuilder()
                                             .query(" SELECT (time + INTERVAL 30 DAY) AS bad_time " +
@@ -82,20 +83,20 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                                 Date date = resultBadTableTime.getDate("bad_time");
 
                                                 if (date.toLocalDate().isBefore(LocalDate.now())) {
-                                                    embed.addField("Is in support bad", "Entered bad on " + StringUtil.formatDate(date), true);
+                                                    embed.addField("Is in support bad", "Entered bad on " + FormatUtil.formatDate(date), true);
                                                 } else {
-                                                    embed.addField("Isn't in support bad", "Enters bad on " + StringUtil.formatDate(date), true);
+                                                    embed.addField("Isn't in support bad", "Enters bad on " + FormatUtil.formatDate(date), true);
                                                 }
                                             }).execute();
                                 }
                             }).execute();
 
 
-                    embed.addField("Total Sessions", StringUtil.formatNumber(resultTable.getInt("count")), true);
-                    embed.addField("Unique Players", StringUtil.formatNumber(resultTable.getInt("unique_helped")), true);
-                    embed.addField("Total Session Time", StringUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
-                    embed.addField("Earliest Session", StringUtil.formatDate(resultTable.getDate("earliest_time")), true);
-                    embed.addField("Latest Session", StringUtil.formatDate(resultTable.getDate("latest_time")), true);
+                    embed.addField("Total Sessions", FormatUtil.formatNumber(resultTable.getInt("count")), true);
+                    embed.addField("Unique Players", FormatUtil.formatNumber(resultTable.getInt("unique_helped")), true);
+                    embed.addField("Total Session Time", FormatUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
+                    embed.addField("Earliest Session", FormatUtil.formatDate(resultTable.getDate("earliest_time")), true);
+                    embed.addField("Latest Session", FormatUtil.formatDate(resultTable.getDate("latest_time")), true);
 
                     new SingleQueryBuilder()
                             .query("SELECT AVG(duration) AS average_duration," +
@@ -103,9 +104,9 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                     "MAX(duration) AS longest_duration " +
                                     "FROM support_sessions WHERE duration != 0 AND staff = ?;", (statement) -> statement.setString(1, player))
                             .onQuery((resultTableTime) -> {
-                                embed.addField("Average Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
-                                embed.addField("Shortest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
-                                embed.addField("Longest Session Time", StringUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
+                                embed.addField("Average Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
+                                embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
+                                embed.addField("Longest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
                             }).execute();
 
                 }).execute();

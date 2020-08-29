@@ -10,7 +10,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CpTopCommand extends Command {
@@ -58,8 +58,8 @@ public class CpTopCommand extends Command {
                 .onQuery((resultTable) -> {
                     int place = startingPlace;
                     do {
-                        embed.addField(String.format("%s. ", StringUtil.formatNumber(place)) + StringUtil.display(resultTable.getString("name")),
-                                "CP: " + StringUtil.formatNumber(resultTable.getInt("points")), false);
+                        embed.addField(String.format("%s. ", FormatUtil.formatNumber(place)) + StringUtil.display(resultTable.getString("name")),
+                                "CP: " + FormatUtil.formatNumber(resultTable.getInt("points")), false);
                         place++;
                     } while (resultTable.next());
                 }).execute();

@@ -4,7 +4,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.lang.System;
 
 public class MinecraftUserPreset implements ReplyPreset {
 

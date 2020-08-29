@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.df.creator.CreatorLevel;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
@@ -77,17 +77,17 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
 
                     new SingleQueryBuilder()
                             .query("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid))
-                            .onQuery((tableSet) -> embed.addField("Highest Point Count", StringUtil.formatNumber(tableSet.getInt("points")), false))
+                            .onQuery((tableSet) -> embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getInt("points")), false))
                             .execute();
 
                     new SingleQueryBuilder()
                             .query("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points))
-                            .onQuery((tableSet) -> embed.addField("Current Leaderboard Place", StringUtil.formatNumber(tableSet.getInt("place")), false))
+                            .onQuery((tableSet) -> embed.addField("Current Leaderboard Place", FormatUtil.formatNumber(tableSet.getInt("place")), false))
                             .execute();
 
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);
-                        embed.addField("Next Rank Points", StringUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", StringUtil.formatNumber(nextLevelReq - points)), false);
+                        embed.addField("Next Rank Points", FormatUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", FormatUtil.formatNumber(nextLevelReq - points)), false);
                     }
 
                     new SingleQueryBuilder()
@@ -99,7 +99,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 } while (resultTable.next());
 
                                 embed.setImage("attachment://graph.png");
-                                event.replyA(preset)
+                                event.getReplyHandler().replyA(preset)
                                         .addFile(new ChartGraphBuilder()
                                                 .setGraphName(player + "'s CP Graph")
                                                 .createGraph(entries), "graph.png")
@@ -118,7 +118,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
     }
 
     private String genPointMetric(int points, String uuid) {
-        StringBuilder text = new StringBuilder(StringUtil.formatNumber(points));
+        StringBuilder text = new StringBuilder(FormatUtil.formatNumber(points));
         new SingleQueryBuilder()
                 .query("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY date DESC LIMIT 1",
                         (statement) -> statement.setString(1, uuid))
@@ -127,10 +127,10 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
 
                     if (oldPoints > points) {
                         text.insert(0, "<:red_down_arrow:743902462343118858> ");
-                        text.append(String.format(" (%s from %s)", StringUtil.formatNumber(points - oldPoints), StringUtil.formatDate(table.getDate("date"))));
+                        text.append(String.format(" (%s from %s)", FormatUtil.formatNumber(points - oldPoints), FormatUtil.formatDate(table.getDate("date"))));
                     } else if (oldPoints < points) {
                         text.insert(0, "<:green_up_arrow:743902461777018901> ");
-                        text.append(String.format(" (+%s from %s)", StringUtil.formatNumber(points - oldPoints), StringUtil.formatDate(table.getDate("date"))));
+                        text.append(String.format(" (+%s from %s)", FormatUtil.formatNumber(points - oldPoints), FormatUtil.formatDate(table.getDate("date"))));
                     }
                 }).execute();
 
