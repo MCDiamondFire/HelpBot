@@ -1,13 +1,8 @@
 package com.diamondfire.helpbot.util;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.bot.command.help.HelpContext;
-import com.diamondfire.helpbot.bot.command.impl.Command;
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
-import java.text.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class StringUtil {
 

@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CodeBlockEmbedBuilder extends IconEmbedBuilder {

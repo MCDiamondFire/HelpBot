@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions;
 
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.FormatUtil;
 
 public abstract class ArgumentException extends Exception {
 

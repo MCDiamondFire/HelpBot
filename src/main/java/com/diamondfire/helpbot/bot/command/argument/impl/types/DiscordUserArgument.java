@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.MalformedArgumentException;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +15,8 @@ public class DiscordUserArgument implements Argument<Long> {
 
         try {
             return Long.parseLong(msg);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
 
         Matcher matcher = pattern.matcher(msg);
         if (matcher.find()) {

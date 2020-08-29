@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.*;
 
 public class EmbedUtils {
+
     public static void addFields(EmbedBuilder builder, Iterable<String> strings) {
         addFields(builder, strings, "> ", "", false);
     }

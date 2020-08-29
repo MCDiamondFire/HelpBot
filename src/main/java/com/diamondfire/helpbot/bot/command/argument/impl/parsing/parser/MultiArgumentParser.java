@@ -2,11 +2,9 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
-import com.diamondfire.helpbot.sys.graph.impl.Graph;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContainer<A>, A> {

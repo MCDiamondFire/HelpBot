@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
-import com.diamondfire.helpbot.util.Util;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 

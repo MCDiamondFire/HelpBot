@@ -20,7 +20,7 @@ public class ArgumentSet {
     }
 
     @Contract("_,_ -> this")
-    public ArgumentSet addArgument(@NotNull String name, @NotNull ArgumentContainer<?,?> argument) {
+    public ArgumentSet addArgument(@NotNull String name, @NotNull ArgumentContainer<?, ?> argument) {
         arguments.add(new ArgumentNode<>(name, argument));
         return this;
     }

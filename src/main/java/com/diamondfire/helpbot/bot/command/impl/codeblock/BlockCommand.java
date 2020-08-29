@@ -40,7 +40,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
         List<String> strings = new ArrayList<>();
 
         for (CodeBlockData codeBlock : codeBlocks) {
-            if (codeBlock == null) {
+            if (codeBlock.getAssociatedAction() == null) {
                 strings.add(codeBlock.getName());
             }
         }

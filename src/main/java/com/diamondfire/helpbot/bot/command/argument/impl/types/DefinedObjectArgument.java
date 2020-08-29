@@ -25,7 +25,6 @@ public class DefinedObjectArgument<T> implements Argument<T> {
             throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", objectMap.keySet()));
         }
 
-
         return option;
     }
 
@@ -40,6 +39,8 @@ public class DefinedObjectArgument<T> implements Argument<T> {
         Map.Entry<String, Double> closestAction = possibleChoices.entrySet().stream()
                 .max(Comparator.comparingDouble(Map.Entry::getValue))
                 .orElse(null);
+
+        if (closestAction == null) return null;
 
         return closestAction.getValue() >= 0.85 ? objectMap.get(closestAction.getKey()) : null;
     }

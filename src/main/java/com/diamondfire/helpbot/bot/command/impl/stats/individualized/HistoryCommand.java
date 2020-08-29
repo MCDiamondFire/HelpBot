@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.df.punishments.Punishment;
 import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;

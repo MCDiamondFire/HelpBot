@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.restart;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 

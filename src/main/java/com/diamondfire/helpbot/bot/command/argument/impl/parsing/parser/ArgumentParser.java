@@ -3,14 +3,13 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.ArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.DisplayIcon;
 
 import java.util.*;
 
 // Argument parsers give a ParsedArgument from a ArgumentContainer, that's all.
 public abstract class ArgumentParser<T extends ArgumentContainer<A, ?>, A> {
+
     private final T container;
 
     public ArgumentParser(T container) {
@@ -24,7 +23,7 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A, ?>, A> {
 
         for (int i = 0; i < arguments; i++) {
             ArgumentNode<?> argument = stack.getArguments().pop();
-            ArgumentContainer<?,?> argumentContainer = argument.getContainer();
+            ArgumentContainer<?, ?> argumentContainer = argument.getContainer();
             String identifier = argument.getIdentifier();
 
             try {

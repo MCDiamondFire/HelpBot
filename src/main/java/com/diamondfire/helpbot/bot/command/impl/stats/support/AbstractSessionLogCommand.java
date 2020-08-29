@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.FormatUtil;
 
 import java.io.File;
 import java.nio.file.*;
