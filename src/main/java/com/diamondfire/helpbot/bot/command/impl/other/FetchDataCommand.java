@@ -113,7 +113,6 @@ public class FetchDataCommand extends Command {
         Client client = new Client("beta.mcdiamondfire.com", 25565, protocol, new TcpSessionFactory());
         Session session = client.getSession();
 
-        session.setFlag(MinecraftConstants.AUTH_PROXY_KEY, Proxy.NO_PROXY);
         status(message, "Connecting to DiamondFire...");
         ready = false;
 
