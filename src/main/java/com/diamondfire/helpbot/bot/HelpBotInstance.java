@@ -89,7 +89,10 @@ public class HelpBotInstance {
                 new CreditTopCommand(),
                 new HistoryCommand(),
                 new UuidCommand(),
-                new PlotLocCommand()
+                new PlotLocCommand(),
+                new FindSupporteeNamesCommand(),
+                new SessionsCommand(),
+                new SupporteeSessionsCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());

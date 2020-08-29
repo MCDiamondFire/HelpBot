@@ -45,11 +45,9 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
                         new MinecraftUserPreset(player)
                 );
         //Discord didn't want to preview the skin, why? I don't know..
-        File file = Util.getFileFromSite("https://mc-heads.net/body/" + player, "skin.png");
         EmbedBuilder embed = preset.getEmbed();
-        embed.setImage("attachment://skin.png");
-
-        event.replyA(preset).addFile(file, "skin.png").queue();
+        embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player);
+        event.reply(preset);
     }
 
 }

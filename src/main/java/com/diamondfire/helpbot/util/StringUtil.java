@@ -89,32 +89,46 @@ public class StringUtil {
     }
 
     public static String formatMilliTime(long millis) {
-        StringBuilder builder = new StringBuilder();
+        List<String> symbols = new ArrayList<>();
+        applyTimeUnit(symbols, millis, TimeUnit.DAYS, 'd');
+        applyTimeUnit(symbols, millis, TimeUnit.HOURS, 'h');
+        applyTimeUnit(symbols, millis, TimeUnit.MINUTES, 'm');
+        applyTimeUnit(symbols, millis, TimeUnit.SECONDS, 's');
 
-        long days = TimeUnit.MILLISECONDS.toDays(millis);
-        if (days > 0) {
-            builder.append(days).append("d ");
+        // Only show milliseconds if nothing else is visible.
+        if (symbols.size() == 0) {
+            symbols.add("0." + getTimeUnit(millis, TimeUnit.MILLISECONDS) + "s");
         }
 
-        long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
-        if (hours > 0) {
-            builder.append(hours).append("h ");
-        }
+        return String.join(" ", symbols);
+    }
 
-        long mins = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
-        if (mins > 0) {
-            builder.append(mins).append("m ");
+    private static void applyTimeUnit(List<String> symbols, long millis, TimeUnit unit, char symbol) {
+        long amt = getTimeUnit(millis, unit);
+        if (amt > 0) {
+            symbols.add(amt + String.valueOf(symbol));
         }
+    }
 
-        long secs = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
-        if (secs != 0) {
-            builder.append(secs).append("s ");
-        } else {
-            if (builder.length() == 0) {
-                builder.append("0.").append(TimeUnit.MILLISECONDS.toMillis(millis)).append("s");
-            }
+    public static long getTimeUnit(long millis, TimeUnit unit) {
+        switch (unit) {
+            case DAYS:
+                return TimeUnit.MILLISECONDS.toDays(millis);
+            case HOURS:
+                return TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
+            case MINUTES:
+                return TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+            case SECONDS:
+                return TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+            case MILLISECONDS:
+                return TimeUnit.MILLISECONDS.toMillis(millis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(millis));
+            case MICROSECONDS:
+                return millis;
+            case NANOSECONDS:
+                return TimeUnit.MILLISECONDS.toNanos(millis);
+            default:
+                throw new UnsupportedOperationException();
         }
-        return builder.toString();
     }
 
     public static String formatTime(long duration, TimeUnit unit) {

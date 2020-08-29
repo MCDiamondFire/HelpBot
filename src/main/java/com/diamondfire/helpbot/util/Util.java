@@ -2,13 +2,13 @@ package com.diamondfire.helpbot.util;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.externalfile.*;
-import com.google.gson.JsonArray;
+import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
+import java.net.*;
 import java.nio.file.*;
 import java.util.List;
 import java.util.*;
@@ -31,30 +31,33 @@ public class Util {
     }
 
 
-    public static void addFields(EmbedBuilder builder, List<String> strings) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings) {
         addFields(builder, strings, "> ", "", false);
     }
 
-    public static void addFields(EmbedBuilder builder, List<String> strings, String pointer) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer) {
         addFields(builder, strings, pointer, "", false);
     }
 
-    public static void addFields(EmbedBuilder builder, List<String> strings, boolean sanitize) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, boolean sanitize) {
         addFields(builder, strings, "> ", "", sanitize);
     }
 
-    public static void addFields(EmbedBuilder builder, List<String> strings, String pointer, String name) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer, String name) {
         addFields(builder, strings, pointer, name, false);
     }
 
-    public static void addFields(EmbedBuilder builder, List<String> strings, String pointer, String name, boolean sanitize) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer, String name, boolean sanitize) {
 
         boolean firstField = true;
         //Current selection must be a stack to keep order.
         Stack<String> currentSelection = new Stack<>();
-        Deque<String> queue = new ArrayDeque<>(strings);
+        Deque<String> queue = new ArrayDeque<>();
+        for (String string : strings) {
+            queue.add(string);
+        }
 
-        for (int i = 0; i < strings.size(); i++) {
+        for (String ignored : strings) {
             currentSelection.push(queue.peek());
 
             // We check with the checkView to see if the size is too large.
@@ -184,4 +187,25 @@ public class Util {
     }
 
 
+    public static JsonObject getPlayerProfile(String player) {
+        try {
+            URL profile = new URL("https://mc-heads.net/minecraft/profile/" + player);
+            URLConnection connection = profile.openConnection();
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null)
+                stringBuilder.append(inputLine);
+
+            JsonElement element = JsonParser.parseString(stringBuilder.toString());
+            if (!element.isJsonObject()) {
+                return null;
+            }
+
+            return element.getAsJsonObject();
+        } catch (IOException ignored) {
+        }
+
+        return null;
+    }
 }

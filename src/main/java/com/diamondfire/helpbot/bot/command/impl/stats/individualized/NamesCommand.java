@@ -11,8 +11,6 @@ import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
 
 
@@ -50,27 +48,19 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
         try {
-            URL profile = new URL("https://mc-heads.net/minecraft/profile/" + player);
-            URLConnection connection = profile.openConnection();
-            StringBuilder stringBuilder = new StringBuilder();
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                String inputLine;
-                while ((inputLine = in.readLine()) != null)
-                    stringBuilder.append(inputLine);
-            }
+            JsonObject profile = Util.getPlayerProfile(player);
 
-            if (stringBuilder.toString().length() == 0) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setTitle("Player not found!");
-
-                event.getChannel().sendMessage(builder.build()).queue();
+            if (profile == null) {
+                preset.withPreset(
+                        new InformativeReply(InformativeReplyType.ERROR, "Player not found!")
+                );
+                event.reply(preset);
                 return;
             }
 
             List<String> names = new ArrayList<>();
-            JsonObject element = JsonParser.parseString(stringBuilder.toString()).getAsJsonObject();
-            String displayName = element.get("name").getAsString();
-            for (JsonElement nameElement : element.get("name_history").getAsJsonArray()) {
+            String displayName = profile.get("name").getAsString();
+            for (JsonElement nameElement : profile.get("name_history").getAsJsonArray()) {
                 JsonObject obj = nameElement.getAsJsonObject();
                 JsonElement changedAt = obj.get("changedToAt");
 
@@ -82,7 +72,7 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                 if (changedAt == null) {
                     names.add(String.format("%s", obj.get("name").getAsString()));
                 } else {
-                    names.add(obj.get("name").getAsString() + String.format(" (%s)", StringUtil.formatDate(new Date(changedAt.getAsLong()))));
+                    names.add(obj.get("name").getAsString() + String.format(" (%s)", StringUtil.formatDate(DateUtil.toDate(changedAt.getAsLong()))));
                 }
 
             }
@@ -94,7 +84,6 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
         }
         event.reply(preset);
     }
-
 }
 
 

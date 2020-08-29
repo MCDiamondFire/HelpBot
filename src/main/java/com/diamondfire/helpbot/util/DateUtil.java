@@ -10,6 +10,10 @@ public class DateUtil {
         return new Date(sqlDate.getDay(), sqlDate.getMonth(), sqlDate.getYear());
     }
 
+    public static Date toDate(long milli) {
+        return new Date(milli);
+    }
+
     public static Date toDate(LocalDate date) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
