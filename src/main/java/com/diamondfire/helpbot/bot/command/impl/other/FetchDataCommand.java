@@ -10,7 +10,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifference
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
-import com.github.steveice10.mc.protocol.*;
+import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
@@ -23,7 +23,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.io.*;
-import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 

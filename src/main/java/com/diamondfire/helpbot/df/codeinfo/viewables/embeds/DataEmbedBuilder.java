@@ -10,8 +10,10 @@ import java.util.*;
 public abstract class DataEmbedBuilder {
 
     public EmbedBuilder generateEmbed(CodeObject data) {
-        EmbedBuilder builder = buildDataEmbed(data);
         DisplayIcon icon = data.getItem();
+        EmbedBuilder builder = buildDataEmbed(data)
+                .setDescription(String.join(" ", icon.getDescription()))
+                .setThumbnail("attachment://" + icon.getMaterial().toLowerCase() + ".png");
 
         String iconName = icon.getItemName();
         String dataName = data.getName();
@@ -21,24 +23,21 @@ public abstract class DataEmbedBuilder {
             builder.setTitle(dataName);
         }
 
-        builder.setDescription(String.join(" ", icon.getDescription()));
-
+        List<String> tokens = new ArrayList<>();
         String footerText = builder.build().getFooter() == null ? "" : builder.build().getFooter().getText();
-        StringBuilder footer = new StringBuilder(footerText);
-
-        if (icon.requiresCredits() && !icon.getRequiredRank().equals("")) {
-            if (footerText.length() != 0) footer.append(" | ");
-            footer.append("Unlock with Credits OR ").append(icon.getRequiredRank());
-        } else if (icon.requiresCredits()) {
-            if (footerText.length() != 0) footer.append(" | ");
-            footer.append("Unlock with Credits");
-        } else if (!icon.getRequiredRank().equals("")) {
-            if (footerText.length() != 0) footer.append(" | ");
-            footer.append("Unlock with ").append(icon.getRequiredRank());
+        if (footerText != null) {
+            tokens.add(footerText);
         }
 
-        builder.setFooter(footer.toString());
-        builder.setThumbnail("attachment://" + icon.getMaterial().toLowerCase() + ".png");
+        if (icon.requiresCredits() && !icon.getRequiredRank().equals("")) {
+            tokens.add("Unlock with Credits OR " + icon.getRequiredRank());
+        } else if (icon.requiresCredits()) {
+            tokens.add("Unlock with Credits");
+        } else if (!icon.getRequiredRank().equals("")) {
+            tokens.add("Unlock with" + icon.getRequiredRank());
+        }
+
+        builder.setFooter(String.join(" | ", tokens));
 
         return builder;
     }

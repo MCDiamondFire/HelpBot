@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.util.*;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 
@@ -13,29 +13,20 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
 
     @Override
     protected EmbedBuilder buildDataEmbed(CodeObject data) {
-
         ActionData actionData = (ActionData) data;
-
-        EmbedBuilder builder = new EmbedBuilder();
+        Emote emote = HelpBotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
+        EmbedBuilder builder = new EmbedBuilder()
+                .setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor())
+                .setAuthor(StringUtil.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
         generateParameters(data, builder);
         generateInfo(data, builder);
 
-
-        StringBuilder footer = new StringBuilder();
-        if (actionData.getTags().length != 0) {
-            footer.append(actionData.getTags().length)
-                    .append(StringUtil.sCheck(" Tag", actionData.getTags().length));
+        int tagLength = actionData.getTags().length;
+        if (tagLength != 0) {
+            builder.setFooter(tagLength + " " + StringUtil.sCheck(" Tag", tagLength));
         }
 
-        builder.setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor());
-        builder.setFooter(footer.toString());
-
-        Emote emote = HelpBotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
-        builder.setAuthor(StringUtil.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
-
         return builder;
-
-
     }
 
     private void generateParameters(CodeObject data, EmbedBuilder builder) {
@@ -69,7 +60,6 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         }
 
         builder.addField("<:c_chest:688643661755318272> Parameters", params.toString(), false);
-
     }
 
     @Override

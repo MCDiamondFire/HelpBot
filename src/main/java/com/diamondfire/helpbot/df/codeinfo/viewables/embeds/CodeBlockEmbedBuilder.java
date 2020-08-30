@@ -10,21 +10,17 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
     protected EmbedBuilder buildDataEmbed(CodeObject data) {
         CodeBlockData codeBlockData = (CodeBlockData) data;
         EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(codeBlockData.getCodeblockEnum().getColor());
         generateInfo(data, builder);
 
         if (codeBlockData.getAssociatedAction() != null) {
-            CodeBlockTagData[] tags = codeBlockData.getAssociatedAction().getTags();
-            StringBuilder footer = new StringBuilder();
-
-            if (tags.length != 0) {
-                footer.append(tags.length)
-                        .append(StringUtil.sCheck(" Tag", tags.length));
+            int tagLength = codeBlockData.getAssociatedAction().getTags().length;
+            if (tagLength != 0) {
+                builder.setFooter(tagLength + StringUtil.sCheck(" Tag", tagLength));
             }
 
-            builder.setFooter(footer.toString());
         }
 
-        builder.setColor(codeBlockData.getCodeblockEnum().getColor());
         return builder;
     }
 

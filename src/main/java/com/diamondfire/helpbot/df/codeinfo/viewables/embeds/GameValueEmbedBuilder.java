@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
-import com.diamondfire.helpbot.util.ParamConverter;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
