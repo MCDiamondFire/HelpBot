@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentStack;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
@@ -27,14 +26,13 @@ public class DefinedObjectArgument<T> implements Argument<T> {
     }
 
     @Override
-    public T parseValue(@NotNull ArgumentStack stack) throws ArgumentException {
-        Deque<String> rawArgs = stack.getRawArguments();
+    public T parseValue(@NotNull Deque<String> args) throws ArgumentException {
         String compareString;
         if (trailing) {
-            compareString = String.join(" ", rawArgs);
-            rawArgs.clear();
+            compareString = String.join(" ", args);
+            args.clear();
         } else {
-            compareString = rawArgs.peek();
+            compareString = args.pop();
         }
 
 

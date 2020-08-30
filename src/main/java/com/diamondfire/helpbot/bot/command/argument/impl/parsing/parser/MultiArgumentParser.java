@@ -14,15 +14,15 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
     }
 
     @Override
-    public ParsedArgument<?> parse(String identifier, ArgumentStack stack) throws ArgumentException {
-        Deque<String> args = stack.getRawArguments();
+    public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException {
+        Deque<String> rawArgs = args.popStack();
         List<A> approvedArgumentValues = new ArrayList<>();
         Argument<A> arg = getContainer().getArgument();
-        int arguments = args.size();
+        int arguments = rawArgs.size();
 
         for (int i = 0; i < arguments; i++) {
             try {
-                approvedArgumentValues.add(arg.parseValue(stack));
+                        approvedArgumentValues.add(arg.parseValue(rawArgs));
             } catch (Exception e) {
                 break;
             }

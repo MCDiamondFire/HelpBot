@@ -15,14 +15,14 @@ public class SingleArgumentParser<A> extends ArgumentParser<SingleArgumentContai
     }
 
     @Override
-    public ParsedArgument<?> parse(String identifier, ArgumentStack stack) throws ArgumentException {
-        Deque<String> args = stack.getRawArguments();
+    public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException {
+        Deque<String> rawArgs = args.popStack();
         Argument<A> arg = getContainer().getArgument();
 
-        if (args.peek() == null) {
+        if (rawArgs.peek() == null) {
             throw new MissingArgumentException("Expected an argument, but got nothing.");
         }
 
-        return new ParsedArgument<>(identifier, arg.parseValue(stack));
+        return new ParsedArgument<>(identifier, arg.parseValue(rawArgs));
     }
 }

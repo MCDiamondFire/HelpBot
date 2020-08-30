@@ -11,10 +11,10 @@ public class AlternateArgumentParser<A> extends ArgumentParser<AlternateArgument
     }
 
     @Override
-    public ParsedArgument<?> parse(String identifier, ArgumentStack stack) throws ArgumentException {
+    public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException {
         for (ArgumentContainer<?> container : getContainer().getAlternatives()) {
             try {
-                return new ParsedArgument<>(identifier, container.getParser().parse(identifier, stack).getValue());
+                return new ParsedArgument<>(identifier, container.getParser().parse(identifier, args).getValue());
             } catch (ArgumentException ignored) {
             }
         }

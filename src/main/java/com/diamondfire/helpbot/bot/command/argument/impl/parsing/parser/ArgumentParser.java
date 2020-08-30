@@ -22,12 +22,14 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
         int arguments = stack.getArguments().size();
 
         for (int i = 0; i < arguments; i++) {
+            ArgumentStack.RawArgumentStack rawArguments = stack.getRawArguments();
             ArgumentNode<?> argument = stack.getArguments().pop();
             ArgumentContainer<?> argumentContainer = argument.getContainer();
             String identifier = argument.getIdentifier();
 
             try {
-                parsedArgs.put(identifier, argumentContainer.getParser().parse(identifier, stack));
+                parsedArgs.put(identifier, argumentContainer.getParser().parse(identifier, rawArguments));
+                rawArguments.pushStack();
             } catch (MissingArgumentException exception) {
                 if (argumentContainer.isOptional()) {
                     parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue()));
@@ -44,7 +46,7 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
         return new ParsedArgumentSet(parsedArgs);
     }
 
-    public abstract ParsedArgument<?> parse(String identifier, ArgumentStack stack) throws ArgumentException;
+    public abstract ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException;
 
     protected T getContainer() {
         return container;

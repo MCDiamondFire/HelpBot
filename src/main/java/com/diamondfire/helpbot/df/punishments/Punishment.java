@@ -34,28 +34,25 @@ public class Punishment {
         this.removeDate = removeDate;
     }
 
-    private static String formatUntil(Date date) {
-        if (date == null) return "Never";
+    private String formatExpire() {
 
-        return FormatUtil.formatDate(date);
+        if (untilTime == null && active) return "Never";
+        if (removeDate == null) return "?";
+        if (removeByName == null) return FormatUtil.formatDate(removeDate);
+
+        return FormatUtil.formatDate(removeDate) + (removeByName.equals("#expired") ? " Automatically" : " (Removed by staff)");
     }
 
     @Override
     public String toString() {
-        String given = "Given " + FormatUtil.formatDate(startTime);
         String reasonGiven = reason.isBlank() ? "No Reason Given" : reason;
-        String expire = (active ? "Expires " : "Expired ") + formatUntil(untilTime);
-        String duration = "";
-
+        String until = (untilTime == null ? "Never" :  FormatUtil.formatDate(untilTime));
+        String expire = '\n' + (active ? "Expires " + until : "Expired " + formatExpire());
         if (type == PunishmentType.KICK) {
             expire = "";
         }
 
-        if (untilTime != null && (type == PunishmentType.BAN || type == PunishmentType.MUTE)) {
-            duration = String.format("(Duration %s)", FormatUtil.formatMilliTime(untilTime.getTime() - startTime.getTime()));
-        }
-
-        return String.format("[%s] %s %s %s \n%s", type, given, expire, duration, reasonGiven);
+        return String.format("[%s] %s\n%s%s", type, FormatUtil.formatDate(startTime), reasonGiven.trim(), expire);
     }
 }
 
