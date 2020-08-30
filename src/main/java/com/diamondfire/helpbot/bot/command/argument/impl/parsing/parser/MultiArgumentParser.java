@@ -21,10 +21,8 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
         int arguments = args.size();
 
         for (int i = 0; i < arguments; i++) {
-            String selectedArg = args.peek();
             try {
-                approvedArgumentValues.add(arg.parseValue(selectedArg));
-                args.pop();
+                approvedArgumentValues.add(arg.parseValue(stack));
             } catch (Exception e) {
                 break;
             }

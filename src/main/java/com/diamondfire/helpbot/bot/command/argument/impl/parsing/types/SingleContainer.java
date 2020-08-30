@@ -1,9 +1,8 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.types;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 
-public abstract class SingleContainer<T, P extends ArgumentParser<?, T>> extends ArgumentContainer<T, P> {
+public abstract class SingleContainer<T> extends ArgumentContainer<T> {
 
     private final Argument<T> argument;
 

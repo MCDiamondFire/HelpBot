@@ -6,12 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.*;
 
-public class DiscordUserArgument implements Argument<Long> {
+public class DiscordUserArgument extends AbstractSimpleValueArgument<Long> {
 
     private final Pattern pattern = Pattern.compile("<@!?(\\d+)>");
 
     @Override
-    public Long parseValue(@NotNull String msg) throws MalformedArgumentException {
+    public Long parse(@NotNull String msg) throws MalformedArgumentException {
 
         try {
             return Long.parseLong(msg);

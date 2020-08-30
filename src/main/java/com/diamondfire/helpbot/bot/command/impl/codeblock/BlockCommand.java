@@ -47,7 +47,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
 
         return new ArgumentSet().
                 addArgument("codeblock",
-                        new DefinedObjectArgument<>(strings.toArray(new String[0]))
+                        new DefinedObjectArgument<>(true, strings.toArray(new String[0]))
                 );
     }
 

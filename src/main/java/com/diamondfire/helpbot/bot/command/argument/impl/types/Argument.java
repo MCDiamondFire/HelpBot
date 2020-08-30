@@ -1,13 +1,15 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentStack;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import org.jetbrains.annotations.NotNull;
 
-//Arguments simply parse a given value.
+//Arguments simply parse a given value and can remove it from the stack if they process it correctly.
+//This means an argument can actually use more than one argument if they want!
 public interface Argument<T> {
 
-    T parseValue(@NotNull String msg) throws ArgumentException;
+    T parseValue(@NotNull ArgumentStack stack) throws ArgumentException;
 
 }
  

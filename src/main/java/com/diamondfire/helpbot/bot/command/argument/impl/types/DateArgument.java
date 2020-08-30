@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.*;
 import java.util.Date;
 
-public class DateArgument implements Argument<Date> {
+public class DateArgument extends AbstractSimpleValueArgument<Date> {
 
     public final SimpleDateFormat format;
 
@@ -19,7 +19,7 @@ public class DateArgument implements Argument<Date> {
     }
 
     @Override
-    public Date parseValue(@NotNull String msg) throws ArgumentException {
+    public Date parse(@NotNull String msg) throws ArgumentException {
         try {
             return format.parse(msg);
         } catch (ParseException parseException) {

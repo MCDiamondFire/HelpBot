@@ -10,22 +10,18 @@ public class ClampedIntegerArgument extends IntegerArgument {
     final int max;
 
     public ClampedIntegerArgument(int min) {
-        super();
-
         this.min = min;
         this.max = Integer.MAX_VALUE;
     }
 
     public ClampedIntegerArgument(int min, int max) {
-        super();
-
         this.min = min;
         this.max = max;
     }
 
     @Override
-    public Integer parseValue(@NotNull String msg) throws ArgumentException {
-        int num = super.parseValue(msg);
+    public Integer parse(@NotNull String msg) throws ArgumentException {
+        int num = super.parse(msg);
 
         if (num <= max && num >= min) {
             return num;

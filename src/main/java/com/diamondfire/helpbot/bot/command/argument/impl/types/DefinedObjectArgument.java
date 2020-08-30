@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentStack;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
@@ -9,18 +10,35 @@ import java.util.*;
 
 public class DefinedObjectArgument<T> implements Argument<T> {
 
+    private boolean trailing = false;
     private final Map<String, T> objectMap = new HashMap<>();
 
     public DefinedObjectArgument(@NotNull T... options) {
-
         for (T option : options) {
             objectMap.put(option.toString(), option);
         }
     }
 
+    public DefinedObjectArgument(boolean trailing, @NotNull T... options) {
+        for (T option : options) {
+            objectMap.put(option.toString(), option);
+        }
+        this.trailing = trailing;
+    }
+
     @Override
-    public T parseValue(@NotNull String msg) throws ArgumentException {
-        T option = getClosestOption(msg);
+    public T parseValue(@NotNull ArgumentStack stack) throws ArgumentException {
+        Deque<String> rawArgs = stack.getRawArguments();
+        String compareString;
+        if (trailing) {
+            compareString = String.join(" ", rawArgs);
+            rawArgs.clear();
+        } else {
+            compareString = rawArgs.peek();
+        }
+
+
+        T option = getClosestOption(compareString);
         if (option == null) {
             throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", objectMap.keySet()));
         }
@@ -44,4 +62,6 @@ public class DefinedObjectArgument<T> implements Argument<T> {
 
         return closestAction.getValue() >= 0.85 ? objectMap.get(closestAction.getKey()) : null;
     }
+
+
 }

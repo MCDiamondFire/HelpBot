@@ -91,7 +91,6 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 }
                             }).execute();
 
-
                     embed.addField("Total Sessions", FormatUtil.formatNumber(resultTable.getInt("count")), true);
                     embed.addField("Unique Players", FormatUtil.formatNumber(resultTable.getInt("unique_helped")), true);
                     embed.addField("Total Session Time", FormatUtil.formatMilliTime(resultTable.getLong("total_duration")), true);

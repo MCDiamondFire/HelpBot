@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import java.util.*;
 
 // Argument parsers give a ParsedArgument from a ArgumentContainer, that's all.
-public abstract class ArgumentParser<T extends ArgumentContainer<A, ?>, A> {
+public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
 
     private final T container;
 
@@ -23,7 +23,7 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A, ?>, A> {
 
         for (int i = 0; i < arguments; i++) {
             ArgumentNode<?> argument = stack.getArguments().pop();
-            ArgumentContainer<?, ?> argumentContainer = argument.getContainer();
+            ArgumentContainer<?> argumentContainer = argument.getContainer();
             String identifier = argument.getIdentifier();
 
             try {
