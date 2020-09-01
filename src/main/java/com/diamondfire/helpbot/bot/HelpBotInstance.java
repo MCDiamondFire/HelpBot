@@ -106,6 +106,7 @@ public class HelpBotInstance {
         builder.addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
 
         jda = builder.build();
+        handler.initialize();
     }
 
     public static JDA getJda() {

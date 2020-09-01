@@ -143,6 +143,8 @@ public class CodeDatabase {
         generatePotions(data);
         generateSounds(data);
         generateGameValues(data);
+
+        data = null;
     }
 
     private static <T extends CodeObject> List<T> newRegistry(String name) {

@@ -1,58 +1,50 @@
 package com.diamondfire.helpbot.bot.reactions.impl;
 
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
 
-import java.util.TimerTask;
+import java.util.function.Consumer;
 
-public class ReactionWait extends TimerTask {
+public class ReactionWait implements Runnable {
 
-    private final JDA jda;
     private final long user;
-    private final long message;
-    private final long channel;
-    private final ReactionResponder responder;
-    private final boolean multiUse;
+    private final Message message;
+    private final Consumer<ReactionRespondEvent> responder;
+    private final boolean persistent;
 
-    public ReactionWait(JDA jda, long user, long channel, long message, ReactionResponder responder) {
-        this.jda = jda;
-        this.user = user;
+    public ReactionWait(Message message, long user, Consumer<ReactionRespondEvent> responder) {
         this.message = message;
-        this.channel = channel;
+        this.user = user;
         this.responder = responder;
-        this.multiUse = false;
+        this.persistent = false;
     }
 
-    public ReactionWait(JDA jda, long user, long channel, long message, ReactionResponder responder, boolean multiUse) {
-        this.jda = jda;
-        this.user = user;
+
+    public ReactionWait(Message message, long user, Consumer<ReactionRespondEvent> responder, boolean persistent) {
         this.message = message;
-        this.channel = channel;
+        this.user = user;
         this.responder = responder;
-        this.multiUse = multiUse;
+        this.persistent = persistent;
     }
 
     @Override
     public void run() {
-        jda.getTextChannelById(this.channel).retrieveMessageById(this.message).queue((message) -> message.clearReactions().queue());
+        message.clearReactions().queue();
     }
 
     public long getUser() {
         return user;
     }
 
-    public long getChannel() {
-        return channel;
-    }
-
-    public long getMessage() {
+    public Message getMessage() {
         return message;
     }
 
-    public ReactionResponder getResponder() {
+    public Consumer<ReactionRespondEvent> getResponder() {
         return responder;
     }
 
-    public boolean isMultiUse() {
-        return multiUse;
+    public boolean isPersistent() {
+        return persistent;
     }
+
 }

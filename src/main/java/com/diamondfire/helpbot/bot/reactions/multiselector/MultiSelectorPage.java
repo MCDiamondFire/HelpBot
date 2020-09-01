@@ -7,18 +7,20 @@ public class MultiSelectorPage {
     private final String name;
     private final EmbedBuilder page;
     private final boolean hidden;
-    private String customEmote = null;
+    private final String customEmote;
 
     public MultiSelectorPage(String name, EmbedBuilder page) {
         this.name = name;
         this.page = page;
         this.hidden = false;
+        this.customEmote = null;
     }
 
     public MultiSelectorPage(String name, EmbedBuilder page, boolean hidden) {
         this.name = name;
         this.page = page;
         this.hidden = hidden;
+        this.customEmote = null;
     }
 
     public MultiSelectorPage(String name, EmbedBuilder page, String customEmote, boolean hidden) {

@@ -28,7 +28,7 @@ public class ReactionEvent extends ListenerAdapter {
                     }
                 } else {
                     if (ReactionHandler.isWaiting(event.getMember().getIdLong())) {
-                        ReactionHandler.reacted(event.getMember(), event.getReaction().getMessageIdLong(), event.getReaction());
+                        ReactionHandler.handleReaction(event);
                     }
                 }
             });

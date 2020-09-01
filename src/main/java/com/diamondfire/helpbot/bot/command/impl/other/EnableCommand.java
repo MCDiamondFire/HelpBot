@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
@@ -43,15 +44,16 @@ public class EnableCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
+        DisableCommandHandler handler = HelpBotInstance.getHandler().getDisabledHandler();
         PresetBuilder builder = new PresetBuilder();
         String name = event.getArgument("cmd");
         Command command = CommandHandler.getCommand(name);
 
         if (command != null) {
-            if (!DisableCommandHandler.isDisabled(command)) {
+            if (!handler.isDisabled(command)) {
                 builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Command isn't disabled!"));
             } else {
-                DisableCommandHandler.enable(command);
+                handler.enable(command);
                 builder.withPreset(new InformativeReply(InformativeReplyType.SUCCESS, String.format("Command ``%s`` has been enabled.", command.getName())));
             }
         } else {

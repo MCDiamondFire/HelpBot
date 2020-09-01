@@ -2,8 +2,9 @@ package com.diamondfire.helpbot.bot.reactions.multiselector;
 
 import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.MessageReaction;
 
 import java.util.*;
 
@@ -20,7 +21,7 @@ public class MultiSelector {
     }
 
     public void send(JDA jda) {
-        StringBuilder stringBuilder = new StringBuilder();
+        List<String> emojis = new ArrayList<>();
         Deque<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, MultiSelectorPage> pagesHash = new LinkedHashMap<>();
 
@@ -31,28 +32,35 @@ public class MultiSelector {
             if (nums.isEmpty()) {
                 throw new IllegalStateException("Not enough emojis to map 10 objects!");
             }
+
             String emoji = page.getCustomEmote() != null ? page.getCustomEmote() : nums.pop();
-            stringBuilder.append("\n").append(emoji).append(" ").append(page.getName());
+
+            emojis.add(emoji + " " + page.getName());
             pagesHash.put(new BasicReaction(emoji), page);
         }
 
         for (MultiSelectorPage page : pages) {
             EmbedBuilder pageBuilder = page.getPage();
-            pageBuilder.addField("Pages", stringBuilder.toString(), false);
             pageBuilder.setTitle(page.getName());
+            EmbedUtils.addFields(pageBuilder, emojis, "", "Pages");
         }
 
         jda.getTextChannelById(channel).sendMessage(pages[0].getPage().build()).queue((message) -> {
             for (BasicReaction reaction : pagesHash.keySet()) {
                 reaction.react(message).queue();
             }
+
             ReactionHandler.waitReaction(user, message, event -> {
-                MultiSelectorPage page = pagesHash.entrySet().stream()
-                        .filter((entry) -> entry.getKey().equalToReaction(event.getReactionEvent().getReactionEmote()))
-                        .map(Map.Entry::getValue)
-                        .findFirst()
-                        .orElse(null);
-                jda.retrieveUserById(user).queue(userObj -> event.getReactionEvent().removeReaction(userObj).queue());
+                MessageReaction reactionEvent = event.getReactionEvent();
+                MultiSelectorPage page = null;
+                for (Map.Entry<BasicReaction, MultiSelectorPage> selectorPage : pagesHash.entrySet()) {
+                    if (selectorPage.getKey().equalToReaction(reactionEvent.getReactionEmote())) {
+                        page = selectorPage.getValue();
+                        break;
+                    }
+                }
+
+                jda.retrieveUserById(user).queue(userObj -> reactionEvent.removeReaction(userObj).queue());
                 message.editMessage(page.getPage().build()).queue();
             }, true);
         });

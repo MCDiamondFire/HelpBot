@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.bot.command.executor.checks;
 
-import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -9,7 +9,7 @@ public class DisabledCheck implements CommandCheck {
 
     @Override
     public boolean check(CommandEvent event) {
-        return !DisableCommandHandler.isDisabled(event.getCommand());
+        return !HelpBotInstance.getHandler().getDisabledHandler().isDisabled(event.getCommand());
     }
 
     @Override

@@ -10,14 +10,14 @@ import java.util.*;
 
 public class DisableCommandHandler {
 
-    private static final List<String> disabledCommands = new ArrayList<>();
-    private static final File disabledCommandsFile = ExternalFile.DISABLED_COMMANDS.getFile();
+    private final List<String> disabledCommands = new ArrayList<>();
+    private final File disabledCommandsFile = ExternalFile.DISABLED_COMMANDS.getFile();
 
-    public static boolean isDisabled(Command command) {
+    public boolean isDisabled(Command command) {
         return disabledCommands.contains(command.getName());
     }
 
-    public static void initialize() {
+    public void initialize() {
         try {
             List<String> lines = Files.readAllLines(ExternalFile.DISABLED_COMMANDS.getFile().toPath());
             for (String cmd : lines) {
@@ -31,7 +31,7 @@ public class DisableCommandHandler {
 
     }
 
-    public static void save() {
+    public void save() {
         String string = String.join("\n", disabledCommands);
         try {
             disabledCommandsFile.delete();
@@ -44,18 +44,18 @@ public class DisableCommandHandler {
 
     }
 
-    public static void enable(Command command) {
+    public void enable(Command command) {
         disabledCommands.remove(command.getName());
-        DisableCommandHandler.save();
+        save();
     }
 
-    public static void disable(Command command) {
+    public void disable(Command command) {
         disabledCommands.add(command.getName());
-        DisableCommandHandler.save();
+        save();
     }
 
 
-    public static List<String> getDisabledCommands() {
+    public List<String> getDisabledCommands() {
         return disabledCommands;
     }
 }

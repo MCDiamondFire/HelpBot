@@ -16,7 +16,7 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
 
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT;
+        return Permission.SUPPORT;
     }
 
     @Override

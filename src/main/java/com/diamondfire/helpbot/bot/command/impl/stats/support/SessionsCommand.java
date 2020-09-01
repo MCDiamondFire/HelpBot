@@ -26,11 +26,6 @@ public class SessionsCommand extends AbstractSessionLogCommand {
     }
 
     @Override
-    public Permission getPermission() {
-        return Permission.SUPPORT;
-    }
-
-    @Override
     protected List<AbstractSessionLogCommand.Session> getSessions(String player) {
         List<Session> sessions = new ArrayList<>();
         new SingleQueryBuilder()

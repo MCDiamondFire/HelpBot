@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -11,7 +12,12 @@ public class CommandHandler {
 
     private final HashMap<String, Command> CMDS = new HashMap<>();
     private final HashMap<String, Command> ALIASES = new HashMap<>();
-    private final CommandExecutor executor = new CommandExecutor();
+    private final CommandExecutor COMMAND_EXECUTOR = new CommandExecutor();
+    private final DisableCommandHandler DISABLED_COMMAND_HANDLER = new DisableCommandHandler();
+
+    public void initialize() {
+        DISABLED_COMMAND_HANDLER.initialize();
+    }
 
     public static Command getCommand(String name) {
         Command cmd = HelpBotInstance.getHandler().getCommands().get(name.toLowerCase());
@@ -33,7 +39,7 @@ public class CommandHandler {
     }
 
     public void run(CommandEvent e) {
-        executor.run(e);
+        COMMAND_EXECUTOR.run(e);
     }
 
     public HashMap<String, Command> getCommands() {
@@ -42,5 +48,9 @@ public class CommandHandler {
 
     public HashMap<String, Command> getAliases() {
         return ALIASES;
+    }
+
+    public DisableCommandHandler getDisabledHandler() {
+        return DISABLED_COMMAND_HANDLER;
     }
 }

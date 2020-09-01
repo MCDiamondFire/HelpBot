@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
@@ -53,7 +54,7 @@ public class DisableCommand extends Command {
         }
 
         if (command != null) {
-            DisableCommandHandler.disable(command);
+            HelpBotInstance.getHandler().getDisabledHandler().disable(command);
             builder.withPreset(new InformativeReply(InformativeReplyType.SUCCESS, String.format("Command ``%s`` has been disabled.", command.getName())));
         } else {
             builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("Command ``%s`` could not be found.", name)));
