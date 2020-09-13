@@ -46,7 +46,7 @@ public class Punishment {
     @Override
     public String toString() {
         String reasonGiven = reason.isBlank() ? "No Reason Given" : reason;
-        String until = (untilTime == null ? "Never" :  FormatUtil.formatDate(untilTime));
+        String until = (untilTime == null ? "Never" : FormatUtil.formatDate(untilTime));
         String expire = '\n' + (active ? "Expires " + until : "Expired " + formatExpire());
         if (type == PunishmentType.KICK) {
             expire = "";

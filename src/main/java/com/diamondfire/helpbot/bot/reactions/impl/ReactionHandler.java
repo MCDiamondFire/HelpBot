@@ -31,11 +31,11 @@ public class ReactionHandler {
             scheduledWait.getFuture().cancel(false);
         }
 
-        schedule(user,wait);
+        schedule(user, wait);
     }
 
     private static void schedule(long user, ReactionWait wait) {
-        reactionWaitHashMap.put(user,new ScheduledReactionTask(service.schedule(wait, DELAY, DELAY_UNIT), wait));
+        reactionWaitHashMap.put(user, new ScheduledReactionTask(service.schedule(wait, DELAY, DELAY_UNIT), wait));
     }
 
     public static boolean isWaiting(long user) {
@@ -70,6 +70,7 @@ public class ReactionHandler {
     }
 
     private static class ScheduledReactionTask {
+
         private final ScheduledFuture<?> future;
         private final ReactionWait wait;
 

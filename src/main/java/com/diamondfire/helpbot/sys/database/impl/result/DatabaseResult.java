@@ -43,12 +43,16 @@ public class DatabaseResult implements Iterable<ResultSet> {
     @Override
     public Iterator<ResultSet> iterator() {
         ResultSet set = getResult();
-
+        try {
+            set.beforeFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 try {
-                    return  set.next();
+                    return set.next();
                 } catch (SQLException ignored) {
                     return false;
                 }

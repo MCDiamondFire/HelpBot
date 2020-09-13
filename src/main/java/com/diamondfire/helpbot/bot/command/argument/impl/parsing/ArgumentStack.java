@@ -22,6 +22,7 @@ public class ArgumentStack {
     }
 
     public static class RawArgumentStack {
+
         private Deque<String> stack;
         private Deque<String> currentStack;
 
