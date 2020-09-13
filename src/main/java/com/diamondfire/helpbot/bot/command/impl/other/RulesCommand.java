@@ -44,7 +44,7 @@ public class RulesCommand extends Command {
         builder.setUser(event.getMember().getIdLong());
 
         EmbedBuilder rulesEmbed = new EmbedBuilder();
-        rulesEmbed.addField("Minecraft Server Rules", "https://www.mcdiamondfire.com/rules", true);
+        rulesEmbed.addField("Minecraft Server Rules", "https://mcdiamondfire.com/rules/", true);
         rulesEmbed.addField("Discord Server Rules", "<#337376406227124235>", true);
         EmbedBuilder supportRules = new EmbedBuilder();
         supportRules.setDescription("Failing to follow these rules may result in warnings and even removal of rank in certain cases.");
@@ -92,7 +92,6 @@ public class RulesCommand extends Command {
         builder.addPage("General Rules", rulesEmbed);
         builder.addPage("Support Rules", supportRules);
         builder.addPage("Supportee Rules", supporteeRules);
-
 
         builder.build().send(event.getJDA());
     }

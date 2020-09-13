@@ -3,8 +3,10 @@ package com.diamondfire.helpbot.df.punishments.fetcher;
 import com.diamondfire.helpbot.df.punishments.Punishment;
 import com.diamondfire.helpbot.df.punishments.fetcher.providers.PunishmentProvider;
 import com.diamondfire.helpbot.df.punishments.fetcher.providers.types.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class PunishmentFetcher {
@@ -54,13 +56,14 @@ public class PunishmentFetcher {
     private List<Punishment> getPunishments(PunishmentProvider provider) {
         List<Punishment> punishments = new ArrayList<>();
 
-        new SingleQueryBuilder().query(provider.getQuery(),
-                (statement) -> statement.setString(1, uuid))
-                .onQuery(table -> {
-                    do {
-                        punishments.add(provider.getPunishment(table));
-                    } while (table.next());
-                }).execute();
+        new DatabaseQuery()
+                .query(new BasicQuery(provider.getQuery(), (statement) -> statement.setString(1, uuid)))
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        punishments.add(provider.getPunishment(set));
+                    }
+                });
 
         return punishments;
     }

@@ -7,10 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class TrendingPlotsCommand extends Command {
@@ -44,23 +46,24 @@ public class TrendingPlotsCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Trending Plots", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT * FROM plots WHERE whitelist = 0 ORDER BY votes DESC LIMIT 10")
-                .onQuery((resultTable) -> {
-                    do {
-                        int count = resultTable.getInt("player_count");
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM plots WHERE whitelist = 0 ORDER BY votes DESC LIMIT 10"))
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        int count = set.getInt("player_count");
                         ArrayList<String> stats = new ArrayList<>();
-                        stats.add("Votes: " + resultTable.getInt("votes"));
+                        stats.add("Votes: " + set.getInt("votes"));
 
                         if (count > 0) {
                             stats.add("Players: " + count);
                         }
 
-                        embed.addField(StringUtil.display(resultTable.getString("name")) +
-                                        String.format(" **(%s)**", resultTable.getInt("id")),
+                        embed.addField(StringUtil.display(set.getString("name")) +
+                                        String.format(" **(%s)**", set.getInt("id")),
                                 String.join("\n", stats), false);
-                    } while (resultTable.next());
-                }).execute();
+                    }
+                });
 
         event.reply(preset);
     }

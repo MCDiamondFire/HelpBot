@@ -7,7 +7,8 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
 
@@ -81,30 +82,42 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
         event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
             for (NameDateRange range : nameRanges) {
                 if (range.getAfter() == null) {
-                    new SingleQueryBuilder()
-                            .query("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
-                            })
-                            .onQuery((table) -> names.add(range.getName()))
-                            .execute();
+                            }))
+                            .compile()
+                            .run((result) -> {
+                                if (!result.isEmpty()) {
+                                    names.add(range.getName());
+                                }
+                            });
                 } else if (range.getBefore() == null) {
-                    new SingleQueryBuilder()
-                            .query("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getAfter()));
-                            })
-                            .onQuery((table) -> names.add(range.getName()))
-                            .execute();
+                            }))
+                            .compile()
+                            .run((result) -> {
+                                if (!result.isEmpty()) {
+                                    names.add(range.getName());
+                                }
+                            });
                 } else {
-                    new SingleQueryBuilder()
-                            .query("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
                                 statement.setDate(3, DateUtil.toSqlDate(range.getAfter()));
-                            })
-                            .onQuery((table) -> names.add(range.getName()))
-                            .execute();
+                            }))
+                            .compile()
+                            .run((result) -> {
+                                if (!result.isEmpty()) {
+                                    names.add(range.getName());
+                                }
+                            });
                 }
             }
 

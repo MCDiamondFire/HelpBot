@@ -7,9 +7,12 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
 
@@ -48,46 +51,51 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                 );
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT COUNT(*) AS count," +
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(*) AS count," +
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT staff) AS unique_helped, name FROM support_sessions WHERE name = ?;", (statement) -> statement.setString(1, player))
-                .onQuery((resultTable) -> {
-                    if (resultTable.getInt("count") == 0) {
+                        "COUNT(DISTINCT staff) AS unique_helped, name FROM support_sessions WHERE name = ?;", (statement) -> statement.setString(1, player)))
+                .compile()
+                .run((result) -> {
+                    ResultSet set = result.getResult();
+                    if (set.getInt("count") == 0) {
                         embed.clear();
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player has not been in a session!"));
                         return;
                     }
-                    String formattedName = resultTable.getString("name");
+                    String formattedName = set.getString("name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
 
-                    new SingleQueryBuilder()
-                            .query("SELECT COUNT(*) AS count FROM support_sessions " +
-                                    "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> statement.setString(1, player))
-                            .onQuery((resultBadTable) -> embed.addField("Sessions this month:", resultBadTable.getInt("count") + "", true)).execute();
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT COUNT(*) AS count FROM support_sessions " +
+                                    "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> statement.setString(1, player)))
+                            .compile()
+                            .run((resultBadTable) -> embed.addField("Sessions this month:", resultBadTable.getResult().getInt("count") + "", true));
 
-                    embed.addField("Total Sessions", resultTable.getInt("count") + "", true);
-                    embed.addField("Unique Support Members", resultTable.getInt("unique_helped") + "", true);
-                    embed.addField("Total Session Time", FormatUtil.formatMilliTime(resultTable.getLong("total_duration")), true);
-                    embed.addField("Earliest Session", FormatUtil.formatDate(resultTable.getDate("earliest_time")), true);
-                    embed.addField("Latest Session", FormatUtil.formatDate(resultTable.getDate("latest_time")), true);
+                    embed.addField("Total Sessions", set.getInt("count") + "", true);
+                    embed.addField("Unique Support Members", set.getInt("unique_helped") + "", true);
+                    embed.addField("Total Session Time", FormatUtil.formatMilliTime(set.getLong("total_duration")), true);
+                    embed.addField("Earliest Session", FormatUtil.formatDate(set.getDate("earliest_time")), true);
+                    embed.addField("Latest Session", FormatUtil.formatDate(set.getDate("latest_time")), true);
 
-                    new SingleQueryBuilder()
-                            .query("SELECT AVG(duration) AS average_duration," +
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
                                     "MAX(duration) AS longest_duration " +
-                                    "FROM support_sessions WHERE duration != 0 AND name = ?;", (statement) -> statement.setString(1, player))
-                            .onQuery((resultTableTime) -> {
-                                embed.addField("Average Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("average_duration")), true);
-                                embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("shortest_duration")), true);
-                                embed.addField("Longest Session Time", FormatUtil.formatMilliTime(resultTableTime.getLong("longest_duration")), true);
-                            }).execute();
+                                    "FROM support_sessions WHERE duration != 0 AND name = ?;", (statement) -> statement.setString(1, player)))
+                            .compile()
+                            .run((timeResult) -> {
+                                ResultSet timeSet = timeResult.getResult();
+                                embed.addField("Average Session Time", FormatUtil.formatMilliTime(timeSet.getLong("average_duration")), true);
+                                embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("shortest_duration")), true);
+                                embed.addField("Longest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("longest_duration")), true);
+                            });
 
-                }).execute();
+                });
 
         event.reply(preset);
     }

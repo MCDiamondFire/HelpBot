@@ -9,9 +9,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class TimeTopCommand extends Command {
 
@@ -63,15 +66,15 @@ public class TimeTopCommand extends Command {
             );
             EmbedBuilder embed = preset.getEmbed();
 
-            new SingleQueryBuilder()
-                    .query("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions GROUP BY staff ORDER BY sessions DESC LIMIT 10")
-                    .onQuery((resultTable) -> {
-                        do {
-                            embed.addField(StringUtil.display(resultTable.getString("staff")),
-                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(resultTable.getLong("sessions")), false);
-                        } while (resultTable.next());
-
-                    }).execute();
+            new DatabaseQuery()
+                    .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions GROUP BY staff ORDER BY sessions DESC LIMIT 10"))
+                    .compile()
+                    .run((resultTable) -> {
+                        for (ResultSet set : resultTable) {
+                            embed.addField(StringUtil.display(set.getString("staff")),
+                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(set.getLong("sessions")), false);
+                        }
+                    });
         } else {
             int days = (int) arg;
             preset.withPreset(
@@ -79,15 +82,15 @@ public class TimeTopCommand extends Command {
             );
             EmbedBuilder embed = preset.getEmbed();
 
-            new SingleQueryBuilder()
-                    .query("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days))
-                    .onQuery((resultTable) -> {
-                        do {
-                            embed.addField(StringUtil.display(resultTable.getString("staff")),
-                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(resultTable.getLong("sessions")), false);
-                        } while (resultTable.next());
-
-                    }).execute();
+            new DatabaseQuery()
+                    .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days)))
+                    .compile()
+                    .run((result) -> {
+                        for (ResultSet set : result) {
+                            embed.addField(StringUtil.display(set.getString("staff")),
+                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(set.getLong("sessions")), false);
+                        }
+                    });
         }
         event.reply(preset);
     }

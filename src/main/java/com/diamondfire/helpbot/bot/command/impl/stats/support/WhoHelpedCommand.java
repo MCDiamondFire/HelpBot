@@ -7,10 +7,12 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 
@@ -47,24 +49,31 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                 );
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player))
-                .onQuery((query) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player)))
+                .compile()
+                .run((result) -> {
+
+                    if (result.isEmpty()) {
+                        embed.setDescription("Nobody!");
+                        return;
+                    }
+
+                    ResultSet set = result.getResult();
                     List<String> sessions = new ArrayList<>();
-                    String formattedName = query.getString("name");
+                    String formattedName = set.getString("name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName),
                             new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
                     );
 
-                    do {
-                        sessions.add(query.getInt("total") + " " + query.getString("staff"));
-                    } while (query.next());
+                    for (ResultSet ignored : result) {
+                        sessions.add(set.getInt("total") + " " + set.getString("staff"));
+                    }
 
                     EmbedUtils.addFields(embed, sessions, true);
 
-                })
-                .onNotFound(() -> embed.setDescription("Nobody!")).execute();
+                });
         event.reply(preset);
     }
 

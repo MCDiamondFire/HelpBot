@@ -7,10 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.df.ranks.Ranks;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class RetiredListCommand extends Command {
@@ -47,19 +49,20 @@ public class RetiredListCommand extends Command {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
-        new SingleQueryBuilder()
-                .query("SELECT * FROM ranks, players WHERE ranks.uuid = players.uuid " +
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM ranks, players WHERE ranks.uuid = players.uuid " +
                         "AND ranks.retirement > 0 " +
                         "AND ranks.moderation = 0 " +
-                        "AND ranks.support = 0")
-                .onQuery((resultTable) -> {
+                        "AND ranks.support = 0"))
+                .compile()
+                .run((result) -> {
                     Map<Integer, List<String>> retiredList = new HashMap<>();
                     retiredList.put(Ranks.RETIRED.getNumber(), new ArrayList<>());
                     retiredList.put(Ranks.EMERITUS.getNumber(), new ArrayList<>());
 
-                    do {
-                        retiredList.get(resultTable.getInt("retirement")).add(StringUtil.display(resultTable.getString("name")));
-                    } while (resultTable.next());
+                    for (ResultSet set : result) {
+                        retiredList.get(set.getInt("retirement")).add(StringUtil.display(set.getString("name")));
+                    }
 
                     EmbedBuilder retired = new EmbedBuilder();
                     EmbedUtils.addFields(retired, retiredList.get(Ranks.RETIRED.getNumber()), "", "");
@@ -68,9 +71,8 @@ public class RetiredListCommand extends Command {
 
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);
-                }).execute();
+                });
         builder.build().send(event.getJDA());
-
     }
 
 }

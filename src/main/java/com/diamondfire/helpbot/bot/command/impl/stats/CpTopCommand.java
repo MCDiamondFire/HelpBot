@@ -9,9 +9,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class CpTopCommand extends Command {
 
@@ -53,18 +56,19 @@ public class CpTopCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "CP Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10 OFFSET ?", (statement -> statement.setInt(1, startingPlace - 1)))
-                .onQuery((resultTable) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM creator_rankings ORDER BY points DESC LIMIT 10 OFFSET ?", (statement) -> statement.setInt(1, startingPlace - 1)))
+                .compile()
+                .run((resultTable) -> {
                     int place = startingPlace;
-                    do {
-                        embed.addField(String.format("%s. ", FormatUtil.formatNumber(place)) + StringUtil.display(resultTable.getString("name")),
-                                "CP: " + FormatUtil.formatNumber(resultTable.getInt("points")), false);
+                    for (ResultSet set : resultTable) {
+                        embed.addField(String.format("%s. ", FormatUtil.formatNumber(place)) + StringUtil.display(set.getString("name")),
+                                "CP: " + FormatUtil.formatNumber(set.getInt("points")), false);
                         place++;
-                    } while (resultTable.next());
-                }).execute();
+                    }
+                    event.reply(preset);
+                });
 
-        event.reply(preset);
     }
 
 }

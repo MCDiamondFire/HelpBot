@@ -9,11 +9,13 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.*;
 
@@ -62,25 +64,27 @@ public class InBadCommand extends Command {
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, String.format("People who have done %s or less sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
                 );
+
         EmbedBuilder embed = preset.getEmbed();
         embed.setColor(Color.RED);
+        embed.setDescription("");
 
-        new SingleQueryBuilder()
-                .query("SELECT * FROM (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) a " +
-                                "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)",
-                        statement -> {
-                            statement.setInt(1, days);
-                            statement.setInt(2, num);
-                        })
-                .onQuery((resultTable) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) a " +
+                        "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)", statement -> {
+                    statement.setInt(1, days);
+                    statement.setInt(2, num);
+                }))
+                .compile()
+                .run((result) -> {
                     List<String> staff = new ArrayList<>();
-                    do {
-                        staff.add(StringUtil.display(resultTable.getString("name")));
-                    } while (resultTable.next());
+                    for (ResultSet set : result) {
+                        staff.add(StringUtil.display(set.getString("name")));
+                    }
 
                     EmbedUtils.addFields(embed, staff, "", "", true);
-                })
-                .onNotFound(() -> embed.setDescription("")).execute();
+                });
+
         event.reply(preset);
     }
 }

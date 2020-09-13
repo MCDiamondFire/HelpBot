@@ -6,11 +6,13 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
+import java.sql.ResultSet;
 
 public class QueueCommand extends Command {
 
@@ -46,22 +48,25 @@ public class QueueCommand extends Command {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM hypercube.support_queue ORDER BY enter_time LIMIT 25;")
-                .onQuery((resultTableQueue) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM hypercube.support_queue ORDER BY enter_time LIMIT 25;"))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        embed.setTitle("Queue is Empty!");
+                        embed.setDescription("Keep up the good work");
+                        embed.setColor(new Color(0, 234, 23));
+                        return;
+                    }
+
                     int i = 0;
-                    do {
-                        embed.addField(resultTableQueue.getString("player"), FormatUtil.formatMilliTime(resultTableQueue.getTime("time").getTime()), false);
+                    for (ResultSet set : result) {
+                        embed.addField(set.getString("player"), FormatUtil.formatMilliTime(set.getTime("time").getTime()), false);
                         i++;
-                    } while (resultTableQueue.next());
+                    }
                     embed.setTitle(String.format("Players in Queue (%s)", i));
                     embed.setColor(colorAmt(i));
-                })
-                .onNotFound(() -> {
-                    embed.setTitle("Queue is Empty!");
-                    embed.setDescription("Keep up the good work");
-                    embed.setColor(new Color(0, 234, 23));
-                }).execute();
+                });
 
         event.reply(preset);
     }

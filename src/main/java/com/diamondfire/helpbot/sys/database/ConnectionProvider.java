@@ -6,7 +6,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.*;
 
-public class ConnectionGiver {
+public class ConnectionProvider {
 
     private static final MysqlDataSource source = new MysqlDataSource();
 

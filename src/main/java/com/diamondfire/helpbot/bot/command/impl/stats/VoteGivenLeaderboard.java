@@ -7,9 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 
 public class VoteGivenLeaderboard extends Command {
@@ -49,14 +52,15 @@ public class VoteGivenLeaderboard extends Command {
                 );
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT COUNT(plot_votes.uuid) AS given, name FROM plot_votes, players WHERE players.uuid = plot_votes.uuid GROUP BY plot_votes.uuid ORDER BY COUNT(plot_votes.uuid) DESC LIMIT 10")
-                .onQuery((resultTable) -> {
-                    do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")),
-                                "Votes Given: " + FormatUtil.formatNumber(resultTable.getInt("given")), false);
-                    } while (resultTable.next());
-                }).execute();
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(plot_votes.uuid) AS given, name FROM plot_votes, players WHERE players.uuid = plot_votes.uuid GROUP BY plot_votes.uuid ORDER BY COUNT(plot_votes.uuid) DESC LIMIT 10"))
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        embed.addField(StringUtil.display(set.getString("name")),
+                                "Votes Given: " + FormatUtil.formatNumber(set.getInt("given")), false);
+                    }
+                });
         event.reply(preset);
     }
 

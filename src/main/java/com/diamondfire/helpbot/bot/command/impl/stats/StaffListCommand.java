@@ -7,11 +7,13 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.df.ranks.Ranks;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class StaffListCommand extends Command {
@@ -49,11 +51,13 @@ public class StaffListCommand extends Command {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
-        new SingleQueryBuilder()
-                .query("SELECT * FROM ranks, players " +
+
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM ranks, players " +
                         "WHERE ranks.uuid = players.uuid " +
-                        "AND (ranks.support > 0 || ranks.moderation > 0 || ranks.developer = 1 || ranks.builder = 1) AND ranks.retirement = 0")
-                .onQuery((resultTable) -> {
+                        "AND (ranks.support > 0 || ranks.moderation > 0 || ranks.developer = 1 || ranks.builder = 1) AND ranks.retirement = 0"))
+                .compile()
+                .runAsync((result) -> {
                     EmbedBuilder helperPage = new EmbedBuilder();
                     EmbedBuilder modPage = new EmbedBuilder();
                     EmbedBuilder adminPage = new EmbedBuilder();
@@ -70,11 +74,11 @@ public class StaffListCommand extends Command {
                     moderation.put(Ranks.ADMIN.getNumber(), new ArrayList<>());
                     moderation.put(Ranks.OWNER.getNumber(), new ArrayList<>());
 
-                    do {
-                        String name = StringUtil.display(resultTable.getString("name"));
-                        int supportNum = resultTable.getInt("support");
-                        int moderationNum = resultTable.getInt("moderation");
-                        int developerNum = resultTable.getInt("developer");
+                    for (ResultSet set : result) {
+                        String name = StringUtil.display(set.getString("name"));
+                        int supportNum = set.getInt("support");
+                        int moderationNum = set.getInt("moderation");
+                        int developerNum = set.getInt("developer");
 
                         if (developerNum != 0) {
                             devs.add(name);
@@ -85,7 +89,7 @@ public class StaffListCommand extends Command {
                             moderation.get(moderationNum).add(name);
                         }
 
-                    } while (resultTable.next());
+                    }
 
                     EmbedUtils.addFields(helperPage, support.get(Ranks.EXPERT.getNumber()), "", "Experts");
                     EmbedUtils.addFields(helperPage, support.get(Ranks.HELPER.getNumber()), "", "Helpers");
@@ -101,24 +105,26 @@ public class StaffListCommand extends Command {
                     builder.addPage("Administration", adminPage);
 
                     EmbedUtils.addFields(devEmbed, devs, "", "DiamondFire Developers");
-                }).execute();
 
-        Guild guild = event.getGuild();
-        Role botDev = guild.getRoleById(589238520145510400L);
+                    Guild guild = event.getGuild();
+                    Role botDev = guild.getRoleById(589238520145510400L);
 
-        guild.findMembers((member -> member.getRoles().contains(botDev))).onSuccess((members) -> {
-            List<String> memberNames = new ArrayList<>();
-            for (Member member : members) {
-                if (!member.getUser().isBot()) {
-                    memberNames.add(member.getEffectiveName());
-                }
-            }
+                    guild.findMembers((member -> member.getRoles().contains(botDev)))
+                            .onSuccess((members) -> {
+                                List<String> memberNames = new ArrayList<>();
+                                for (Member member : members) {
+                                    if (!member.getUser().isBot()) {
+                                        memberNames.add(member.getEffectiveName());
+                                    }
+                                }
 
-            EmbedUtils.addFields(devEmbed, memberNames, "", "Bot Developers");
-            guild.pruneMemberCache();
-            builder.addPage("Developers", devEmbed);
-            builder.build().send(event.getJDA());
-        });
+                                EmbedUtils.addFields(devEmbed, memberNames, "", "Bot Developers");
+                                guild.pruneMemberCache();
+                                builder.addPage("Developers", devEmbed);
+                                builder.build().send(event.getJDA());
+                            });
+                });
+
     }
 
 }

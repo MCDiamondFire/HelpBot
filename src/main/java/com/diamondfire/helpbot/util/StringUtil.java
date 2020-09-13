@@ -36,12 +36,17 @@ public class StringUtil {
         if (hashes.size() == 0) {
             return "";
         }
-
         String longest = hashes.keySet().stream().max(Comparator.comparingInt(String::length)).orElse(null);
-
         ArrayList<String> strings = new ArrayList<>();
-        hashes.entrySet().forEach((stringIntegerEntry -> strings.add(stringIntegerEntry.getKey() +
-                " ".repeat((longest.length() + 2) - stringIntegerEntry.getKey().length()) + ":: " + stringIntegerEntry.getValue())));
+
+        for (Map.Entry<String, String> entry : hashes.entrySet()) {
+            String builder = entry.getKey() +
+                    " ".repeat((longest.length() + 2) - entry.getKey().length()) +
+                    ":: " +
+                    entry.getValue();
+
+            strings.add(builder);
+        }
 
         return String.join("\n", strings);
     }

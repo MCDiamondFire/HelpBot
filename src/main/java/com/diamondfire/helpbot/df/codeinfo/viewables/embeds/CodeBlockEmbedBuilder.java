@@ -1,20 +1,21 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
+
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
+public class CodeBlockEmbedBuilder implements IconEmbedBuilder<CodeBlockData> {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(CodeObject data) {
-        CodeBlockData codeBlockData = (CodeBlockData) data;
+    public EmbedBuilder buildDataEmbed(CodeBlockData data) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(codeBlockData.getCodeblockEnum().getColor());
+        builder.setColor(data.getCodeblockEnum().getColor());
         generateInfo(data, builder);
 
-        if (codeBlockData.getAssociatedAction() != null) {
-            int tagLength = codeBlockData.getAssociatedAction().getTags().length;
+        ActionData associatedAction = data.getAssociatedAction();
+        if (associatedAction != null) {
+            int tagLength = associatedAction.getTags().length;
             if (tagLength != 0) {
                 builder.setFooter(tagLength + StringUtil.sCheck(" Tag", tagLength));
             }
@@ -23,5 +24,4 @@ public class CodeBlockEmbedBuilder extends IconEmbedBuilder {
 
         return builder;
     }
-
 }

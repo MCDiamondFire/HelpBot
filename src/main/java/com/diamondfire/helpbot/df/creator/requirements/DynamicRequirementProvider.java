@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.df.creator.requirements;
 
-import com.diamondfire.helpbot.sys.database.ConnectionGiver;
+import com.diamondfire.helpbot.sys.database.ConnectionProvider;
 
 import java.sql.*;
 
@@ -16,7 +16,7 @@ public class DynamicRequirementProvider implements RequirementProvider {
     public int getRequirement() {
         //TODO returning db system
 
-        try (Connection connection = ConnectionGiver.getConnection();
+        try (Connection connection = ConnectionProvider.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT req FROM hypercube.creator_req WHERE tier = ?")) {
             statement.setString(1, identifier);
 

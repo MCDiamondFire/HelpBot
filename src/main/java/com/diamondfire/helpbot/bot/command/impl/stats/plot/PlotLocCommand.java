@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.ConnectionGiver;
+import com.diamondfire.helpbot.sys.database.ConnectionProvider;
 
 import java.sql.*;
 
@@ -53,7 +53,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
     @Override
     public ResultSet getPlot(CommandEvent event) {
         try {
-            Connection connection = ConnectionGiver.getConnection();
+            Connection connection = ConnectionProvider.getConnection();
             boolean nodeSpecific = event.getArgument("node") != null;
             PreparedStatement statement;
             if (nodeSpecific) {

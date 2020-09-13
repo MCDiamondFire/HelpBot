@@ -32,7 +32,7 @@ public class EmbedUtils {
             queue.add(string);
         }
 
-        for (String ignored : strings) {
+        while (true) {
             currentSelection.push(queue.peek());
 
             // We check with the checkView to see if the size is too large.
@@ -55,6 +55,10 @@ public class EmbedUtils {
 
                 if (overflowView != null) {
                     builder.addField("", overflowView, false);
+                }
+
+                if (queue.size() == 1) {
+                    break;
                 }
 
             } else {

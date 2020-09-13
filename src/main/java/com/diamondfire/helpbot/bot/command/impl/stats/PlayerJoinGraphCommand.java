@@ -6,11 +6,13 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class PlayerJoinGraphCommand extends Command {
@@ -21,43 +23,46 @@ public class PlayerJoinGraphCommand extends Command {
 
         switch (mode) {
             case "daily":
-                new SingleQueryBuilder()
-                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
                                 "FROM hypercube.player_join_log WHERE time > CURRENT_DATE() - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", statement -> statement.setInt(1, amount))
-                        .onQuery((resultTable) -> {
-                            do {
-                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
-                            } while (resultTable.next());
+                                "GROUP BY time;", statement -> statement.setInt(1, amount)))
+                        .compile()
+                        .run((result) -> {
+                            for (ResultSet set : result) {
+                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
+                            }
 
                             builder.setGraphName("Unique player joins per day");
-                        }).execute();
+                        });
                 break;
             case "weekly":
-                new SingleQueryBuilder()
-                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
                                 "FROM hypercube.player_join_log WHERE time > CURRENT_DATE() - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", statement -> statement.setInt(1, amount))
-                        .onQuery((resultTable) -> {
-                            do {
-                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
-                            } while (resultTable.next());
+                                "GROUP BY time;", statement -> statement.setInt(1, amount)))
+                        .compile()
+                        .run((result) -> {
+                            for (ResultSet set : result) {
+                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
+                            }
 
                             builder.setGraphName("Unique player joins per week");
-                        }).execute();
+                        });
                 break;
             case "monthly":
-                new SingleQueryBuilder()
-                        .query("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
                                 "FROM hypercube.player_join_log WHERE time > CURRENT_DATE() - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", statement -> statement.setInt(1, amount))
-                        .onQuery((resultTable) -> {
-                            do {
-                                entries.put(new StringEntry(resultTable.getString("time")), resultTable.getInt("count"));
-                            } while (resultTable.next());
+                                "GROUP BY time;", statement -> statement.setInt(1, amount)))
+                        .compile()
+                        .run((result) -> {
+                            for (ResultSet set : result) {
+                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
+                            }
 
                             builder.setGraphName("Unique player joins per month");
-                        }).execute();
+                        });
                 break;
 
         }
@@ -86,7 +91,7 @@ public class PlayerJoinGraphCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("mode",
-                        new DefinedObjectArgument("daily", "weekly", "monthly"))
+                        new DefinedObjectArgument<>("daily", "weekly", "monthly"))
                 .addArgument("amount",
                         new ClampedIntegerArgument(1, 99999999));
     }

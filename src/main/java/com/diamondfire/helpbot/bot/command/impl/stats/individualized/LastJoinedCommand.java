@@ -7,11 +7,12 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
@@ -45,31 +46,40 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, null, null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT players.uuid,players.name FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT players.uuid,players.name FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
-                })
-                .onQuery((resultTable) -> {
-                    String formattedName = resultTable.getString("name");
+                }))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
+                        return;
+                    }
+
+                    ResultSet set = result.getResult();
+                    String formattedName = set.getString("name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
-                    new SingleQueryBuilder()
-                            .query("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, resultTable.getString("uuid")))
-                            .onQuery((resultTableDate) -> {
-                                Timestamp date = resultTableDate.getTimestamp("time");
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
+                            .compile()
+                            .run((resultTableDate) -> {
+                                if (resultTableDate.isEmpty()) {
+                                    embed.addField("Last Seen", "A long time ago...", false);
+                                    return;
+                                }
+
+                                ResultSet setTime = resultTableDate.getResult();
+                                Timestamp date = setTime.getTimestamp("time");
                                 if (Permission.EXPERT.hasPermission(event.getMember())) {
                                     embed.setTimestamp(date.toInstant());
                                 }
                                 embed.addField("Last Seen", FormatUtil.formatDate(date), false);
-                            })
-                            .onNotFound(() -> embed.addField("Last Seen", "A long time ago...", false)).execute();
-                })
-                .onNotFound(() -> {
-                    embed.clear();
-                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
-                }).execute();
+                            });
+                });
 
         event.reply(preset);
     }

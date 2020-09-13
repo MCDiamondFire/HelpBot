@@ -7,9 +7,12 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class PlotsCommand extends AbstractPlayerUUIDCommand {
 
@@ -47,32 +50,36 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT * FROM plots WHERE owner_name = ? OR owner = ? LIMIT 25;", (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM plots WHERE owner_name = ? OR owner = ? LIMIT 25;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
-                })
-                .onQuery((resultTablePlot) -> {
-                    String formattedName = resultTablePlot.getString("owner_name");
+                }))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found, or they have no plots."));
+                        return;
+                    }
+
+                    ResultSet set = result.getResult();
+                    String formattedName = set.getString("owner_name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
 
-                    do {
+                    for (ResultSet plot : result) {
                         String[] stats = {
-                                "Votes: " + resultTablePlot.getInt("votes"),
-                                "Players: " + resultTablePlot.getInt("player_count")
+                                "Votes: " + plot.getInt("votes"),
+                                "Players: " + plot.getInt("player_count")
                         };
-                        embed.addField(StringUtil.display(resultTablePlot.getString("name")) +
-                                        String.format(" **(%s)**", resultTablePlot.getInt("id")),
+                        embed.addField(StringUtil.display(plot.getString("name")) +
+                                        String.format(" **(%s)**", plot.getInt("id")),
                                 String.join("\n", stats), false);
 
-                    } while (resultTablePlot.next());
-                })
-                .onNotFound(() -> {
-                    embed.clear();
-                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found, or they have no plots."));
-                }).execute();
+                    }
+                });
+
         event.reply(preset);
     }
 

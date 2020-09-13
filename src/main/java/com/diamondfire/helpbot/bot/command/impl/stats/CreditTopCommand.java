@@ -7,9 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class CreditTopCommand extends Command {
 
@@ -47,14 +50,15 @@ public class CreditTopCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Credit Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT name, credits FROM players,player_credits WHERE players.uuid = player_credits.uuid ORDER BY credits DESC LIMIT 10")
-                .onQuery((resultTable) -> {
-                    do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")),
-                                "Credits: " + FormatUtil.formatNumber(resultTable.getInt("credits")), false);
-                    } while (resultTable.next());
-                }).execute();
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT name, credits FROM players,player_credits WHERE players.uuid = player_credits.uuid ORDER BY credits DESC LIMIT 10"))
+                .compile()
+                .run((resultTable) -> {
+                    for (ResultSet set : resultTable) {
+                        embed.addField(StringUtil.display(set.getString("name")),
+                                "Credits: " + FormatUtil.formatNumber(set.getInt("credits")), false);
+                    }
+                });
 
         event.reply(preset);
     }

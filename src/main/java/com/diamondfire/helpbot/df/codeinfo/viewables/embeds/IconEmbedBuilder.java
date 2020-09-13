@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
+
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
@@ -8,16 +9,9 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 
 import java.util.Arrays;
 
-public class IconEmbedBuilder extends DataEmbedBuilder {
+public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuilder<T> {
 
-    @Override
-    protected EmbedBuilder buildDataEmbed(CodeObject data) {
-        EmbedBuilder builder = new EmbedBuilder();
-        generateInfo(data, builder);
-        return builder;
-    }
-
-    protected void generateInfo(CodeObject data, EmbedBuilder builder) {
+    default void generateInfo(T data, EmbedBuilder builder) {
         DisplayIcon icon = data.getItem();
         if (icon.getAdditionalInfo().size() != 0) {
             StringBuilder additionalInfo = new StringBuilder();
@@ -53,20 +47,19 @@ public class IconEmbedBuilder extends DataEmbedBuilder {
 
     }
 
-
-    protected enum ParamConverter {
-        ANY_TYPE("Any Variables"),
+    enum ParamConverter {
+        ANY_TYPE("Any Value"),
         TEXT("Text"),
         NUMBER("Number"),
         LOCATION("Location"),
         SOUND("Sound"),
         PARTICLE("Particle"),
         POTION("Potion"),
-        VARIABLE("Dynamic Variable"),
+        VARIABLE("Variable"),
         LIST("List"),
         ITEM("Item"),
         PROJECTILE("Projectile"),
-        SPAWN_EGG("Spawn egg"),
+        SPAWN_EGG("Spawn Egg"),
         ENTITY_TYPE("Entity Type"),
         VEHICLE("Vehicle"),
         BLOCK("Block"),

@@ -5,7 +5,8 @@ import com.diamondfire.helpbot.bot.command.impl.other.FetchDataCommand;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.time.*;
@@ -47,8 +48,9 @@ public class AutoRefreshDBTask implements Runnable {
         preset.withPreset(new InformativeReply(InformativeReplyType.INFO, "Credit log db has been updated"));
         botCmds.sendMessage(preset.getEmbed().build()).queue();
 
-        new SingleQueryBuilder().query("INSERT INTO owen.creator_rankings_log(uuid, points, `rank`, date) " +
-                "SELECT uuid, points, cur_rank, CURRENT_DATE() FROM hypercube.creator_rankings WHERE points > 4990;").executeRaw();
+        new DatabaseQuery()
+                .query(new BasicQuery("INSERT INTO owen.creator_rankings_log(uuid, points, `rank`, date) " +
+                        "SELECT uuid, points, cur_rank, CURRENT_DATE() FROM hypercube.creator_rankings WHERE points > 4990;")).compile();
 
     }
 }

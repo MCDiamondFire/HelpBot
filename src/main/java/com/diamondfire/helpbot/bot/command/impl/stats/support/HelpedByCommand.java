@@ -7,10 +7,12 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
-import com.diamondfire.helpbot.util.EmbedUtils;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 
@@ -43,27 +45,31 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> statement.setString(1, player))
-                .onQuery((query) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> statement.setString(1, player)))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        preset.withPreset(new MinecraftUserPreset(player));
+                        embed.setDescription("Nobody!");
+                        return;
+                    }
+
+                    ResultSet set = result.getResult();
                     List<String> sessions = new ArrayList<>();
-                    String formattedName = query.getString("staff");
+                    String formattedName = set.getString("staff");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName),
                             new InformativeReply(InformativeReplyType.INFO, String.format("Players %s has Helped", formattedName), null)
                     );
 
-                    do {
-                        sessions.add(query.getInt("total") + " " + query.getString("name"));
-                    } while (query.next());
+                    for (ResultSet setUser : result) {
+                        sessions.add(FormatUtil.formatNumber(setUser.getInt("total")) + " " + setUser.getString("name"));
+                    }
 
                     EmbedUtils.addFields(embed, sessions, true);
 
-                })
-                .onNotFound(() -> {
-                    preset.withPreset(new MinecraftUserPreset(player));
-                    embed.setDescription("Nobody!");
-                }).execute();
+                });
 
         event.reply(preset);
     }

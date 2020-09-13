@@ -4,10 +4,12 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.DateEntry;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 
@@ -42,19 +44,20 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-        new SingleQueryBuilder()
-                .query("SELECT * FROM support_sessions WHERE staff = ? ORDER BY time", (statement) -> statement.setString(1, player))
-                .onQuery((query) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM support_sessions WHERE staff = ? ORDER BY time", (statement) -> statement.setString(1, player)))
+                .compile()
+                .run((query) -> {
                     ArrayList<DateEntry> dates = new ArrayList<>();
-                    do {
-                        dates.add(new DateEntry(query.getDate("time")));
-                    } while (query.next());
+                    for (ResultSet set : query) {
+                        dates.add(new DateEntry(set.getDate("time")));
+                    }
 
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("%s's sessions", player))
                             .createGraphFromCollection(dates)).queue();
 
-                }).execute();
+                });
 
     }
 

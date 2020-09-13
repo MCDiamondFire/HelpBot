@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
+
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
@@ -9,24 +10,35 @@ import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.*;
 
-public class CodeActionEmbedBuilder extends IconEmbedBuilder {
+public class CodeActionEmbedBuilder implements IconEmbedBuilder<ActionData> {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(CodeObject data) {
-        ActionData actionData = (ActionData) data;
-        Emote emote = HelpBotInstance.getJda().getEmoteById(actionData.getCodeBlockData().getCodeblockEnum().getEmoji());
+    public EmbedBuilder buildDataEmbed(ActionData data) {
+        Emote emote = HelpBotInstance.getJda().getEmoteById(data.getCodeBlockData().getCodeblockEnum().getEmoji());
         EmbedBuilder builder = new EmbedBuilder()
-                .setColor(actionData.getCodeBlockData().getCodeblockEnum().getColor())
-                .setAuthor(StringUtil.smartCaps(actionData.getCodeblockName()), null, emote.getImageUrl());
+                .setColor(data.getCodeBlockData().getCodeblockEnum().getColor())
+                .setAuthor(StringUtil.smartCaps(data.getCodeblockName()), null, emote.getImageUrl());
+
         generateParameters(data, builder);
         generateInfo(data, builder);
 
-        int tagLength = actionData.getTags().length;
+        int tagLength = data.getTags().length;
         if (tagLength != 0) {
             builder.setFooter(tagLength + " " + StringUtil.sCheck(" Tag", tagLength));
         }
 
         return builder;
+    }
+
+    @Override
+    public LinkedHashMap<BasicReaction, CodeObject> generateDupeEmojis(List<CodeObject> dataArrayList) {
+        LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
+        for (CodeObject data : dataArrayList) {
+            ActionData actionData = (ActionData) data;
+            dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji()), data);
+        }
+
+        return dataHashed;
     }
 
     private void generateParameters(CodeObject data, EmbedBuilder builder) {
@@ -60,16 +72,5 @@ public class CodeActionEmbedBuilder extends IconEmbedBuilder {
         }
 
         builder.addField("<:c_chest:688643661755318272> Parameters", params.toString(), false);
-    }
-
-    @Override
-    public LinkedHashMap<BasicReaction, CodeObject> generateDupeEmojis(List<CodeObject> dataArrayList) {
-        LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
-        for (CodeObject data : dataArrayList) {
-            ActionData actionData = (ActionData) data;
-            dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji()), data);
-        }
-
-        return dataHashed;
     }
 }

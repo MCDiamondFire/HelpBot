@@ -54,6 +54,7 @@ public class HelpBotInstance {
                 new RulesCommand(),
                 new BulkExecuteCommand(),
                 new SetPermissionCommand(),
+                new PermUnlocksCommand(),
                 // statsbot
                 new StatsCommand(),
                 new InBadCommand(),

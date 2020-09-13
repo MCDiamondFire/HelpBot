@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 
 public class CodeCommand extends AbstractSingleQueryCommand {
 
-    public static void sendHelpMessage(CodeObject data, TextChannel channel) {
+    public static <T extends CodeObject> void sendHelpMessage(T data, TextChannel channel) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String material;
         File actionIcon;

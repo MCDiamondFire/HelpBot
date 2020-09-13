@@ -7,11 +7,13 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-@SuppressWarnings("SpellCheckingInspection")
+import java.sql.ResultSet;
+
 public class ActivePlotsCommand extends Command {
 
     @Override
@@ -48,17 +50,19 @@ public class ActivePlotsCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Active Plots", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        new SingleQueryBuilder()
-                .query("SELECT * FROM plots WHERE player_count > 0 AND whitelist = 0 ORDER BY player_count DESC LIMIT 10")
-                .onQuery((resultTable) -> {
-                    do {
-                        embed.addField(StringUtil.display(resultTable.getString("name")) +
-                                        String.format(" **(%s)**", resultTable.getInt("id")),
-                                "Players: " + resultTable.getInt("player_count"), false);
-                    } while (resultTable.next());
-                }).execute();
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM plots WHERE player_count > 0 AND whitelist = 0 ORDER BY player_count DESC LIMIT 10"))
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        embed.addField(StringUtil.display(set.getString("name")) +
+                                        String.format(" **(%s)**", set.getInt("id")),
+                                "Players: " + set.getInt("player_count"), false);
+                    }
 
-        event.reply(preset);
+                    event.reply(preset);
+                });
+
     }
 
 }

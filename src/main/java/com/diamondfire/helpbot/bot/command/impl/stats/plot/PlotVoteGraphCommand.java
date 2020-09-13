@@ -8,10 +8,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class PlotVoteGraphCommand extends Command {
@@ -49,27 +51,29 @@ public class PlotVoteGraphCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         int plotID = event.getArgument("id");
-        new SingleQueryBuilder()
-                .query("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ?;", (statement) -> statement.setInt(1, plotID))
-                .onQuery((resultTable) -> {
-                    List<GraphableEntry<?>> entries = new ArrayList<>();
-                    do {
-                        entries.add(new StringEntry(resultTable.getString("time")));
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ?;", (statement) -> statement.setInt(1, plotID)))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        PresetBuilder preset = new PresetBuilder();
+                        preset.withPreset(
+                                new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")
+                        );
 
-                    } while (resultTable.next());
+                        event.reply(preset);
+                        return;
+                    }
+
+                    List<GraphableEntry<?>> entries = new ArrayList<>();
+                    for (ResultSet set : result) {
+                        entries.add(new StringEntry(set.getString("time")));
+                    }
 
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("Votes on plot %s this month", plotID))
                             .createGraphFromCollection(entries)).queue();
-                })
-                .onNotFound(() -> {
-                    PresetBuilder preset = new PresetBuilder();
-                    preset.withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")
-                    );
-
-                    event.reply(preset);
-                }).execute();
+                });
     }
 
 }

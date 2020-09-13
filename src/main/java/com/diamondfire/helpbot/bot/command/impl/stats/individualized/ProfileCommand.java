@@ -8,10 +8,12 @@ import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.Ranks;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 
@@ -52,32 +54,41 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                 );
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
-                })
-                .onQuery(table -> {
-                    String playerName = table.getString("name");
-                    String playerUUID = table.getString("uuid");
-                    String whois = table.getString("whois");
+                }))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
+                        return;
+                    }
+
+                    ResultSet set = result.getResult();
+                    String playerName = set.getString("name");
+                    String playerUUID = set.getString("uuid");
+                    String whois = set.getString("whois");
 
                     preset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
                     embed.addField("Name", StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
-                    new SingleQueryBuilder()
-                            .query("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTablePlot) -> {
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> statement.setString(1, playerUUID)))
+                            .compile()
+                            .run((resultRanks) -> {
+                                ResultSet setRanks = resultRanks.getResult();
                                 Ranks[] ranks = Ranks.getAllRanks(
-                                        resultTablePlot.getInt("donor"),
-                                        resultTablePlot.getInt("support"),
-                                        resultTablePlot.getInt("moderation"),
-                                        resultTablePlot.getInt("retirement"),
-                                        resultTablePlot.getInt("youtuber"),
-                                        resultTablePlot.getInt("developer"),
-                                        resultTablePlot.getInt("builder")
+                                        setRanks.getInt("donor"),
+                                        setRanks.getInt("support"),
+                                        setRanks.getInt("moderation"),
+                                        setRanks.getInt("retirement"),
+                                        setRanks.getInt("youtuber"),
+                                        setRanks.getInt("developer"),
+                                        setRanks.getInt("builder")
                                 );
                                 List<String> ranksList = new ArrayList<>();
                                 for (Ranks rank : ranks) {
@@ -86,22 +97,41 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 }
 
                                 embed.addField("Ranks", String.join(" ", ranksList), false);
-                            }).execute();
+                            });
 
-                    new SingleQueryBuilder()
-                            .query("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Votes Given", FormatUtil.formatNumber(resultTable.getInt("count")), false)).onNotFound(() -> embed.addField("Votes Given", "0", false)).execute();
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID)))
+                            .compile()
+                            .run((resultTable) -> {
+                                int count;
+                                if (resultTable.isEmpty()) {
+                                    count = 0;
+                                } else {
+                                    count = resultTable.getResult().getInt("count");
+                                }
 
-                    new SingleQueryBuilder()
-                            .query("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Credits", FormatUtil.formatNumber(resultTable.getInt("credits")), false)).execute();
+                                embed.addField("Votes Given", FormatUtil.formatNumber(count), false);
+                            });
 
-                    new SingleQueryBuilder()
-                            .query("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID))
-                            .onQuery((resultTable) -> embed.addField("Join Date", FormatUtil.formatDate(resultTable.getDate("date")), false)).onNotFound(() -> embed.addField("Join Date", "Not Found", false)).execute();
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID)))
+                            .compile()
+                            .run((resultTable) -> embed.addField("Credits", FormatUtil.formatNumber(resultTable.getResult().getInt("credits")), false));
 
-                })
-                .onNotFound(() -> preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."))).execute();
+                    new DatabaseQuery()
+                            .query(new BasicQuery("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID)))
+                            .compile()
+                            .run((resultTable) -> {
+                                String date;
+                                if (resultTable.isEmpty()) {
+                                    date = "Not Found";
+                                } else {
+                                    date = FormatUtil.formatDate(resultTable.getResult().getDate("date"));
+                                }
+
+                                embed.addField("Join Date", date, false);
+                            });
+                });
         event.reply(preset);
     }
 

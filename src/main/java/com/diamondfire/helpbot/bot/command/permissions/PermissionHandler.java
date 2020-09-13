@@ -24,6 +24,7 @@ public class PermissionHandler {
                 .orElse(Permission.USER);
 
         permsCache.put(member.getIdLong(), perm);
+
         return perm;
     }
 

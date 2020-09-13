@@ -6,7 +6,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 
 
 //Command exists for easy mobile copy and pasting
@@ -29,22 +30,22 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-
-        new SingleQueryBuilder()
-                .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
-                })
-                .onQuery(table -> {
-                    String playerUUID = table.getString("uuid");
+                }))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        PresetBuilder preset = new PresetBuilder();
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
+                        event.reply(preset);
+                        return;
+                    }
 
-                    event.getChannel().sendMessage(playerUUID).queue();
-                })
-                .onNotFound(() -> {
-                    PresetBuilder preset = new PresetBuilder();
-                    preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
-                    event.reply(preset);
-                }).execute();
+                    event.getReplyHandler().reply(result.getResult().getString("uuid"));
+                });
     }
 
 }

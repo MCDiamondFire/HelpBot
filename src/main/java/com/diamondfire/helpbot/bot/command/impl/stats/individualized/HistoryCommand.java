@@ -9,7 +9,8 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.punishments.Punishment;
 import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.*;
 
@@ -56,20 +58,29 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
         //1 hour = 5 warnings
         //12 hours = 6 warnings
         String finalPlayer = player;
-        new SingleQueryBuilder()
-                .query("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, finalPlayer);
                     statement.setString(2, finalPlayer);
-                })
-                .onQuery(table -> {
-                    String playerName = table.getString("name");
-                    String playerUUID = table.getString("uuid");
+                }))
+                .compile()
+                .run((table) -> {
+                    if (table.isEmpty()) {
+                        recapPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
+                        event.reply(recapPreset);
+                        return;
+                    }
+
+                    ResultSet set = table.getResult();
+                    String playerName = set.getString("name");
+                    String playerUUID = set.getString("uuid");
                     List<EmbedBuilder> embeds = new ArrayList<>();
                     List<Punishment> activePunishments = new ArrayList<>();
                     List<Punishment> punishments = new PunishmentFetcher()
                             .withUUID(playerUUID)
                             .withAll()
                             .fetch();
+
                     recapPreset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
                     event.getMember().getUser().openPrivateChannel().queue((privateChannel) -> {
                         File sendFile = null;
@@ -154,11 +165,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         });
 
                     });
-                })
-                .onNotFound(() -> {
-                    recapPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
-                    event.reply(recapPreset);
-                }).execute();
+                });
 
     }
 

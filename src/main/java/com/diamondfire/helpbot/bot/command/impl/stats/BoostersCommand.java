@@ -7,9 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+
+import java.sql.ResultSet;
 
 public class BoostersCommand extends Command {
 
@@ -48,16 +51,24 @@ public class BoostersCommand extends Command {
                 );
         EmbedBuilder embed = preset.getEmbed();
 
-        new SingleQueryBuilder()
-                .query("SELECT * FROM xp_boosters WHERE FROM_UNIXTIME(end_time * 0.001) > CURRENT_TIMESTAMP()")
-                .onQuery((resultTable) -> {
-                    String owner = resultTable.getString("owner_name");
-                    int multiplier = resultTable.getInt("multiplier");
-                    String durationName = FormatUtil.formatMilliTime(resultTable.getLong("end_time") - System.currentTimeMillis());
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM xp_boosters WHERE FROM_UNIXTIME(end_time * 0.001) > CURRENT_TIMESTAMP()"))
+                .compile()
+                .run((result) -> {
+                    if (result.isEmpty()) {
+                        embed.addField("None!", "How sad... :(", false);
+                    }
 
-                    embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
-                }).onNotFound(() -> embed.addField("None!", "How sad... :(", false)).execute();
-        event.reply(preset);
+                    for (ResultSet set : result) {
+                        String owner = set.getString("owner_name");
+                        int multiplier = set.getInt("multiplier");
+                        String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
+
+                        embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
+                    }
+
+                    event.reply(preset);
+                });
 
     }
 

@@ -48,6 +48,10 @@ public enum Permission {
     }
 
     public boolean hasPermission(Member member) {
-        return getPermissionLevel() <= PermissionHandler.getPermission(member).getPermissionLevel();
+        return hasPermission(PermissionHandler.getPermission(member));
+    }
+
+    public boolean hasPermission(Permission permission) {
+        return getPermissionLevel() <= permission.getPermissionLevel();
     }
 }

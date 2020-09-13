@@ -1,19 +1,19 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
+
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 
-public class GameValueEmbedBuilder extends IconEmbedBuilder {
+public class GameValueEmbedBuilder implements IconEmbedBuilder<GameValueData> {
 
     @Override
-    protected EmbedBuilder buildDataEmbed(CodeObject data) {
-        GameValueData codeBlockData = (GameValueData) data;
+    public EmbedBuilder buildDataEmbed(GameValueData data) {
         DisplayIcon item = data.getItem();
         EmbedBuilder builder = new EmbedBuilder();
 
-        generateInfo(codeBlockData, builder);
+        generateInfo(data, builder);
         builder.addField("Returns Value",
                 String.format("**%s** - ", ParamConverter.getTypeFromString(item.getReturnType()).getText())
                         + String.join(" ", item.getReturnDescription()),

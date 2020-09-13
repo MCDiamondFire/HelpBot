@@ -9,10 +9,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.SingleQueryBuilder;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class JoinDataCommand extends Command {
@@ -84,11 +86,22 @@ public class JoinDataCommand extends Command {
         String dateTo = FormatUtil.formatDate(c.getTime());
 
         // Players that joined within a week of a certain date
-        new SingleQueryBuilder().query("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;",
-                (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
-                }).onQuery((table) -> embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), "None...", false)).execute();
+                }))
+                .compile()
+                .run((table) -> {
+                    String count;
+                    if (table.isEmpty()) {
+                        count = "None";
+                    } else {
+                        count = FormatUtil.formatNumber(table.getResult().getInt("count"));
+                    }
+
+                    embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), count, false);
+                });
 
 
         Map<Integer, Integer> ranks = new LinkedHashMap<>();
@@ -97,16 +110,18 @@ public class JoinDataCommand extends Command {
         ranks.put(3, 0);
         ranks.put(4, 0);
 
-        new SingleQueryBuilder().query("SELECT donor, COUNT(*) AS count FROM ranks WHERE donor != 0 AND uuid IN (SELECT DISTINCT uuid FROM approved_users " +
-                        "WHERE time BETWEEN ? AND ?) GROUP BY donor;",
-                (statement) -> {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT donor, COUNT(*) AS count FROM ranks WHERE donor != 0 AND uuid IN (SELECT DISTINCT uuid FROM approved_users " +
+                        "WHERE time BETWEEN ? AND ?) GROUP BY donor;", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
-                }).onQuery((table) -> {
-            do {
-                ranks.put(table.getInt("donor"), table.getInt("count"));
-            } while (table.next());
-        }).execute();
+                }))
+                .compile()
+                .run((table) -> {
+                    for (ResultSet set : table) {
+                        ranks.put(set.getInt("donor"), set.getInt("count"));
+                    }
+                });
 
         embed.addField(String.format("Players that have joined within %s and %s that have donor ranks.", dateFrom, dateTo), String.join("\n", new String[]{
                 "<:overlord:735940074742612030> Overlord: " + ranks.get(4),
@@ -130,16 +145,27 @@ public class JoinDataCommand extends Command {
         c.add(Calendar.DAY_OF_MONTH, betweenDays);
         Date between2 = c.getTime();
 
-        new SingleQueryBuilder().query("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users " +
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users " +
                         "WHERE time BETWEEN ? AND ? + INTERVAL ? DAY) AS a WHERE uuid IN " +
-                        "(SELECT DISTINCT uuid FROM player_join_log WHERE time BETWEEN ? AND ?);",
-                (statement) -> {
+                        "(SELECT DISTINCT uuid FROM player_join_log WHERE time BETWEEN ? AND ?);", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
                     statement.setDate(3, DateUtil.toSqlDate(between1));
                     statement.setDate(4, DateUtil.toSqlDate(between2));
                     statement.setInt(5, days);
-                }).onQuery((table) -> embed.addField(String.format("Players that joined again between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), String.valueOf(table.getInt("count")), false)).onNotFound(() -> embed.addField(String.format("Players that joined again between between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), "None...", false)).execute();
+                }))
+                .compile()
+                .run((table) -> {
+                    String count;
+                    if (table.isEmpty()) {
+                        count = "None";
+                    } else {
+                        count = FormatUtil.formatNumber(table.getResult().getInt("count"));
+                    }
+
+                    embed.addField(String.format("Players that joined again between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), count, false);
+                });
 
         event.reply(builder);
     }
