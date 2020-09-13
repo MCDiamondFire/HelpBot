@@ -13,8 +13,6 @@ public class HelpBot {
         HelpBotInstance.initialize();
         CodeDatabase.initialize();
         CodeDifferenceHandler.refresh();
-
-
     }
 
 }

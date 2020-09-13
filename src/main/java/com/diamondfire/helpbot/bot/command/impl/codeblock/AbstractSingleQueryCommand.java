@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
@@ -83,7 +83,8 @@ public abstract class AbstractSingleQueryCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("name", new MultiArgumentContainer<>(new StringArgument()));
+                .addArgument("name",
+                        new MessageArgument());
     }
 
     @Override
@@ -94,15 +95,14 @@ public abstract class AbstractSingleQueryCommand extends Command {
     public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
 
     protected void getData(CommandEvent event, BiConsumer<CodeObject, TextChannel> onChosen) {
-        List<String> args = event.getArgument("name");
-        String argumentsParsed = String.join(" ", args);
+        String name = event.getArgument("name");
         PresetBuilder preset = new PresetBuilder();
 
         //Generate a bunch of "favorable" actions.
         Map<CodeObject, Double> possibleChoices = new HashMap<>();
         for (CodeObject data : CodeDatabase.getStandardObjects()) {
-            double nameScore = JaroWinkler.score(argumentsParsed, data.getName());
-            double iconNameScore = JaroWinkler.score(argumentsParsed, data.getItem().getItemName());
+            double nameScore = JaroWinkler.score(name, data.getName());
+            double iconNameScore = JaroWinkler.score(name, data.getItem().getItemName());
             if (nameScore >= 0.8 || iconNameScore >= 0.8) {
                 possibleChoices.put(data, Math.max(nameScore, iconNameScore));
             }
@@ -136,7 +136,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 // Either there are too many similar actions or there is no close action.
             } else {
                 preset.withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtils.titleSafe(argumentsParsed))))
+                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtils.titleSafe(name))))
                 );
                 List<String> similarActionNames = possibleChoices.entrySet().stream()
                         .sorted(Comparator.comparingDouble(Map.Entry::getValue))
@@ -149,7 +149,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
 
         } else {
             preset.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(EmbedUtils.titleSafe(argumentsParsed))))
+                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(EmbedUtils.titleSafe(name))))
             );
         }
         event.reply(preset);

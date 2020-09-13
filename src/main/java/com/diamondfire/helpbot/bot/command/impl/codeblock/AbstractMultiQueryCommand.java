@@ -1,8 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
@@ -23,7 +22,8 @@ public abstract class AbstractMultiQueryCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("name", new MultiArgumentContainer<>(new StringArgument()));
+                .addArgument("name",
+                        new MessageArgument());
     }
 
     @Override
@@ -58,8 +58,8 @@ public abstract class AbstractMultiQueryCommand extends Command {
     }
 
     protected String getSearchQuery(CommandEvent event) {
-        List<String> strings = event.getArgument("name");
-        return MarkdownSanitizer.sanitize(String.join(" ", strings), MarkdownSanitizer.SanitizationStrategy.ESCAPE);
+        String name = event.getArgument("name");
+        return MarkdownSanitizer.sanitize(name, MarkdownSanitizer.SanitizationStrategy.ESCAPE);
     }
 
 }

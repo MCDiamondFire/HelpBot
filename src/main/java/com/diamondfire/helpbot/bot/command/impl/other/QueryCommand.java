@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -38,7 +38,7 @@ public class QueryCommand extends Command {
     @Override
     public ArgumentSet getArguments() {
         return new ArgumentSet()
-                .addArgument("query", new MultiArgumentContainer<>(new StringArgument()));
+                .addArgument("query", new MessageArgument());
     }
 
     @Override
@@ -49,8 +49,7 @@ public class QueryCommand extends Command {
     @SuppressWarnings("LanguageMismatch")
     @Override
     public void run(CommandEvent event) {
-        List<String> args = event.getArgument("query");
-        String query = String.join(" ", args);
+        String query = event.getArgument("query");
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("SQL Result");
 
