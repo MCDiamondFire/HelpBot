@@ -11,6 +11,7 @@ import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.*;
 
 public abstract class AbstractPlotCommand extends Command {
@@ -53,6 +54,7 @@ public abstract class AbstractPlotCommand extends Command {
                     new InformativeReply(InformativeReplyType.INFO, String.format("Plot Information (%s)", plotID), null)
             );
 
+            embed.setTitle(String.format("Plot Information (%s)", plotID));
             embed.addField("Name", StringUtil.display(resultTablePlot.getString("name")), true);
             embed.addField("Owner", resultTablePlot.getString("owner_name"), true);
             embed.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
@@ -72,26 +74,26 @@ public abstract class AbstractPlotCommand extends Command {
 
             int weeksTillClear = resultTablePlot.getInt("immunity_level");
             LocalDate activeTime = resultTablePlot.getDate("active_time").toLocalDate();
+            LocalDate clearDate = activeTime.plus(weeksTillClear, ChronoUnit.WEEKS);
 
-            embed.addField("Auto Clear Date", FormatUtil.formatDate(DateUtil.toDate(activeTime.plus(weeksTillClear, ChronoUnit.WEEKS))) + String.format(" (%s weeks)", weeksTillClear), true);
-            embed.addField("Last Active Date", FormatUtil.formatDate(DateUtil.toDate(activeTime)), true);
+            embed.addField("Auto Clear Date", FormatUtil.formatDate(clearDate) + String.format(" (%s weeks)", ChronoUnit.WEEKS.between(activeTime, clearDate)), true);
+            embed.addField("Last Active Date", FormatUtil.formatDate(activeTime), true);
             embed.addField("Whitelisted", (resultTablePlot.getInt("whitelist") == 1) + "", true);
             embed.addField("Player Count", FormatUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
             embed.addField("Current Votes", FormatUtil.formatNumber(resultTablePlot.getInt("votes")), true);
 
             // Creates the icon for the plot
             String plotIcon = resultTablePlot.getString("icon");
-            File icon;
             // Plot head icons start with the character h.
             if (plotIcon.startsWith("h")) {
-                icon = Util.getPlayerHead(plotIcon.substring(1));
+                embed.setThumbnail(Util.getPlayerHead(plotIcon.substring(1)));
+                event.reply(preset);
             } else {
-                icon = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
+                File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
+                embed.setThumbnail("attachment://" + mcItem.getName() + ".png");
+                event.getReplyHandler().replyA(preset).addFile(mcItem, mcItem.getName()).queue();
             }
-            embed.setTitle(String.format("Plot Information (%s)", plotID));
-            embed.setThumbnail("attachment://" + icon.getName() + ".png");
 
-            event.getReplyHandler().replyA(preset).addFile(icon, icon.getName() + ".png").queue();
         } catch (SQLException | IllegalStateException e) {
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")

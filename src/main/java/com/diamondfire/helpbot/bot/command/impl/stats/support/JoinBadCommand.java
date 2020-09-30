@@ -42,7 +42,7 @@ public class JoinBadCommand extends Command {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("days",
-                        new SingleArgumentContainer<>(new ClampedIntegerArgument(2, 100)).optional(30));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, 100)).optional(30));
     }
 
     @Override
@@ -63,15 +63,23 @@ public class JoinBadCommand extends Command {
         embed.setDescription("");
 
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT DISTINCT uuid,name FROM" +
-                        "(SELECT players.name, players.uuid FROM ranks,players WHERE ranks.uuid = players.uuid AND ranks.support > 0 | ranks.moderation > 0) a " +
-                        "WHERE uuid NOT IN" +
-                        "(SELECT DISTINCT uuid from  player_join_log where time > CURRENT_TIMESTAMP - INTERVAL ? DAY)", statement -> statement.setInt(1, num)))
+                .query(new BasicQuery("SELECT DISTINCT p.name, DATEDIFF(CURRENT_TIMESTAMP(), latest) AS day " +
+                        "FROM (SELECT players.uuid, name" +
+                        "      FROM hypercube.ranks," +
+                        "           hypercube.players" +
+                        "      WHERE ranks.uuid = players.uuid" +
+                        "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff)" +
+                        "        AND (ranks.developer != 1 || ranks.developer IS NULL)" +
+                        "        AND ranks.support > 0 | ranks.moderation > 0) p" +
+                        "         LEFT JOIN (SELECT uuid, MAX(time) AS latest FROM hypercube.player_join_log GROUP BY uuid) cn" +
+                        "                   ON cn.uuid = p.uuid " +
+                        "WHERE DATEDIFF(CURRENT_TIMESTAMP(), latest) >= ? " +
+                        "ORDER BY day DESC;", (statement) -> statement.setInt(1, num)))
                 .compile()
                 .run((result) -> {
                     List<String> staff = new ArrayList<>();
                     for (ResultSet set : result) {
-                        staff.add(set.getString("name"));
+                        staff.add(set.getString("name") + " (" + set.getInt("day") + ")");
                     }
 
                     EmbedUtils.addFields(embed, staff, "", "", true);

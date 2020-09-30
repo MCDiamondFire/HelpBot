@@ -24,6 +24,7 @@ public class BasicQuery implements QueryResultProvider {
     @Override
     public ResultSet execute(@NotNull Connection connection) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(query);
+        statement.setQueryTimeout(5);
 
         if (provider != null) {
             provider.prepare(statement);

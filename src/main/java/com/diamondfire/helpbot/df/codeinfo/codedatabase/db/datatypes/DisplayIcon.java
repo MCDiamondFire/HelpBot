@@ -3,7 +3,6 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
 
-import java.io.File;
 import java.util.*;
 
 public class DisplayIcon {
@@ -82,8 +81,7 @@ public class DisplayIcon {
         return Util.jsonArrayToString(icon.get("returnDescription").getAsJsonArray());
     }
 
-
-    public File getHead() {
+    public String getHead() {
         if (icon.get("head") == null) {
             return null;
         }

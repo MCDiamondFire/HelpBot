@@ -11,64 +11,13 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.intellij.lang.annotations.Language;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.util.*;
 
 public class NewJoinGraphCommand extends Command {
-
-    public static void generateGraph(String mode, int amount, TextChannel channel) {
-        Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
-        ChartGraphBuilder builder = new ChartGraphBuilder();
-
-        switch (mode) {
-            case "daily":
-                new DatabaseQuery()
-                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", (statement) -> statement.setInt(1, amount)))
-                        .compile()
-                        .run((result) -> {
-                            for (ResultSet set : result) {
-                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
-                            }
-
-                            builder.setGraphName("New players per day");
-                        });
-                break;
-            case "weekly":
-                new DatabaseQuery()
-                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", statement -> statement.setInt(1, amount)))
-                        .compile()
-                        .run((result) -> {
-                            for (ResultSet set : result) {
-                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
-                            }
-
-                            builder.setGraphName("New players per week");
-                        });
-                break;
-            case "monthly":
-                new DatabaseQuery()
-                        .query(new BasicQuery("SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
-                                "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
-                                "GROUP BY time;", statement -> statement.setInt(1, amount)))
-                        .compile()
-                        .run((result) -> {
-                            for (ResultSet set : result) {
-                                entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
-                            }
-
-                            builder.setGraphName("New players per month");
-                        });
-                break;
-
-        }
-
-        channel.sendFile(builder.createGraph(entries)).queue();
-    }
 
     @Override
     public String getName() {
@@ -110,6 +59,47 @@ public class NewJoinGraphCommand extends Command {
         generateGraph(mode, amount, event.getChannel());
     }
 
+
+    public static void generateGraph(String mode, int amount, TextChannel channel) {
+        File graph = null;
+        switch (mode) {
+            case "daily":
+                graph = makeGraph("New players per day", "SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%d') AS time " +
+                        "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? DAY AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                        "GROUP BY time;", amount);
+                break;
+            case "weekly":
+                graph = makeGraph("New players per week", "SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m-%v') AS time " +
+                        "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? WEEK AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                        "GROUP BY time;", amount);
+                break;
+            case "monthly":
+                graph = makeGraph("New players per month", "SELECT time, COUNT(*) AS count FROM (SELECT DISTINCT uuid, DATE_FORMAT(time, '%y-%m') AS time " +
+                        "FROM hypercube.approved_users WHERE time > CURRENT_DATE() - INTERVAL ? MONTH AND uuid NOT IN (SELECT uuid FROM litebans.bans WHERE active = 1 AND until = -1)) a " +
+                        "GROUP BY time;", amount);
+                break;
+        }
+
+        channel.sendFile(graph).queue();
+    }
+
+    private static File makeGraph(String title, @Language("SQL") String query, int amt) {
+        Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
+        ChartGraphBuilder builder = new ChartGraphBuilder();
+
+        new DatabaseQuery()
+                .query(new BasicQuery(query, statement -> statement.setInt(1, amt)))
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
+                    }
+
+                    builder.setGraphName(title);
+                });
+
+        return builder.createGraph(entries);
+    }
 }
 
 

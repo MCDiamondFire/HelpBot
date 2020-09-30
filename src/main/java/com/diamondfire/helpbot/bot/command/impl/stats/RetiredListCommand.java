@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
-import com.diamondfire.helpbot.df.ranks.Ranks;
+import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
@@ -56,18 +56,18 @@ public class RetiredListCommand extends Command {
                         "AND ranks.support = 0"))
                 .compile()
                 .run((result) -> {
-                    Map<Integer, List<String>> retiredList = new HashMap<>();
-                    retiredList.put(Ranks.RETIRED.getNumber(), new ArrayList<>());
-                    retiredList.put(Ranks.EMERITUS.getNumber(), new ArrayList<>());
+                    Map<Rank, List<String>> retiredList = new HashMap<>();
+                    retiredList.put(Rank.RETIRED, new ArrayList<>());
+                    retiredList.put(Rank.EMERITUS, new ArrayList<>());
 
                     for (ResultSet set : result) {
-                        retiredList.get(set.getInt("retirement")).add(StringUtil.display(set.getString("name")));
+                        retiredList.get(Rank.fromBranch(RankBranch.RETIREMENT, set.getInt("retirement"))).add(StringUtil.display(set.getString("name")));
                     }
 
                     EmbedBuilder retired = new EmbedBuilder();
-                    EmbedUtils.addFields(retired, retiredList.get(Ranks.RETIRED.getNumber()), "", "");
+                    EmbedUtils.addFields(retired, retiredList.get(Rank.RETIRED), "", "");
                     EmbedBuilder emeritus = new EmbedBuilder();
-                    EmbedUtils.addFields(emeritus, retiredList.get(Ranks.EMERITUS.getNumber()), "", "");
+                    EmbedUtils.addFields(emeritus, retiredList.get(Rank.EMERITUS), "", "");
 
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);

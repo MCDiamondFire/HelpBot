@@ -45,21 +45,18 @@ public class TagsCommand extends AbstractSingleQueryCommand {
             builder.addField(tag.getName(), stringBuilder.toString(), true);
         }
 
-        String material;
-        File actionIcon;
-        File customHead = data.getItem().getHead();
 
-        if (customHead == null) {
-            material = data.getItem().getMaterial().toUpperCase();
-            actionIcon = Util.fetchMinecraftTextureFile(material);
-        } else {
-            actionIcon = customHead;
-            material = customHead.getName();
-        }
-
-        builder.setThumbnail("attachment://" + material + ".png");
         builder.setTitle("Tags for: " + data.getName());
-        channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
+
+        String customHead = data.getItem().getHead();
+        if (customHead == null) {
+            File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
+            builder.setThumbnail("attachment://" + actionIcon.getName());
+            channel.sendMessage(builder.build()).addFile(actionIcon).queue();
+        } else {
+            builder.setThumbnail(customHead);
+            channel.sendMessage(builder.build()).queue();
+        }
     }
 
     @Override

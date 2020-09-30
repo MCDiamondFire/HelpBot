@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.util;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -25,5 +26,7 @@ public class DateUtil {
         return new java.sql.Date(date.toInstant().toEpochMilli());
     }
 
-
+    public static Timestamp toTimeStamp(Date date) {
+        return new Timestamp(date.getTime());
+    }
 }

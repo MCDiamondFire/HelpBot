@@ -16,21 +16,17 @@ public class CodeCommand extends AbstractSingleQueryCommand {
 
     public static <T extends CodeObject> void sendHelpMessage(T data, TextChannel channel) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
-        String material;
-        File actionIcon;
-        File customHead = data.getItem().getHead();
+        String customHead = data.getItem().getHead();
 
         if (customHead == null) {
-            material = data.getItem().getMaterial().toUpperCase();
-            actionIcon = Util.fetchMinecraftTextureFile(material);
+            File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
+            builder.setThumbnail("attachment://" + actionIcon.getName());
+            channel.sendMessage(builder.build()).addFile(actionIcon).queue();
         } else {
-            actionIcon = customHead;
-            material = customHead.getName();
+            builder.setThumbnail(customHead);
+            channel.sendMessage(builder.build()).queue();
         }
 
-
-        builder.setThumbnail("attachment://" + material + ".png");
-        channel.sendMessage(builder.build()).addFile(actionIcon, material + ".png").queue();
     }
 
     @Override

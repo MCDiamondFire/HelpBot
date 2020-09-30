@@ -19,7 +19,7 @@ import java.sql.ResultSet;
 import java.util.List;
 import java.util.*;
 
-public class InBadCommand extends Command {
+public class SupportBadCommand extends Command {
 
     @Override
     public String getName() {
@@ -29,7 +29,7 @@ public class InBadCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Gets current staff members who have not done a certain number of sessions in 30 days.")
+                .description("Gets current staff members who have not done a certain number of sessions in certain number of days.")
                 .category(CommandCategory.SUPPORT)
                 .addArgument(
                         new HelpContextArgument()
@@ -62,7 +62,7 @@ public class InBadCommand extends Command {
 
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("People who have done %s or less sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have done %s or less sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
                 );
 
         EmbedBuilder embed = preset.getEmbed();
@@ -70,8 +70,22 @@ public class InBadCommand extends Command {
         embed.setDescription("");
 
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) a " +
-                        "WHERE name NOT IN (SELECT DISTINCT staff AS name FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff HAVING COUNT(staff) >= ?)", statement -> {
+                .query(new BasicQuery("SELECT DISTINCT p.name, count " +
+                        "FROM (SELECT players.name" +
+                        "      FROM hypercube.ranks," +
+                        "           hypercube.players" +
+                        "      WHERE ranks.uuid = players.uuid" +
+                        "        AND ranks.support >= 1" +
+                        "        AND ranks.moderation = 0" +
+                        "        AND (ranks.developer != 1 || ranks.developer IS NULL)" +
+                        "        AND players.uuid NOT IN (SELECT DISTINCT excused_staff.uuid FROM owen.excused_staff)) p" +
+                        "         LEFT OUTER JOIN (SELECT DISTINCT staff AS name, COUNT(staff) AS count" +
+                        "                          FROM hypercube.support_sessions" +
+                        "                          WHERE time > CURRENT_TIMESTAMP() - INTERVAL ? DAY" +
+                        "                          GROUP BY staff) cn ON cn.name = p.name " +
+                        "WHERE cn.count <= ?" +
+                        "   OR count IS NULL " +
+                        "ORDER BY count DESC;", statement -> {
                     statement.setInt(1, days);
                     statement.setInt(2, num);
                 }))
@@ -79,7 +93,7 @@ public class InBadCommand extends Command {
                 .run((result) -> {
                     List<String> staff = new ArrayList<>();
                     for (ResultSet set : result) {
-                        staff.add(StringUtil.display(set.getString("name")));
+                        staff.add(StringUtil.display(set.getString("name") + " (" + FormatUtil.formatNumber(set.getInt("count"))) + ")");
                     }
 
                     EmbedUtils.addFields(embed, staff, "", "", true);

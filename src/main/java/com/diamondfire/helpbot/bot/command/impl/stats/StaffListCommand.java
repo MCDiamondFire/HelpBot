@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
-import com.diamondfire.helpbot.df.ranks.Ranks;
+import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
@@ -47,7 +47,6 @@ public class StaffListCommand extends Command {
 
     @Override
     public void run(CommandEvent event) {
-        EmbedBuilder devEmbed = new EmbedBuilder();
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
@@ -58,21 +57,16 @@ public class StaffListCommand extends Command {
                         "AND (ranks.support > 0 || ranks.moderation > 0 || ranks.developer = 1 || ranks.builder = 1) AND ranks.retirement = 0"))
                 .compile()
                 .runAsync((result) -> {
-                    EmbedBuilder helperPage = new EmbedBuilder();
-                    EmbedBuilder modPage = new EmbedBuilder();
-                    EmbedBuilder adminPage = new EmbedBuilder();
-                    Map<Integer, List<String>> support = new HashMap<>();
-                    Map<Integer, List<String>> moderation = new HashMap<>();
-                    List<String> devs = new ArrayList<>();
-
-
-                    support.put(Ranks.JRHELPER.getNumber(), new ArrayList<>());
-                    support.put(Ranks.HELPER.getNumber(), new ArrayList<>());
-                    support.put(Ranks.EXPERT.getNumber(), new ArrayList<>());
-                    moderation.put(Ranks.JRMOD.getNumber(), new ArrayList<>());
-                    moderation.put(Ranks.MOD.getNumber(), new ArrayList<>());
-                    moderation.put(Ranks.ADMIN.getNumber(), new ArrayList<>());
-                    moderation.put(Ranks.OWNER.getNumber(), new ArrayList<>());
+                    Map<Rank, List<String>> ranks = new HashMap<>();
+                    registerRank(ranks,
+                            Rank.JRHELPER,
+                            Rank.HELPER,
+                            Rank.EXPERT,
+                            Rank.JRMOD,
+                            Rank.MOD,
+                            Rank.ADMIN,
+                            Rank.OWNER,
+                            Rank.DEVELOPER);
 
                     for (ResultSet set : result) {
                         String name = StringUtil.display(set.getString("name"));
@@ -81,34 +75,38 @@ public class StaffListCommand extends Command {
                         int developerNum = set.getInt("developer");
 
                         if (developerNum != 0) {
-                            devs.add(name);
+                            ranks.get(Rank.DEVELOPER).add(name);
                         }
+
                         if (moderationNum == 0 && supportNum > 0) {
-                            support.get(supportNum).add(name);
+                            ranks.get(Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
                         } else if (moderationNum > 0) {
-                            moderation.get(moderationNum).add(name);
+                            ranks.get(Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
                         }
 
                     }
 
-                    EmbedUtils.addFields(helperPage, support.get(Ranks.EXPERT.getNumber()), "", "Experts");
-                    EmbedUtils.addFields(helperPage, support.get(Ranks.HELPER.getNumber()), "", "Helpers");
-                    EmbedUtils.addFields(helperPage, support.get(Ranks.JRHELPER.getNumber()), "", "JrHelpers");
-                    builder.addPage("Support", helperPage);
+                    EmbedBuilder supportPage = new EmbedBuilder();
+                    EmbedUtils.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
+                    EmbedUtils.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
+                    EmbedUtils.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
+                    builder.addPage("Support", supportPage);
 
-                    EmbedUtils.addFields(modPage, moderation.get(Ranks.MOD.getNumber()), "", "Mods");
-                    EmbedUtils.addFields(modPage, moderation.get(Ranks.JRMOD.getNumber()), "", "JrMods");
+                    EmbedBuilder modPage = new EmbedBuilder();
+                    EmbedUtils.addFields(modPage, ranks.get(Rank.MOD), "", "Mods");
+                    EmbedUtils.addFields(modPage, ranks.get(Rank.JRMOD), "", "JrMods");
                     builder.addPage("Moderation", modPage);
 
-                    EmbedUtils.addFields(adminPage, moderation.get(Ranks.OWNER.getNumber()), "", "Owner");
-                    EmbedUtils.addFields(adminPage, moderation.get(Ranks.ADMIN.getNumber()), "", "Admins");
+                    EmbedBuilder adminPage = new EmbedBuilder();
+                    EmbedUtils.addFields(adminPage, ranks.get(Rank.OWNER), "", "Owner");
+                    EmbedUtils.addFields(adminPage, ranks.get(Rank.ADMIN), "", "Admins");
                     builder.addPage("Administration", adminPage);
 
-                    EmbedUtils.addFields(devEmbed, devs, "", "DiamondFire Developers");
+                    EmbedBuilder devEmbed = new EmbedBuilder();
+                    EmbedUtils.addFields(devEmbed, ranks.get(Rank.DEVELOPER), "", "DiamondFire Developers");
 
                     Guild guild = event.getGuild();
                     Role botDev = guild.getRoleById(589238520145510400L);
-
                     guild.findMembers((member -> member.getRoles().contains(botDev)))
                             .onSuccess((members) -> {
                                 List<String> memberNames = new ArrayList<>();
@@ -125,6 +123,12 @@ public class StaffListCommand extends Command {
                             });
                 });
 
+    }
+
+    private void registerRank(Map<Rank,List<String>> map, Rank... ranks) {
+        for (Rank rank : ranks) {
+            map.put(rank, new ArrayList<>());
+        }
     }
 
 }

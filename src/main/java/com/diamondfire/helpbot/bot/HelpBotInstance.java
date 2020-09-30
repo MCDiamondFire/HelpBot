@@ -57,7 +57,7 @@ public class HelpBotInstance {
                 new PermUnlocksCommand(),
                 // statsbot
                 new StatsCommand(),
-                new InBadCommand(),
+                new SupportBadCommand(),
                 new JoinBadCommand(),
                 new PlotCommand(),
                 new ProfileCommand(),
@@ -94,7 +94,9 @@ public class HelpBotInstance {
                 new PlotLocCommand(),
                 new FindSupporteeNamesCommand(),
                 new SessionsCommand(),
-                new SupporteeSessionsCommand()
+                new SupporteeSessionsCommand(),
+                new ExcuseStaffCommand(),
+                new ExcusedStaffCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken());

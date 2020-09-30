@@ -39,8 +39,7 @@ public class SearchCommand extends AbstractMultiQueryCommand {
     @Override
     protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         ArrayList<String> list = new ArrayList<>();
-        List<String> rawArgs = event.getArgument("name");
-        String args = String.join(" ", rawArgs).toLowerCase();
+        String args = event.getArgument("name");
 
         for (CodeObject simpleData : data) {
             String dataName = simpleData.getName();

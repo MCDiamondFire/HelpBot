@@ -1,9 +1,7 @@
 package com.diamondfire.helpbot.bot.command.reply.feature;
 
+import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class MinecraftUserPreset implements ReplyPreset {
 
@@ -22,6 +20,6 @@ public class MinecraftUserPreset implements ReplyPreset {
 
     @Override
     public void applyFeature(EmbedBuilder builder) {
-        builder.setAuthor(player, null, "https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/head/" + URLEncoder.encode((uuid == null ? player : uuid), StandardCharsets.UTF_8));
+        builder.setAuthor(player, null, Util.getPlayerHead(uuid == null ? player : uuid));
     }
 }

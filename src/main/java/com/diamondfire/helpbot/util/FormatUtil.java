@@ -5,6 +5,8 @@ import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 
 import java.text.*;
+import java.time.LocalDate;
+import java.time.temporal.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -61,6 +63,11 @@ public class FormatUtil {
     public static String formatDate(Date date) {
         DateFormat format = new SimpleDateFormat("MMM dd, yyyy");
         return format.format(date);
+    }
+
+    public static String formatDate(TemporalAccessor date) {
+        DateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+        return format.format(DateUtil.toDate(LocalDate.ofEpochDay(date.getLong(ChronoField.EPOCH_DAY))));
     }
     //</editor-fold>
 

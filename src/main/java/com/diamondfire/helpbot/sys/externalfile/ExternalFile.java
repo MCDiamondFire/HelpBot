@@ -13,10 +13,6 @@ public enum ExternalFile {
             .setName("db_last")
             .setFileType("json")
             .buildFile()),
-    HEAD_CACHE_DIR(new ExternalFileBuilder()
-            .isDirectory(true)
-            .setName("head_cache")
-            .buildFile()),
     OTHER_CACHE_DIR(new ExternalFileBuilder()
             .isDirectory(true)
             .setName("other_cache")

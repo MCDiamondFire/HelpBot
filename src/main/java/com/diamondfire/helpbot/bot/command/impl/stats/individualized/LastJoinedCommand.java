@@ -23,7 +23,7 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     public String[] getAliases() {
-        return new String[]{"lastseen", "seen", "lastonline"};
+        return new String[]{"lastseen", "seen", "lastonline", "lastjoin"};
     }
 
     @Override
@@ -54,6 +54,7 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
+                        preset.getEmbed().clear();
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
                         return;
                     }
@@ -75,9 +76,12 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                                 ResultSet setTime = resultTableDate.getResult();
                                 Timestamp date = setTime.getTimestamp("time");
                                 if (Permission.EXPERT.hasPermission(event.getMember())) {
+                                    embed.setFooter("Last Seen");
                                     embed.setTimestamp(date.toInstant());
+                                } else {
+                                    embed.addField("Last Seen", FormatUtil.formatDate(date), false);
                                 }
-                                embed.addField("Last Seen", FormatUtil.formatDate(date), false);
+
                             });
                 });
 

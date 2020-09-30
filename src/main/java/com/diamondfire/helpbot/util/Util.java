@@ -5,6 +5,7 @@ import com.google.gson.*;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
@@ -42,23 +43,8 @@ public class Util {
         return new File(imagesDir, "BARRIER.png");
     }
 
-    public static File getPlayerHead(String player) {
-        File check = new File(ExternalFile.HEAD_CACHE_DIR.getFile(), player + ".png");
-        if (check.exists()) {
-            return check;
-        }
-
-        String url = String.format("https://mc-heads.net/head/%s", player);
-        try {
-            URL website = new URL(url);
-            InputStream inputStream = website.openStream();
-            Files.copy(inputStream, Paths.get(check.toURI()), StandardCopyOption.REPLACE_EXISTING);
-            return check;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public static String getPlayerHead(String player) {
+      return "https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/head/" + URLEncoder.encode(player, StandardCharsets.UTF_8) + "/180";
     }
 
     /**

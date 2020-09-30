@@ -38,7 +38,7 @@ public class RankCommand extends AbstractMultiQueryCommand {
     public ArgumentSet getArguments() {
         return new ArgumentSet()
                 .addArgument("Rank",
-                        new DefinedObjectArgument("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
+                        new DefinedObjectArgument<>("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
     }
 
     @Override

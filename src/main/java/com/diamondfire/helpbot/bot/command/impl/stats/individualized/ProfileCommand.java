@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.df.ranks.Ranks;
+import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
@@ -81,18 +81,9 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                             .compile()
                             .run((resultRanks) -> {
                                 ResultSet setRanks = resultRanks.getResult();
-                                Ranks[] ranks = Ranks.getAllRanks(
-                                        setRanks.getInt("donor"),
-                                        setRanks.getInt("support"),
-                                        setRanks.getInt("moderation"),
-                                        setRanks.getInt("retirement"),
-                                        setRanks.getInt("youtuber"),
-                                        setRanks.getInt("developer"),
-                                        setRanks.getInt("builder")
-                                );
+                                Rank[] ranks = RankUtil.getRanks(setRanks);
                                 List<String> ranksList = new ArrayList<>();
-                                for (Ranks rank : ranks) {
-                                    if (rank == null) continue;
+                                for (Rank rank : ranks) {
                                     ranksList.add(String.format("[%s]", rank.getRankName()));
                                 }
 
@@ -134,7 +125,6 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                 });
         event.reply(preset);
     }
-
 }
 
 

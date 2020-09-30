@@ -7,7 +7,7 @@ import java.util.*;
 public class EmbedUtils {
 
     public static void addFields(EmbedBuilder builder, Iterable<String> strings) {
-        addFields(builder, strings, "> ", "", false);
+        addFields(builder, strings, "> ", "", true);
     }
 
     public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer) {
@@ -22,8 +22,11 @@ public class EmbedUtils {
         addFields(builder, strings, pointer, name, false);
     }
 
-    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer, String name, boolean sanitize) {
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer, boolean sanitize) {
+        addFields(builder, strings, pointer, "", sanitize);
+    }
 
+    public static void addFields(EmbedBuilder builder, Iterable<String> strings, String pointer, String name, boolean sanitize) {
         boolean firstField = true;
         //Current selection must be a stack to keep order.
         Stack<String> currentSelection = new Stack<>();
@@ -32,24 +35,31 @@ public class EmbedUtils {
             queue.add(string);
         }
 
+        if (queue.isEmpty()) {
+            return;
+        }
+
         while (true) {
             currentSelection.push(queue.peek());
 
             // We check with the checkView to see if the size is too large.
-            String checkView = StringUtil.display(StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0])));
+            String preCheck = StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]));
+            String checkView = sanitize ? StringUtil.display(preCheck) : preCheck;
             if (checkView.length() > 1024 || queue.size() == 1) {
                 String overflowView = null;
 
                 // If we are on the last index and the length is too much, we will add an overflow view that contains that entry only.
                 if (queue.size() == 1 && checkView.length() > 1024) {
-                    overflowView = StringUtil.display(StringUtil.listView(pointer, sanitize, new String[]{currentSelection.pop()}));
+                    String preOverFlow = StringUtil.listView(pointer, sanitize, new String[]{currentSelection.pop()});
+                    overflowView = sanitize ? StringUtil.display(preOverFlow) : preOverFlow;
                 }
                 // If we are NOT on last then we will just remove the element we just tested from the currentSelection stack, as it seems to be too big.
                 else if (queue.size() != 1) {
                     currentSelection.pop();
                 }
 
-                builder.addField(firstField ? name : "", StringUtil.display(StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]))), false);
+                String toDisplay = StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]));
+                builder.addField(firstField ? name : "",  sanitize ? StringUtil.display(toDisplay) : toDisplay, false);
                 firstField = false;
                 currentSelection.clear();
 
