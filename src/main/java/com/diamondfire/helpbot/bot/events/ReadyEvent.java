@@ -1,7 +1,9 @@
 package com.diamondfire.helpbot.bot.events;
 
+import com.diamondfire.helpbot.HelpBot;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.restart.RestartHandler;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.AutoRefreshDBTask;
+import com.diamondfire.helpbot.sys.tasks.impl.CodeDatabaseTask;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -12,7 +14,7 @@ public class ReadyEvent extends ListenerAdapter {
     public void onReady(@Nonnull net.dv8tion.jda.api.events.ReadyEvent event) {
         super.onReady(event);
 
-        AutoRefreshDBTask.initialize();
         RestartHandler.recover(event.getJDA());
+        HelpBotInstance.getScheduler().initialize();
     }
 }

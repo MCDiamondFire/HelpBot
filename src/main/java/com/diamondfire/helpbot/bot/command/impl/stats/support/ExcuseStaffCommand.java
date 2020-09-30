@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
@@ -12,9 +13,11 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
+import com.diamondfire.helpbot.sys.tasks.impl.SupportUnexcuseTask;
 import com.diamondfire.helpbot.util.*;
 
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class ExcuseStaffCommand extends Command {
@@ -97,6 +100,8 @@ public class ExcuseStaffCommand extends Command {
                                 new InformativeReply(InformativeReplyType.SUCCESS, "Excused!", String.format("Staff member will be excused until ``%s``.", FormatUtil.formatDate(date))),
                                 new MinecraftUserPreset(name, uuid)
                         );
+
+                        HelpBotInstance.getScheduler().schedule(new SupportUnexcuseTask(DateUtil.toDate(LocalDate.now()), date, uuid));
                     }
 
                     event.reply(builder);

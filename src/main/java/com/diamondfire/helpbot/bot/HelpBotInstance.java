@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
+import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -22,6 +23,7 @@ public class HelpBotInstance {
     private static final CommandHandler handler = new CommandHandler();
     private static final Config config = new Config();
     private static JDA jda;
+    private static final TaskRegistry loop = new TaskRegistry();
 
     public static void initialize() throws LoginException {
 
@@ -122,5 +124,9 @@ public class HelpBotInstance {
 
     public static Config getConfig() {
         return config;
+    }
+
+    public static TaskRegistry getScheduler() {
+        return loop;
     }
 }
