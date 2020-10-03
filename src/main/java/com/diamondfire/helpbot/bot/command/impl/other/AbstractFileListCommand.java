@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractFileListCommand extends Command {
 
@@ -29,10 +29,10 @@ public abstract class AbstractFileListCommand extends Command {
         try {
             file = ExternalFileUtil.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "-") + "-list.txt");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), true))) {
-
-                String[] names = data.stream()
-                        .map(simpleData -> simpleData.getItem().getItemName())
-                        .toArray(String[]::new);
+                List<String> names = new ArrayList<>();
+                for (CodeObject item : data) {
+                    names.add(item.getItem().getItemName());
+                }
 
                 writer.append(String.join("|", names));
             }
