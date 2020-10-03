@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class AbstractLeaderboardCommand extends Command {
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("offset",
                         new SingleArgumentContainer<>(new StringArgument()).optional(null));

@@ -37,7 +37,7 @@ public class CpTopCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("place",
                 new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(1)
         );

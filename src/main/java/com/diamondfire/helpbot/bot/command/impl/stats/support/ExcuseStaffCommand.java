@@ -44,7 +44,7 @@ public class ExcuseStaffCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("username",
                         new StringArgument())

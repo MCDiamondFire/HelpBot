@@ -28,7 +28,7 @@ public class PlotCommand extends AbstractPlotCommand {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("id",
                         new IntegerArgument());

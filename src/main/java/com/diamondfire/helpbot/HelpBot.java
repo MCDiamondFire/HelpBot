@@ -10,8 +10,8 @@ import javax.security.auth.login.LoginException;
 public class HelpBot {
 
     public static void main(String[] args) throws LoginException {
-        HelpBotInstance.initialize();
         CodeDatabase.initialize();
+        HelpBotInstance.initialize();
         CodeDifferenceHandler.refresh();
     }
 

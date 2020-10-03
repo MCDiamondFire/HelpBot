@@ -42,7 +42,7 @@ public class SupportBadCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("count",
                         new SingleArgumentContainer<>(new ClampedIntegerArgument(0)).optional(5))

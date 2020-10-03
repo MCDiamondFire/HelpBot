@@ -32,7 +32,7 @@ public class CpRequirementsCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
 

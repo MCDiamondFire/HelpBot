@@ -36,7 +36,7 @@ public class BulkExecuteCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         List<String> playerCommands = new ArrayList<>();
         for (Command command : HelpBotInstance.getHandler().getCommands().values()) {
             if (command instanceof AbstractPlayerUUIDCommand) {

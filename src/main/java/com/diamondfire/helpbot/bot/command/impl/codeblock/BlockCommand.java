@@ -35,7 +35,7 @@ public class BlockCommand extends AbstractMultiQueryCommand {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         List<CodeBlockData> codeBlocks = CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS);
         List<String> strings = new ArrayList<>();
 
