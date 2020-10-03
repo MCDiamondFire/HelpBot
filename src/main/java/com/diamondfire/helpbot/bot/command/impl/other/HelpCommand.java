@@ -35,7 +35,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("help",
                 new SingleArgumentContainer<>(new DefinedObjectArgument<>(HelpBotInstance.getHandler().getCommands().values().stream()
                         .map(Command::getName)

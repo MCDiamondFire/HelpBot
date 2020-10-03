@@ -34,7 +34,7 @@ public class EvalCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("code",
                         new MessageArgument());

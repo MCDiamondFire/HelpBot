@@ -20,7 +20,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
     protected abstract List<String> filterData(List<CodeObject> data, CommandEvent event);
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("name",
                         new MessageArgument());

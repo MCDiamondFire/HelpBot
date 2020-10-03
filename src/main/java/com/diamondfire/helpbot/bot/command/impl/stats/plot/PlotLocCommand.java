@@ -34,7 +34,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("x",
                         new IntegerArgument())

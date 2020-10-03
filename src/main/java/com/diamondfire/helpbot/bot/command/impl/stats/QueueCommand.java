@@ -8,7 +8,6 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.sys.tasks.impl.SupportUnexcuseTask;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -35,7 +34,7 @@ public class QueueCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
 

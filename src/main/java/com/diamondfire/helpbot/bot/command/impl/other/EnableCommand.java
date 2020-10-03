@@ -31,7 +31,7 @@ public class EnableCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("cmd",
                 new StringArgument()
         );

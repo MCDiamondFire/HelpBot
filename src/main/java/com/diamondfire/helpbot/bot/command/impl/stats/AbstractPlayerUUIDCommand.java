@@ -10,7 +10,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 public abstract class AbstractPlayerUUIDCommand extends Command {
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("player",
                         new SingleArgumentContainer<>(new StringArgument()).optional(null));

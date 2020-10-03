@@ -14,7 +14,7 @@ import java.util.*;
 public abstract class AbstractFileListCommand extends Command {
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
 
@@ -24,7 +24,6 @@ public abstract class AbstractFileListCommand extends Command {
     }
 
     protected void generate(CommandEvent event, List<? extends CodeObject> data) {
-
         File file;
         try {
             file = ExternalFileUtil.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "-") + "-list.txt");
@@ -44,8 +43,6 @@ public abstract class AbstractFileListCommand extends Command {
             return;
         }
 
-        event.getChannel().sendMessage("File Generated...").addFile(file).queue();
-
-
+        event.getChannel().sendMessage("File Generated").addFile(file).queue();
     }
 }

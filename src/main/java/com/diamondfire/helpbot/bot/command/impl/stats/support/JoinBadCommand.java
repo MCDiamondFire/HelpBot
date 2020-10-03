@@ -39,7 +39,7 @@ public class JoinBadCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("days",
                         new SingleArgumentContainer<>(new ClampedIntegerArgument(1, 100)).optional(30));

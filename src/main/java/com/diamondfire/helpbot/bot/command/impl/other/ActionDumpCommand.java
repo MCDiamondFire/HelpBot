@@ -22,7 +22,7 @@ public class ActionDumpCommand extends Command {
     }
 
     @Override
-    public ArgumentSet getArguments() {
+    public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
 
