@@ -31,7 +31,6 @@ public class SupportUnexcuseTask implements OneTimeTask {
         this.ms = Duration.between(Instant.now(), date.toInstant()).toMillis();
         this.uuid = uuid;
         this.initDate = initDate;
-
     }
 
     @Override
@@ -55,9 +54,9 @@ public class SupportUnexcuseTask implements OneTimeTask {
                     builder.withPreset(
                             new MinecraftUserPreset(name, uuid)
                     );
-                    embed.setTitle(String.format("Excuse has expired! (%s day duration)", Duration.between(Instant.now(), initDate.toInstant()).toDays()));
+                    embed.setTitle(String.format("Excuse has expired! (%s day duration)", Duration.between(initDate.toInstant(), Instant.now()).toDays()));
 
-                    channel.sendMessage(embed.build());
+                    channel.sendMessage(embed.build()).queue();
                 });
 
     }

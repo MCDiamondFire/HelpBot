@@ -10,11 +10,10 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.sys.tasks.impl.SupportUnexcuseTask;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.*;
 
 
@@ -56,7 +55,11 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
         EmbedBuilder embed = preset.getEmbed();
 
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+                .query(new BasicQuery("SELECT * " +
+                        "FROM hypercube.ranks," +
+                        "     hypercube.players " +
+                        "WHERE ranks.uuid = players.uuid" +
+                        "  AND (players.uuid = ? || players.name = ?)", (statement) -> {
                     statement.setString(1, player);
                     statement.setString(2, player);
                 }))
@@ -77,53 +80,64 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
 
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM ranks WHERE uuid = ? LIMIT 1;", (statement) -> statement.setString(1, playerUUID)))
-                            .compile()
-                            .run((resultRanks) -> {
-                                ResultSet setRanks = resultRanks.getResult();
-                                Rank[] ranks = RankUtil.getRanks(setRanks);
-                                List<String> ranksList = new ArrayList<>();
-                                for (Rank rank : ranks) {
-                                    ranksList.add(String.format("[%s]", rank.getRankName()));
-                                }
+                    Rank[] ranks = RankUtil.getRanks(set);
+                    List<String> ranksList = new ArrayList<>();
+                    for (Rank rank : ranks) {
+                        ranksList.add(String.format("[%s]", rank.getRankName()));
+                    }
 
-                                embed.addField("Ranks", String.join(" ", ranksList), false);
-                            });
+                    embed.addField("Ranks", String.join(" ", ranksList), false);
 
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT COUNT(*) AS count FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID)))
+                            .query(new BasicQuery("SELECT * FROM (SELECT (SELECT date AS liteban_join FROM litebans.history WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS liteban," +
+                                    "     (SELECT (SELECT date AS owen_join FROM owen.join_log WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS owen_join," +
+                                    "     (SELECT (SELECT COUNT(*) AS votes FROM hypercube.plot_votes WHERE uuid = ?) temp FROM dual) AS votes," +
+                                    "     (SELECT (SELECT credits FROM hypercube.player_credits WHERE uuid = ?) temp FROM dual) AS credits," +
+                                    "     (SELECT (SELECT discord_id FROM hypercube.linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id", (statement) -> {
+                                statement.setString(1, playerUUID);
+                                statement.setString(2, playerUUID);
+                                statement.setString(3, playerUUID);
+                                statement.setString(4, playerUUID);
+                                statement.setString(5, playerUUID);
+                            }))
                             .compile()
-                            .run((resultTable) -> {
-                                int count;
-                                if (resultTable.isEmpty()) {
-                                    count = 0;
+                            .run((stats) -> {
+                                ResultSet statsSet = stats.getResult();
+
+                                embed.addField("Votes Given", FormatUtil.formatNumber(statsSet.getInt("votes.temp")), false);
+                                embed.addField("Credits", FormatUtil.formatNumber(statsSet.getInt("credits.temp")), false);
+
+                                long discordId = statsSet.getLong("id.temp");
+                                if (discordId != 0L) {
+                                    embed.addField("Discord User", "<@" + discordId + '>', false);
                                 } else {
-                                    count = resultTable.getResult().getInt("count");
+                                    embed.addField("Discord User", "Not Verified", false);
                                 }
 
-                                embed.addField("Votes Given", FormatUtil.formatNumber(count), false);
-                            });
 
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT credits FROM player_credits WHERE uuid = ?", (statement) -> statement.setString(1, playerUUID)))
-                            .compile()
-                            .run((resultTable) -> embed.addField("Credits", FormatUtil.formatNumber(resultTable.getResult().getInt("credits")), false));
+                                Timestamp liteBanDate = statsSet.getTimestamp("liteban.temp");
 
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT date FROM litebans.history WHERE uuid = ? ORDER BY date LIMIT 1", (statement) -> statement.setString(1, playerUUID)))
-                            .compile()
-                            .run((resultTable) -> {
-                                String date;
-                                if (resultTable.isEmpty()) {
-                                    date = "Not Found";
+                                if (liteBanDate != null) {
+                                    Timestamp owenDate = statsSet.getTimestamp("owen_join.temp");
+
+                                    if (owenDate == null) {
+                                        new DatabaseQuery()
+                                                .query(new BasicQuery("INSERT INTO owen.join_log (uuid,date) VALUES (?,?)", (statement) -> {
+                                                    statement.setString(1, playerUUID);
+                                                    statement.setTimestamp(2, liteBanDate);
+                                                })).compile();
+                                        embed.addField("Join Date", FormatUtil.formatDate(liteBanDate), false);
+                                    } else {
+                                        embed.addField("Join Date", FormatUtil.formatDate(owenDate), false);
+                                    }
+
                                 } else {
-                                    date = FormatUtil.formatDate(resultTable.getResult().getDate("date"));
+                                    embed.addField("Join Date", "Not Found", false);
                                 }
 
-                                embed.addField("Join Date", date, false);
                             });
                 });
+
         event.reply(preset);
     }
 }

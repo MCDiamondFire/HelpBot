@@ -13,6 +13,7 @@ public class StringUtil {
 
     public static String listView(String pointer, boolean sanitize, CharSequence... elements) {
         String view = listView(pointer, elements);
+
         return sanitize ? StringUtil.display(view) : view;
     }
 
@@ -21,7 +22,7 @@ public class StringUtil {
             return "";
         }
 
-        return ("\n%s% " + String.join("\n%s% ", array)).replaceAll("%s%", pointer);
+        return "\n " + pointer + String.join("\n " + pointer, array);
     }
 
     public static String listView(String pointer, CharSequence... elements) {
@@ -29,7 +30,7 @@ public class StringUtil {
             return "";
         }
 
-        return ("\n%s% " + String.join("\n%s% ", elements)).replaceAll("%s%", pointer);
+        return "\n " + pointer + String.join("\n " + pointer, elements);
     }
 
     public static String asciidocStyle(Map<String, String> hashes) {
