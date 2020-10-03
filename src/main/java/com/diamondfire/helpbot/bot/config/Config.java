@@ -28,6 +28,10 @@ public class Config {
         return getProperty("prefix");
     }
 
+    public boolean isDevBot() {
+        return config.get("dev_bot").getAsBoolean();
+    }
+
     // Mc account
     public String getMcEmail() {
         return getProperty("mc_email");
@@ -49,6 +53,7 @@ public class Config {
     public String getDBPassword() {
         return getProperty("db_password");
     }
+
 
     private String getProperty(String property) {
         return config.get(property).getAsString();

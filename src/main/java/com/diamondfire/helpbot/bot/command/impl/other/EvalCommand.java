@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
@@ -51,7 +52,7 @@ public class EvalCommand extends Command {
         String code = event.getArgument("code");
 
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
-        if (!System.getProperty("os.name").contains("Linux")) {
+        if (HelpBotInstance.getConfig().isDevBot()) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("No.");
             builder.setColor(Color.red);

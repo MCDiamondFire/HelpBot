@@ -17,6 +17,7 @@ This project uses a config file inorder to specify things such as bot token, pre
 {
      "token": "bot token",
      "prefix": "?",
+     "dev_bot": true,
      
      "mc_email": "Minecraft@email.com",
      "mc_password": "MinecraftPassword",

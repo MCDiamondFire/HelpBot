@@ -1,5 +1,7 @@
 package com.diamondfire.helpbot.sys.tasks;
 
+import com.diamondfire.helpbot.HelpBot;
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.tasks.impl.*;
 
 import java.util.concurrent.*;
@@ -9,6 +11,8 @@ public class TaskRegistry {
     private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);
 
     public void initialize() {
+        if (HelpBotInstance.getConfig().isDevBot()) return;
+
         register(
                 new CodeDatabaseTask(),
                 new GraphChannelTask(),
