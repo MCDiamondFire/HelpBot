@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.events;
 
-import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.sys.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;

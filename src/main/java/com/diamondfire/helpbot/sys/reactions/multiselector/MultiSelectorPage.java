@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.reactions.multiselector;
+package com.diamondfire.helpbot.sys.reactions.multiselector;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 

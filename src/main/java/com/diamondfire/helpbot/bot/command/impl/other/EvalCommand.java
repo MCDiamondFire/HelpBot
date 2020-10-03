@@ -3,18 +3,16 @@ package com.diamondfire.helpbot.bot.command.impl.other;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.util.EmbedUtils;
+import com.diamondfire.helpbot.util.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.script.*;
 import java.awt.*;
 import java.io.*;
-import java.util.List;
 
 
 public class EvalCommand extends Command {
@@ -73,7 +71,7 @@ public class EvalCommand extends Command {
             Object object = engine.eval(code); // Returns an object of the eval
 
             builder.setTitle("Eval Result");
-            builder.addField("Object Returned:", String.format("```js\n%s```", EmbedUtils.fieldSafe(object)), false);
+            builder.addField("Object Returned:", String.format("```js\n%s```", EmbedUtil.fieldSafe(object)), false);
             event.getChannel().sendMessage(builder.build()).queue();
 
         } catch (Throwable e) {

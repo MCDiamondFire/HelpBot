@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.EmbedUtils;
+import com.diamondfire.helpbot.util.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.ResultSet;
@@ -71,7 +71,7 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                         sessions.add(set.getInt("total") + " " + set.getString("staff"));
                     }
 
-                    EmbedUtils.addFields(embed, sessions, true);
+                    EmbedUtil.addFields(embed, sessions, true);
 
                 });
         event.reply(preset);

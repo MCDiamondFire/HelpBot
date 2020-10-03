@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
+import com.diamondfire.helpbot.sys.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
@@ -65,9 +65,9 @@ public class RetiredListCommand extends Command {
                     }
 
                     EmbedBuilder retired = new EmbedBuilder();
-                    EmbedUtils.addFields(retired, retiredList.get(Rank.RETIRED), "", "");
+                    EmbedUtil.addFields(retired, retiredList.get(Rank.RETIRED), "", "");
                     EmbedBuilder emeritus = new EmbedBuilder();
-                    EmbedUtils.addFields(emeritus, retiredList.get(Rank.EMERITUS), "", "");
+                    EmbedUtil.addFields(emeritus, retiredList.get(Rank.EMERITUS), "", "");
 
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);

@@ -55,7 +55,7 @@ public class InfoCommand extends Command {
         dataStats.put("Legacy Game Values", get(CodeDatabase.getRegistry(CodeDatabase.DEPRECATED_GAME_VALUES)));
 
         embed.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
-        embed.addField("What's New on Beta?", String.format("```%s```", EmbedUtils.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
+        embed.addField("What's New on Beta?", String.format("```%s```", EmbedUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
         embed.setFooter("Database Last Updated");
         embed.setDescription("The database is updated automatically every 24h.");
         embed.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));

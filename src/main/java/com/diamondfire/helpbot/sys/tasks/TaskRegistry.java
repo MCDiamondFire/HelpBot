@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.sys.tasks;
 
-import com.diamondfire.helpbot.HelpBot;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.tasks.impl.*;
 

@@ -22,7 +22,7 @@ public class StringUtil {
             return "";
         }
 
-        return "\n " + pointer + String.join("\n " + pointer, array);
+        return "\n" + pointer + String.join("\n" + pointer, array);
     }
 
     public static String listView(String pointer, CharSequence... elements) {
@@ -30,7 +30,7 @@ public class StringUtil {
             return "";
         }
 
-        return "\n " + pointer + String.join("\n " + pointer, elements);
+        return "\n" + pointer + String.join("\n" + pointer, elements);
     }
 
     public static String asciidocStyle(Map<String, String> hashes) {
@@ -64,7 +64,7 @@ public class StringUtil {
 
             builder.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase()).append(" ");
         }
-        return builder.toString();
+        return builder.toString().strip();
     }
 
     public static String stripColorCodes(String text) {

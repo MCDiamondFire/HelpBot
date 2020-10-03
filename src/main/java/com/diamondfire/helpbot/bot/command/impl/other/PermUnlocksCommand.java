@@ -9,7 +9,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.util.EmbedUtils;
+import com.diamondfire.helpbot.util.EmbedUtil;
 
 import java.util.*;
 
@@ -71,7 +71,7 @@ public class PermUnlocksCommand extends Command {
             }
         }
 
-        EmbedUtils.addFields(builder.getEmbed(), commands);
+        EmbedUtil.addFields(builder.getEmbed(), commands);
         event.reply(builder);
     }
 

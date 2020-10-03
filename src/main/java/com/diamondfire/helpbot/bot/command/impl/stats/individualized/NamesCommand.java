@@ -78,7 +78,7 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
             }
             Collections.reverse(names);
 
-            EmbedUtils.addFields(embed, names);
+            EmbedUtil.addFields(embed, names);
         } catch (Exception e) {
             e.printStackTrace();
         }

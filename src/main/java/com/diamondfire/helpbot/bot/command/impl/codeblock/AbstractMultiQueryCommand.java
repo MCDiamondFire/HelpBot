@@ -34,7 +34,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
         EmbedBuilder builder = preset.getEmbed();
 
         if (names.size() != 0) {
-            EmbedUtils.addFields(preset.getEmbed(), names);
+            EmbedUtil.addFields(preset.getEmbed(), names);
 
             if (builder.getFields().size() >= 5) {
                 builder.clear();

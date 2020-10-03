@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.bot.reactions.multiselector.MultiSelectorBuilder;
+import com.diamondfire.helpbot.sys.reactions.multiselector.MultiSelectorBuilder;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
@@ -87,23 +87,23 @@ public class StaffListCommand extends Command {
                     }
 
                     EmbedBuilder supportPage = new EmbedBuilder();
-                    EmbedUtils.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
-                    EmbedUtils.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
-                    EmbedUtils.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
+                    EmbedUtil.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
+                    EmbedUtil.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
+                    EmbedUtil.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
                     builder.addPage("Support", supportPage);
 
                     EmbedBuilder modPage = new EmbedBuilder();
-                    EmbedUtils.addFields(modPage, ranks.get(Rank.MOD), "", "Mods");
-                    EmbedUtils.addFields(modPage, ranks.get(Rank.JRMOD), "", "JrMods");
+                    EmbedUtil.addFields(modPage, ranks.get(Rank.MOD), "", "Mods");
+                    EmbedUtil.addFields(modPage, ranks.get(Rank.JRMOD), "", "JrMods");
                     builder.addPage("Moderation", modPage);
 
                     EmbedBuilder adminPage = new EmbedBuilder();
-                    EmbedUtils.addFields(adminPage, ranks.get(Rank.OWNER), "", "Owner");
-                    EmbedUtils.addFields(adminPage, ranks.get(Rank.ADMIN), "", "Admins");
+                    EmbedUtil.addFields(adminPage, ranks.get(Rank.OWNER), "", "Owner");
+                    EmbedUtil.addFields(adminPage, ranks.get(Rank.ADMIN), "", "Admins");
                     builder.addPage("Administration", adminPage);
 
                     EmbedBuilder devEmbed = new EmbedBuilder();
-                    EmbedUtils.addFields(devEmbed, ranks.get(Rank.DEVELOPER), "", "DiamondFire Developers");
+                    EmbedUtil.addFields(devEmbed, ranks.get(Rank.DEVELOPER), "", "DiamondFire Developers");
 
                     Guild guild = event.getGuild();
                     Role botDev = guild.getRoleById(589238520145510400L);
@@ -116,7 +116,7 @@ public class StaffListCommand extends Command {
                                     }
                                 }
 
-                                EmbedUtils.addFields(devEmbed, memberNames, "", "Bot Developers");
+                                EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Developers");
                                 guild.pruneMemberCache();
                                 builder.addPage("Developers", devEmbed);
                                 builder.build().send(event.getJDA());

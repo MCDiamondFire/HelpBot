@@ -2,12 +2,11 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.sys.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
@@ -136,7 +135,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 // Either there are too many similar actions or there is no close action.
             } else {
                 preset.withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtils.titleSafe(name))))
+                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtil.titleSafe(name))))
                 );
                 List<String> similarActionNames = possibleChoices.entrySet().stream()
                         .sorted(Comparator.comparingDouble(Map.Entry::getValue))
@@ -144,12 +143,12 @@ public abstract class AbstractSingleQueryCommand extends Command {
                         .collect(Collectors.toList());
                 Collections.reverse(similarActionNames);
 
-                EmbedUtils.addFields(preset.getEmbed(), similarActionNames);
+                EmbedUtil.addFields(preset.getEmbed(), similarActionNames);
             }
 
         } else {
             preset.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(EmbedUtils.titleSafe(name))))
+                    new InformativeReply(InformativeReplyType.ERROR, String.format("Couldn't find anything that matched `%s`!", StringUtil.display(EmbedUtil.titleSafe(name))))
             );
         }
         event.reply(preset);

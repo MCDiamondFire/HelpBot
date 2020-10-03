@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.reactions.impl;
+package com.diamondfire.helpbot.sys.reactions.impl;
 
 import net.dv8tion.jda.api.entities.MessageReaction;
 

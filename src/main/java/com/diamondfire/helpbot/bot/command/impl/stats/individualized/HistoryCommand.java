@@ -12,7 +12,7 @@ import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.EmbedUtils;
+import com.diamondfire.helpbot.util.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -116,7 +116,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
 
                             EmbedBuilder history = new EmbedBuilder();
                             history.setTitle("All Punishments");
-                            EmbedUtils.addFields(history, punishmentStrings, "", "", true);
+                            EmbedUtil.addFields(history, punishmentStrings, "", "", true);
                             if (history.isValidLength()) {
                                 embeds.add(history);
                             } else {

@@ -82,7 +82,7 @@ public class JoinBadCommand extends Command {
                         staff.add(set.getString("name") + " (" + set.getInt("day") + ")");
                     }
 
-                    EmbedUtils.addFields(embed, staff, "", "", true);
+                    EmbedUtil.addFields(embed, staff, "", "", true);
                 });
         event.reply(preset);
     }

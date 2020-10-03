@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
+import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
@@ -101,14 +102,14 @@ public class HelpBotInstance {
                 new ExcusedStaffCommand()
         );
 
-        JDABuilder builder = JDABuilder.createDefault(config.getToken());
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-        builder.setStatus(OnlineStatus.ONLINE);
-        builder.setMemberCachePolicy(MemberCachePolicy.NONE);
-        builder.setActivity(Activity.watching("for ?help"));
-        builder.setGatewayEncoding(GatewayEncoding.ETF);
-        builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS);
-        builder.addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
+        JDABuilder builder = JDABuilder.createDefault(config.getToken())
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .setStatus(OnlineStatus.ONLINE)
+                .setMemberCachePolicy(MemberCachePolicy.NONE)
+                .setActivity(Activity.watching("for ?help"))
+                .setGatewayEncoding(GatewayEncoding.ETF)
+                .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
+                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
 
         jda = builder.build();
         handler.initialize();

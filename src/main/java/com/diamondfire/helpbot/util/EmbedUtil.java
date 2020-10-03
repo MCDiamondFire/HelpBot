@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
 
-public class EmbedUtils {
+public class EmbedUtil {
 
     public static void addFields(EmbedBuilder builder, Iterable<String> strings) {
         addFields(builder, strings, "> ", "", true);
@@ -43,23 +43,20 @@ public class EmbedUtils {
             currentSelection.push(queue.peek());
 
             // We check with the checkView to see if the size is too large.
-            String preCheck = StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]));
-            String checkView = sanitize ? StringUtil.display(preCheck) : preCheck;
+            String checkView = StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]));
             if (checkView.length() > 1024 || queue.size() == 1) {
                 String overflowView = null;
 
                 // If we are on the last index and the length is too much, we will add an overflow view that contains that entry only.
                 if (queue.size() == 1 && checkView.length() > 1024) {
-                    String preOverFlow = StringUtil.listView(pointer, sanitize, new String[]{currentSelection.pop()});
-                    overflowView = sanitize ? StringUtil.display(preOverFlow) : preOverFlow;
+                    overflowView = StringUtil.listView(pointer, sanitize, new String[]{currentSelection.pop()});
                 }
                 // If we are NOT on last then we will just remove the element we just tested from the currentSelection stack, as it seems to be too big.
                 else if (queue.size() != 1) {
                     currentSelection.pop();
                 }
 
-                String toDisplay = StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0]));
-                builder.addField(firstField ? name : "",  sanitize ? StringUtil.display(toDisplay) : toDisplay, false);
+                builder.addField(firstField ? name : "",  StringUtil.listView(pointer, sanitize, currentSelection.toArray(new String[0])), false);
                 firstField = false;
                 currentSelection.clear();
 

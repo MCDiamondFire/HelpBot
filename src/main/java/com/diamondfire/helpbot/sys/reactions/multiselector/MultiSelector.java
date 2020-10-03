@@ -1,6 +1,6 @@
-package com.diamondfire.helpbot.bot.reactions.multiselector;
+package com.diamondfire.helpbot.sys.reactions.multiselector;
 
-import com.diamondfire.helpbot.bot.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.sys.reactions.impl.ReactionHandler;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.*;
@@ -42,7 +42,7 @@ public class MultiSelector {
         for (MultiSelectorPage page : pages) {
             EmbedBuilder pageBuilder = page.getPage();
             pageBuilder.setTitle(page.getName());
-            EmbedUtils.addFields(pageBuilder, emojis, "", "Pages");
+            EmbedUtil.addFields(pageBuilder, emojis, "", "Pages");
         }
 
         jda.getTextChannelById(channel).sendMessage(pages[0].getPage().build()).queue((message) -> {

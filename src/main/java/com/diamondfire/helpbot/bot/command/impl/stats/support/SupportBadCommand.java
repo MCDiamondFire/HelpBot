@@ -96,7 +96,7 @@ public class SupportBadCommand extends Command {
                         staff.add(StringUtil.display(set.getString("name") + " (" + FormatUtil.formatNumber(set.getInt("count"))) + ")");
                     }
 
-                    EmbedUtils.addFields(embed, staff, "", "", true);
+                    EmbedUtil.addFields(embed, staff, "", "", true);
                 });
 
         event.reply(preset);

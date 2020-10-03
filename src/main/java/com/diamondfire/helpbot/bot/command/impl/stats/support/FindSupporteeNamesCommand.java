@@ -125,7 +125,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                     new MinecraftUserPreset(mainName),
                     new InformativeReply(InformativeReplyType.INFO, "Player has been helped on", null)
             );
-            EmbedUtils.addFields(builder.getEmbed(), names);
+            EmbedUtil.addFields(builder.getEmbed(), names);
             if (names.isEmpty()) {
                 builder.getEmbed().addField("", "Player has been helped by anybody!", false);
             }

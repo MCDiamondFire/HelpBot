@@ -33,7 +33,7 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         }
         // We need a 0 width space because stupid discord would format things incorrectly.
         if (icon.getExample().length != 0) {
-            builder.addField("Examples", StringUtil.listView("", icon.getExample()), false);
+            builder.addField("Examples", StringUtil.listView("", true, icon.getExample()), false);
         }
         if (icon.isCancellable()) {
             builder.addField("\uD83D\uDEAB Cancellable", "", false);

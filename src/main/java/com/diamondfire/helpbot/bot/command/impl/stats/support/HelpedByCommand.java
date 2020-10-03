@@ -67,7 +67,7 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                         sessions.add(FormatUtil.formatNumber(setUser.getInt("total")) + " " + setUser.getString("name"));
                     }
 
-                    EmbedUtils.addFields(embed, sessions, true);
+                    EmbedUtil.addFields(embed, sessions, true);
 
                 });
 
