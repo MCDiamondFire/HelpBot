@@ -2,6 +2,8 @@ package com.diamondfire.helpbot.df.punishments;
 
 import com.diamondfire.helpbot.util.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 
 public class Punishment {
@@ -11,15 +13,15 @@ public class Punishment {
     public final String reason;
     public final String staffUUID;
     public final String staffName;
-    public final Date startTime;
-    public final Date untilTime;
+    public final Timestamp startTime;
+    public final Timestamp untilTime;
     public final boolean silent;
     public final boolean active;
     public final String removeByUUID;
     public final String removeByName;
-    public final Date removeDate;
+    public final Timestamp removeDate;
 
-    public Punishment(PunishmentType type, String uuid, String reason, String staffUUID, String staffName, Date startTime, Date untilTime, boolean silent, boolean active, String removeByUUID, String removeByName, Date removeDate) {
+    public Punishment(PunishmentType type, String uuid, String reason, String staffUUID, String staffName, Timestamp startTime, Timestamp untilTime, boolean silent, boolean active, String removeByUUID, String removeByName, Timestamp removeDate) {
         this.type = type;
         this.uuid = uuid;
         this.reason = StringUtil.display(reason);
@@ -28,7 +30,11 @@ public class Punishment {
         this.startTime = startTime;
         this.untilTime = untilTime;
         this.silent = silent;
-        this.active = active;
+        if (untilTime == null) {
+            this.active = active;
+        } else {
+            this.active = (active || untilTime.toInstant().isAfter(Instant.now()));
+        }
         this.removeByUUID = removeByUUID;
         this.removeByName = removeByName;
         this.removeDate = removeDate;

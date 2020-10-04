@@ -1,8 +1,10 @@
 package com.diamondfire.helpbot.df.creator.requirements;
 
-import com.diamondfire.helpbot.sys.database.ConnectionProvider;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
+import com.diamondfire.helpbot.sys.database.impl.result.DatabaseResult;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 public class DynamicRequirementProvider implements RequirementProvider {
 
@@ -14,22 +16,14 @@ public class DynamicRequirementProvider implements RequirementProvider {
 
     @Override
     public int getRequirement() {
-        //TODO returning db system
+        DatabaseResult result = new DatabaseQuery()
+                .query(new BasicQuery("SELECT req FROM hypercube.creator_req WHERE tier = ?", (statement) -> statement.setString(1, identifier)))
+                .compile().get();
 
-        try (Connection connection = ConnectionProvider.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT req FROM hypercube.creator_req WHERE tier = ?")) {
-            statement.setString(1, identifier);
-
-            ResultSet set = statement.executeQuery();
-            if (set.next()) {
-                return set.getInt("req");
-            }
-            set.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        try {
+            return result.getResult().getInt("req");
+        } catch (SQLException ignored) {
+            return 0;
         }
-
-        return 0;
     }
 }
