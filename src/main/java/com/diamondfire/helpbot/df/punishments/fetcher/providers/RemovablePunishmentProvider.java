@@ -10,7 +10,7 @@ public abstract class RemovablePunishmentProvider implements PunishmentProvider 
     public Punishment getPunishment(ResultSet data) throws SQLException {
         return new Punishment(getType(), data.getString("uuid"), data.getString("reason"),
                 data.getString("banned_by_uuid"), data.getString("banned_by_name"),
-                data.getDate("time"), data.getDate("until"), data.getBoolean("silent"),
+                data.getTimestamp("time"), data.getTimestamp("until"), data.getBoolean("silent"),
                 data.getBoolean("active"), data.getString("removed_by_uuid"),
                 data.getString("removed_by_name"), data.getTimestamp("removed_by_date"));
     }

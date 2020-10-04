@@ -7,20 +7,23 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.df.punishments.Punishment;
+import com.diamondfire.helpbot.df.punishments.*;
 import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import com.diamondfire.helpbot.util.EmbedUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.sql.ResultSet;
-import java.util.List;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 
 
 public class HistoryCommand extends AbstractPlayerUUIDCommand {
@@ -44,131 +47,143 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
-
-        if (!Permission.MODERATION.hasPermission(event.getMember())) {
-            player = event.getMember().getEffectiveName();
-        }
-
-        PresetBuilder recapPreset = new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
-                );
-        //TODO Add tempban warn info
-        //30 mins = 4 warnings
-        //1 hour = 5 warnings
-        //12 hours = 6 warnings
-        String finalPlayer = player;
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
-                    statement.setString(1, finalPlayer);
-                    statement.setString(2, finalPlayer);
+                    statement.setString(1, player);
+                    statement.setString(2, player);
                 }))
                 .compile()
                 .run((table) -> {
                     if (table.isEmpty()) {
-                        recapPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
-                        event.reply(recapPreset);
+                        PresetBuilder notFound = new PresetBuilder()
+                                .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
+
+                        event.reply(notFound);
                         return;
                     }
 
                     ResultSet set = table.getResult();
                     String playerName = set.getString("name");
                     String playerUUID = set.getString("uuid");
-                    List<EmbedBuilder> embeds = new ArrayList<>();
-                    List<Punishment> activePunishments = new ArrayList<>();
+                    List<MessageAction> msgs = new ArrayList<>();
                     List<Punishment> punishments = new PunishmentFetcher()
                             .withUUID(playerUUID)
                             .withAll()
                             .fetch();
 
-                    recapPreset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
                     event.getMember().getUser().openPrivateChannel().queue((privateChannel) -> {
-                        File sendFile = null;
+                        // Retrieve active punishments
+                        {
+                            PresetBuilder activePunishmentsPreset = new PresetBuilder()
+                                    .withPreset(
+                                            new MinecraftUserPreset(playerName, playerUUID),
+                                            new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
+                                    );
+                            EmbedBuilder embed = activePunishmentsPreset.getEmbed();
 
-                        for (Punishment punishment : punishments) {
-                            if (punishment.active) {
-                                activePunishments.add(punishment);
+                            List<String> activePunishments = new ArrayList<>();
+                            int warnings = 0;
+                            int yearlyWarnings = 0;
+                            for (Punishment punishment : punishments) {
+                                if (punishment.active) {
+                                    activePunishments.add(punishment.toString());
+                                }
+                                if (punishment.type == PunishmentType.WARN) {
+                                    if (ChronoUnit.DAYS.between(punishment.startTime.toInstant(), Instant.now()) <= 365) {
+                                        yearlyWarnings++;
+                                    }
+                                    warnings++;
+                                }
                             }
-                        }
-                        punishments.removeAll(activePunishments);
+                            punishments.removeIf((punishment) -> punishment.active);
 
+                            if (activePunishments.size() > 0) {
+                                activePunishmentsPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Active Punishments", null));
+                                EmbedUtil.addFields(embed, activePunishments, "", true);
 
-                        if (activePunishments.size() > 0) {
-                            List<String> activePunishmentStrings = new ArrayList<>();
+                                String duration = null;
+                                int warningReq = 0;
+                                if (warnings < 4 && warnings > 1) {
+                                    duration = "30 minute";
+                                    warningReq = 4 - warnings;
+                                } else if (warnings < 5) {
+                                    duration = "1 hour";
+                                    warningReq = 5 - warnings;
+                                } else if (warnings < 6) {
+                                    duration = "12 hour";
+                                    warningReq = 6 - warnings;
+                                }
 
-                            for (Punishment punishment : activePunishments) {
-                                activePunishmentStrings.add(punishment.toString());
+                                if (duration != null) {
+                                    embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more active %s, you will receive a **%s** tempban!", warningReq, StringUtil.sCheck("warning", warningReq), duration), false);
+                                }
+
+                            } else if (punishments.size() == 0) {
+                                embed.setDescription("No punishments here, keep up the good work!");
                             }
 
-                            EmbedBuilder active = new EmbedBuilder();
-                            active.setColor(Color.RED);
-                            active.setTitle("\u26A0 Active Punishments");
-                            active.setDescription(String.join("\n", activePunishmentStrings.toArray(new String[0])));
-                            embeds.add(active);
+                            if (yearlyWarnings > 10) {
+                                embed.setColor(Color.RED);
+                                embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
+                            }
+
+                            msgs.add(privateChannel.sendMessage(embed.build()));
                         }
 
-
-                        if (punishments.size() > 0) {
+                        // Retrieve normal punishments
+                        {
+                            PresetBuilder punishmentsPreset = new PresetBuilder()
+                                    .withPreset(
+                                            new InformativeReply(InformativeReplyType.INFO, "Punishment History", null)
+                                    );
+                            EmbedBuilder presetBuilder = punishmentsPreset.getEmbed();
                             List<String> punishmentStrings = new ArrayList<>();
                             for (Punishment punishment : punishments) {
                                 punishmentStrings.add(punishment.toString());
                             }
 
-                            EmbedBuilder history = new EmbedBuilder();
-                            history.setTitle("All Punishments");
-                            EmbedUtil.addFields(history, punishmentStrings, "", "", true);
-                            if (history.isValidLength()) {
-                                embeds.add(history);
+                            EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
+                            if (punishmentStrings.size() == 0) {
+                            } else if (presetBuilder.isValidLength()) {
+                                msgs.add(privateChannel.sendMessage(presetBuilder.build()));
                             } else {
                                 try {
-                                    sendFile = ExternalFileUtil.generateFile("history.txt");
+                                    File sendFile = ExternalFileUtil.generateFile("history.txt");
                                     Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
+                                    msgs.add(privateChannel.sendFile(sendFile));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                 }
                             }
+
                         }
 
-                        File finalSendFile = sendFile;
-                        event.getReplyHandler().replyA(recapPreset, privateChannel).queue((msg) -> {
-                            PresetBuilder reply = new PresetBuilder();
-                            reply.withPreset(
-                                    new InformativeReply(InformativeReplyType.INFO, "Sent your punishment history in your private messages!")
-                            );
-                            event.reply(reply);
+                        MessageAction action = msgs.get(0);
+                        msgs.remove(0);
 
-                            if (punishments.size() == 0 && activePunishments.size() == 0) {
-                                // temp fix
-                                msg.delete().queue();
-                                recapPreset.getEmbed().clear();
-                                recapPreset.withPreset(
-                                        new MinecraftUserPreset(playerName, playerUUID),
-                                        new InformativeReply(InformativeReplyType.INFO, "History Recap",
-                                                "No punishments here, good job and keep up the good work!")
-                                );
-                                event.getReplyHandler().reply(recapPreset, privateChannel);
-                            } else {
-                                for (EmbedBuilder builder : embeds) {
-                                    event.getReplyHandler().reply(builder, privateChannel);
-                                }
-                                if (finalSendFile != null) {
-                                    privateChannel.sendFile(finalSendFile).queue();
-                                }
+                        action.queue((msg) -> {
+                            PresetBuilder successMSG = new PresetBuilder()
+                                    .withPreset(
+                                            new InformativeReply(InformativeReplyType.SUCCESS, "Check your messages for history!"),
+                                            new MinecraftUserPreset(playerName, playerUUID)
+                                    );
+
+                            event.reply(successMSG);
+
+                            for (MessageAction msgAction : msgs) {
+                                msgAction.queue();
                             }
-
-
                         }, (error) -> {
-                            PresetBuilder errorMSG = new PresetBuilder();
-                            errorMSG.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Could not send private message! Please check to make sure private messages are enabled."));
+                            PresetBuilder errorMSG = new PresetBuilder()
+                                    .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Could not send private message! Please check to make sure private messages are enabled."));
                             event.reply(errorMSG);
-
                         });
 
                     });
                 });
 
     }
-
 }
+
 
 
