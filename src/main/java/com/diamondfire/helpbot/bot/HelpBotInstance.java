@@ -9,7 +9,6 @@ import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
-import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
@@ -21,6 +20,7 @@ import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
 
+    public static final long DF_GUILD = 180793115223916544L;
     private static final CommandHandler handler = new CommandHandler();
     private static final Config config = new Config();
     private static JDA jda;
@@ -58,6 +58,7 @@ public class HelpBotInstance {
                 new BulkExecuteCommand(),
                 new SetPermissionCommand(),
                 new PermUnlocksCommand(),
+                new MuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),

@@ -35,6 +35,11 @@ public class HelpCommand extends Command {
     }
 
     @Override
+    public boolean cacheArgumentSet() {
+        return false;
+    }
+
+    @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("help",
                 new SingleArgumentContainer<>(new DefinedObjectArgument<>(HelpBotInstance.getHandler().getCommands().values().stream()

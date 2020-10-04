@@ -7,9 +7,13 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public abstract class Command {
 
-    private final ArgumentSet set = compileArguments();
+    private ArgumentSet set = null;
 
     public abstract String getName();
+
+    public boolean cacheArgumentSet() {
+        return true;
+    }
 
     public String[] getAliases() {
         return new String[0];
@@ -20,7 +24,14 @@ public abstract class Command {
     protected abstract ArgumentSet compileArguments();
 
     public ArgumentSet getArguments() {
-        return set;
+        if (cacheArgumentSet()) {
+            if (set == null) {
+                set = compileArguments();
+            }
+            return set;
+        } else {
+            return compileArguments();
+        }
     }
 
     public abstract Permission getPermission();

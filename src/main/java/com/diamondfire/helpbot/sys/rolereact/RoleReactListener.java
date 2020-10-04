@@ -11,9 +11,8 @@ import java.util.*;
 
 public class RoleReactListener extends ListenerAdapter {
 
-
-    private static final long MESSAGE_ID = 761781781720072232L;
-    private static final long CHANNEL_ID = 589831308234981415L;
+    private static final long MESSAGE_ID = 762167137775124491L;
+    private static final long CHANNEL_ID = 762158470019022858L;
 
     public RoleReactListener() {
         HelpBotInstance.getJda().getTextChannelById(CHANNEL_ID).retrieveMessageById(MESSAGE_ID).queue((msg) -> {
@@ -31,7 +30,7 @@ public class RoleReactListener extends ListenerAdapter {
                 emojis.add(emoji + " " + String.format("``%s``", StringUtil.smartCaps(role.name())));
             }
 
-            msg.editMessage("React to this message to receive pings for certain announcements!\n " + StringUtil.listView("", emojis)).queue();
+            msg.editMessage("__**Reaction Roles**__ \nReact with any of the following to receive pings regarding that topic.\n" + StringUtil.listView("", emojis)).queue();
 
         });
     }

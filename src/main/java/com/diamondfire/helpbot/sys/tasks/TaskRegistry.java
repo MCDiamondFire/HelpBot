@@ -19,6 +19,7 @@ public class TaskRegistry {
         );
 
         SupportUnexcuseTask.prepare();
+        MuteExpireTask.prepare();
     }
 
     private void register(LoopingTask... tasks) {

@@ -29,7 +29,7 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         }
 
         if (icon.getWorksWith().length != 0) {
-            builder.addField("Works With", StringUtil.listView("> ", icon.getWorksWith()), false);
+            builder.addField("Works With", StringUtil.listView("> ", true, icon.getWorksWith()), false);
         }
         // We need a 0 width space because stupid discord would format things incorrectly.
         if (icon.getExample().length != 0) {

@@ -36,6 +36,11 @@ public class BulkExecuteCommand extends Command {
     }
 
     @Override
+    public boolean cacheArgumentSet() {
+        return false;
+    }
+
+    @Override
     public ArgumentSet compileArguments() {
         List<String> playerCommands = new ArrayList<>();
         for (Command command : HelpBotInstance.getHandler().getCommands().values()) {
