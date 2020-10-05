@@ -11,6 +11,7 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
     protected Date parse(@NotNull String argument) throws ArgumentException {
         Calendar calendar = Calendar.getInstance();
         int offset = 0;
+        boolean modified = false;
 
         Map<Character, Integer> durationMap = new HashMap<>();
         for (Duration duration : getDurations()) {
@@ -23,6 +24,7 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
             if (!Character.isDigit(currentChar)) {
                 if (durationMap.containsKey(currentChar)) {
                     calendar.add(durationMap.get(currentChar), Integer.parseInt(argument.substring(offset, i)));
+                    modified = true;
                 } else {
                     List<String> units = new ArrayList<>();
                     for (Character character : durationMap.keySet()) {
@@ -33,6 +35,10 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
                 }
                 offset = i + 1;
             }
+        }
+
+        if (!modified) {
+            throw new MalformedArgumentException("Malformed duration!");
         }
 
         return calendar.getTime();

@@ -31,13 +31,16 @@ public class MuteCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Mutes a player for a certain duration. The mute will automatically expire when the duration is over or if they are unmuted.")
+                .description("Mutes a player for a certain duration. The mute will automatically expire when the duration is over.")
                 .category(CommandCategory.OTHER)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("user"),
                         new HelpContextArgument()
-                                .name("duration")
+                                .name("duration"),
+                        new HelpContextArgument()
+                                .name("reason")
+                                .optional()
                 );
     }
 
@@ -62,7 +65,7 @@ public class MuteCommand extends Command {
         PresetBuilder builder = new PresetBuilder();
         long user = event.getArgument("user");
         Date duration = event.getArgument("duration");
-        long timeLeft = duration.toInstant().minusMillis(Instant.now().toEpochMilli()).toEpochMilli();
+        long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
 
         event.getGuild().retrieveMemberById(user).queue((msg) -> {
             new DatabaseQuery()

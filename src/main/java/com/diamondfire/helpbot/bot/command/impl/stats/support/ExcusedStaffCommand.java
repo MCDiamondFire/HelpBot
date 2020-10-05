@@ -44,7 +44,7 @@ public class ExcusedStaffCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Current Excused Staff", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Currently Excused Staff", null)
                 );
 
         new DatabaseQuery()

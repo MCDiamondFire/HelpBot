@@ -59,6 +59,7 @@ public class HelpBotInstance {
                 new SetPermissionCommand(),
                 new PermUnlocksCommand(),
                 new MuteCommand(),
+                new MutedCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),

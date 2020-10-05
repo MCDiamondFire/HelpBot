@@ -13,9 +13,10 @@ public class CommandExecutor {
 
     private final ExecutorService POOL = Executors.newCachedThreadPool();
     private final CommandCheck[] checks = new CommandCheck[]{
+            new MutedCheck(),
             new DisabledCheck(),
             new PermissionCheck(),
-            new CommandLog()
+            new CommandLog(),
     };
 
     public void run(CommandEvent e) {
