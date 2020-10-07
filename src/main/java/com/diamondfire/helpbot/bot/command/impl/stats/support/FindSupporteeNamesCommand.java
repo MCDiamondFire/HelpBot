@@ -127,7 +127,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             );
             EmbedUtil.addFields(builder.getEmbed(), names);
             if (names.isEmpty()) {
-                builder.getEmbed().addField("", "Player has been helped by anybody!", false);
+                builder.getEmbed().addField("", "Player hasn't been helped by anybody!", false);
             }
 
             msg.editMessage(builder.getEmbed().build()).override(true).queue();
