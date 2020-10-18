@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.sys.database.impl.queries.QueryResultProvider;
 import com.diamondfire.helpbot.sys.database.impl.result.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseQuery {
 
@@ -18,7 +18,8 @@ public class DatabaseQuery {
 
     public DatabaseFuture compile() {
         try {
-            return new DatabaseFuture(new DatabaseResult(queryProvider.execute(ConnectionProvider.getConnection())));
+            Connection connection = ConnectionProvider.getConnection();
+            return new DatabaseFuture(connection, new DatabaseResult(queryProvider.execute(connection)));
         } catch (SQLException e) {
             throw new IllegalStateException("Failed to execute SQL !" + e.getMessage());
         }

@@ -1,7 +1,10 @@
 package com.diamondfire.helpbot.util;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 import com.google.gson.*;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.*;
 import java.net.*;
@@ -86,5 +89,13 @@ public class Util {
         }
 
         return null;
+    }
+
+    public static void log(PresetBuilder builder) {
+        log(builder.getEmbed());
+    }
+
+    public static void log(EmbedBuilder builder) {
+        HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessage(builder.build()).queue();
     }
 }

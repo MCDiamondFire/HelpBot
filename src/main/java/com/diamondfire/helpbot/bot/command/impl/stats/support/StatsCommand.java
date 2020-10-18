@@ -13,7 +13,7 @@ import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
-import java.time.LocalDate;
+import java.time.*;
 
 public class StatsCommand extends AbstractPlayerUUIDCommand {
 
@@ -81,14 +81,17 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 embed.addField("Monthly Time", FormatUtil.formatMilliTime(setBad.getLong("total_time")), true);
                                 if (setBad.getBoolean("support")) {
                                     new DatabaseQuery()
-                                            .query(new BasicQuery(" SELECT (time + INTERVAL 30 DAY) AS bad_time " +
+                                            .query(new BasicQuery("SELECT (time + INTERVAL 30 DAY) AS bad_time " +
                                                     "FROM support_sessions WHERE staff = ?" +
                                                     "ORDER BY TIME DESC LIMIT 1 OFFSET 4;", (statement) -> statement.setString(1, player)))
                                             .compile()
                                             .run((resultBad) -> {
-                                                Date date = resultBad.getResult().getDate("bad_time");
+                                                if (resultBad.isEmpty()) {
+                                                    return;
+                                                }
+                                                Timestamp date = resultBad.getResult().getTimestamp("bad_time");
 
-                                                if (date.toLocalDate().isBefore(LocalDate.now())) {
+                                                if (date.toInstant().isBefore(Instant.now())) {
                                                     embed.addField("Is in support bad", "Entered bad on " + FormatUtil.formatDate(date), true);
                                                 } else {
                                                     embed.addField("Isn't in support bad", "Enters bad on " + FormatUtil.formatDate(date), true);

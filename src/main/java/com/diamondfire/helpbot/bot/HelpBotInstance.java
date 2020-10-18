@@ -21,6 +21,7 @@ import javax.security.auth.login.LoginException;
 public class HelpBotInstance {
 
     public static final long DF_GUILD = 180793115223916544L;
+    public static final long LOG_CHANNEL = 762447660745359361L;
     private static final CommandHandler handler = new CommandHandler();
     private static final Config config = new Config();
     private static JDA jda;
@@ -101,7 +102,9 @@ public class HelpBotInstance {
                 new SessionsCommand(),
                 new SupporteeSessionsCommand(),
                 new ExcuseStaffCommand(),
-                new ExcusedStaffCommand()
+                new ExcusedStaffCommand(),
+                new SupportBannedPlayersCommand(),
+                new DiscussionMuteCommand()
         );
 
         JDABuilder builder = JDABuilder.createDefault(config.getToken())

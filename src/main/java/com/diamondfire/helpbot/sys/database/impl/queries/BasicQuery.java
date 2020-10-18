@@ -41,6 +41,7 @@ public class BasicQuery implements QueryResultProvider {
             return set;
         } else {
             statement.close();
+            connection.close();
             return null;
         }
     }

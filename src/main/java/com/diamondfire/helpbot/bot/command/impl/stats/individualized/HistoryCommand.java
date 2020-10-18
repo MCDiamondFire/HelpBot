@@ -47,10 +47,17 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
 
     @Override
     protected void execute(CommandEvent event, String player) {
+        String name;
+        if (!Permission.MODERATION.hasPermission(event.getMember())) {
+            name = event.getMember().getEffectiveName();
+        } else {
+            name = player;
+        }
+
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
+                    statement.setString(1, name);
+                    statement.setString(2, name);
                 }))
                 .compile()
                 .run((table) -> {

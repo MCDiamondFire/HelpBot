@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -56,7 +56,7 @@ public class QueryCommand extends Command {
             new DatabaseQuery()
                     .query(new BasicQuery(query))
                     .compile()
-                    .runAsync((set) -> {
+                    .run((set) -> {
                         int width = set.getResult().getMetaData().getColumnCount();
                         List<String> objects = new ArrayList<>();
                         for (ResultSet resultSet : set) {
@@ -69,8 +69,12 @@ public class QueryCommand extends Command {
                         }
 
                         for (int i = 0; i < objects.size(); i++) {
+                            if (i > 25) {
+                                break;
+                            }
                             builder.addField("Row: " + (i + 1), String.format("```asciidoc\n%s```", objects.get(i)), false);
                         }
+
                         event.getReplyHandler().reply(builder);
                     });
         } catch (IllegalStateException e) {

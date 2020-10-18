@@ -1,13 +1,15 @@
 package com.diamondfire.helpbot.sys.database.impl.result;
 
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.concurrent.CompletableFuture;
 
 public class DatabaseFuture {
 
     private final DatabaseResult result;
+    private final Connection connection;
 
-    public DatabaseFuture(DatabaseResult result) {
+    public DatabaseFuture(Connection connection, DatabaseResult result) {
+        this.connection = connection;
         this.result = result;
     }
 
@@ -21,10 +23,11 @@ public class DatabaseFuture {
         try {
             action.run(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             try {
                 result.getResult().close();
+                connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }

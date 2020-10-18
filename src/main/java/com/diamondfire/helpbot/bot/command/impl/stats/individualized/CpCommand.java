@@ -90,7 +90,13 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid)))
                             .compile()
-                            .run((tableSet) -> embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false));
+                            .run((tableSet) -> {
+                                if (tableSet.isEmpty()) {
+                                    return;
+                                } else {
+                                    embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
+                                }
+                            });
 
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points)))
@@ -134,6 +140,10 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                         (statement) -> statement.setString(1, uuid)))
                 .compile()
                 .run((table) -> {
+                    if (table.isEmpty()) {
+                        return;
+                    }
+
                     ResultSet set = table.getResult();
                     int oldPoints = set.getInt("points");
 
