@@ -57,7 +57,6 @@ public class HelpBotInstance {
                 new QueryCommand(),
                 new RulesCommand(),
                 new BulkExecuteCommand(),
-                new SetPermissionCommand(),
                 new PermUnlocksCommand(),
                 new MuteCommand(),
                 new MutedCommand(),
