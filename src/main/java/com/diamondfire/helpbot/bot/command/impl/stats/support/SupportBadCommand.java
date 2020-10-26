@@ -62,7 +62,7 @@ public class SupportBadCommand extends Command {
 
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have done %s or less sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
+                        new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have done less than %s sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
                 );
 
         EmbedBuilder embed = preset.getEmbed();
@@ -83,7 +83,7 @@ public class SupportBadCommand extends Command {
                         "                          FROM hypercube.support_sessions" +
                         "                          WHERE time > CURRENT_TIMESTAMP() - INTERVAL ? DAY" +
                         "                          GROUP BY staff) cn ON cn.name = p.name " +
-                        "WHERE cn.count <= ?" +
+                        "WHERE cn.count < ?" +
                         "   OR count IS NULL " +
                         "ORDER BY count DESC;", statement -> {
                     statement.setInt(1, days);
