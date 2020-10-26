@@ -67,7 +67,7 @@ public class MuteCommand extends Command {
         Date duration = event.getArgument("duration");
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
 
-        event.getGuild().retrieveMemberById(user).queue((msg) -> {
+        event.getGuild().retrieveMemberById(user).queue((member) -> {
             new DatabaseQuery()
                     .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
                         statement.setLong(1, user);
@@ -82,8 +82,11 @@ public class MuteCommand extends Command {
                     new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for ``%s``.", FormatUtil.formatMilliTime(timeLeft)))
             );
             Guild guild = event.getGuild();
-            guild.addRoleToMember(user, guild.getRoleById((MuteCommand.ROLE_ID))).queue();
-
+            guild.addRoleToMember(member, guild.getRoleById((MuteCommand.ROLE_ID))).queue();
+            member.getUser()
+                    .openPrivateChannel()
+                    .flatMap((e) -> e.sendMessage(String.format("You have been muted for %s for %s", FormatUtil.formatMilliTime(timeLeft), event.getArgument("reason"))))
+                    .queue();
             HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
             event.reply(builder);
         }, (error) -> {
