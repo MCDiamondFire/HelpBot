@@ -19,16 +19,16 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
-
+    
     public static final long DF_GUILD = 180793115223916544L;
     public static final long LOG_CHANNEL = 762447660745359361L;
     private static final CommandHandler handler = new CommandHandler();
     private static final Config config = new Config();
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
-
+    
     public static void initialize() throws LoginException {
-
+        
         handler.register(
                 // codeblock commands
                 new CodeCommand(),
@@ -60,6 +60,8 @@ public class HelpBotInstance {
                 new PermUnlocksCommand(),
                 new MuteCommand(),
                 new MutedCommand(),
+                new UnmuteCommand(),
+                new VerifyCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -105,7 +107,7 @@ public class HelpBotInstance {
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand()
         );
-
+        
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .setStatus(OnlineStatus.ONLINE)
@@ -113,24 +115,24 @@ public class HelpBotInstance {
                 .setActivity(Activity.watching("for ?help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent());
-
+                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent(), new GuildJoinEvent());
+        
         jda = builder.build();
         handler.initialize();
     }
-
+    
     public static JDA getJda() {
         return jda;
     }
-
+    
     public static CommandHandler getHandler() {
         return handler;
     }
-
+    
     public static Config getConfig() {
         return config;
     }
-
+    
     public static TaskRegistry getScheduler() {
         return loop;
     }

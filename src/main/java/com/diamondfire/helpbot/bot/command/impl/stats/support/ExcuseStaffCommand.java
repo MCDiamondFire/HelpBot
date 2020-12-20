@@ -21,12 +21,12 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class ExcuseStaffCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "excuse";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -42,7 +42,7 @@ public class ExcuseStaffCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -55,20 +55,20 @@ public class ExcuseStaffCommand extends Command {
                                 .optional("Not Specified")
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.ADMINISTRATOR;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         String username = event.getArgument("username");
         Date date = event.getArgument("duration");
         String reason = event.getArgument("reason");
-
+        
         PresetBuilder builder = new PresetBuilder();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM hypercube.players WHERE name = ? OR uuid = ?",
                         (statement) -> {
@@ -85,27 +85,27 @@ public class ExcuseStaffCommand extends Command {
                         ResultSet set = result.getResult();
                         String uuid = set.getString("uuid");
                         String name = set.getString("name");
-
+                        
                         new DatabaseQuery()
                                 .query(new BasicQuery("INSERT INTO owen.excused_staff (uuid,excused_by,excused_at,excused_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
                                     statement.setString(1, uuid);
                                     statement.setString(2, event.getAuthor().getId());
                                     statement.setTimestamp(3, DateUtil.toTimeStamp(date));
                                     statement.setString(4, reason);
-
+                                    
                                 }))
                                 .compile();
-
+                        
                         builder.withPreset(
                                 new InformativeReply(InformativeReplyType.SUCCESS, "Excused!", String.format("Staff member will be excused until ``%s``.", FormatUtil.formatDate(date))),
                                 new MinecraftUserPreset(name, uuid)
                         );
-
+                        
                         HelpBotInstance.getScheduler().schedule(new SupportUnexcuseTask(DateUtil.toDate(LocalDate.now()), date, uuid));
                     }
-
+                    
                     event.reply(builder);
                 });
-
+        
     }
 }

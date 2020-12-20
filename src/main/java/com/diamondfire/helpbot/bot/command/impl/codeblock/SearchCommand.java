@@ -9,17 +9,17 @@ import java.util.*;
 
 
 public class SearchCommand extends AbstractMultiQueryCommand {
-
+    
     @Override
     public String getName() {
         return "search";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"find"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -30,25 +30,26 @@ public class SearchCommand extends AbstractMultiQueryCommand {
                                 .name("name")
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         ArrayList<String> list = new ArrayList<>();
         String args = event.getArgument("name");
-
+        args = args.toLowerCase();
+        
         for (CodeObject simpleData : data) {
             String dataName = simpleData.getName();
             String itemName = simpleData.getItem().getItemName();
-
+            
             if (itemName.toLowerCase().contains(args) || dataName.toLowerCase().contains(args)) {
                 list.add(dataName);
             }
-
+            
         }
         return list;
     }

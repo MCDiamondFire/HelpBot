@@ -29,12 +29,12 @@ public class SupporterClassTask implements LoopingTask {
         Role discord = guild.getRoleById(DISCORD_BOOSTER);
         Role twitch = guild.getRoleById(TWITCH_BOOSTER);
         Role generalBoost = guild.getRoleById(GENERAL_BOOST);
-    
+        
         guild.loadMembers((member) -> {
             List<Role> roles = member.getRoles();
-            if (roles.contains(discord) || roles.contains(twitch) && !roles.contains(generalBoost)) {
+            if ((roles.contains(discord) || roles.contains(twitch)) && !roles.contains(generalBoost)) {
                 guild.addRoleToMember(member, generalBoost).queue();
-            } else if (roles.contains(generalBoost)) {
+            } else if (roles.contains(generalBoost) && !(roles.contains(discord) || roles.contains(twitch))) {
                 guild.removeRoleFromMember(member, generalBoost).queue();
             }
         });

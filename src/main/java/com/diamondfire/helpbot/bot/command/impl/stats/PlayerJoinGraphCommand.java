@@ -18,7 +18,7 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class PlayerJoinGraphCommand extends Command {
-
+    
     public static void generateGraph(String mode, int amount, TextChannel channel) {
         File graph = null;
         switch (mode) {
@@ -38,15 +38,15 @@ public class PlayerJoinGraphCommand extends Command {
                         "GROUP BY time;", amount);
                 break;
         }
-
+        
         channel.sendFile(graph).queue();
     }
-
+    
     @Override
     public String getName() {
         return "playergraph";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -59,7 +59,7 @@ public class PlayerJoinGraphCommand extends Command {
                                 .name("amount")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -68,24 +68,24 @@ public class PlayerJoinGraphCommand extends Command {
                 .addArgument("amount",
                         new ClampedIntegerArgument(1, 99999999));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         String mode = event.getArgument("mode");
         int amount = event.getArgument("amount");
-
+        
         generateGraph(mode, amount, event.getChannel());
     }
-
+    
     private static File makeGraph(String title, @Language("SQL") String query, int amt) {
         Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
         ChartGraphBuilder builder = new ChartGraphBuilder();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery(query, statement -> statement.setInt(1, amt)))
                 .compile()
@@ -93,10 +93,10 @@ public class PlayerJoinGraphCommand extends Command {
                     for (ResultSet set : result) {
                         entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
                     }
-
+                    
                     builder.setGraphName(title);
                 });
-
+        
         return builder.createGraph(entries);
     }
 }

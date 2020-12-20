@@ -17,17 +17,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class CpTopCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "cptop";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"cpleaderboard"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -35,19 +35,19 @@ public class CpTopCommand extends Command {
                 .category(CommandCategory.GENERAL_STATS)
                 .addArgument(new HelpContextArgument().name("leaderboard place").optional());
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("place",
                 new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(1)
         );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         int startingPlace = event.getArgument("place");
@@ -68,9 +68,9 @@ public class CpTopCommand extends Command {
                     }
                     event.reply(preset);
                 });
-
+        
     }
-
+    
 }
 
 

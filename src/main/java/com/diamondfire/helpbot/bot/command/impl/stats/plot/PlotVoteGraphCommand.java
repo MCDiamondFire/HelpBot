@@ -17,14 +17,14 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class PlotVoteGraphCommand extends Command {
-
-
+    
+    
     //Unfinished, try to make system that fills in gaps.
     @Override
     public String getName() {
         return "votegraph";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -35,24 +35,24 @@ public class PlotVoteGraphCommand extends Command {
                                 .name("plot id")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("id",
                         new IntegerArgument());
     }
-
+    
     @Override
     public Permission getPermission() {
-        return Permission.BOT_DEVELOPER;
+        return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         int plotID = event.getArgument("id");
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ?;", (statement) -> statement.setInt(1, plotID)))
+                .query(new BasicQuery("SELECT DATE_FORMAT(FROM_UNIXTIME(time / 1000), '%d-%m-%y') AS time FROM plot_votes WHERE time < CURRENT_TIMESTAMP() - INTERVAL 1 MONTH AND plot = ? ORDER BY time;", (statement) -> statement.setInt(1, plotID)))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
@@ -60,20 +60,20 @@ public class PlotVoteGraphCommand extends Command {
                         preset.withPreset(
                                 new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")
                         );
-
+                        
                         event.reply(preset);
                         return;
                     }
-
+                    
                     List<GraphableEntry<?>> entries = new ArrayList<>();
                     for (ResultSet set : result) {
                         entries.add(new StringEntry(set.getString("time")));
                     }
-
+                    
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("Votes on plot %s this month", plotID))
                             .createGraphFromCollection(entries)).queue();
                 });
     }
-
+    
 }

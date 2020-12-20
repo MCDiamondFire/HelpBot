@@ -12,7 +12,7 @@ import java.time.*;
 import java.util.Date;
 
 public class MuteExpireTask implements OneTimeTask {
-
+    
     private final long ms;
     private final long member;
     private final boolean discussionMute;
@@ -29,12 +29,12 @@ public class MuteExpireTask implements OneTimeTask {
         this.member = member;
         this.discussionMute = discussionMute;
     }
-
+    
     @Override
     public long getExecution() {
         return ms;
     }
-
+    
     @Override
     public void run() {
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
@@ -44,19 +44,19 @@ public class MuteExpireTask implements OneTimeTask {
             guild.retrieveMemberById(member).queue((member) -> {
                 channel.getPermissionOverride(member).delete().queue();
             });
-           
+            
         } else {
             guild.removeRoleFromMember(member, guild.getRoleById(MuteCommand.ROLE_ID)).queue();
         }
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("UPDATE owen.muted_members SET handled = true WHERE member = ?", (statement) -> statement.setLong(1, member)))
                 .compile();
     }
-
+    
     public static void prepare() {
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM owen.muted_members WHERE (muted_till > CURRENT_TIMESTAMP() || !handled)"))
+                .query(new BasicQuery("SELECT * FROM owen.muted_members WHERE (muted_till > CURRENT_TIMESTAMP() && !handled)"))
                 .compile()
                 .run((result) -> {
                     // Select unique names.
@@ -64,7 +64,7 @@ public class MuteExpireTask implements OneTimeTask {
                         Timestamp date = set.getTimestamp("muted_till");
                         long member = set.getLong("member");
                         boolean special = "Weekly Discussion Mute".equals(set.getString("reason"));
-
+                        
                         HelpBotInstance.getScheduler().schedule(new MuteExpireTask(member, date, special));
                     }
                 });

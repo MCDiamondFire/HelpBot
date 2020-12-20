@@ -11,12 +11,12 @@ import com.diamondfire.helpbot.sys.database.ConnectionProvider;
 import java.sql.*;
 
 public class PlotLocCommand extends AbstractPlotCommand {
-
+    
     @Override
     public String getName() {
         return "plotloc";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -32,7 +32,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -43,12 +43,12 @@ public class PlotLocCommand extends AbstractPlotCommand {
                 .addArgument("node",
                         new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4)).optional(null));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     // If someone who knows MYSQL enough that they can add plotsize as some sort of "local" variable. Go for it.
     @Override
     public ResultSet getPlot(CommandEvent event) {
@@ -65,7 +65,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                         "    WHEN plotsize = 1 THEN 51" +
                         "    WHEN plotsize = 2 THEN 101" +
                         "    WHEN plotsize = 3 THEN 301 ELSE 0 END) AND node = ? LIMIT 1");
-
+                
                 statement.setObject(3, event.getArgument("node"));
             } else {
                 statement = connection.prepareStatement("SELECT * FROM hypercube.plots WHERE ? BETWEEN xmin AND xmin + (CASE" +
@@ -77,7 +77,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                         "    WHEN plotsize = 2 THEN 101" +
                         "    WHEN plotsize = 3 THEN 301 ELSE 0 END) LIMIT 1");
             }
-
+            
             statement.setInt(1, event.getArgument("x"));
             statement.setInt(2, event.getArgument("z"));
             return statement.executeQuery();
@@ -86,6 +86,6 @@ public class PlotLocCommand extends AbstractPlotCommand {
         }
         return null;
     }
-
-
+    
+    
 }

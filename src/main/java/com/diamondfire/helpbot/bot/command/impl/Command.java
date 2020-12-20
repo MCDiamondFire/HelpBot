@@ -6,23 +6,23 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public abstract class Command {
-
+    
     private ArgumentSet set = null;
-
+    
     public abstract String getName();
-
+    
     public boolean cacheArgumentSet() {
         return true;
     }
-
+    
     public String[] getAliases() {
         return new String[0];
     }
-
+    
     public abstract HelpContext getHelpContext();
-
+    
     protected abstract ArgumentSet compileArguments();
-
+    
     public ArgumentSet getArguments() {
         if (cacheArgumentSet()) {
             if (set == null) {
@@ -33,8 +33,8 @@ public abstract class Command {
             return compileArguments();
         }
     }
-
+    
     public abstract Permission getPermission();
-
+    
     public abstract void run(CommandEvent event);
 }

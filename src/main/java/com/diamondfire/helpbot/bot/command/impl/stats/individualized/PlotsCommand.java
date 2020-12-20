@@ -15,17 +15,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class PlotsCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "plots";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"ownedplots", "plotlist"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -37,12 +37,12 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -61,13 +61,13 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found, or they have no plots."));
                         return;
                     }
-
+                    
                     ResultSet set = result.getResult();
                     String formattedName = set.getString("owner_name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
-
+                    
                     for (ResultSet plot : result) {
                         String[] stats = {
                                 "Votes: " + plot.getInt("votes"),
@@ -76,12 +76,12 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                         embed.addField(StringUtil.display(plot.getString("name")) +
                                         String.format(" **(%s)**", plot.getInt("id")),
                                 String.join("\n", stats), false);
-
+                        
                     }
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }
 

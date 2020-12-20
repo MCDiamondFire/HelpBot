@@ -16,12 +16,12 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class BulkExecuteCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "bulkexecute";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -34,12 +34,12 @@ public class BulkExecuteCommand extends Command {
                 )
                 .category(CommandCategory.OTHER);
     }
-
+    
     @Override
     public boolean cacheArgumentSet() {
         return false;
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         List<String> playerCommands = new ArrayList<>();
@@ -48,32 +48,32 @@ public class BulkExecuteCommand extends Command {
                 playerCommands.add(command.getName());
             }
         }
-
+        
         return new ArgumentSet()
                 .addArgument("cmd",
                         new DefinedObjectArgument<>(playerCommands.toArray(new String[0])))
                 .addArgument("players",
                         new MultiArgumentContainer<>(new StringArgument()));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder();
         List<String> playerNames = event.getArgument("players");
         String command = event.getArgument("cmd");
-
+        
         for (String player : playerNames) {
             try {
                 Command command1 = HelpBotInstance.getHandler().getCommands().get(command);
                 Field field = event.getClass().getDeclaredField("command");
                 field.trySetAccessible();
                 field.set(event, command1);
-
+                
                 event.pushArguments(new String[]{"dummy", player});
                 command1.run(event);
             } catch (Exception e) {
@@ -83,9 +83,9 @@ public class BulkExecuteCommand extends Command {
                 e.printStackTrace();
                 event.reply(builder);
             }
-
+            
         }
-
+        
     }
-
+    
 }

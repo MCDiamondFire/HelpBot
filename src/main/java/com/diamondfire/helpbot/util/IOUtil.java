@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.zip.*;
 
 public class IOUtil {
-
+    
     /**
      * Decompresses GZIP data
      *
@@ -18,7 +18,7 @@ public class IOUtil {
      * @return Decompressed Data
      * @throws IOException Can throw error
      */
-
+    
     public static byte[] fromGZIP(byte[] str) throws IOException {
         // Converts from gzip
         BufferedReader bf = new BufferedReader(new InputStreamReader(new GZIPInputStream(new ByteArrayInputStream(str)), StandardCharsets.UTF_8));
@@ -29,9 +29,9 @@ public class IOUtil {
         }
         bf.close();
         return outStr.toString().getBytes();
-
+        
     }
-
+    
     /**
      * Compresses data into GZIP
      *
@@ -47,16 +47,16 @@ public class IOUtil {
         obj.close();
         return obj.toByteArray();
     }
-
-
+    
+    
     public static File zipFile(Path path, String fileName) throws IOException {
         File zipped = ExternalFileUtil.generateFile(fileName);
         ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipped));
         for (Path innerPath : Files.walk(path).collect(Collectors.toSet())) {
-
+            
             //Ignore parent file, for some reason that's included
             if (innerPath.getParent() == null) continue;
-
+            
             try {
                 zipOutputStream.putNextEntry(new ZipEntry(innerPath.toString()));
                 byte[] bytes = Files.readAllBytes(innerPath);
@@ -65,28 +65,28 @@ public class IOUtil {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            
         }
         zipOutputStream.finish();
         zipOutputStream.close();
-
+        
         return zipped;
     }
-
-
+    
+    
     public static File getFileFromSite(String url, String name) {
         try (InputStream in = new URL(url).openStream();) {
             File tempFile = ExternalFileUtil.generateFile(name);
-
+            
             Files.write(tempFile.toPath(), in.readAllBytes(), StandardOpenOption.WRITE);
-
+            
             return tempFile;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
         return null;
     }
-
+    
 }
 

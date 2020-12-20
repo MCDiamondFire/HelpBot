@@ -13,15 +13,15 @@ import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
-import java.time.*;
+import java.time.Instant;
 
 public class StatsCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "stats";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -33,12 +33,12 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.RETIRED_SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -46,7 +46,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "Support Stats", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count," +
                         "SUM(duration) AS total_duration," +
@@ -61,12 +61,12 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player does not have any stats!"));
                         return;
                     }
-
+                    
                     String formattedName = set.getString("staff");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count, SUM(duration) AS total_time, " +
                                     "? IN (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) AS support," +
@@ -90,7 +90,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                                     return;
                                                 }
                                                 Timestamp date = resultBad.getResult().getTimestamp("bad_time");
-
+                                                
                                                 if (date.toInstant().isBefore(Instant.now())) {
                                                     embed.addField("Is in support bad", "Entered bad on " + FormatUtil.formatDate(date), true);
                                                 } else {
@@ -99,13 +99,13 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                             });
                                 }
                             });
-
+                    
                     embed.addField("Total Sessions", FormatUtil.formatNumber(set.getInt("count")), true);
                     embed.addField("Unique Players", FormatUtil.formatNumber(set.getInt("unique_helped")), true);
                     embed.addField("Total Session Time", FormatUtil.formatMilliTime(set.getLong("total_duration")), true);
                     embed.addField("Earliest Session", FormatUtil.formatDate(set.getDate("earliest_time")), true);
                     embed.addField("Latest Session", FormatUtil.formatDate(set.getDate("latest_time")), true);
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
@@ -118,10 +118,10 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                 embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("shortest_duration")), true);
                                 embed.addField("Longest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("longest_duration")), true);
                             });
-
+                    
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }

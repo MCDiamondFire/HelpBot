@@ -15,34 +15,34 @@ import java.awt.*;
 import java.util.Comparator;
 
 public class DiscordBoostersCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "discordboosters";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"discordb", "dboosts"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current members who are boosting the discord server.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         Guild guild = event.getGuild();
@@ -52,7 +52,7 @@ public class DiscordBoostersCommand extends Command {
                 );
         EmbedBuilder embed = preset.getEmbed();
         embed.setThumbnail("https://cdn.discordapp.com/emojis/699936318398136341.png?v=1");
-
+        
         event.getGuild().findMembers((member -> member.getTimeBoosted() != null)).onSuccess((members) -> {
             embed.setDescription(StringUtil.listView(">", true, members.stream()
                     .sorted(Comparator.comparing(Member::getTimeBoosted))
@@ -63,7 +63,7 @@ public class DiscordBoostersCommand extends Command {
             guild.pruneMemberCache();
         });
     }
-
+    
 }
 
 

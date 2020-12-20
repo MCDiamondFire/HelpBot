@@ -15,34 +15,34 @@ import java.sql.ResultSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayersCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "players";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"currentplayers", "playerc", "nodes", "playerlist", "nodelist", "nodestatus", "count"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current player count on each node.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -71,14 +71,14 @@ public class PlayersCommand extends Command {
                         totalPlayers.addAndGet(nodeCount);
                     }
                     embed.addField("All Nodes", "Players: " + totalPlayers, false);
-
+                    
                     if (totalPlayers.get() == 0) {
                         embed.addField(":rotating_light: DF BROKE :rotating_light:", "Jere, fix it already! >:(", false);
                     }
                 });
         event.reply(preset);
     }
-
+    
 }
 
 

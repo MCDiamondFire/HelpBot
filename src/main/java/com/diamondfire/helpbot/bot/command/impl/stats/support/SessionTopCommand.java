@@ -17,17 +17,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class SessionTopCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "top";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"sessiontop"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -39,7 +39,7 @@ public class SessionTopCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -50,23 +50,23 @@ public class SessionTopCommand extends Command {
                         ).optional(30)
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         Object arg = event.getArgument("days");
-
+        
         if (arg instanceof String) {
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.INFO, "Top Support Members of all time", null)
             );
             EmbedBuilder embed = preset.getEmbed();
-
+            
             new DatabaseQuery()
                     .query(new BasicQuery("SELECT DISTINCT staff, COUNT(*) as sessions FROM support_sessions GROUP BY staff ORDER BY sessions DESC LIMIT 10"))
                     .compile()
@@ -75,7 +75,7 @@ public class SessionTopCommand extends Command {
                             embed.addField(StringUtil.display(set.getString("staff")),
                                     "\nSessions: " + FormatUtil.formatNumber(set.getInt("sessions")), false);
                         }
-
+                        
                     });
         } else {
             int days = (int) arg;
@@ -83,7 +83,7 @@ public class SessionTopCommand extends Command {
                     new InformativeReply(InformativeReplyType.INFO, String.format("Top Support Members in %s %s", days, StringUtil.sCheck("day", days)), null)
             );
             EmbedBuilder embed = preset.getEmbed();
-
+            
             new DatabaseQuery()
                     .query(new BasicQuery("SELECT DISTINCT staff, COUNT(*) as sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days)))
                     .compile()
@@ -92,13 +92,13 @@ public class SessionTopCommand extends Command {
                             embed.addField(StringUtil.display(set.getString("staff")),
                                     "\nSessions: " + FormatUtil.formatNumber(set.getInt("sessions")), false);
                         }
-
+                        
                     });
         }
-
+        
         event.reply(preset);
     }
-
+    
 }
 
 

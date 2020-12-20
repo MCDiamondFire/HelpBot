@@ -16,12 +16,12 @@ import java.util.*;
 
 
 public class HelpCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "help";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -33,12 +33,12 @@ public class HelpCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public boolean cacheArgumentSet() {
         return false;
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("help",
@@ -46,35 +46,35 @@ public class HelpCommand extends Command {
                         .map(Command::getName)
                         .toArray(String[]::new))).optional(null));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         String helpInfo = event.getArgument("help");
         if (helpInfo == null) {
-
+            
             Map<CommandCategory, EmbedBuilder> categories = new LinkedHashMap<>();
             MultiSelectorBuilder selector = new MultiSelectorBuilder();
             selector.setUser(event.getAuthor().getIdLong());
             selector.setChannel(event.getChannel().getIdLong());
-
+            
             EmbedBuilder homeBuilder = new EmbedBuilder();
             homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055");
             homeBuilder.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
             homeBuilder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
             selector.addPage("Home", homeBuilder, true);
-
+            
             // Initialize the pages in advance so we can get a nice order.
             categories.put(CommandCategory.PLAYER_STATS, new EmbedBuilder());
             categories.put(CommandCategory.GENERAL_STATS, new EmbedBuilder());
             categories.put(CommandCategory.SUPPORT, new EmbedBuilder());
             categories.put(CommandCategory.CODE_BLOCK, new EmbedBuilder());
             categories.put(CommandCategory.OTHER, new EmbedBuilder());
-
+            
             List<Command> commandList = new ArrayList<>(HelpBotInstance.getHandler().getCommands().values());
             commandList.sort(Comparator.comparing(Command::getName));
             for (Command command : commandList) {
@@ -83,9 +83,9 @@ public class HelpCommand extends Command {
                 if (category != null && command.getPermission().hasPermission(event.getMember())) {
                     EmbedBuilder embedBuilder = categories.get(category);
                     embedBuilder.addField(FormatUtil.displayCommand(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
-
+                    
                 }
-
+                
             }
             // Remove pages that have nothing you have access to.
             categories.entrySet().removeIf((entry) -> entry.getValue().getFields().size() == 0);
@@ -107,10 +107,10 @@ public class HelpCommand extends Command {
             builder.addField("Argument", FormatUtil.displayArguments(context), true);
             builder.addField("Category", context.getCommandCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
-
+            
             event.getChannel().sendMessage(builder.build()).queue();
         }
-
+        
     }
-
+    
 }

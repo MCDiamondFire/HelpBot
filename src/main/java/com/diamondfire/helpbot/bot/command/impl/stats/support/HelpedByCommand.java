@@ -17,12 +17,12 @@ import java.util.*;
 
 
 public class HelpedByCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "helpedby";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -34,17 +34,17 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> statement.setString(1, player)))
                 .compile()
@@ -54,7 +54,7 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                         embed.setDescription("Nobody!");
                         return;
                     }
-
+                    
                     ResultSet set = result.getResult();
                     List<String> sessions = new ArrayList<>();
                     String formattedName = set.getString("staff");
@@ -62,16 +62,16 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
                             new MinecraftUserPreset(formattedName),
                             new InformativeReply(InformativeReplyType.INFO, String.format("Players %s has Helped", formattedName), null)
                     );
-
+                    
                     for (ResultSet setUser : result) {
                         sessions.add(FormatUtil.formatNumber(setUser.getInt("total")) + " " + setUser.getString("name"));
                     }
-
+                    
                     EmbedUtil.addFields(embed, sessions, true);
-
+                    
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }

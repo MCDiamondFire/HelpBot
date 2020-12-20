@@ -11,12 +11,12 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 
 public class SkinCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "skin";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -28,12 +28,12 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -46,7 +46,7 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
         embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player + "/180");
         event.reply(preset);
     }
-
+    
 }
 
 

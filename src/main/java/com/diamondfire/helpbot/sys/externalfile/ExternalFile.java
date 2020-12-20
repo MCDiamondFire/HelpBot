@@ -35,16 +35,16 @@ public enum ExternalFile {
             .setName("disabled_commands")
             .setFileType("txt")
             .buildFile());
-
+    
     private final File file;
-
+    
     ExternalFile(File file) {
         this.file = file;
     }
-
+    
     public File getFile() {
         return file;
     }
-
-
+    
+    
 }

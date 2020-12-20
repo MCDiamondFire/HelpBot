@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.*;
 
 public abstract class BoxGraph implements Graph {
-
+    
     static final int PICTURE_WIDTH = 2250;
     static final int GRAPH_WIDTH = 2000;
     static final int HEIGHT = 1300;
@@ -14,11 +14,11 @@ public abstract class BoxGraph implements Graph {
     static final int X_OFFSET = 70;
     private final String name;
     private final Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
-
+    
     protected BoxGraph(String name) {
         this.name = name;
     }
-
+    
     @Override
     public void paintGraph(Graphics2D graphics) {
         Color color = graphics.getColor();
@@ -27,23 +27,23 @@ public abstract class BoxGraph implements Graph {
         graphics.setColor(color);
         paintInner(graphics);
     }
-
+    
     abstract void paintInner(Graphics2D graphics2D);
-
+    
     public Map<GraphableEntry<?>, Integer> getEntries() {
         return entries;
     }
-
+    
     protected void renderTick(Graphics graphics, int x, int y, String text) {
         Color color = graphics.getColor();
         graphics.setColor(new Color(200, 200, 200, 50));
         graphics.fillRect(x, y, 2, 5);
         graphics.setColor(Color.WHITE);
         drawCenteredString(graphics, text, x, y + 30);
-
+        
         graphics.setColor(color);
     }
-
+    
     protected void renderSideTick(Graphics graphics, int x, int y, String text) {
         Color color = graphics.getColor();
         graphics.setColor(new Color(200, 200, 200, 50));
@@ -52,7 +52,7 @@ public abstract class BoxGraph implements Graph {
         drawCenteredString(graphics, text, x - 16, y);
         graphics.setColor(color);
     }
-
+    
     protected void drawCenteredString(Graphics graphics, String text, int x, int y) {
         Rectangle box = new Rectangle(x, y, 0, 0);
         FontMetrics fontMetrics = graphics.getFontMetrics();

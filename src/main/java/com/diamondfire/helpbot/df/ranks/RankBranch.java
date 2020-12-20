@@ -10,15 +10,15 @@ public enum RankBranch {
     YOUTUBER,
     DEVELOPER,
     BUILDER;
-
-
+    
+    
     public static final Map<String, RankBranch> databaseMap = new HashMap<>();
-
+    
     static {
         for (RankBranch branch : values()) {
             databaseMap.put(branch.toString(), branch);
         }
     }
-
-
+    
+    
 }

@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import java.util.Calendar;
 
 public class TimeOffsetArgument extends AbstractOffsetArgument {
-
+    
     @Override
     protected Duration[] getDurations() {
         return new Duration[]{
@@ -13,5 +13,5 @@ public class TimeOffsetArgument extends AbstractOffsetArgument {
                 new Duration(Calendar.DATE, 'd'),
         };
     }
-
+    
 }

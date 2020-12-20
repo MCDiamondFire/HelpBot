@@ -9,12 +9,12 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 
 public class MimicCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "mimic";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -24,24 +24,24 @@ public class MimicCommand extends Command {
                         new HelpContextArgument().name("message")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("msg", new MessageArgument());
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.BOT_DEVELOPER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         String msg = event.getArgument("msg");
-
+        
         event.getMessage().delete().queue();
         event.getChannel().sendMessage(msg).queue();
     }
-
+    
 }

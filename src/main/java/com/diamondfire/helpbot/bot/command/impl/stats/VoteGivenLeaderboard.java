@@ -16,34 +16,34 @@ import java.sql.ResultSet;
 
 
 public class VoteGivenLeaderboard extends Command {
-
+    
     @Override
     public String getName() {
         return "votetop";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"vgiventop", "votesgiventop"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets top 10 players who have given out the most votes.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -51,7 +51,7 @@ public class VoteGivenLeaderboard extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Votes Given Leaderboard", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(plot_votes.uuid) AS given, name FROM plot_votes, players WHERE players.uuid = plot_votes.uuid GROUP BY plot_votes.uuid ORDER BY COUNT(plot_votes.uuid) DESC LIMIT 10"))
                 .compile()
@@ -63,5 +63,5 @@ public class VoteGivenLeaderboard extends Command {
                 });
         event.reply(preset);
     }
-
+    
 }

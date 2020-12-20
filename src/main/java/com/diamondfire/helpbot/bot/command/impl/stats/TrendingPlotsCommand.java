@@ -16,29 +16,29 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class TrendingPlotsCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "trending";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current trending plots.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -54,20 +54,20 @@ public class TrendingPlotsCommand extends Command {
                         int count = set.getInt("player_count");
                         ArrayList<String> stats = new ArrayList<>();
                         stats.add("Votes: " + set.getInt("votes"));
-
+                        
                         if (count > 0) {
                             stats.add("Players: " + count);
                         }
-
+                        
                         embed.addField(StringUtil.display(set.getString("name")) +
                                         String.format(" **(%s)**", set.getInt("id")),
                                 String.join("\n", stats), false);
                     }
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }
 
 

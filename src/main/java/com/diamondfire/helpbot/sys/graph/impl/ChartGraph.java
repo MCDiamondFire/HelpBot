@@ -8,28 +8,28 @@ import java.awt.geom.GeneralPath;
 import java.util.*;
 
 public class ChartGraph extends BoxGraph {
-
+    
     public ChartGraph(String graphName) {
         super(graphName);
     }
-
+    
     @Override
     void paintInner(Graphics2D graphics) {
         Map<GraphableEntry<?>, Integer> tickRegistry = new HashMap<>();
         Map<Integer, Integer> sideTickRegistry = new HashMap<>();
-
+        
         // First we need to get all the point and count the number of occurrences each one has.
         Map<GraphableEntry<?>, Integer> points = getEntries();
-
-
+        
+        
         int maxPoints = points.size() - 1;
         int valueIndex = 0;
         int currentTickBound = 0;
-
+        
         for (Map.Entry<GraphableEntry<?>, Integer> entry : points.entrySet()) {
             int x = (valueIndex * (GRAPH_WIDTH) / maxPoints) + BORDER_SIZE + X_OFFSET;
             tickRegistry.put(entry.getKey(), x);
-
+            
             // Here we get the font metrics and current X to see if it's okay to put a tick there.
             if (currentTickBound <= x + graphics.getFontMetrics().stringWidth(entry.getKey().toString()) / 2) {
                 currentTickBound = x + 220;
@@ -37,26 +37,26 @@ public class ChartGraph extends BoxGraph {
             }
             valueIndex++;
         }
-
+        
         // Get the largest amount of values.
         int largestNumber = points.values().stream()
                 .max(Comparator.comparingInt(Integer::intValue))
                 .orElse(0);
-
+        
         // Get the total height of the graph.
         int totalHeight = HEIGHT - BORDER_SIZE;
         currentTickBound = HEIGHT;
         for (int i = 0; i <= largestNumber; i++) {
             int y = (int) (HEIGHT - (i * (Math.ceil(totalHeight) / largestNumber)));
             sideTickRegistry.putIfAbsent(i, y);
-
+            
             if (currentTickBound >= y) {
                 currentTickBound = y - graphics.getFontMetrics().getHeight() + 5;
                 renderSideTick(graphics, X_OFFSET + (BORDER_SIZE / 2), y, i + "");
             }
-
+            
         }
-
+        
         // Here we iterate through
         Point lastPoint = null;
         GeneralPath boldPath = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
@@ -65,7 +65,7 @@ public class ChartGraph extends BoxGraph {
         for (Map.Entry<GraphableEntry<?>, Integer> entry : points.entrySet()) {
             int y = sideTickRegistry.get(entry.getValue());
             int x = tickRegistry.get(entry.getKey());
-
+            
             if (lastPoint != null) {
                 boldPath.lineTo(lastPoint.x, lastPoint.y);
                 translucentShape.lineTo(lastPoint.x, lastPoint.y);
@@ -74,7 +74,7 @@ public class ChartGraph extends BoxGraph {
             }
             lastPoint = new Point(x, y);
             valueIndex++;
-
+            
         }
         boldPath.lineTo(lastPoint.x, lastPoint.y);
         translucentShape.lineTo(lastPoint.x, lastPoint.y);
@@ -86,6 +86,6 @@ public class ChartGraph extends BoxGraph {
         graphics.setStroke(new BasicStroke(3));
         graphics.draw(boldPath);
     }
-
-
+    
+    
 }

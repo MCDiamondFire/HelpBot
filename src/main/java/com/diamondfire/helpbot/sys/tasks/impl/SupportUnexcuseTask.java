@@ -17,7 +17,7 @@ import java.time.*;
 import java.util.Date;
 
 public class SupportUnexcuseTask implements OneTimeTask {
-
+    
     private static final long EXPERT_CHAT = 467729470539694091L;
     private static final Command[] commandsToRun = new Command[]{
             new StatsCommand(),
@@ -26,23 +26,23 @@ public class SupportUnexcuseTask implements OneTimeTask {
     private final long ms;
     private final String uuid;
     private final Date initDate;
-
+    
     public SupportUnexcuseTask(Date initDate, Date date, String uuid) {
         this.ms = Duration.between(Instant.now(), date.toInstant()).toMillis();
         this.uuid = uuid;
         this.initDate = initDate;
     }
-
+    
     @Override
     public long getExecution() {
         return ms;
     }
-
+    
     @Override
     public void run() {
         PresetBuilder builder = new PresetBuilder();
         TextChannel channel = HelpBotInstance.getJda().getTextChannelById(EXPERT_CHAT);
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM hypercube.players WHERE players.uuid = ?", (statement) -> statement.setString(1, uuid)))
                 .compile()
@@ -50,21 +50,21 @@ public class SupportUnexcuseTask implements OneTimeTask {
                     EmbedBuilder embed = builder.getEmbed();
                     ResultSet set = result.getResult();
                     String name = set.getString("name");
-
+                    
                     builder.withPreset(
                             new MinecraftUserPreset(name, uuid)
                     );
                     embed.setTitle(String.format("Excuse has expired! (%s day duration)", Duration.between(initDate.toInstant(), Instant.now()).toDays()));
-
+                    
                     channel.sendMessage(embed.build()).queue();
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("UPDATE owen.excused_staff SET handled = true WHERE uuid = ?", (statement) -> statement.setString(1, uuid)))
                             .compile();
                 });
-
+        
     }
-
+    
     public static void prepare() {
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT excused_staff.uuid," +
@@ -89,7 +89,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
                         Date dateInit = set.getTimestamp("excused_at");
                         Date date = set.getTimestamp("excused_till");
                         String uuid = set.getString("uuid");
-
+                        
                         HelpBotInstance.getScheduler().schedule(new SupportUnexcuseTask(dateInit, date, uuid));
                     }
                 });

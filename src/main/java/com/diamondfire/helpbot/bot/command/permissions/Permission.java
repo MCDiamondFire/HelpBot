@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.bot.command.permissions;
 
-import com.diamondfire.helpbot.bot.command.impl.other.*;
 import net.dv8tion.jda.api.entities.Member;
 
 import java.util.HashMap;
@@ -15,23 +14,23 @@ public enum Permission {
     SUPPORT(180794530398732288L, 3),
     RETIRED_SUPPORT(235159617108181003L, 2),
     USER(349434193517740033L, 1);
-
+    
     private static final HashMap<Long, Permission> roleMap = new HashMap<>();
-
+    
     static {
         for (Permission perm : values()) {
             roleMap.put(perm.getRole(), perm);
         }
     }
-
+    
     private final long role;
     private final int permissionLevel;
-
+    
     Permission(long roleID, int permissionLevel) {
         this.role = roleID;
         this.permissionLevel = permissionLevel;
     }
-
+    
     public static Permission fromRole(long roleID) {
         Permission perm = roleMap.get(roleID);
         if (perm == null) {
@@ -39,19 +38,19 @@ public enum Permission {
         }
         return perm;
     }
-
+    
     public long getRole() {
         return role;
     }
-
+    
     public int getPermissionLevel() {
         return permissionLevel;
     }
-
+    
     public boolean hasPermission(Member member) {
         return hasPermission(PermissionHandler.getPermission(member));
     }
-
+    
     public boolean hasPermission(Permission permission) {
         return getPermissionLevel() <= permission.getPermissionLevel();
     }

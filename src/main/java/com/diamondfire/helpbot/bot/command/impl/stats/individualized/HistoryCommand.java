@@ -22,29 +22,29 @@ import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 
 public class HistoryCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "history";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Sends you your punishment history.")
                 .category(CommandCategory.PLAYER_STATS);
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         String name;
@@ -53,7 +53,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
         } else {
             name = player;
         }
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
                     statement.setString(1, name);
@@ -64,11 +64,11 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                     if (table.isEmpty()) {
                         PresetBuilder notFound = new PresetBuilder()
                                 .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
-
+                        
                         event.reply(notFound);
                         return;
                     }
-
+                    
                     ResultSet set = table.getResult();
                     String playerName = set.getString("name");
                     String playerUUID = set.getString("uuid");
@@ -77,7 +77,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                             .withUUID(playerUUID)
                             .withAll()
                             .fetch();
-
+                    
                     event.getMember().getUser().openPrivateChannel().queue((privateChannel) -> {
                         // Retrieve active punishments
                         {
@@ -87,7 +87,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                             new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
                                     );
                             EmbedBuilder embed = activePunishmentsPreset.getEmbed();
-
+                            
                             List<String> activePunishments = new ArrayList<>();
                             int warnings = 0;
                             int yearlyWarnings = 0;
@@ -103,11 +103,11 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                 }
                             }
                             punishments.removeIf((punishment) -> punishment.active);
-
+                            
                             if (activePunishments.size() > 0) {
                                 activePunishmentsPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Active Punishments", null));
                                 EmbedUtil.addFields(embed, activePunishments, "", true);
-
+                                
                                 String duration = null;
                                 int warningReq = 0;
                                 if (warnings < 4 && warnings > 1) {
@@ -120,23 +120,23 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                     duration = "12 hour";
                                     warningReq = 6 - warnings;
                                 }
-
+                                
                                 if (duration != null) {
                                     embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more active %s, you will receive a **%s** tempban!", warningReq, StringUtil.sCheck("warning", warningReq), duration), false);
                                 }
-
+                                
                             } else if (punishments.size() == 0) {
                                 embed.setDescription("No punishments here, keep up the good work!");
                             }
-
+                            
                             if (yearlyWarnings > 10) {
                                 embed.setColor(Color.RED);
                                 embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
                             }
-
+                            
                             msgs.add(privateChannel.sendMessage(embed.build()));
                         }
-
+                        
                         // Retrieve normal punishments
                         {
                             PresetBuilder punishmentsPreset = new PresetBuilder()
@@ -148,7 +148,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                             for (Punishment punishment : punishments) {
                                 punishmentStrings.add(punishment.toString());
                             }
-
+                            
                             EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
                             if (punishmentStrings.size() == 0) {
                             } else if (presetBuilder.isValidLength()) {
@@ -162,21 +162,21 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                     exception.printStackTrace();
                                 }
                             }
-
+                            
                         }
-
+                        
                         MessageAction action = msgs.get(0);
                         msgs.remove(0);
-
+                        
                         action.queue((msg) -> {
                             PresetBuilder successMSG = new PresetBuilder()
                                     .withPreset(
                                             new InformativeReply(InformativeReplyType.SUCCESS, "Check your messages for history!"),
                                             new MinecraftUserPreset(playerName, playerUUID)
                                     );
-
+                            
                             event.reply(successMSG);
-
+                            
                             for (MessageAction msgAction : msgs) {
                                 msgAction.queue();
                             }
@@ -185,10 +185,10 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                     .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Could not send private message! Please check to make sure private messages are enabled."));
                             event.reply(errorMSG);
                         });
-
+                        
                     });
                 });
-
+        
     }
 }
 

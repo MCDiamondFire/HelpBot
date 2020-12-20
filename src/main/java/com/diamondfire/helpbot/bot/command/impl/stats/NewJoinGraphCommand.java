@@ -18,12 +18,12 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class NewJoinGraphCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "joingraph";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -36,7 +36,7 @@ public class NewJoinGraphCommand extends Command {
                                 .name("amount")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -45,21 +45,21 @@ public class NewJoinGraphCommand extends Command {
                 .addArgument("amount",
                         new ClampedIntegerArgument(1));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         String mode = event.getArgument("mode");
         int amount = event.getArgument("amount");
-
+        
         generateGraph(mode, amount, event.getChannel());
     }
-
-
+    
+    
     public static void generateGraph(String mode, int amount, TextChannel channel) {
         File graph = null;
         switch (mode) {
@@ -79,14 +79,14 @@ public class NewJoinGraphCommand extends Command {
                         "GROUP BY time;", amount);
                 break;
         }
-
+        
         channel.sendFile(graph).queue();
     }
-
+    
     private static File makeGraph(String title, @Language("SQL") String query, int amt) {
         Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
         ChartGraphBuilder builder = new ChartGraphBuilder();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery(query, statement -> statement.setInt(1, amt)))
                 .compile()
@@ -94,10 +94,10 @@ public class NewJoinGraphCommand extends Command {
                     for (ResultSet set : result) {
                         entries.put(new StringEntry(set.getString("time")), set.getInt("count"));
                     }
-
+                    
                     builder.setGraphName(title);
                 });
-
+        
         return builder.createGraph(entries);
     }
 }

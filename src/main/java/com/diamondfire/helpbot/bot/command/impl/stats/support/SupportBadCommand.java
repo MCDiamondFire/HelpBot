@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.*;
 
 public class SupportBadCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "bad";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -40,7 +40,7 @@ public class SupportBadCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -49,26 +49,26 @@ public class SupportBadCommand extends Command {
                 .addArgument("days",
                         new SingleArgumentContainer<>(new ClampedIntegerArgument(0)).optional(30));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         int num = event.getArgument("count");
         int days = event.getArgument("days");
-
+        
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have done less than %s sessions in the last %s %s", num, days, StringUtil.sCheck("day", days)), null)
                 );
-
+        
         EmbedBuilder embed = preset.getEmbed();
         embed.setColor(Color.RED);
         embed.setDescription("");
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT DISTINCT p.name, count " +
                         "FROM (SELECT players.name" +
@@ -95,10 +95,10 @@ public class SupportBadCommand extends Command {
                     for (ResultSet set : result) {
                         staff.add(StringUtil.display(set.getString("name") + " (" + FormatUtil.formatNumber(set.getInt("count"))) + ")");
                     }
-
+                    
                     EmbedUtil.addFields(embed, staff, "", "", true);
                 });
-
+        
         event.reply(preset);
     }
 }

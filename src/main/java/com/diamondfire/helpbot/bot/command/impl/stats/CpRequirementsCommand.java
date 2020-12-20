@@ -13,34 +13,34 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 
 public class CpRequirementsCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "cprequirements";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"cpreq", "cpneeded", "creatorreq"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current CP level requirements.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -52,12 +52,12 @@ public class CpRequirementsCommand extends Command {
         for (CreatorLevel level : CreatorLevel.values()) {
             embed.addField(level.display(), "CP Required: " + FormatUtil.formatNumber(level.getRequirementProvider().getRequirement()), true);
         }
-
+        
         // Even it out
         embed.addBlankField(true);
         event.reply(preset);
     }
-
+    
 }
 
 

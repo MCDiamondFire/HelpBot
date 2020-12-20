@@ -14,12 +14,12 @@ import com.diamondfire.helpbot.util.EmbedUtil;
 import java.util.*;
 
 public class PermUnlocksCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "permunlocks";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -30,7 +30,7 @@ public class PermUnlocksCommand extends Command {
                                 .name("perm")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -38,12 +38,12 @@ public class PermUnlocksCommand extends Command {
                         new DefinedObjectArgument<>(Permission.values())
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         Permission permission = event.getArgument("permission");
@@ -51,28 +51,28 @@ public class PermUnlocksCommand extends Command {
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "Commands unlocked by: " + permission, null)
                 );
-
+        
         List<String> commands = new ArrayList<>();
         List<Command> commandList = new ArrayList<>(HelpBotInstance.getHandler().getCommands().values());
         commandList.sort(Comparator.comparingInt((command) -> command.getPermission().ordinal()));
-
+        
         for (Command command : commandList) {
             if (command.getPermission().hasPermission(permission)) {
                 StringBuilder cmdName = new StringBuilder();
                 cmdName.append(command.getName());
-
+                
                 if (command.getPermission() != permission) {
                     cmdName.append(" (From ")
                             .append(command.getPermission())
                             .append(')');
                 }
-
+                
                 commands.add(cmdName.toString());
             }
         }
-
+        
         EmbedUtil.addFields(builder.getEmbed(), commands);
         event.reply(builder);
     }
-
+    
 }

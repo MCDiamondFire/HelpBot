@@ -15,39 +15,39 @@ import java.awt.*;
 import java.sql.ResultSet;
 
 public class QueueCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "queue";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"que", "q"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current queue.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM hypercube.support_queue ORDER BY enter_time LIMIT 25;"))
                 .compile()
@@ -58,7 +58,7 @@ public class QueueCommand extends Command {
                         embed.setColor(new Color(0, 234, 23));
                         return;
                     }
-
+                    
                     int i = 0;
                     for (ResultSet set : result) {
                         embed.addField(set.getString("player"), FormatUtil.formatMilliTime(set.getTime("time").getTime()), false);
@@ -67,11 +67,11 @@ public class QueueCommand extends Command {
                     embed.setTitle(String.format("Players in Queue (%s)", i));
                     embed.setColor(colorAmt(i));
                 });
-
+        
         event.reply(preset);
-
+        
     }
-
+    
     private Color colorAmt(int index) {
         switch (index) {
             case 1:
@@ -88,6 +88,6 @@ public class QueueCommand extends Command {
                 return new Color(127, 0, 0);
         }
     }
-
+    
 }
 

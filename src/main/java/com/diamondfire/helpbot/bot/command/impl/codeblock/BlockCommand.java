@@ -12,17 +12,17 @@ import java.util.*;
 
 
 public class BlockCommand extends AbstractMultiQueryCommand {
-
+    
     @Override
     public String getName() {
         return "block";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"codeblock"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -33,29 +33,29 @@ public class BlockCommand extends AbstractMultiQueryCommand {
                                 .name("codeblock")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         List<CodeBlockData> codeBlocks = CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS);
         List<String> strings = new ArrayList<>();
-
+        
         for (CodeBlockData codeBlock : codeBlocks) {
             if (codeBlock.getAssociatedAction() == null) {
                 strings.add(codeBlock.getName());
             }
         }
-
+        
         return new ArgumentSet().
                 addArgument("codeblock",
                         new DefinedObjectArgument<>(true, strings.toArray(new String[0]))
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         List<String> filteredObjects = new ArrayList<>();
@@ -66,10 +66,10 @@ public class BlockCommand extends AbstractMultiQueryCommand {
                 }
             }
         }
-
+        
         return filteredObjects;
     }
-
+    
     @Override
     protected String getSearchQuery(CommandEvent event) {
         return event.getArgument("codeblock");

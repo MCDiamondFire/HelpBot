@@ -12,27 +12,27 @@ import java.util.function.BiConsumer;
 
 
 public class RawCommand extends AbstractSingleQueryCommand {
-
+    
     private static void sendRawMessage(CodeObject data, TextChannel channel) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(data.getJson());
-
+        
         for (String part : StringUtil.splitBy(json, 1950)) {
             channel.sendMessage(String.format("```%s```", part)).queue();
         }
-
+        
     }
-
+    
     @Override
     public String getName() {
         return "rawcode";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"coderaw"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -43,20 +43,20 @@ public class RawCommand extends AbstractSingleQueryCommand {
                                 .name("codeblock|action|game value")
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.BOT_DEVELOPER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         super.run(event);
     }
-
+    
     @Override
     public BiConsumer<CodeObject, TextChannel> onDataReceived() {
         return RawCommand::sendRawMessage;
     }
-
+    
 }

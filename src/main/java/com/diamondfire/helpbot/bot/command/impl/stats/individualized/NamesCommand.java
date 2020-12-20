@@ -15,17 +15,17 @@ import java.util.*;
 
 
 public class NamesCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "names";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"namehistory", "prevnames", "oldnames"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -37,19 +37,19 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
         try {
             JsonObject profile = Util.getPlayerProfile(player);
-
+            
             if (profile == null) {
                 preset.withPreset(
                         new InformativeReply(InformativeReplyType.ERROR, "Player not found!")
@@ -57,27 +57,27 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                 event.reply(preset);
                 return;
             }
-
+            
             List<String> names = new ArrayList<>();
             String displayName = profile.get("name").getAsString();
             for (JsonElement nameElement : profile.get("name_history").getAsJsonArray()) {
                 JsonObject obj = nameElement.getAsJsonObject();
                 JsonElement changedAt = obj.get("changedToAt");
-
+                
                 preset.withPreset(
                         new MinecraftUserPreset(displayName),
                         new InformativeReply(InformativeReplyType.INFO, String.format("%s's Name Changes", displayName), null)
                 );
-
+                
                 if (changedAt == null) {
                     names.add(String.format("%s", obj.get("name").getAsString()));
                 } else {
                     names.add(obj.get("name").getAsString() + String.format(" (%s)", FormatUtil.formatDate(DateUtil.toDate(changedAt.getAsLong()))));
                 }
-
+                
             }
             Collections.reverse(names);
-
+            
             EmbedUtil.addFields(embed, names);
         } catch (Exception e) {
             e.printStackTrace();

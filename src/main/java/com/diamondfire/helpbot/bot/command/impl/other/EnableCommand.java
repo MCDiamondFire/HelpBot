@@ -13,12 +13,12 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public class EnableCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "enable";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -29,26 +29,26 @@ public class EnableCommand extends Command {
                                 .name("cmd")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("cmd",
                 new StringArgument()
         );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.ADMINISTRATOR;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         DisableCommandHandler handler = HelpBotInstance.getHandler().getDisabledHandler();
         PresetBuilder builder = new PresetBuilder();
         String name = event.getArgument("cmd");
         Command command = CommandHandler.getCommand(name);
-
+        
         if (command != null) {
             if (!handler.isDisabled(command)) {
                 builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Command isn't disabled!"));
@@ -59,10 +59,10 @@ public class EnableCommand extends Command {
         } else {
             builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("Command ``%s`` could not be found.", name)));
         }
-
+        
         event.reply(builder);
     }
-
+    
 }
 
 

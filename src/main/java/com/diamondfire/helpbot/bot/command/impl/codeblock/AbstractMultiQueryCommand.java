@@ -16,26 +16,26 @@ import java.util.*;
 
 
 public abstract class AbstractMultiQueryCommand extends Command {
-
+    
     protected abstract List<String> filterData(List<CodeObject> data, CommandEvent event);
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("name",
                         new MessageArgument());
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         List<String> names = filterData(CodeDatabase.getStandardObjects(), event);
         Collections.sort(names);
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder builder = preset.getEmbed();
-
+        
         if (names.size() != 0) {
             EmbedUtil.addFields(preset.getEmbed(), names);
-
+            
             if (builder.getFields().size() >= 5) {
                 builder.clear();
                 preset.withPreset(
@@ -44,7 +44,7 @@ public abstract class AbstractMultiQueryCommand extends Command {
                 event.reply(preset);
                 return;
             }
-
+            
             builder.setTitle(String.format("Search results for `%s`!", getSearchQuery(event)));
             // If possible choices is empty, meaning none can be found.
         } else {
@@ -53,13 +53,13 @@ public abstract class AbstractMultiQueryCommand extends Command {
             );
         }
         builder.setFooter(String.format("%s %s found", names.size(), StringUtil.sCheck("object", names.size())));
-
+        
         event.reply(preset);
     }
-
+    
     protected String getSearchQuery(CommandEvent event) {
         String name = event.getArgument("name");
         return MarkdownSanitizer.sanitize(name, MarkdownSanitizer.SanitizationStrategy.ESCAPE);
     }
-
+    
 }

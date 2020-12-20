@@ -15,17 +15,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "supporteestats";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"sesstats", "sessionstats"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -37,12 +37,12 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -50,7 +50,7 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "Session Stats", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count," +
                         "SUM(duration) AS total_duration," +
@@ -69,19 +69,19 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count FROM support_sessions " +
                                     "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> statement.setString(1, player)))
                             .compile()
                             .run((resultBadTable) -> embed.addField("Sessions this month:", resultBadTable.getResult().getInt("count") + "", true));
-
+                    
                     embed.addField("Total Sessions", set.getInt("count") + "", true);
                     embed.addField("Unique Support Members", set.getInt("unique_helped") + "", true);
                     embed.addField("Total Session Time", FormatUtil.formatMilliTime(set.getLong("total_duration")), true);
                     embed.addField("Earliest Session", FormatUtil.formatDate(set.getDate("earliest_time")), true);
                     embed.addField("Latest Session", FormatUtil.formatDate(set.getDate("latest_time")), true);
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
@@ -94,11 +94,11 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                                 embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("shortest_duration")), true);
                                 embed.addField("Longest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("longest_duration")), true);
                             });
-
+                    
                 });
-
+        
         event.reply(preset);
     }
-
-
+    
+    
 }

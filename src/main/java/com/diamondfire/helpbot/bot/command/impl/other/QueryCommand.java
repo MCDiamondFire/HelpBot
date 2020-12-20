@@ -17,12 +17,12 @@ import java.util.*;
 
 
 public class QueryCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "query";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -33,25 +33,25 @@ public class QueryCommand extends Command {
                                 .name("query")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("query", new MessageArgument());
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.BOT_DEVELOPER;
     }
-
+    
     @SuppressWarnings("LanguageMismatch")
     @Override
     public void run(CommandEvent event) {
         String query = event.getArgument("query");
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("SQL Result");
-
+        
         try {
             new DatabaseQuery()
                     .query(new BasicQuery(query))
@@ -67,14 +67,14 @@ public class QueryCommand extends Command {
                             }
                             objects.add(StringUtil.asciidocStyle(entries));
                         }
-
+                        
                         for (int i = 0; i < objects.size(); i++) {
                             if (i > 25) {
                                 break;
                             }
                             builder.addField("Row: " + (i + 1), String.format("```asciidoc\n%s```", objects.get(i)), false);
                         }
-
+                        
                         event.getReplyHandler().reply(builder);
                     });
         } catch (IllegalStateException e) {
@@ -85,7 +85,7 @@ public class QueryCommand extends Command {
             event.getChannel().sendMessage(builder.build()).queue();
             event.getChannel().sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
         }
-
+        
     }
-
+    
 }

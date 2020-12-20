@@ -9,13 +9,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.util.*;
 
 public interface CodeDisplayBuilder<T extends CodeObject> {
-
+    
     default EmbedBuilder generateEmbed(T data) {
         DisplayIcon icon = data.getItem();
         EmbedBuilder builder = buildDataEmbed(data)
                 .setDescription(String.join(" ", icon.getDescription()))
                 .setThumbnail("attachment://" + icon.getMaterial().toLowerCase() + ".png");
-
+        
         String iconName = icon.getItemName();
         String dataName = data.getName();
         if (!iconName.equals(dataName)) {
@@ -23,13 +23,13 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
         } else {
             builder.setTitle(dataName);
         }
-
+        
         List<String> tokens = new ArrayList<>();
         String footerText = builder.build().getFooter() == null ? null : builder.build().getFooter().getText();
         if (footerText != null) {
             tokens.add(footerText);
         }
-
+        
         if (icon.requiresCredits() && !icon.getRequiredRank().equals("")) {
             tokens.add("Unlock with Credits OR " + icon.getRequiredRank());
         } else if (icon.requiresCredits()) {
@@ -37,14 +37,14 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
         } else if (!icon.getRequiredRank().equals("")) {
             tokens.add("Unlock with " + icon.getRequiredRank());
         }
-
+        
         builder.setFooter(String.join(" | ", tokens));
-
+        
         return builder;
     }
-
+    
     EmbedBuilder buildDataEmbed(T data);
-
+    
     default LinkedHashMap<BasicReaction, CodeObject> generateDupeEmojis(List<CodeObject> dataArrayList) {
         if (dataArrayList.size() > 10) {
             throw new IllegalStateException("Not enough emojis to map 10 objects!");
@@ -54,7 +54,7 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
         for (CodeObject data : dataArrayList) {
             dataHashed.put(new BasicReaction(nums.pop()), data);
         }
-
+        
         return dataHashed;
     }
 }

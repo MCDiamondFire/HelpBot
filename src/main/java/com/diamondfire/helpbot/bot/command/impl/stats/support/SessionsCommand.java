@@ -8,12 +8,12 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class SessionsCommand extends AbstractSessionLogCommand {
-
+    
     @Override
     public String getName() {
         return "sessions";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -25,7 +25,7 @@ public class SessionsCommand extends AbstractSessionLogCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     protected List<AbstractSessionLogCommand.Session> getSessions(String player) {
         List<Session> sessions = new ArrayList<>();

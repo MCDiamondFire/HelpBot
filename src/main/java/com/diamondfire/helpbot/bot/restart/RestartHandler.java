@@ -9,12 +9,12 @@ import java.io.*;
 import java.nio.file.Files;
 
 public class RestartHandler {
-
+    
     public static void logRestart(Message restartMSG) {
-
+        
         long msg = restartMSG.getIdLong();
         long channel = restartMSG.getChannel().getIdLong();
-
+        
         try {
             File restart = ExternalFileUtil.generateFile("restart_cache");
             try (FileWriter writer = new FileWriter(restart)) {
@@ -22,9 +22,9 @@ public class RestartHandler {
             }
         } catch (IOException ignored) {
         }
-
+        
     }
-
+    
     public static void recover(JDA jda) {
         try {
             File restart = ExternalFileUtil.getFile("restart_cache");
@@ -35,11 +35,11 @@ public class RestartHandler {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Restart Successful!");
             builder.setDescription("Restarted in " + FormatUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
-
+            
             jda.getTextChannelById(restartMSG[1]).editMessageById(restartMSG[0], builder.build()).override(true).queue();
             restart.delete();
         } catch (IOException | ArrayIndexOutOfBoundsException ignored) {
         }
     }
-
+    
 }

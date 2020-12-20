@@ -16,34 +16,34 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class RetiredListCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "retiredlist";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"retired", "retiredstaff"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current retired staff members.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
@@ -59,22 +59,22 @@ public class RetiredListCommand extends Command {
                     Map<Rank, List<String>> retiredList = new HashMap<>();
                     retiredList.put(Rank.RETIRED, new ArrayList<>());
                     retiredList.put(Rank.EMERITUS, new ArrayList<>());
-
+                    
                     for (ResultSet set : result) {
                         retiredList.get(Rank.fromBranch(RankBranch.RETIREMENT, set.getInt("retirement"))).add(StringUtil.display(set.getString("name")));
                     }
-
+                    
                     EmbedBuilder retired = new EmbedBuilder();
                     EmbedUtil.addFields(retired, retiredList.get(Rank.RETIRED), "", "", true);
                     EmbedBuilder emeritus = new EmbedBuilder();
                     EmbedUtil.addFields(emeritus, retiredList.get(Rank.EMERITUS), "", "", true);
-
+                    
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);
                 });
         builder.build().send(event.getJDA());
     }
-
+    
 }
 
 

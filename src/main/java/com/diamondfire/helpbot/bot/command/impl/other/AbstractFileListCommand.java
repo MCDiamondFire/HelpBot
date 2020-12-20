@@ -12,17 +12,17 @@ import java.io.*;
 import java.util.*;
 
 public abstract class AbstractFileListCommand extends Command {
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     protected void generate(CommandEvent event, List<? extends CodeObject> data) {
         File file;
         try {
@@ -32,17 +32,17 @@ public abstract class AbstractFileListCommand extends Command {
                 for (CodeObject item : data) {
                     names.add(item.getItem().getItemName());
                 }
-
+                
                 writer.append(String.join("|", names));
             }
-
+            
         } catch (IOException e) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Could not generate file!");
             event.getChannel().sendMessage(builder.build()).queue();
             return;
         }
-
+        
         event.getChannel().sendMessage("File Generated").addFile(file).queue();
     }
 }

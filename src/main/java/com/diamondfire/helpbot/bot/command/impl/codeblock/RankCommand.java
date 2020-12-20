@@ -12,17 +12,17 @@ import java.util.stream.Collectors;
 
 
 public class RankCommand extends AbstractMultiQueryCommand {
-
+    
     @Override
     public String getName() {
         return "unlocks";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"rank", "unlock", "ranks", "required"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -33,20 +33,20 @@ public class RankCommand extends AbstractMultiQueryCommand {
                                 .name("rank|credits")
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("Rank",
                         new DefinedObjectArgument<>("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
-
+    
+    
     @Override
     protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         String closestArg = event.getArgument("Rank");
@@ -61,7 +61,7 @@ public class RankCommand extends AbstractMultiQueryCommand {
                 .map(CodeObject::getName)
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     protected String getSearchQuery(CommandEvent event) {
         return event.getArgument("Rank");

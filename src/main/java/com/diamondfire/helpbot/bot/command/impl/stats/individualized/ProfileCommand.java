@@ -18,17 +18,17 @@ import java.util.*;
 
 
 public class ProfileCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "profile";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"user", "whois", "p", "prof", "credits", "joindate"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -40,12 +40,12 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -53,7 +53,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "Profile", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * " +
                         "FROM hypercube.ranks," +
@@ -69,25 +69,25 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found."));
                         return;
                     }
-
+                    
                     ResultSet set = result.getResult();
                     String playerName = set.getString("name");
                     String playerUUID = set.getString("uuid");
                     String whois = set.getString("whois");
-
+                    
                     preset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
                     embed.addField("Name", StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
-
+                    
                     Rank[] ranks = RankUtil.getRanks(set);
                     List<String> ranksList = new ArrayList<>();
                     for (Rank rank : ranks) {
                         ranksList.add(String.format("[%s]", rank.getRankName()));
                     }
-
+                    
                     embed.addField("Ranks", String.join(" ", ranksList), false);
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT * FROM (SELECT (SELECT date AS liteban_join FROM litebans.history WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS liteban," +
                                     "     (SELECT (SELECT date AS owen_join FROM owen.join_log WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS owen_join," +
@@ -103,23 +103,23 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                             .compile()
                             .run((stats) -> {
                                 ResultSet statsSet = stats.getResult();
-
+                                
                                 embed.addField("Votes Given", FormatUtil.formatNumber(statsSet.getInt("votes.temp")), false);
                                 embed.addField("Credits", FormatUtil.formatNumber(statsSet.getInt("credits.temp")), false);
-
+                                
                                 long discordId = statsSet.getLong("id.temp");
                                 if (discordId != 0L) {
                                     embed.addField("Discord User", "<@" + discordId + '>', false);
                                 } else {
                                     embed.addField("Discord User", "Not Verified", false);
                                 }
-
-
+                                
+                                
                                 Timestamp liteBanDate = statsSet.getTimestamp("liteban.temp");
-
+                                
                                 if (liteBanDate != null) {
                                     Timestamp owenDate = statsSet.getTimestamp("owen_join.temp");
-
+                                    
                                     if (owenDate == null) {
                                         new DatabaseQuery()
                                                 .query(new BasicQuery("INSERT INTO owen.join_log (uuid,date) VALUES (?,?)", (statement) -> {
@@ -130,14 +130,14 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                     } else {
                                         embed.addField("Join Date", FormatUtil.formatDate(owenDate), false);
                                     }
-
+                                    
                                 } else {
                                     embed.addField("Join Date", "Not Found", false);
                                 }
-
+                                
                             });
                 });
-
+        
         event.reply(preset);
     }
 }

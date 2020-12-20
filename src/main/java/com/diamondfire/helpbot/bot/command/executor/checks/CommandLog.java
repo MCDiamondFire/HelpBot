@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 
 public class CommandLog implements CommandCheck {
-
+    
     @Override
     public boolean check(CommandEvent event) {
         if (!HelpBotInstance.getConfig().isDevBot()) {
@@ -19,15 +19,15 @@ public class CommandLog implements CommandCheck {
                             statement.setString(3, event.getAliasUsed());
                             statement.setLong(4, event.getChannel().getIdLong());
                         })).compile();
-
+                
             }).start();
         }
         return true;
     }
-
+    
     @Override
     public void buildMessage(CommandEvent event, PresetBuilder builder) {
     }
-
-
+    
+    
 }

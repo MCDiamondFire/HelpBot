@@ -9,46 +9,46 @@ import com.diamondfire.helpbot.sys.reactions.multiselector.MultiSelectorBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class RulesCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "rules";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"supportrules", "supporteerules"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Lists rules depending on the given category.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
-
+        
         EmbedBuilder rulesEmbed = new EmbedBuilder();
         rulesEmbed.addField("Minecraft Server Rules", "https://mcdiamondfire.com/rules/", true);
         rulesEmbed.addField("Discord Server Rules", "<#337376406227124235>", true);
         EmbedBuilder supportRules = new EmbedBuilder();
         supportRules.setDescription("Failing to follow these rules may result in warnings and even removal of rank in certain cases.");
-
+        
         String[] denyRequestReasons = new String[]{
                 "They believe the supportee is already capable of completing the request, and are purely using support to progress their plot.",
                 "They believe the request is too far above the supportee's coding level, and they would not understand the code, or how to change/add in more code.",
@@ -65,10 +65,10 @@ public class RulesCommand extends Command {
                 "", false);
         supportRules.addField("If you are in a particularly hostile session, where the supportee is being rude, ignoring what you're doing or removing your code after you place it, you should report them in #session-reports, and tell any online experts of the occurrence.",
                 "", false);
-
+        
         EmbedBuilder supporteeRules = new EmbedBuilder();
         supporteeRules.setDescription("Failing to follow these rules may result in warnings or queue bans.");
-
+        
         String[] supporteeShouldNot = new String[]{
                 "AFK in sessions (do /support end first)",
                 "Request Support for something you already know how to code",
@@ -88,18 +88,18 @@ public class RulesCommand extends Command {
                 "", false);
         supporteeRules.addField("If the believe the support member is not helping, or they break any rules, you should report them to an expert or moderator.",
                 "", false);
-
+        
         builder.addPage("General Rules", rulesEmbed);
         builder.addPage("Support Rules", supportRules);
         builder.addPage("Supportee Rules", supporteeRules);
-
+        
         builder.build().send(event.getJDA());
     }
-
+    
     private String list(String[] strings, String prefix) {
         return prefix + " " + String.join(" \n" + prefix + " ", strings);
     }
-
+    
 }
 
 

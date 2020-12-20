@@ -16,12 +16,12 @@ import java.time.LocalDate;
 import java.util.*;
 
 public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "snames";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -31,12 +31,12 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                         new HelpContextArgument().name("player|uuid")
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         JsonObject profile = Util.getPlayerProfile(player);
@@ -51,12 +51,12 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             event.reply(builder);
             return;
         }
-
+        
         String mainName = profile.get("name").getAsString();
-
+        
         JsonArray array = profile.get("name_history").getAsJsonArray();
-
-
+        
+        
         for (int i = array.size() - 1; i >= 0; i--) {
             JsonElement nameElement = array.get(i);
             JsonObject obj = nameElement.getAsJsonObject();
@@ -65,20 +65,20 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                 nameRanges.add(new NameDateRange(obj.get("name").getAsString(), null, DateUtil.toDate(LocalDate.now())));
                 continue;
             }
-
+            
             Date changeDate = DateUtil.toDate(changedAt.getAsLong());
-
+            
             nameRanges.add(new NameDateRange(obj.get("name").getAsString(), changeDate, lastDate));
             lastDate = changeDate;
-
+            
         }
-
-
+        
+        
         PresetBuilder loadingPreset = new PresetBuilder();
         loadingPreset.withPreset(
                 new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
         );
-
+        
         event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
             for (NameDateRange range : nameRanges) {
                 if (range.getAfter() == null) {
@@ -120,7 +120,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                             });
                 }
             }
-
+            
             builder.withPreset(
                     new MinecraftUserPreset(mainName),
                     new InformativeReply(InformativeReplyType.INFO, "Player has been helped on", null)
@@ -129,31 +129,31 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             if (names.isEmpty()) {
                 builder.getEmbed().addField("", "Player hasn't been helped by anybody!", false);
             }
-
+            
             msg.editMessage(builder.getEmbed().build()).override(true).queue();
         });
     }
-
+    
     private static class NameDateRange {
-
+        
         private final String name;
         private final Date before;
         private final Date after;
-
+        
         public NameDateRange(String name, Date before, Date after) {
             this.name = name;
             this.before = before;
             this.after = after;
         }
-
+        
         public Date getBefore() {
             return before;
         }
-
+        
         public Date getAfter() {
             return after;
         }
-
+        
         public String getName() {
             return name;
         }

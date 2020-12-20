@@ -17,36 +17,36 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class ExcusedStaffCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "excused";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Provides a list of all excused support members.")
                 .category(CommandCategory.SUPPORT);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "Currently Excused Staff", null)
                 );
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT excused_staff.uuid," +
                         "       p.name," +
@@ -68,7 +68,7 @@ public class ExcusedStaffCommand extends Command {
                 .run((result) -> {
                     // Select unique names.
                     List<String> names = new ArrayList<>();
-
+                    
                     EmbedBuilder embed = builder.getEmbed();
                     for (ResultSet set : result) {
                         Date date = set.getDate("excused_till");
@@ -76,18 +76,18 @@ public class ExcusedStaffCommand extends Command {
                         String excused_by = set.getString("excused_by");
                         Rank rank = RankUtil.getHighRank(set);
                         String name = set.getString("name");
-
+                        
                         if (names.contains(name)) {
                             continue;
                         } else {
                             names.add(name);
                         }
-
-                        embed.addField(rank.getRankEmote().getEmote() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
+                        
+                        embed.addField(rank.getRankEmote().getAsMention() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
                     }
-
+                    
                     event.reply(builder);
                 });
-
+        
     }
 }

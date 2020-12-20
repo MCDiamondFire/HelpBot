@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.*;
 
 public class DatabaseQuery {
-
+    
     private QueryResultProvider queryProvider = null;
-
+    
     public DatabaseQuery query(@NotNull QueryResultProvider queryProvider) {
         this.queryProvider = queryProvider;
         return this;
     }
-
+    
     public DatabaseFuture compile() {
         try {
             Connection connection = ConnectionProvider.getConnection();

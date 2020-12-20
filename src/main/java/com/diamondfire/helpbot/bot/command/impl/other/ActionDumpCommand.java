@@ -8,34 +8,34 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
 
 public class ActionDumpCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "actiondump";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Provides over the action dump file. This file provides a dump of all the data HelpBot uses. This is automatically updated every 24 hours.")
                 .category(CommandCategory.OTHER);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         event.getChannel().sendFile(ExternalFile.DB.getFile()).queue();
     }
-
+    
 }
 
 

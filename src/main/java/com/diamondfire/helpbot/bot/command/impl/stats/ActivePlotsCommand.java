@@ -15,34 +15,34 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class ActivePlotsCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "activeplots";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"nowplaying"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current plots that people are playing.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -59,12 +59,12 @@ public class ActivePlotsCommand extends Command {
                                         String.format(" **(%s)**", set.getInt("id")),
                                 "Players: " + set.getInt("player_count"), false);
                     }
-
+                    
                     event.reply(preset);
                 });
-
+        
     }
-
+    
 }
 
 

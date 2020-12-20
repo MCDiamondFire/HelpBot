@@ -17,17 +17,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class TimeTopCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "timetop";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"toptime"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -39,7 +39,7 @@ public class TimeTopCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -49,23 +49,23 @@ public class TimeTopCommand extends Command {
                                 new SingleArgumentContainer<>(new DefinedObjectArgument<>("all"))
                         ).optional(30));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         Object arg = event.getArgument("days");
-
+        
         if (arg instanceof String) {
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.INFO, "Top Support Member Time of all time", null)
             );
             EmbedBuilder embed = preset.getEmbed();
-
+            
             new DatabaseQuery()
                     .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions GROUP BY staff ORDER BY sessions DESC LIMIT 10"))
                     .compile()
@@ -81,7 +81,7 @@ public class TimeTopCommand extends Command {
                     new InformativeReply(InformativeReplyType.INFO, String.format("Top Support Member Time in %s %s", days, StringUtil.sCheck("day", days)), null)
             );
             EmbedBuilder embed = preset.getEmbed();
-
+            
             new DatabaseQuery()
                     .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days)))
                     .compile()
@@ -94,7 +94,7 @@ public class TimeTopCommand extends Command {
         }
         event.reply(preset);
     }
-
+    
 }
 
 

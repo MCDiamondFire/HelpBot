@@ -10,24 +10,24 @@ import net.dv8tion.jda.api.utils.MarkdownSanitizer;
 import java.util.Arrays;
 
 public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuilder<T> {
-
+    
     default void generateInfo(T data, EmbedBuilder builder) {
         DisplayIcon icon = data.getItem();
         if (icon.getAdditionalInfo().size() != 0) {
             StringBuilder additionalInfo = new StringBuilder();
-
+            
             // Contains arrays of strings, so loop through those.
             for (JsonElement current : icon.getAdditionalInfo()) {
                 JsonArray currentArray = current.getAsJsonArray();
                 String[] info = Util.jsonArrayToString(currentArray);
                 additionalInfo.append(String.format("\n> %s ", info[0]));
                 additionalInfo.append(String.join(" ", Arrays.copyOfRange(info, 1, info.length)));
-
+                
             }
-
+            
             builder.addField("Additional Info", MarkdownSanitizer.escape(additionalInfo.toString()), false);
         }
-
+        
         if (icon.getWorksWith().length != 0) {
             builder.addField("Works With", StringUtil.listView("> ", true, icon.getWorksWith()), false);
         }
@@ -44,14 +44,19 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         if (icon.mobsOnly()) {
             builder.addField("Mobs Only", "", false);
         }
-
+        
+        if (icon.advanced()) {
+            builder.addField("Advanced", "", false);
+        }
+        
     }
-
+    
     enum ParamConverter {
         ANY_TYPE("Any Value"),
         TEXT("Text"),
         NUMBER("Number"),
         LOCATION("Location"),
+        VECTOR("Vector"),
         SOUND("Sound"),
         PARTICLE("Particle"),
         POTION("Potion"),
@@ -64,21 +69,22 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         VEHICLE("Vehicle"),
         BLOCK("Block"),
         BLOCK_TAG("Block Tag"),
+        NONE("None"),
         UNKNOWN("?");
-
+        
         private final String textName;
-
+        
         ParamConverter(String textName) {
             this.textName = textName;
         }
-
+        
         public static ParamConverter getTypeFromString(String internalName) {
             return ParamConverter.valueOf(internalName);
         }
-
+        
         public String getText() {
             return textName;
         }
     }
-
+    
 }

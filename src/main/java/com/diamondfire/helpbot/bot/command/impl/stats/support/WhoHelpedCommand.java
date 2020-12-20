@@ -17,12 +17,12 @@ import java.util.*;
 
 
 public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "whohelped";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -34,12 +34,12 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -48,17 +48,17 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + player, null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player)))
                 .compile()
                 .run((result) -> {
-
+                    
                     if (result.isEmpty()) {
                         embed.setDescription("Nobody!");
                         return;
                     }
-
+                    
                     ResultSet set = result.getResult();
                     List<String> sessions = new ArrayList<>();
                     String formattedName = set.getString("name");
@@ -66,15 +66,15 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                             new MinecraftUserPreset(formattedName),
                             new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
                     );
-
+                    
                     for (ResultSet ignored : result) {
                         sessions.add(set.getInt("total") + " " + set.getString("staff"));
                     }
-
+                    
                     EmbedUtil.addFields(embed, sessions, true);
-
+                    
                 });
         event.reply(preset);
     }
-
+    
 }

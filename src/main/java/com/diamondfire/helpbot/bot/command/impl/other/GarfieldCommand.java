@@ -14,29 +14,29 @@ import java.net.URL;
 
 
 public class GarfieldCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "garfield";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a random garfield comic from Ottelino's garfield API.")
                 .category(CommandCategory.OTHER);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
@@ -44,7 +44,7 @@ public class GarfieldCommand extends Command {
             URL url = new URL("https://labscore.vercel.app/v1/garfield/link");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
                 String link = JsonParser.parseString(in.readLine()).getAsJsonObject().get("link").getAsString();
-
+                
                 if (link == null) {
                     throw new IOException();
                 } else {
@@ -59,5 +59,5 @@ public class GarfieldCommand extends Command {
         }
         event.getChannel().sendMessage(builder.build()).queue();
     }
-
+    
 }

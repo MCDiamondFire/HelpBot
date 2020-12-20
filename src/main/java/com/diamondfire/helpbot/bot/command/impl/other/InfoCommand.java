@@ -16,34 +16,34 @@ import java.time.Instant;
 import java.util.*;
 
 public class InfoCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "info";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets info on the current active code database.")
                 .category(CommandCategory.CODE_BLOCK);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
-
+        
         LinkedHashMap<String, String> dataStats = new LinkedHashMap<>();
         dataStats.put("CodeBlocks", get(CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS)));
         dataStats.put("Actions", get(CodeDatabase.getRegistry(CodeDatabase.ACTIONS)));
@@ -53,16 +53,16 @@ public class InfoCommand extends Command {
         dataStats.put("Game Value", get(CodeDatabase.getRegistry(CodeDatabase.GAME_VALUES)));
         dataStats.put("Legacy Actions", get(CodeDatabase.getRegistry(CodeDatabase.DEPRECATED_ACTIONS)));
         dataStats.put("Legacy Game Values", get(CodeDatabase.getRegistry(CodeDatabase.DEPRECATED_GAME_VALUES)));
-
+        
         embed.addField("Current Database Stats:", String.format("```asciidoc\n%s```", StringUtil.asciidocStyle(dataStats)), true);
         embed.addField("What's New on Beta?", String.format("```%s```", EmbedUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
         embed.setFooter("Database Last Updated");
         embed.setDescription("The database is updated automatically every 24h.");
         embed.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
-
+        
         event.reply(preset);
     }
-
+    
     private String get(Collection<?> collection) {
         return FormatUtil.formatNumber(collection.size());
     }

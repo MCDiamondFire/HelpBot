@@ -20,17 +20,17 @@ import java.util.*;
 
 
 public class CpCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "cp";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"cpi", "cpinfo", "mycp", "cplevel"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -42,12 +42,12 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -55,7 +55,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                         new InformativeReply(InformativeReplyType.INFO, "CP Info", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM creator_rankings WHERE uuid = ? OR name = ?;", (statement) -> {
                     statement.setString(1, player);
@@ -69,24 +69,24 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                         event.reply(preset);
                         return;
                     }
-
+                    
                     ResultSet set = table.getResult();
-
+                    
                     int points = set.getInt("points");
                     int rank = set.getInt("cur_rank");
                     CreatorLevel level = CreatorLevel.getLevel(rank);
                     CreatorLevel nextLevel = CreatorLevel.getNextLevel(CreatorLevel.getLevel(rank));
                     int nextLevelReq = nextLevel.getRequirementProvider().getRequirement();
-
+                    
                     String formattedName = set.getString("name");
                     String uuid = set.getString("uuid");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName, uuid)
                     );
-
+                    
                     embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", genPointMetric(points, uuid), false);
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid)))
                             .compile()
@@ -97,17 +97,17 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                     embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
                                 }
                             });
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points)))
                             .compile()
                             .run((tableSet) -> embed.addField("Current Leaderboard Place", FormatUtil.formatNumber(tableSet.getResult().getInt("place")), false));
-
+                    
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);
                         embed.addField("Next Rank Points", FormatUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", FormatUtil.formatNumber(nextLevelReq - points)), false);
                     }
-
+                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT DATE_FORMAT(date, '%d-%m') AS time,points FROM owen.creator_rankings_log WHERE uuid = ?;", (statement) -> statement.setString(1, uuid)))
                             .compile()
@@ -116,12 +116,12 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                     event.reply(preset);
                                     return;
                                 }
-
+                                
                                 Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
                                 for (ResultSet rs : resultTable) {
                                     entries.put(new StringEntry(rs.getString("time")), rs.getInt("points"));
                                 }
-
+                                
                                 embed.setImage("attachment://graph.png");
                                 event.getReplyHandler().replyA(preset)
                                         .addFile(new ChartGraphBuilder()
@@ -129,10 +129,10 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                                 .createGraph(entries), "graph.png")
                                         .queue();
                             });
-
+                    
                 });
     }
-
+    
     private String genPointMetric(int points, String uuid) {
         StringBuilder text = new StringBuilder(FormatUtil.formatNumber(points));
         new DatabaseQuery()
@@ -143,10 +143,10 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                     if (table.isEmpty()) {
                         return;
                     }
-
+                    
                     ResultSet set = table.getResult();
                     int oldPoints = set.getInt("points");
-
+                    
                     if (oldPoints > points) {
                         text.insert(0, "<:red_down_arrow:743902462343118858> ");
                         text.append(String.format(" (%s from %s)", FormatUtil.formatNumber(points - oldPoints), FormatUtil.formatDate(set.getDate("date"))));
@@ -155,10 +155,10 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                         text.append(String.format(" (+%s from %s)", FormatUtil.formatNumber(points - oldPoints), FormatUtil.formatDate(set.getDate("date"))));
                     }
                 });
-
+        
         return text.toString();
     }
-
+    
 }
 
 

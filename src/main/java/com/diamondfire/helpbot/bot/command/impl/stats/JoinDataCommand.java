@@ -18,12 +18,12 @@ import java.sql.ResultSet;
 import java.util.*;
 
 public class JoinDataCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "joindata";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -43,7 +43,7 @@ public class JoinDataCommand extends Command {
                 )
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
@@ -55,14 +55,14 @@ public class JoinDataCommand extends Command {
                         new SingleArgumentContainer<>(new DateArgument()).optional(null))
                 .addArgument("daysrejoin",
                         new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(null));
-
+        
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.ADMINISTRATOR;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder();
@@ -70,21 +70,21 @@ public class JoinDataCommand extends Command {
         builder.withPreset(
                 new InformativeReply(InformativeReplyType.INFO, "Join Statistics")
         );
-
+        
         int days = event.getArgument("days");
         Date date = event.getArgument("date");
         java.sql.Date sqlDate = DateUtil.toSqlDate(date);
-
+        
         Calendar c = Calendar.getInstance();
         c.setTime(date);
         c.add(Calendar.DAY_OF_MONTH, days);
-
+        
         java.sql.Date sqlDateTo = DateUtil.toSqlDate(date);
-
+        
         // convert calendar to date
         String dateFrom = FormatUtil.formatDate(date);
         String dateTo = FormatUtil.formatDate(c.getTime());
-
+        
         // Players that joined within a week of a certain date
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;", (statement) -> {
@@ -99,17 +99,17 @@ public class JoinDataCommand extends Command {
                     } else {
                         count = FormatUtil.formatNumber(table.getResult().getInt("count"));
                     }
-
+                    
                     embed.addField(String.format("Players that have joined within %s and %s.", dateFrom, dateTo), count, false);
                 });
-
-
+        
+        
         Map<Integer, Integer> ranks = new LinkedHashMap<>();
         ranks.put(1, 0);
         ranks.put(2, 0);
         ranks.put(3, 0);
         ranks.put(4, 0);
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT donor, COUNT(*) AS count FROM ranks WHERE donor != 0 AND uuid IN (SELECT DISTINCT uuid FROM approved_users " +
                         "WHERE time BETWEEN ? AND ?) GROUP BY donor;", (statement) -> {
@@ -122,17 +122,17 @@ public class JoinDataCommand extends Command {
                         ranks.put(set.getInt("donor"), set.getInt("count"));
                     }
                 });
-
+        
         embed.addField(String.format("Players that have joined within %s and %s that have donor ranks.", dateFrom, dateTo), String.join("\n", new String[]{
                 "<:overlord:735940074742612030> Overlord: " + ranks.get(4),
                 "<:mythic:735940074662789130> Mythic: " + ranks.get(3),
                 "<:emperor:735940074595680366> Emperor: " + ranks.get(2),
                 "<:noble:735940074285432834> Noble: " + ranks.get(1)
         }), false);
-
-
+        
+        
         int betweenDays = event.getArgument("daysrejoin") == null ? days : event.getArgument("daysrejoin");
-
+        
         Date between1;
         if (event.getArgument("daterejoin") == null) {
             c.add(Calendar.DAY_OF_MONTH, 1);
@@ -141,10 +141,10 @@ public class JoinDataCommand extends Command {
             between1 = event.getArgument("daterejoin");
             c.setTime(between1);
         }
-
+        
         c.add(Calendar.DAY_OF_MONTH, betweenDays);
         Date between2 = c.getTime();
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users " +
                         "WHERE time BETWEEN ? AND ? + INTERVAL ? DAY) AS a WHERE uuid IN " +
@@ -163,10 +163,10 @@ public class JoinDataCommand extends Command {
                     } else {
                         count = FormatUtil.formatNumber(table.getResult().getInt("count"));
                     }
-
+                    
                     embed.addField(String.format("Players that joined again between %s and %s", FormatUtil.formatDate(between1), FormatUtil.formatDate(between2)), count, false);
                 });
-
+        
         event.reply(builder);
     }
 }

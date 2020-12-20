@@ -15,17 +15,17 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.*;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "lastjoined";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"lastseen", "seen", "lastonline", "lastjoin"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -37,7 +37,7 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         PresetBuilder preset = new PresetBuilder()
@@ -58,21 +58,21 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
                         return;
                     }
-
+                    
                     ResultSet set = result.getResult();
                     String formattedName = set.getString("name");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName)
                     );
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
+                            .query(new BasicQuery("SELECT TIMESTAMPADD(hour, 5, time) AS time FROM hypercube.player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
                             .compile()
                             .run((resultTableDate) -> {
                                 if (resultTableDate.isEmpty()) {
                                     embed.addField("Last Seen", "A long time ago...", false);
                                     return;
                                 }
-
+                                
                                 ResultSet setTime = resultTableDate.getResult();
                                 Timestamp date = setTime.getTimestamp("time");
                                 if (Permission.EXPERT.hasPermission(event.getMember())) {
@@ -81,11 +81,11 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                                 } else {
                                     embed.addField("Last Seen", FormatUtil.formatDate(date), false);
                                 }
-
+                                
                             });
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }

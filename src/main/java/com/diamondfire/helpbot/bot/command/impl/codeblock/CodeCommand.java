@@ -13,11 +13,11 @@ import java.util.function.BiConsumer;
 
 
 public class CodeCommand extends AbstractSingleQueryCommand {
-
+    
     public static <T extends CodeObject> void sendHelpMessage(T data, TextChannel channel) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String customHead = data.getItem().getHead();
-
+        
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
@@ -26,14 +26,14 @@ public class CodeCommand extends AbstractSingleQueryCommand {
             builder.setThumbnail(customHead);
             channel.sendMessage(builder.build()).queue();
         }
-
+        
     }
-
+    
     @Override
     public String getName() {
         return "code";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -44,17 +44,17 @@ public class CodeCommand extends AbstractSingleQueryCommand {
                                 .name("codeblock|action|game value")
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         super.run(event);
     }
-
+    
     @Override
     public BiConsumer<CodeObject, TextChannel> onDataReceived() {
         return CodeCommand::sendHelpMessage;

@@ -6,19 +6,19 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public class DisabledCheck implements CommandCheck {
-
+    
     @Override
     public boolean check(CommandEvent event) {
         return !HelpBotInstance.getHandler().getDisabledHandler().isDisabled(event.getCommand());
     }
-
+    
     @Override
     public void buildMessage(CommandEvent event, PresetBuilder builder) {
         builder.withPreset(
                 new InformativeReply(InformativeReplyType.ERROR, "Disabled!", "This command has been disabled until further notice.")
         );
-
+        
     }
-
-
+    
+    
 }

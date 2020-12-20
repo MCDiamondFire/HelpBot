@@ -6,18 +6,18 @@ import java.sql.*;
 import java.util.Iterator;
 
 public class DatabaseResult implements Iterable<ResultSet> {
-
+    
     private final ResultSet set;
-
+    
     public DatabaseResult(ResultSet set) {
         this.set = set;
     }
-
+    
     public boolean isEmpty() {
         if (set == null) {
             return true;
         }
-
+        
         try {
             if (!set.next()) {
                 return true;
@@ -26,19 +26,19 @@ public class DatabaseResult implements Iterable<ResultSet> {
             }
         } catch (SQLException ignored) {
         }
-
+        
         return false;
     }
-
+    
     public ResultSet getResult() {
         try {
             set.next();
         } catch (SQLException ignored) {
         }
-
+        
         return set;
     }
-
+    
     @NotNull
     @Override
     public Iterator<ResultSet> iterator() {
@@ -57,12 +57,12 @@ public class DatabaseResult implements Iterable<ResultSet> {
                     return false;
                 }
             }
-
+            
             @Override
             public ResultSet next() {
                 return set;
             }
         };
     }
-
+    
 }

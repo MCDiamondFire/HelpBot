@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.*;
 
 public class JoinBadCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "joinbad";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -37,19 +37,19 @@ public class JoinBadCommand extends Command {
                                 .optional()
                 );
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("days",
                         new SingleArgumentContainer<>(new ClampedIntegerArgument(1, 100)).optional(30));
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         int num = event.getArgument("days");
@@ -57,11 +57,11 @@ public class JoinBadCommand extends Command {
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, String.format("Staff who have not joined in %s %s", num, StringUtil.sCheck("day", num)), null)
                 );
-
+        
         EmbedBuilder embed = preset.getEmbed();
         embed.setColor(Color.RED);
         embed.setDescription("");
-
+        
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT DISTINCT p.name, DATEDIFF(CURRENT_TIMESTAMP(), latest) AS day " +
                         "FROM (SELECT players.uuid, name" +
@@ -81,7 +81,7 @@ public class JoinBadCommand extends Command {
                     for (ResultSet set : result) {
                         staff.add(set.getString("name") + " (" + set.getInt("day") + ")");
                     }
-
+                    
                     EmbedUtil.addFields(embed, staff, "", "", true);
                 });
         event.reply(preset);

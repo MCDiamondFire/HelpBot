@@ -15,34 +15,34 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class CreditTopCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "credittop";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"creditleaderboard"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the current credit leaderboard.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -59,10 +59,10 @@ public class CreditTopCommand extends Command {
                                 "Credits: " + FormatUtil.formatNumber(set.getInt("credits")), false);
                     }
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }
 
 

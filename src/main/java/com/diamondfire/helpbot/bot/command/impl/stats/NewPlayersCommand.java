@@ -15,29 +15,29 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.sql.ResultSet;
 
 public class NewPlayersCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "newplayers";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the first 25 new players who have joined in the last 24 hours.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -55,10 +55,10 @@ public class NewPlayersCommand extends Command {
                         embed.addField(StringUtil.display(set.getString("name")), set.getTimestamp("time").toString(), false);
                     }
                 });
-
+        
         event.reply(preset);
     }
-
+    
 }
 
 

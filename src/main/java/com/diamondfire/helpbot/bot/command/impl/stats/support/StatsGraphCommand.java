@@ -14,17 +14,17 @@ import java.util.*;
 
 
 public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "statsgraph";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"sessiongraph", "sgraph"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -36,12 +36,12 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
                                 .optional()
                 );
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.SUPPORT;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         new DatabaseQuery()
@@ -57,17 +57,17 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
                         }))
                 .compile()
                 .run((query) -> {
-                    Map<GraphableEntry<?>,Integer> dates = new LinkedHashMap<>();
+                    Map<GraphableEntry<?>, Integer> dates = new LinkedHashMap<>();
                     for (ResultSet set : query) {
                         dates.put(new DateEntry(set.getDate("date")), set.getInt("total"));
                     }
-
+                    
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("%s's sessions", player))
                             .createGraph(dates)).queue();
-
+                    
                 });
-
+        
     }
-
+    
 }

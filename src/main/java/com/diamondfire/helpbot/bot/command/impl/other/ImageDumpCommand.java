@@ -13,29 +13,29 @@ import com.diamondfire.helpbot.util.IOUtil;
 import java.io.*;
 
 public class ImageDumpCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "imagedump";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Provides over a zip file containing all of the minecraft photos HelpBot uses. Each image is 300x300 and is rendered the exact same way it would in Minecraft.")
                 .category(CommandCategory.OTHER);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         File images = ExternalFile.IMAGES_DIR.getFile();
@@ -53,9 +53,9 @@ public class ImageDumpCommand extends Command {
                 msg.editMessage(builderError.getEmbed().build()).queue();
             }
         });
-
+        
     }
-
+    
 }
 
 

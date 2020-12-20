@@ -5,11 +5,11 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 
 public class AlternateArgumentParser<A> extends ArgumentParser<AlternateArgumentContainer<A>, A> {
-
+    
     public AlternateArgumentParser(AlternateArgumentContainer<A> container) {
         super(container);
     }
-
+    
     @Override
     public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException {
         for (ArgumentContainer<?> container : getContainer().getAlternatives()) {
@@ -18,7 +18,7 @@ public class AlternateArgumentParser<A> extends ArgumentParser<AlternateArgument
             } catch (ArgumentException ignored) {
             }
         }
-
+        
         throw new MissingArgumentException("No valid arguments were provided.");
     }
 }

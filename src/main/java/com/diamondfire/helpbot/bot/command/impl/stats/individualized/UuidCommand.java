@@ -12,22 +12,22 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 
 //Command exists for easy mobile copy and pasting
 public class UuidCommand extends AbstractPlayerUUIDCommand {
-
+    
     @Override
     public String getName() {
         return "uuid";
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     protected void execute(CommandEvent event, String player) {
         new DatabaseQuery()
@@ -43,11 +43,11 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
                         event.reply(preset);
                         return;
                     }
-
+                    
                     event.getReplyHandler().reply(result.getResult().getString("uuid"));
                 });
     }
-
+    
 }
 
 

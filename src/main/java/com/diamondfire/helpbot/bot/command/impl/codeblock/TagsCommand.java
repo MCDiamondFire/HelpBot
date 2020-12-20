@@ -13,11 +13,11 @@ import java.util.function.BiConsumer;
 
 
 public class TagsCommand extends AbstractSingleQueryCommand {
-
+    
     private static void sendTagMessage(CodeObject data, TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         ActionData actionData;
-
+        
         // Handle codeblocks that have actions associated with them.
         if (data instanceof CodeBlockData && ((CodeBlockData) data).getAssociatedAction() != null) {
             actionData = ((CodeBlockData) data).getAssociatedAction();
@@ -29,14 +29,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
             channel.sendMessage(builder.build()).queue();
             return;
         }
-
+        
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
             channel.sendMessage(builder.build()).queue();
             return;
         }
-
+        
         for (CodeBlockTagData tag : actionData.getTags()) {
             StringBuilder stringBuilder = new StringBuilder();
             for (String option : tag.getStringOptions()) {
@@ -44,10 +44,10 @@ public class TagsCommand extends AbstractSingleQueryCommand {
             }
             builder.addField(tag.getName(), stringBuilder.toString(), true);
         }
-
-
+        
+        
         builder.setTitle("Tags for: " + data.getName());
-
+        
         String customHead = data.getItem().getHead();
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
@@ -58,7 +58,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
             channel.sendMessage(builder.build()).queue();
         }
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
@@ -69,27 +69,27 @@ public class TagsCommand extends AbstractSingleQueryCommand {
                                 .name("action name")
                 );
     }
-
+    
     @Override
     public String getName() {
         return "tags";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"codetags", "tag"};
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         super.run(event);
     }
-
+    
     @Override
     public BiConsumer<CodeObject, TextChannel> onDataReceived() {
         return TagsCommand::sendTagMessage;

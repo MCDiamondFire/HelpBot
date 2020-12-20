@@ -10,34 +10,34 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class PolicyCommand extends Command {
-
+    
     @Override
     public String getName() {
         return "policy";
     }
-
+    
     @Override
     public String[] getAliases() {
         return new String[]{"privacy"};
     }
-
+    
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets the bot's privacy policy.")
                 .category(CommandCategory.OTHER);
     }
-
+    
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-
+    
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-
+    
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -48,7 +48,7 @@ public class PolicyCommand extends Command {
         embed.addField("Data Collection", "HelpBot does store some data on its users. However, no personal information is ever stored.", false);
         embed.addField("Where does my data come from?", "HelpBot receives most of its information from DiamondFire. HelpBot will never show sensitive data such as ip addresses. ", false);
         embed.addField("Can I get my data removed?", "If you would like your data removed from DiamondFire, you will need to contact an administrator. If you would like your data removed from HelpBot, please contact Owen1212055.", true);
-
+        
         event.reply(preset);
     }
 }
