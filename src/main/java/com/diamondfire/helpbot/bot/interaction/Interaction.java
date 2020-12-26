@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.interaction;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.internal.requests.Route;
 
 import javax.annotation.*;
 
@@ -34,11 +35,18 @@ public interface Interaction extends ISnowflake {
 	@Nonnull @CheckReturnValue
 	RestAction<Void> acknowledge(boolean withSource);
 
-	default RestAction<Void> respond() {
-		return respond(true);
+	default InteractionResponseAction respond() {
+		Route.CompiledRoute route = InteractionRoute.CREATE_RESPONSE.compile(getId(), getInteractionToken());
+		return new InteractionResponseAction(getJDA(), route);
 	}
 
-	RestAction<Void> respond(boolean withSource);
+	default InteractionResponseAction respond(CharSequence message) {
+		return respond().setContent(message);
+	}
+
+	default InteractionResponseAction respond(MessageEmbed embed) {
+		return respond().addEmbed(embed);
+	}
 
 	enum InteractionType {
 

@@ -41,7 +41,11 @@ public class InteractionDispatcher extends ListenerAdapter {
 	public void onGenericEvent(@NotNull GenericEvent genericEvent) {
 		if (genericEvent instanceof CommandInteractionEvent) {
 			CommandInteractionEvent event = (CommandInteractionEvent) genericEvent;
-			System.out.println(event.getInteraction());
+			CommandInteraction interaction = event.getInteraction();
+			interaction.respond("Your options were: " + interaction.getOptions())
+					.showSource(true)
+					.setEphemeral(true)
+					.queue();
 		}
 	}
 }

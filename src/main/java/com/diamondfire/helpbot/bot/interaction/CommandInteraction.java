@@ -76,24 +76,24 @@ public class CommandInteraction implements Interaction {
 	}
 
 	@NotNull
-	@Override
-	public RestAction<Void> acknowledge() {
-		return acknowledge(false);
-	}
-
-	@NotNull
 	public String getCommandName() {
 		return name;
 	}
 
 	@NotNull
 	public Long getCommandId() {
-		return id;
+		return commandId;
 	}
 
 	@NotNull
 	public OptionSet getOptions() {
 		return options;
+	}
+
+	@NotNull
+	@Override
+	public RestAction<Void> acknowledge() {
+		return acknowledge(false);
 	}
 
 	@NotNull
@@ -104,16 +104,6 @@ public class CommandInteraction implements Interaction {
 				.put("type", withSource ? 5 : 2);
 
 		return new RestActionImpl<>(jda, route, body);
-	}
-
-	@Override
-	public RestAction<Void> respond() {
-		return null;
-	}
-
-	@Override
-	public RestAction<Void> respond(boolean withSource) {
-		return null;
 	}
 
 	@Override
