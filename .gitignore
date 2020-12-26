@@ -3,3 +3,7 @@
 gradle
 build
 /src/main/resources/swear_filter.json
+config.json
+db.json
+db_last.json
+disabled_commands.txt

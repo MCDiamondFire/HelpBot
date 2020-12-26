@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
+import com.diamondfire.helpbot.bot.interaction.event.InteractionDispatcher;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
@@ -115,7 +116,8 @@ public class HelpBotInstance {
                 .setActivity(Activity.watching("for ?help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent(), new GuildJoinEvent());
+                .setRawEventsEnabled(true)
+                .addEventListeners(new InteractionDispatcher(), new MessageEvent(), new ReactionEvent(), new ReadyEvent(), new GuildJoinEvent());
         
         jda = builder.build();
         handler.initialize();
