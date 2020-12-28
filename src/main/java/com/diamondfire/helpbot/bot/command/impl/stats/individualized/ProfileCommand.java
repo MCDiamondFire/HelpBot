@@ -92,7 +92,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                             .query(new BasicQuery("SELECT * FROM (SELECT (SELECT date AS liteban_join FROM litebans.history WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS liteban," +
                                     "     (SELECT (SELECT date AS owen_join FROM owen.join_log WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS owen_join," +
                                     "     (SELECT (SELECT COUNT(*) AS votes FROM hypercube.plot_votes WHERE uuid = ?) temp FROM dual) AS votes," +
-                                    "     (SELECT (SELECT credits FROM hypercube.player_credits WHERE uuid = ?) temp FROM dual) AS credits," +
+                                    "     (SELECT (SELECT tokens FROM hypercube.user_tokens WHERE uuid = ?) temp FROM dual) AS credits," +
                                     "     (SELECT (SELECT discord_id FROM hypercube.linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id", (statement) -> {
                                 statement.setString(1, playerUUID);
                                 statement.setString(2, playerUUID);
@@ -105,7 +105,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 ResultSet statsSet = stats.getResult();
                                 
                                 embed.addField("Votes Given", FormatUtil.formatNumber(statsSet.getInt("votes.temp")), false);
-                                embed.addField("Credits", FormatUtil.formatNumber(statsSet.getInt("credits.temp")), false);
+                                embed.addField("Tokens", FormatUtil.formatNumber(statsSet.getInt("tokens.temp")), false);
                                 
                                 long discordId = statsSet.getLong("id.temp");
                                 if (discordId != 0L) {
