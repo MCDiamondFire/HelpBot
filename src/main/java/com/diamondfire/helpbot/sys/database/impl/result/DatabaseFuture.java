@@ -23,6 +23,7 @@ public class DatabaseFuture {
         try {
             action.run(result);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             try {

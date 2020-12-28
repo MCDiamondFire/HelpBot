@@ -105,7 +105,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 ResultSet statsSet = stats.getResult();
                                 
                                 embed.addField("Votes Given", FormatUtil.formatNumber(statsSet.getInt("votes.temp")), false);
-                                embed.addField("Tokens", FormatUtil.formatNumber(statsSet.getInt("tokens.temp")), false);
+                                embed.addField("Tokens", FormatUtil.formatNumber(statsSet.getInt("credits.temp")), false);
                                 
                                 long discordId = statsSet.getLong("id.temp");
                                 if (discordId != 0L) {
@@ -113,7 +113,6 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                 } else {
                                     embed.addField("Discord User", "Not Verified", false);
                                 }
-                                
                                 
                                 Timestamp liteBanDate = statsSet.getTimestamp("liteban.temp");
                                 

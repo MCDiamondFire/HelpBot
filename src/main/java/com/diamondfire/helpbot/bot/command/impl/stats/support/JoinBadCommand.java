@@ -69,7 +69,7 @@ public class JoinBadCommand extends Command {
                         "           hypercube.players" +
                         "      WHERE ranks.uuid = players.uuid" +
                         "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff WHERE excused_till > CURRENT_TIMESTAMP())" +
-                        "        AND (ranks.developer != 1 || ranks.developer IS NULL)" +
+                        "        AND ranks.administration = 0" +
                         "        AND ranks.support > 0 | ranks.moderation > 0) p" +
                         "         LEFT JOIN (SELECT uuid, MAX(time) AS latest FROM hypercube.player_join_log GROUP BY uuid) cn" +
                         "                   ON cn.uuid = p.uuid " +

@@ -46,7 +46,7 @@ public class SupportBannedPlayersCommand extends Command {
                 );
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT support_bans.uuid, p.name, support_bans.reason FROM hypercube_test.support_bans" +
+                .query(new BasicQuery("SELECT support_bans.uuid, p.name, support_bans.reason FROM hypercube.support_bans" +
                         "    LEFT JOIN hypercube.players p ON support_bans.uuid = p.uuid"))
                 .compile()
                 .run((result) -> {
@@ -69,6 +69,5 @@ public class SupportBannedPlayersCommand extends Command {
                     
                     event.reply(builder);
                 });
-        
     }
 }

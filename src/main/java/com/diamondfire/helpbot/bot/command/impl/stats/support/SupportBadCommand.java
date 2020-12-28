@@ -77,7 +77,7 @@ public class SupportBadCommand extends Command {
                         "      WHERE ranks.uuid = players.uuid" +
                         "        AND ranks.support >= 1" +
                         "        AND ranks.moderation = 0" +
-                        "        AND (ranks.developer != 1 || ranks.developer IS NULL)" +
+                        "        AND ranks.administration = 0" +
                         "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff WHERE excused_till > CURRENT_TIMESTAMP())) p" +
                         "         LEFT OUTER JOIN (SELECT DISTINCT staff AS name, COUNT(staff) AS count" +
                         "                          FROM hypercube.support_sessions" +

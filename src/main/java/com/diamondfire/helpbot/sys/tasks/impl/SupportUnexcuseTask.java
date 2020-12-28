@@ -73,7 +73,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
                         "       moderation," +
                         "       retirement," +
                         "       youtuber," +
-                        "       developer," +
+                        "       administration," +
                         "       excused_by," +
                         "       excused_at," +
                         "       excused_till," +

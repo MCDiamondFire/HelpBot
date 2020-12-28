@@ -8,9 +8,8 @@ public enum RankBranch {
     MODERATION,
     RETIREMENT,
     YOUTUBER,
-    DEVELOPER,
+    ADMINISTRATION,
     BUILDER;
-    
     
     public static final Map<String, RankBranch> databaseMap = new HashMap<>();
     

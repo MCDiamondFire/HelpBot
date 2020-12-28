@@ -16,15 +16,16 @@ public enum Rank {
     // Moderation
     JRMOD("JrMod", 1, RankBranch.MODERATION, "JrModerator"),
     MOD("Mod", 2, RankBranch.MODERATION, "Moderator"),
+    SR_MOD("SrMod", 3, RankBranch.MODERATION, "SrModerator"),
     //Administration
-    ADMIN("Admin", 3, RankBranch.MODERATION, "Admin"),
-    OWNER("Owner", 4, RankBranch.MODERATION, "Owner"),
+    DEVELOPER("Dev", 1, RankBranch.ADMINISTRATION, "S_Developer"),
+    ADMIN("Admin", 2, RankBranch.ADMINISTRATION, "Admin"),
+    OWNER("Owner", 3, RankBranch.ADMINISTRATION, "Owner"),
     //Retirement
     RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
     EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
     //Special
     YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
-    DEVELOPER("Dev", 1, RankBranch.DEVELOPER, "S_Developer"),
     BUILDER("B", 1, RankBranch.BUILDER, "Builder");
     
     private final String rankName;

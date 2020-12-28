@@ -50,11 +50,10 @@ public class StaffListCommand extends Command {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
-        
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM ranks, players " +
-                        "WHERE ranks.uuid = players.uuid " +
-                        "AND (ranks.support > 0 || ranks.moderation > 0 || ranks.developer = 1 || ranks.builder = 1) AND ranks.retirement = 0"))
+                .query(new BasicQuery("SELECT * FROM hypercube.ranks,hypercube.players\n" +
+                        "                        WHERE ranks.uuid = players.uuid\n" +
+                        "                        AND (ranks.support > 0 || ranks.moderation > 0 || ranks.administration > 0 || ranks.builder = 1) AND ranks.retirement = 0"))
                 .compile()
                 .runAsync((result) -> {
                     Map<Rank, List<String>> ranks = new HashMap<>();
@@ -64,6 +63,7 @@ public class StaffListCommand extends Command {
                             Rank.EXPERT,
                             Rank.JRMOD,
                             Rank.MOD,
+                            Rank.SR_MOD,
                             Rank.ADMIN,
                             Rank.OWNER,
                             Rank.DEVELOPER);
@@ -72,18 +72,17 @@ public class StaffListCommand extends Command {
                         String name = StringUtil.display(set.getString("name"));
                         int supportNum = set.getInt("support");
                         int moderationNum = set.getInt("moderation");
-                        int developerNum = set.getInt("developer");
+                        int administrationNum = set.getInt("administration");
                         
-                        if (developerNum != 0) {
-                            ranks.get(Rank.DEVELOPER).add(name);
+                        if (administrationNum > 0) {
+                            ranks.get(Rank.fromBranch(RankBranch.ADMINISTRATION, administrationNum)).add(name);
                         }
                         
-                        if (moderationNum == 0 && supportNum > 0) {
+                        if (moderationNum == 0 && supportNum > 0 && administrationNum == 0) {
                             ranks.get(Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
                         } else if (moderationNum > 0) {
                             ranks.get(Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
                         }
-                        
                     }
                     
                     EmbedBuilder supportPage = new EmbedBuilder();
@@ -116,7 +115,7 @@ public class StaffListCommand extends Command {
                                     }
                                 }
                                 
-                                EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Developers");
+                                EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Contributors");
                                 guild.pruneMemberCache();
                                 builder.addPage("Developers", devEmbed);
                                 builder.build().send(event.getJDA());

@@ -69,7 +69,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                     
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count, SUM(duration) AS total_time, " +
-                                    "? IN (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND (ranks.developer != 1 || ranks.developer IS NULL)) AS support," +
+                                    "? IN (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.administration = 0) AS support," +
                                     "(COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {
                                 statement.setString(1, player);
                                 statement.setString(2, player);
