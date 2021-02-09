@@ -77,10 +77,9 @@ public class StaffListCommand extends Command {
                         if (administrationNum > 0) {
                             ranks.get(Rank.fromBranch(RankBranch.ADMINISTRATION, administrationNum)).add(name);
                         }
-                        
                         if (moderationNum == 0 && supportNum > 0 && administrationNum == 0) {
                             ranks.get(Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
-                        } else if (moderationNum > 0) {
+                        } else if (moderationNum > 0 && administrationNum == 0) {
                             ranks.get(Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
                         }
                     }
@@ -92,6 +91,7 @@ public class StaffListCommand extends Command {
                     builder.addPage("Support", supportPage);
                     
                     EmbedBuilder modPage = new EmbedBuilder();
+                    EmbedUtil.addFields(modPage, ranks.get(Rank.SR_MOD), "", "SrMods");
                     EmbedUtil.addFields(modPage, ranks.get(Rank.MOD), "", "Mods");
                     EmbedUtil.addFields(modPage, ranks.get(Rank.JRMOD), "", "JrMods");
                     builder.addPage("Moderation", modPage);

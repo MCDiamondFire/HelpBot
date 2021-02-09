@@ -91,9 +91,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                             .query(new BasicQuery("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid)))
                             .compile()
                             .run((tableSet) -> {
-                                if (tableSet.isEmpty()) {
-                                    return;
-                                } else {
+                                if (!tableSet.isEmpty()) {
                                     embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
                                 }
                             });
@@ -123,11 +121,15 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 }
                                 
                                 embed.setImage("attachment://graph.png");
-                                event.getReplyHandler().replyA(preset)
-                                        .addFile(new ChartGraphBuilder()
-                                                .setGraphName(player + "'s CP Graph")
-                                                .createGraph(entries), "graph.png")
-                                        .queue();
+                                try {
+                                    event.getReplyHandler().replyA(preset)
+                                            .addFile(new ChartGraphBuilder()
+                                                    .setGraphName(player + "'s CP Graph")
+                                                    .createGraph(entries), "graph.png")
+                                            .queue();
+                                } catch (Exception ignored) {
+                                    event.reply(preset);
+                                }
                             });
                     
                 });

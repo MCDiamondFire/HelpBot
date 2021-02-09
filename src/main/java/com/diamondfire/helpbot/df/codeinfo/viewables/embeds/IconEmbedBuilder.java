@@ -19,7 +19,7 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
             // Contains arrays of strings, so loop through those.
             for (JsonElement current : icon.getAdditionalInfo()) {
                 JsonArray currentArray = current.getAsJsonArray();
-                String[] info = Util.jsonArrayToString(currentArray);
+                String[] info = Util.fromJsonArray(currentArray);
                 additionalInfo.append(String.format("\n> %s ", info[0]));
                 additionalInfo.append(String.join(" ", Arrays.copyOfRange(info, 1, info.length)));
                 

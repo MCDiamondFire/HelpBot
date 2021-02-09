@@ -7,11 +7,13 @@ public enum ReactRole {
     EVENTS("\uD83D\uDCC5", 761779264345079848L),
     STREAMS("\uD83D\uDDA5", 761779390161223681L),
     PROMOTIONS("\uD83D\uDC64", 761779521937735711L),
-    SALES("\uD83C\uDFF7", 761779623322320916L);
+    SALES("\uD83C\uDFF7", 761779623322320916L),
+    APP_UPDATES("\uD83D\uDCD4", 770062219362435113L, "Application Updates");
     
     private static final Map<String, ReactRole> roleMap = new HashMap<>();
     private final String emoji;
     private final long roleID;
+    private final String override;
     
     static {
         for (ReactRole role : values()) {
@@ -20,8 +22,13 @@ public enum ReactRole {
     }
     
     ReactRole(String emoji, long roleID) {
+        this(emoji, roleID, null);
+    }
+    
+    ReactRole(String emoji, long roleID, String override) {
         this.emoji = emoji;
         this.roleID = roleID;
+        this.override = override;
     }
     
     public static ReactRole fromEmoji(String emoji) {
@@ -34,5 +41,9 @@ public enum ReactRole {
     
     public String getEmoji() {
         return emoji;
+    }
+    
+    public String getOverride() {
+        return override;
     }
 }

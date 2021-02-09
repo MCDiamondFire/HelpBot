@@ -26,7 +26,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public String[] getAliases() {
-        return new String[]{"user", "whois", "p", "prof", "credits", "joindate"};
+        return new String[]{"user", "whois", "p", "prof", "credits", "joindate", "tokens"};
     }
     
     @Override

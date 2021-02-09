@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
@@ -33,7 +33,7 @@ public class Util {
     }
     
     public static File fetchMinecraftTextureFile(String fileName) {
-        File imagesDir = ExternalFile.IMAGES_DIR.getFile();
+        File imagesDir = ExternalFiles.IMAGES_DIR;
         try {
             File file = new File(imagesDir, fileName + ".png");
             
@@ -56,7 +56,7 @@ public class Util {
     /**
      * Converts a jsonArray into a String[]
      */
-    public static String[] jsonArrayToString(JsonArray jsonArray) {
+    public static String[] fromJsonArray(JsonArray jsonArray) {
         if (jsonArray == null) {
             return new String[]{};
         }

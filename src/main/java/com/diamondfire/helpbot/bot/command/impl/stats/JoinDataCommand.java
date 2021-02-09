@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.df.ranks.Rank;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
@@ -68,7 +69,7 @@ public class JoinDataCommand extends Command {
         PresetBuilder builder = new PresetBuilder();
         EmbedBuilder embed = builder.getEmbed();
         builder.withPreset(
-                new InformativeReply(InformativeReplyType.INFO, "Join Statistics")
+                new InformativeReply(InformativeReplyType.INFO, "Join Statistics", null)
         );
         
         int days = event.getArgument("days");
@@ -79,12 +80,11 @@ public class JoinDataCommand extends Command {
         c.setTime(date);
         c.add(Calendar.DAY_OF_MONTH, days);
         
-        java.sql.Date sqlDateTo = DateUtil.toSqlDate(date);
+        java.sql.Date sqlDateTo = DateUtil.toSqlDate(c.getTime());
         
         // convert calendar to date
         String dateFrom = FormatUtil.formatDate(date);
-        String dateTo = FormatUtil.formatDate(c.getTime());
-        
+        String dateTo = FormatUtil.formatDate(sqlDateTo);
         // Players that joined within a week of a certain date
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;", (statement) -> {
@@ -124,10 +124,10 @@ public class JoinDataCommand extends Command {
                 });
         
         embed.addField(String.format("Players that have joined within %s and %s that have donor ranks.", dateFrom, dateTo), String.join("\n", new String[]{
-                "<:overlord:735940074742612030> Overlord: " + ranks.get(4),
-                "<:mythic:735940074662789130> Mythic: " + ranks.get(3),
-                "<:emperor:735940074595680366> Emperor: " + ranks.get(2),
-                "<:noble:735940074285432834> Noble: " + ranks.get(1)
+                format(Rank.OVERLORD) + ranks.get(4),
+                format(Rank.MYTHIC) + ranks.get(3),
+                format(Rank.EMPEROR) + " " + ranks.get(2),
+                format(Rank.NOBLE) + ranks.get(1)
         }), false);
         
         
@@ -147,13 +147,12 @@ public class JoinDataCommand extends Command {
         
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users " +
-                        "WHERE time BETWEEN ? AND ? + INTERVAL ? DAY) AS a WHERE uuid IN " +
+                        "WHERE time BETWEEN ? AND ?) AS a WHERE uuid IN " +
                         "(SELECT DISTINCT uuid FROM player_join_log WHERE time BETWEEN ? AND ?);", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
                     statement.setDate(3, DateUtil.toSqlDate(between1));
                     statement.setDate(4, DateUtil.toSqlDate(between2));
-                    statement.setInt(5, days);
                 }))
                 .compile()
                 .run((table) -> {
@@ -168,5 +167,9 @@ public class JoinDataCommand extends Command {
                 });
         
         event.reply(builder);
+    }
+    
+    private String format(Rank rank) {
+        return rank.getRankEmote().getAsMention() + " ";
     }
 }

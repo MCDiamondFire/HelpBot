@@ -1,9 +1,10 @@
 package com.diamondfire.helpbot.util;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
+import com.google.gson.JsonObject;
 
 import java.io.*;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.stream.Collectors;
@@ -88,5 +89,33 @@ public class IOUtil {
         return null;
     }
     
+    
+    public static void webHook(String url, String string) {
+        HttpURLConnection connection = null;
+        try {
+            
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            connection.setDoOutput(true);
+            
+            
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            
+            JsonObject object = new JsonObject();
+            object.addProperty("content", string);
+            outputStream.writeBytes(object.toString());
+            outputStream.close();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
 }
 

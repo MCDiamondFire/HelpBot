@@ -55,7 +55,7 @@ public class ExcusedStaffCommand extends Command {
                         "       moderation," +
                         "       retirement," +
                         "       youtuber," +
-                        "       developer," +
+                        "       administration," +
                         "       excused_by," +
                         "       excused_till," +
                         "       reason " +

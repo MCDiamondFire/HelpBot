@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
-import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
+import com.diamondfire.helpbot.bot.command.disable.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -12,7 +12,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-public class EnableCommand extends Command {
+public class EnableCommand extends Command implements CommandDisableFlag{
     
     @Override
     public String getName() {

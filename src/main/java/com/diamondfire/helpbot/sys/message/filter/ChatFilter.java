@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.df.filter;
+package com.diamondfire.helpbot.sys.message.filter;
 
 public abstract class ChatFilter {
     

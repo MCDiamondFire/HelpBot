@@ -30,7 +30,7 @@ public class RankCommand extends AbstractMultiQueryCommand {
                 .category(CommandCategory.CODE_BLOCK)
                 .addArgument(
                         new HelpContextArgument()
-                                .name("rank|credits")
+                                .name("rank|tokens")
                 );
     }
     
@@ -38,7 +38,7 @@ public class RankCommand extends AbstractMultiQueryCommand {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("Rank",
-                        new DefinedObjectArgument<>("Noble", "Emperor", "Mythic", "Overlord", "Credits"));
+                        new DefinedObjectArgument<>("Noble", "Emperor", "Mythic", "Overlord", "Tokens"));
     }
     
     @Override
@@ -50,9 +50,9 @@ public class RankCommand extends AbstractMultiQueryCommand {
     @Override
     protected List<String> filterData(List<CodeObject> data, CommandEvent event) {
         String closestArg = event.getArgument("Rank");
-        if (closestArg.equals("Credits")) {
+        if (closestArg.equals("Tokens")) {
             return data.stream()
-                    .filter((action) -> action.getItem().requiresCredits())
+                    .filter((action) -> action.getItem().requireTokens())
                     .map(CodeObject::getName)
                     .collect(Collectors.toList());
         }

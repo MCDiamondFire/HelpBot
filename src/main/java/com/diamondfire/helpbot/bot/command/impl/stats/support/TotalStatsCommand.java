@@ -113,7 +113,7 @@ public class TotalStatsCommand extends Command {
                                             .query(new BasicQuery("SELECT AVG(duration) AS average_duration FROM support_sessions WHERE duration != 0"))
                                             .compile()
                                             .run((resultTableTime) -> {
-                                                ResultSet rs = set.getResult();
+                                                ResultSet rs = resultTableTime.getResult();
                                                 embed.addField("Average Session Time", FormatUtil.formatMilliTime(rs.getLong("average_duration")) +
                                                         String.format("\nHighest Average: %s (%s)", resultSet.getString("staff"), FormatUtil.formatMilliTime(resultSet.getLong("total"))), false);
                                             });

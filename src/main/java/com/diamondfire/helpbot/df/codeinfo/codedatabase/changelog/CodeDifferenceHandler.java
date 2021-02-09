@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog;
 
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
@@ -28,7 +28,7 @@ public class CodeDifferenceHandler {
     
     public static void setComparer(File toCompare) {
         try {
-            Files.copy(toCompare.toPath(), ExternalFile.DB_COMPARE.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(toCompare.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
             refresh();
             
         } catch (Exception e) {
@@ -38,14 +38,14 @@ public class CodeDifferenceHandler {
     
     private static void generateDifferences() throws IOException {
         
-        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFile.DB_COMPARE.getFile().getPath()));
+        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFiles.DB_COMPARE.getPath()));
         String json = txtReader.lines().collect(Collectors.joining());
         txtReader.close();
         
         JsonReader reader = new JsonReader(new StringReader(json));
         //reader.setLenient(true);
         
-        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFile.DB.getFile().getPath()));
+        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.DB.getPath()));
         String json2 = txtReader2.lines().collect(Collectors.joining());
         txtReader2.close();
         
@@ -57,7 +57,7 @@ public class CodeDifferenceHandler {
             objectOld = JsonParser.parseReader(reader).getAsJsonObject();
         } catch (Exception e) {
             System.out.println("Old db is corrupted, rewriting!");
-            Files.copy(ExternalFile.DB.getFile().toPath(), ExternalFile.DB_COMPARE.getFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return;
         }
         // Setup the reader to prevent parsing problems.

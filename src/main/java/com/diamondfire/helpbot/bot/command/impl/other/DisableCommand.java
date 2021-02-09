@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.disable.CommandDisableFlag;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -11,7 +12,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-public class DisableCommand extends Command {
+public class DisableCommand extends Command implements CommandDisableFlag {
     
     @Override
     public String getName() {
@@ -46,7 +47,7 @@ public class DisableCommand extends Command {
         PresetBuilder builder = new PresetBuilder();
         String name = event.getArgument("cmd");
         Command command = CommandHandler.getCommand(name);
-        if (command instanceof DisableCommand || command instanceof EnableCommand) {
+        if (command instanceof CommandDisableFlag) {
             builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "You cannot disable these commands!"));
             event.reply(builder);
             return;

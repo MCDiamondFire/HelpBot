@@ -20,8 +20,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     private ParsedArgumentSet parsedArgumentSet = null;
     private String aliasedUsed = null;
     
-    public CommandEvent(JDA api, long responseNumber, Message message) {
-        super(api, responseNumber, message);
+    public CommandEvent(Message message) {
+        super(message.getJDA(), 0, message);
         String[] rawArgs = getMessage().getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
         

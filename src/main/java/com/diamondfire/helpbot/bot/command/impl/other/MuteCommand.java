@@ -14,7 +14,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.*;
 
 import java.time.Instant;
 import java.util.Date;
@@ -82,12 +82,28 @@ public class MuteCommand extends Command {
                     new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for ``%s``. They have been notified.", FormatUtil.formatMilliTime(timeLeft)))
             );
             Guild guild = event.getGuild();
-            guild.addRoleToMember(member, guild.getRoleById((MuteCommand.ROLE_ID))).queue();
-            member.getUser()
-                    .openPrivateChannel()
-                    .flatMap((e) -> e.sendMessage(String.format("You have been muted for %s for %s", FormatUtil.formatMilliTime(timeLeft), event.getArgument("reason"))))
-                    .queue();
-            HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
+            Role role = guild.getRoleById(MuteCommand.ROLE_ID);
+            if (role == null) {
+                builder.withPreset(
+                        new InformativeReply(InformativeReplyType.ERROR, "Could not find the muted role!")
+                );
+                event.reply(builder);
+                return;
+            }
+            
+            guild.addRoleToMember(member, role).queue((unused) -> {
+                member.getUser()
+                        .openPrivateChannel()
+                        .flatMap((e) -> e.sendMessage(String.format("You have been muted for %s for %s", FormatUtil.formatMilliTime(timeLeft), event.getArgument("reason"))))
+                        .queue();
+                HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
+            }, (error) -> {
+                builder.withPreset(
+                        new InformativeReply(InformativeReplyType.ERROR, "Error occurred! " + error.getMessage())
+                );
+                error.printStackTrace();
+            });
+            
             event.reply(builder);
         }, (error) -> {
             builder.withPreset(

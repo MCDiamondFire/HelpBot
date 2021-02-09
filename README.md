@@ -10,6 +10,8 @@ Commands vary from stats related commands to commands that provide codeblock inf
 
 HelpBot is created in **java 11** and there are no current rules in place for contribution. If you want to add/modify something you are able to create a **fork** and submit a **pull request**.
 
+Most pull requests are accepted, do not be afraid to make a change I promise I do not bite.
+
 **Config File**
 
 This project uses a config file inorder to specify things such as bot token, prefix and database information. When you first boot the bot, it will error and shut down the bot. In the working directory a config file should have been created, use the following format.

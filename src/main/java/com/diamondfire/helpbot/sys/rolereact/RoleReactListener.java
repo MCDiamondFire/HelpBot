@@ -27,7 +27,15 @@ public class RoleReactListener extends ListenerAdapter {
             for (ReactRole role : ReactRole.values()) {
                 String emoji = role.getEmoji();
                 msg.addReaction(emoji).queue();
-                emojis.add(emoji + " " + String.format("``%s``", StringUtil.smartCaps(role.name())));
+                
+                String message;
+                if (role.getOverride() == null) {
+                    message = StringUtil.smartCaps(role.name().replace('_', ' '));
+                } else {
+                    message = role.getOverride();
+                }
+                
+                emojis.add(emoji + " " + String.format("``%s``", message));
             }
             
             msg.editMessage("__**Reaction Roles**__ \nReact with any of the following to receive pings regarding that topic.\n" + StringUtil.listView("", emojis)).queue();

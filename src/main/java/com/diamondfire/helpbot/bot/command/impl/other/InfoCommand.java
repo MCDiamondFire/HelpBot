@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -58,7 +58,7 @@ public class InfoCommand extends Command {
         embed.addField("What's New on Beta?", String.format("```%s```", EmbedUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
         embed.setFooter("Database Last Updated");
         embed.setDescription("The database is updated automatically every 24h.");
-        embed.setTimestamp(Instant.ofEpochMilli(ExternalFile.DB.getFile().lastModified()));
+        embed.setTimestamp(Instant.ofEpochMilli(ExternalFiles.DB.lastModified()));
         
         event.reply(preset);
     }

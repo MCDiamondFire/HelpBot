@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.PlainComponentSerializer;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
@@ -78,7 +78,7 @@ public class FetchDataCommand extends Command {
         
         status(sentMessage, String.format("Data has been received, parsing %s lines...", queue.size()));
         
-        File file = ExternalFile.DB.getFile();
+        File file = ExternalFiles.DB;
         
         CodeDifferenceHandler.setComparer(file);
         

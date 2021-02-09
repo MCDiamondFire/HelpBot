@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.df.filter;
+package com.diamondfire.helpbot.sys.message.filter;
 
 
 import net.dv8tion.jda.api.entities.Message;

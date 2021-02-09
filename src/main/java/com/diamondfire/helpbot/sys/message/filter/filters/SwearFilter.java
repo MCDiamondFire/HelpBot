@@ -1,6 +1,6 @@
-package com.diamondfire.helpbot.df.filter.filters;
+package com.diamondfire.helpbot.sys.message.filter.filters;
 
-import com.diamondfire.helpbot.df.filter.*;
+import com.diamondfire.helpbot.sys.message.filter.*;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.*;
 
@@ -18,10 +18,10 @@ public class SwearFilter extends ChatFilter {
     static {
         JsonObject object = JsonParser.parseReader(new InputStreamReader(SwearFilter.class.getResourceAsStream("/swear_filter.json"))).getAsJsonObject();
         
-        EQUAL_SWEARS = new HashSet<>(Arrays.asList(Util.jsonArrayToString(object.getAsJsonArray("equal"))));
-        PREFIX_SWEARS = Util.jsonArrayToString(object.getAsJsonArray("prefix"));
-        SUFFIX_SWEARS = Util.jsonArrayToString(object.getAsJsonArray("suffix"));
-        PART_SWEARS = Util.jsonArrayToString(object.getAsJsonArray("part"));
+        EQUAL_SWEARS = new HashSet<>(Arrays.asList(Util.fromJsonArray(object.getAsJsonArray("equal"))));
+        PREFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("prefix"));
+        SUFFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("suffix"));
+        PART_SWEARS = Util.fromJsonArray(object.getAsJsonArray("part"));
         
         BLOCKED_MESSAGES.addAll(EQUAL_SWEARS);
         BLOCKED_MESSAGES.addAll(Arrays.asList(PREFIX_SWEARS));

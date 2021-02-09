@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.IOUtil;
 
 import java.io.*;
@@ -38,7 +38,7 @@ public class ImageDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        File images = ExternalFile.IMAGES_DIR.getFile();
+        File images = ExternalFiles.IMAGES_DIR;
         PresetBuilder builder = new PresetBuilder();
         builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
         event.getReplyHandler().replyA(builder).queue((msg) -> {

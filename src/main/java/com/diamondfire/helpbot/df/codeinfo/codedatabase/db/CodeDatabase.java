@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.db;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
@@ -18,13 +18,14 @@ public class CodeDatabase {
     public static final String PARTICLES = "particles";
     public static final String GAME_VALUES = "gamevalues";
     public static final String DEPRECATED_GAME_VALUES = "dgamevalues";
+    
     private static final Map<String, List<? extends CodeObject>> registry = new HashMap<>();
     
     public static void initialize() {
         registry.clear();
         
         System.out.println("Starting code database...");
-        try (JsonReader reader = new JsonReader(new FileReader(ExternalFile.DB.getFile()))) {
+        try (JsonReader reader = new JsonReader(new FileReader(ExternalFiles.DB))) {
             reader.setLenient(true);
             
             CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
@@ -71,6 +72,7 @@ public class CodeDatabase {
                     }
                 }
                 
+                // Used to handle code blocks that are only an action.
                 if (codeblockData == null) {
                     System.out.println("CodeblockAction " + finalAction + " tripped association check but none could be found.");
                 } else {
@@ -143,8 +145,6 @@ public class CodeDatabase {
         generatePotions(data);
         generateSounds(data);
         generateGameValues(data);
-        
-        data = null;
     }
     
     private static <T extends CodeObject> List<T> newRegistry(String name) {

@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -22,15 +23,15 @@ public class DisplayIcon {
     }
     
     public String[] getDescription() {
-        return Util.jsonArrayToString(icon.get("description").getAsJsonArray());
+        return Util.fromJsonArray(icon.get("description").getAsJsonArray());
     }
     
     public String[] getExample() {
-        return Util.jsonArrayToString(icon.get("example").getAsJsonArray());
+        return Util.fromJsonArray(icon.get("example").getAsJsonArray());
     }
     
     public String[] getWorksWith() {
-        return Util.jsonArrayToString(icon.get("worksWith").getAsJsonArray());
+        return Util.fromJsonArray(icon.get("worksWith").getAsJsonArray());
     }
     
     // Returns nested arrays
@@ -42,12 +43,12 @@ public class DisplayIcon {
         return icon.get("requiredRank").getAsString();
     }
     
-    public boolean requiresCredits() {
-        return icon.get("requireCredits").getAsBoolean();
+    public boolean requireTokens() {
+        return icon.get("requireTokens").getAsBoolean();
     }
     
-    public boolean requiresRankOrCredits() {
-        return icon.get("requireRankAndCredits").getAsBoolean();
+    public boolean requiresRankOrTokens() {
+        return icon.get("requireRankAndTokens").getAsBoolean();
     }
     
     public Argument[] getParameters() {
@@ -78,7 +79,7 @@ public class DisplayIcon {
     
     //getReturnDescription can be null if it isn't a game value icon.
     public String[] getReturnDescription() {
-        return Util.jsonArrayToString(icon.get("returnDescription").getAsJsonArray());
+        return Util.fromJsonArray(icon.get("returnDescription").getAsJsonArray());
     }
     
     public String getHead() {
@@ -92,6 +93,10 @@ public class DisplayIcon {
     
     public boolean advanced() {
         return icon.get("advanced").getAsBoolean();
+    }
+    
+    public String[] getDeprecationNote() {
+        return Util.fromJsonArray(icon.getAsJsonArray("deprecatedNote"));
     }
     
     public static class Argument {
@@ -124,7 +129,7 @@ public class DisplayIcon {
         }
         
         public String[] getDescription() {
-            return Util.jsonArrayToString(data.get("description").getAsJsonArray());
+            return Util.fromJsonArray(data.get("description").getAsJsonArray());
         }
         
         //BUG For some reason, extra notes is a json array inside of a json array in certain situations.
@@ -137,10 +142,10 @@ public class DisplayIcon {
             
             if (array.get(0).isJsonArray()) {
                 for (JsonElement element : array) {
-                    strings.addAll(Arrays.asList(Util.jsonArrayToString(element.getAsJsonArray())));
+                    strings.addAll(Arrays.asList(Util.fromJsonArray(element.getAsJsonArray())));
                 }
             } else {
-                return Util.jsonArrayToString(data.get("notes").getAsJsonArray());
+                return Util.fromJsonArray(data.get("notes").getAsJsonArray());
             }
             
             return strings.toArray(new String[0]);

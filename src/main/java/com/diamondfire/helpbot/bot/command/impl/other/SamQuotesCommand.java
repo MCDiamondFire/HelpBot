@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFile;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -40,8 +40,8 @@ public class SamQuotesCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        String[] strings = ExternalFile.SAM_DIR.getFile().list();
-        File file = new File(ExternalFile.SAM_DIR.getFile(), strings[random.nextInt(strings.length)]);
+        String[] strings = ExternalFiles.SAM_DIR.list();
+        File file = new File(ExternalFiles.SAM_DIR, strings[random.nextInt(strings.length)]);
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Sam Quote");
         builder.setImage("attachment://quote.png");

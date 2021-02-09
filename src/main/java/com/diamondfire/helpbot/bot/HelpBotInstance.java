@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
@@ -95,7 +96,7 @@ public class HelpBotInstance {
                 new PlotVoteGraphCommand(),
                 new JoinDataCommand(),
                 new TotalStatsCommand(),
-                new CreditTopCommand(),
+                new TokenTopCommand(),
                 new HistoryCommand(),
                 new UuidCommand(),
                 new PlotLocCommand(),

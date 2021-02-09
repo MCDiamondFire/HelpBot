@@ -26,7 +26,7 @@ public class ActionData extends CodeObject {
     }
     
     public String[] getAliases() {
-        return Util.jsonArrayToString(data.get("aliases").getAsJsonArray());
+        return Util.fromJsonArray(data.get("aliases").getAsJsonArray());
     }
     
     // Convenience method

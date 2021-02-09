@@ -30,12 +30,17 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
             tokens.add(footerText);
         }
         
-        if (icon.requiresCredits() && !icon.getRequiredRank().equals("")) {
-            tokens.add("Unlock with Credits OR " + icon.getRequiredRank());
-        } else if (icon.requiresCredits()) {
-            tokens.add("Unlock with Credits");
+        if (icon.requireTokens() && !icon.getRequiredRank().equals("")) {
+            tokens.add("Unlock with Tokens OR " + icon.getRequiredRank());
+        } else if (icon.requireTokens()) {
+            tokens.add("Unlock with Tokens");
         } else if (!icon.getRequiredRank().equals("")) {
             tokens.add("Unlock with " + icon.getRequiredRank());
+        }
+        
+        String[] deprecatedNote = icon.getDeprecationNote();
+        if (deprecatedNote.length != 0) {
+            builder.addField("**Deprecated**", String.join(" ", deprecatedNote), false);
         }
         
         builder.setFooter(String.join(" | ", tokens));

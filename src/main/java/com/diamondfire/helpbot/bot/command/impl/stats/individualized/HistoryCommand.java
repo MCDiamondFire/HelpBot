@@ -34,6 +34,11 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
+    public String[] getAliases() {
+        return new String[]{"punishments", "warns", "warninglist", "punishmentlist", "bans", "kicks", "mutes", "banlist", "warnings"};
+    }
+    
+    @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Sends you your punishment history.")

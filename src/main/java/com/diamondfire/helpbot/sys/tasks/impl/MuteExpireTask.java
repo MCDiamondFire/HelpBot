@@ -17,7 +17,6 @@ public class MuteExpireTask implements OneTimeTask {
     private final long member;
     private final boolean discussionMute;
     
-    
     public MuteExpireTask(long member, Date date) {
         this.ms = Duration.between(Instant.now(), date.toInstant()).toMillis();
         this.member = member;
@@ -66,6 +65,21 @@ public class MuteExpireTask implements OneTimeTask {
                         boolean special = "Weekly Discussion Mute".equals(set.getString("reason"));
                         
                         HelpBotInstance.getScheduler().schedule(new MuteExpireTask(member, date, special));
+                    }
+                });
+    }
+    
+    public static void handle(Member member) {
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT * FROM owen.muted_members WHERE handled = false"))
+                .compile()
+                .run((result) -> {
+                    // Select unique names.
+                    for (ResultSet set : result) {
+                        long memberId = set.getLong("member");
+                        if (member.getIdLong() == memberId) {
+                            member.getGuild().addRoleToMember(member, member.getGuild().getRoleById(MuteCommand.ROLE_ID)).queue();
+                        }
                     }
                 });
     }

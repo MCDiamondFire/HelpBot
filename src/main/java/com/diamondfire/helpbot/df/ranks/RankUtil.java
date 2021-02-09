@@ -24,7 +24,6 @@ public class RankUtil {
             }
             
         } catch (SQLException ignored) {
-            ignored.printStackTrace();
         }
         
         return ranks.toArray(Rank[]::new);

@@ -1,7 +1,7 @@
-package com.diamondfire.helpbot.df.filter;
+package com.diamondfire.helpbot.sys.message.filter;
 
 
-import com.diamondfire.helpbot.df.filter.filters.SwearFilter;
+import com.diamondfire.helpbot.sys.message.filter.filters.SwearFilter;
 import net.dv8tion.jda.api.entities.Message;
 
 public final class ChatFilters {
