@@ -11,7 +11,6 @@ import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
