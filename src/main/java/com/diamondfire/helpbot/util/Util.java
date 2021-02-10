@@ -102,7 +102,7 @@ public class Util {
         HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessage(builder.build()).queue();
     }
     
-    public static final long VERIFIED = 349434193517740033L;
+    public static final long VERIFIED = HelpBotInstance.getConfig().getVerifiedRole();
     
     public static void updateGuild(HashMap<Long, String> accounts, Guild guild) {
         Role verifiedRoles = guild.getRoleById(VERIFIED);

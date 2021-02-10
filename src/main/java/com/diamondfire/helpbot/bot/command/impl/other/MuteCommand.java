@@ -21,7 +21,7 @@ import java.util.Date;
 
 public class MuteCommand extends Command {
     
-    public static final long ROLE_ID = 583693615159705600L;
+    public static final long ROLE_ID = HelpBotInstance.getConfig().getMutedRole();
     
     @Override
     public String getName() {

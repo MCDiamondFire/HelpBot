@@ -15,6 +15,10 @@ public class RoleReactListener extends ListenerAdapter {
     private static final long CHANNEL_ID = 762158470019022858L;
     
     public RoleReactListener() {
+        if (HelpBotInstance.getConfig().isDevBot()) {
+            return;
+        }
+        
         HelpBotInstance.getJda().getTextChannelById(CHANNEL_ID).retrieveMessageById(MESSAGE_ID).queue((msg) -> {
             
             for (MessageReaction reaction : msg.getReactions()) {

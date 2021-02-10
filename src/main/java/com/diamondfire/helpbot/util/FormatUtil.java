@@ -36,21 +36,23 @@ public class FormatUtil {
     }
     
     public static long getTimeUnit(long millis, TimeUnit unit) {
+        TimeUnit milli = TimeUnit.MILLISECONDS;
+        
         switch (unit) {
             case DAYS:
-                return TimeUnit.MILLISECONDS.toDays(millis);
+                return milli.toDays(millis);
             case HOURS:
-                return TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis));
+                return milli.toHours(millis) - TimeUnit.DAYS.toHours(milli.toDays(millis));
             case MINUTES:
-                return TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
+                return milli.toMinutes(millis) - TimeUnit.HOURS.toMinutes(milli.toHours(millis));
             case SECONDS:
-                return TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+                return milli.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(milli.toMinutes(millis));
             case MILLISECONDS:
-                return TimeUnit.MILLISECONDS.toMillis(millis) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(millis));
+                return milli.toMillis(millis) - TimeUnit.SECONDS.toMillis(milli.toSeconds(millis));
             case MICROSECONDS:
                 return millis;
             case NANOSECONDS:
-                return TimeUnit.MILLISECONDS.toNanos(millis);
+                return milli.toNanos(millis);
             default:
                 throw new UnsupportedOperationException();
         }

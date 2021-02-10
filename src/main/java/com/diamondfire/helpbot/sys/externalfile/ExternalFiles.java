@@ -42,4 +42,10 @@ public interface ExternalFiles {
             .setName("disabled_commands")
             .setFileType("txt")
             .buildFile();
+    
+    File FILTER = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("swear_filer")
+            .setFileType("json")
+            .buildFile();
 }

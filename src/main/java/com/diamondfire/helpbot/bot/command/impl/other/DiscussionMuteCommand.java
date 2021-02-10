@@ -22,7 +22,7 @@ import java.util.Date;
 
 public class DiscussionMuteCommand extends Command {
     
-    public static final long DISCUSSION_CHANNEL = 766759005233479682L;
+    public static final long DISCUSSION_CHANNEL = HelpBotInstance.getConfig().getDiscussionChannel();
     
     @Override
     public String getName() {

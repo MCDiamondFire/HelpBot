@@ -29,11 +29,10 @@ public class CodeDatabase {
             reader.setLenient(true);
             
             CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
+            System.out.println("Database loaded!");
         } catch (Exception e) {
-            System.out.println("Could not start codeblock database! Exception occurred....");
-            e.printStackTrace();
+            System.out.println("Malformed codeblock database.");
         }
-        System.out.println("Database loaded!");
     }
     
     private static void generateCodeblocks(JsonObject data) {

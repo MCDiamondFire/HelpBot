@@ -1,32 +1,40 @@
 package com.diamondfire.helpbot.sys.message.filter.filters;
 
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.sys.message.filter.*;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.*;
 
-import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.*;
 
 public class SwearFilter extends ChatFilter {
     
-    private static final HashSet<String> EQUAL_SWEARS;
+    private static final HashSet<String> EQUAL_SWEARS = new HashSet<>();
     private static final String[] PREFIX_SWEARS;
     private static final String[] SUFFIX_SWEARS;
     private static final String[] PART_SWEARS;
     private static final HashSet<String> BLOCKED_MESSAGES = new HashSet<>();
     
     static {
-        JsonObject object = JsonParser.parseReader(new InputStreamReader(SwearFilter.class.getResourceAsStream("/swear_filter.json"))).getAsJsonObject();
-        
-        EQUAL_SWEARS = new HashSet<>(Arrays.asList(Util.fromJsonArray(object.getAsJsonArray("equal"))));
-        PREFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("prefix"));
-        SUFFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("suffix"));
-        PART_SWEARS = Util.fromJsonArray(object.getAsJsonArray("part"));
-        
-        BLOCKED_MESSAGES.addAll(EQUAL_SWEARS);
-        BLOCKED_MESSAGES.addAll(Arrays.asList(PREFIX_SWEARS));
-        BLOCKED_MESSAGES.addAll(Arrays.asList(SUFFIX_SWEARS));
-        BLOCKED_MESSAGES.addAll(Arrays.asList(PART_SWEARS));
+        try {
+            byte[] content = Files.readAllBytes(ExternalFiles.FILTER.toPath());
+            
+            JsonObject object = JsonParser.parseString(new String(content)).getAsJsonObject();
+            
+            Collections.addAll(EQUAL_SWEARS, Util.fromJsonArray(object.getAsJsonArray("equal")));
+            PREFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("prefix"));
+            SUFFIX_SWEARS = Util.fromJsonArray(object.getAsJsonArray("suffix"));
+            PART_SWEARS = Util.fromJsonArray(object.getAsJsonArray("part"));
+            
+            BLOCKED_MESSAGES.addAll(EQUAL_SWEARS);
+            BLOCKED_MESSAGES.addAll(Arrays.asList(PREFIX_SWEARS));
+            BLOCKED_MESSAGES.addAll(Arrays.asList(SUFFIX_SWEARS));
+            BLOCKED_MESSAGES.addAll(Arrays.asList(PART_SWEARS));
+            
+        } catch (Exception e) {
+            throw new IllegalStateException("Malformed swear filter file!");
+        }
     }
     
     @Override

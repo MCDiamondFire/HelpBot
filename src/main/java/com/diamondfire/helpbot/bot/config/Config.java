@@ -21,11 +21,11 @@ public class Config {
     
     // Bot Stuff
     public String getToken() {
-        return getProperty("token");
+        return getPropertyString("token");
     }
     
     public String getPrefix() {
-        return getProperty("prefix");
+        return getPropertyString("prefix");
     }
     
     public boolean isDevBot() {
@@ -34,27 +34,53 @@ public class Config {
     
     // Mc account
     public String getMcEmail() {
-        return getProperty("mc_email");
+        return getPropertyString("mc_email");
     }
     
     public String getMcPassword() {
-        return getProperty("mc_password");
+        return getPropertyString("mc_password");
     }
     
     // Database
     public String getDBUrl() {
-        return getProperty("db_link");
+        return getPropertyString("db_link");
     }
     
     public String getDBUser() {
-        return getProperty("db_user");
+        return getPropertyString("db_user");
     }
     
     public String getDBPassword() {
-        return getProperty("db_password");
+        return getPropertyString("db_password");
     }
     
-    private String getProperty(String property) {
+    // General constants
+    
+    public long getGuild() {
+        return getPropertyLong("guild");
+    }
+    
+    public long getLogChannel() {
+        return getPropertyLong("log_channel");
+    }
+    
+    public long getDiscussionChannel() {
+        return getPropertyLong("discussion_channel");
+    }
+    
+    public long getMutedRole() {
+        return getPropertyLong("muted_role");
+    }
+    
+    public long getVerifiedRole() {
+        return getPropertyLong("verified_role");
+    }
+    
+    private long getPropertyLong(String property) {
+        return config.get(property).getAsLong();
+    }
+    
+    private String getPropertyString(String property) {
         return config.get(property).getAsString();
     }
     

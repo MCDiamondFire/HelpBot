@@ -21,10 +21,11 @@ import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
     
-    public static final long DF_GUILD = 180793115223916544L;
-    public static final long LOG_CHANNEL = 762447660745359361L;
-    private static final CommandHandler handler = new CommandHandler();
     private static final Config config = new Config();
+    public static final long DF_GUILD = config.getGuild();
+    public static final long LOG_CHANNEL = config.getLogChannel();
+    private static final CommandHandler handler = new CommandHandler();
+    
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
     
