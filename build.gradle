@@ -3,19 +3,20 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
-apply plugin: 'java'
 
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
-mainClassName = 'com.diamondfire.helpbot.HelpBot'
-group 'com.diamondfire.helpbot'
+apply plugin: 'java'
 
 repositories {
     mavenCentral()
     jcenter()
     maven { url 'https://jitpack.io' }
-
 }
+
+sourceCompatibility = 1.11
+targetCompatibility = 1.11
+
+mainClassName = 'com.diamondfire.helpbot.HelpBot'
+group 'com.diamondfire.helpbot'
 
 dependencies {
     implementation ('net.dv8tion:JDA:4.2.0_207') {
