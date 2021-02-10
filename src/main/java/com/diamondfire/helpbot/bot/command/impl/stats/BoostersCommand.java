@@ -20,29 +20,29 @@ public class BoostersCommand extends Command {
     public String getName() {
         return "boosters";
     }
-    
+
     @Override
     public String[] getAliases() {
         return new String[]{"booster", "cpbooster", "boost", "boosts", "currentboosts", "cpboosts"};
     }
-    
+
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets current active boosters on all nodes.")
                 .category(CommandCategory.GENERAL_STATS);
     }
-    
+
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet();
     }
-    
+
     @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-    
+
     @Override
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder()
@@ -50,7 +50,7 @@ public class BoostersCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Current Boosters", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        
+
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM xp_boosters WHERE FROM_UNIXTIME(end_time * 0.001) > CURRENT_TIMESTAMP()"))
                 .compile()
@@ -58,7 +58,7 @@ public class BoostersCommand extends Command {
                     if (result.isEmpty()) {
                         embed.addField("None!", "How sad... :(", false);
                     }
-                    
+
                     for (ResultSet set : result) {
                         String owner = set.getString("owner_name");
                         int multiplier = set.getInt("multiplier");
@@ -66,12 +66,12 @@ public class BoostersCommand extends Command {
                         
                         embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
                     }
-                    
+
                     event.reply(preset);
                 });
-        
+
     }
-    
+
 }
 
 
