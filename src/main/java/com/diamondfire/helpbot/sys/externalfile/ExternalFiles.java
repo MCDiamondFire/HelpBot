@@ -45,7 +45,7 @@ public interface ExternalFiles {
     
     File FILTER = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("swear_filer")
+            .setName("swear_filter")
             .setFileType("json")
             .buildFile();
 }
