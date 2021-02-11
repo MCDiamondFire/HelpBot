@@ -19,7 +19,7 @@ public class DateUtil {
     public static Date toDate(LocalDate date) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
-
+        
         return calendar.getTime();
     }
     
@@ -34,5 +34,4 @@ public class DateUtil {
     public static Timestamp toTimeStamp(Date date) {
         return new Timestamp(date.getTime());
     }
-    
 }
