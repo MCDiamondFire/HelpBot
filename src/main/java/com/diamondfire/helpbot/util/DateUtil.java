@@ -7,7 +7,7 @@ import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class DateUtil {
-
+    
     public static Date toDate(java.sql.Date sqlDate) {
         return new Date(sqlDate.getDay(), sqlDate.getMonth(), sqlDate.getYear());
     }
@@ -34,4 +34,5 @@ public class DateUtil {
     public static Timestamp toTimeStamp(Date date) {
         return new Timestamp(date.getTime());
     }
+    
 }
