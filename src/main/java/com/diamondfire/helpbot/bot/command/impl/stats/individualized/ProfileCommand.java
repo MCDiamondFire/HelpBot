@@ -12,7 +12,6 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 
 import java.sql.*;
 import java.util.*;
@@ -76,20 +75,16 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     String playerUUID = set.getString("uuid");
                     String whois = set.getString("whois");
                     
-                    Rank[] ranks = RankUtil.getRanks(set);
-                    List<String> ranksList = new ArrayList<>();
-                    
-                    Emote emote = null;
-                    
-                    for (Rank rank : ranks) {
-                        emote = rank.getRankEmote();
-                        ranksList.add(String.format("[%s]", rank.getRankName()));
-                    }
-                    
                     preset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
-                    embed.addField("Name", ((emote != null) ? emote.getAsMention() + " " : "") + StringUtil.display(playerName), false);
+                    embed.addField("Name", RankUtil.getHighRank(set).getRankEmote().getAsMention() + " " + StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    
+                    Rank[] ranks = RankUtil.getRanks(set);
+                    List<String> ranksList = new ArrayList<>();
+                    for (Rank rank : ranks) {
+                        ranksList.add(String.format("[%s]", rank.getRankName()));
+                    }
                     
                     embed.addField("Ranks", String.join(" ", ranksList), false);
                     
