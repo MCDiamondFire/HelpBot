@@ -9,6 +9,12 @@ public enum Rank {
     EMPEROR("Emperor", 2, RankBranch.DONOR, "Emperor"),
     MYTHIC("Mythic", 3, RankBranch.DONOR, "Mythic"),
     OVERLORD("Overlord", 4, RankBranch.DONOR, "Overlord"),
+    //Retirement
+    RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
+    EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
+    //Special
+    BUILDER("B", 1, RankBranch.BUILDER, "Builder"),
+    YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
     // Support
     JRHELPER("JrHelper", 1, RankBranch.SUPPORT, "S_JrHelper"),
     HELPER("Helper", 2, RankBranch.SUPPORT, "Helper"),
@@ -20,13 +26,7 @@ public enum Rank {
     //Administration
     DEVELOPER("Dev", 1, RankBranch.ADMINISTRATION, "S_Developer"),
     ADMIN("Admin", 2, RankBranch.ADMINISTRATION, "Admin"),
-    OWNER("Owner", 3, RankBranch.ADMINISTRATION, "Owner"),
-    //Retirement
-    RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
-    EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
-    //Special
-    YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
-    BUILDER("B", 1, RankBranch.BUILDER, "Builder");
+    OWNER("Owner", 3, RankBranch.ADMINISTRATION, "Owner");
     
     private final String rankName;
     private final int number;
