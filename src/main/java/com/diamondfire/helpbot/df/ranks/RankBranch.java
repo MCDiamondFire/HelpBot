@@ -4,12 +4,12 @@ import java.util.*;
 
 public enum RankBranch {
     DONOR,
+    RETIREMENT,
+    BUILDER,
+    YOUTUBER,
     SUPPORT,
     MODERATION,
-    RETIREMENT,
-    YOUTUBER,
-    ADMINISTRATION,
-    BUILDER;
+    ADMINISTRATION;
     
     public static final Map<String, RankBranch> databaseMap = new HashMap<>();
     

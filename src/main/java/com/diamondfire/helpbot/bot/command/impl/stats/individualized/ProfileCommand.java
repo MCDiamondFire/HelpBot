@@ -76,7 +76,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     String whois = set.getString("whois");
                     
                     preset.withPreset(new MinecraftUserPreset(playerName, playerUUID));
-                    embed.addField("Name", StringUtil.display(playerName), false);
+                    embed.addField("Name", RankUtil.getHighRank(set).getRankEmote().getAsMention() + " " + StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
                     
