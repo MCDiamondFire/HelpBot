@@ -67,7 +67,7 @@ public class BoostersCommand extends Command {
                         int multiplier = set.getInt("multiplier");
                         String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
                         
-                        Emote emote = event.getGuild().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
+                        Emote emote = event.getJDA().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
                         embed.addField(String.format("%s %sx booster from %s ", emote.getAsMention(), multiplier, owner), String.format("Ends in: %s", durationName), false);
                     }
                     
