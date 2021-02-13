@@ -32,8 +32,7 @@ public class PollCommand extends Command {
 
     @Override
     public Permission getPermission() {
-        //hope i remember to change this to dev
-        return Permission.USER;
+        return Permission.DEVELOPER;
     }
 
     @Override
