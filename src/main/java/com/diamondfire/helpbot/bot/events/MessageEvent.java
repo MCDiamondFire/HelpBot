@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 public class MessageEvent extends ListenerAdapter {
     
-    private static final MessageAcceptor[] acceptors = new MessageAcceptor[]{/*new FilterAcceptor(), */new CommandAcceptor()};
+    private static final MessageAcceptor[] acceptors = new MessageAcceptor[]{new FilterAcceptor(), new CommandAcceptor()};
     
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
