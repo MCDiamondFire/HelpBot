@@ -14,6 +14,7 @@ import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
+import java.time.Instant;
 import java.util.*;
 
 
@@ -134,9 +135,11 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                                     statement.setString(1, playerUUID);
                                                     statement.setTimestamp(2, liteBanDate);
                                                 })).compile();
-                                        embed.addField("Join Date", FormatUtil.formatDate(liteBanDate), false);
+                                        long difference = Instant.now().minusMillis(liteBanDate.getTime()).toEpochMilli();
+                                        embed.addField("Join Date", FormatUtil.formatDate(liteBanDate) + " (" + FormatUtil.formatMilliTime(difference) + ")", false);
                                     } else {
-                                        embed.addField("Join Date", FormatUtil.formatDate(owenDate), false);
+                                        long difference = Instant.now().minusMillis(owenDate.getTime()).toEpochMilli();
+                                        embed.addField("Join Date", FormatUtil.formatDate(owenDate) + " (" + FormatUtil.formatMilliTime(difference) + ")", false);
                                     }
                                     
                                 } else {
