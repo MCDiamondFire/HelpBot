@@ -38,7 +38,7 @@ public class JerePicsCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder embed = new EmbedBuilder();
-        embed.setColor(Color.RED);
+        embed.setColor(new Color(184,45,40));
         embed.setTitle("Jere Pic");
         int rngIndex = (int) (Math.random() * links.length);
         embed.setImage(links[rngIndex]);
@@ -56,7 +56,8 @@ public class JerePicsCommand extends Command {
             "https://cdn.discordapp.com/attachments/789266995672907818/809169563543273512/jeremaster.png",
             "https://external-content.duckduckgo.com/iu/?reload=1613077331588&u=https://mc-heads.net/body/jeremaster/180.png",
             "https://imgur.com/LFldK2p.png",
-            "https://imgur.com/aEq7voY.png"
+            "https://imgur.com/aEq7voY.png",
+            "https://render.namemc.com/skin/3d/body.png?skin=8c8cd7a1a2c52ca4&model=classic&theta=180&phi=0&time=0&width=600&height=800"
     };
 
 
