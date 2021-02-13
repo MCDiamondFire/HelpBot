@@ -108,7 +108,8 @@ public class HelpBotInstance {
                 new ExcusedStaffCommand(),
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand(),
-                new JerePicsCommand()
+                new JerePicsCommand(),
+                new NbsCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
