@@ -15,7 +15,6 @@ public class FormatUtil {
     //<editor-fold desc="Time Formatting" defaultstate="collapsed">
     public static String formatMilliTime(long millis) {
         List<String> symbols = new ArrayList<>();
-        applyTimeUnit(symbols, millis, TimeUnit.of(ChronoUnit.YEARS), 'y');
         applyTimeUnit(symbols, millis, TimeUnit.DAYS, 'd');
         applyTimeUnit(symbols, millis, TimeUnit.HOURS, 'h');
         applyTimeUnit(symbols, millis, TimeUnit.MINUTES, 'm');
