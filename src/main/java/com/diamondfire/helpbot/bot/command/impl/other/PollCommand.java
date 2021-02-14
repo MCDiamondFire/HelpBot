@@ -39,16 +39,17 @@ public class PollCommand extends Command {
     public void run(CommandEvent event) {
 
         ArrayList<String> pollOptions = new ArrayList<>();
-        pollOptions.addAll(Arrays.asList(event.getMessage().getContentRaw().split("\\|")));
+        pollOptions.addAll(Arrays.asList(event.getMessage().getContentRaw().split("\\|"))); //poll options + poll question (contains ?poll)
 
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(String.valueOf(pollOptions.get(0).subSequence(6,pollOptions.get(0).length())));
-        pollOptions.remove(0);
-        builder.setDescription(String.join(" ", pollOptions));
+        builder.setTitle(String.valueOf(pollOptions.get(0).subSequence(6,pollOptions.get(0).length()))); //sets title to poll question
+        pollOptions.remove(0); //remove the poll question so only the options remain
+        builder.setDescription(String.join(" ", pollOptions)); //adds poll options along with their associated emotes
         builder.setColor(new Color(33, 40, 97));
+        
+        event.getChannel().sendMessage(builder.build()).queue((message) -> { //send embed message
 
-        event.getChannel().sendMessage(builder.build()).queue((message) -> {
-
+            //add reactions
             int len = pollOptions.toArray().length;
 
             for (int i = 0; i < len; i+= 2) {
@@ -58,6 +59,9 @@ public class PollCommand extends Command {
             }
 
         });
+        
+        //delete original message
+        event.getMessage().delete().queue();
 
     }
 }
