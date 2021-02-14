@@ -1,7 +1,8 @@
-package com.diamondfire.helpbot.util;
+package com.diamondfire.helpbot.util.nbs;
+
 import java.io.*;
 import java.math.BigDecimal;
-//stolen from Codeutils
+//from https://github.com/CodeUtilities/CodeUtilities
 
 public class NBSDecoder {
 
@@ -40,7 +41,7 @@ public class NBSDecoder {
                 throw new OutdatedNBSException();
             }
         } else {
-            // poop ChatUtil.sendMessage("§a§lHEY!§r Looks like you are using original Note Block Studio. I recommend you to use §bOpen Note Block Studio§r, which is an unofficial continuation of Note Block Studio!");
+
         }
         short layers = readShort(dataInputStream); //song height
         title = readString(dataInputStream); //title
@@ -102,11 +103,7 @@ public class NBSDecoder {
                     finepitch = readShort(dataInputStream);
                 }
 
-                //System.out.println("==NOTE #" + debugNoteCount + "==");
-                //System.out.println("  Tick: " + tick);
-                //System.out.println("  Instrument ID: " + instrument);
-                //System.out.println("  Jump to the next tick: " + tCopy);
-                //System.out.println("  Jump to the next layer: " + jumpLayers);
+
 
                 instrumentList[layer][tick] = instrument;
                 pitchList[layer][tick] = note;
@@ -147,10 +144,7 @@ public class NBSDecoder {
                     String finalVelocity = new BigDecimal(averageVelocity).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
                     String finalPanning = new BigDecimal(preFinalPanning).setScale(3, BigDecimal.ROUND_FLOOR).stripTrailingZeros().toPlainString();
 
-                    //COOL DEBUG CODE STARTS FROM HERE
-                    //System.out.println("Pre-Final Panning: " + preFinalPanning);
-                    //System.out.println("Final Panning: " + finalPanning);
-                    //COOL DEBUG CODE ENDS HERE
+
 
                     String finalString;
                     if (preFinalPanning == 0) {
@@ -189,10 +183,7 @@ public class NBSDecoder {
             }
         }
 
-        //EPIC DEBUG CODE STARTS FROM HERE
-        //System.out.println("List length: " + jumpTickList.size());
-        //System.out.println("Array length: " + jumpTickArray.length);
-        //EPIC DEBUG CODE ENDS HERE
+
 
         dataInputStream.close();
 
@@ -217,9 +208,7 @@ public class NBSDecoder {
                         int noteFinePitch = finepitchList[i][currentTick];
                         int noteKeyOffset = 0;
 
-                        //ANOTHER EPIC DEBUG CODE STARTS FROM HERE
-                        //System.out.println("Note ID: " + noteID);
-                        //ANOTHER EPIC DEBUG CODE ENDS HERE
+
 
                         if (noteInstrument >= vanillaInstruments) {
                             int instrumentId = noteInstrument - vanillaInstruments;
@@ -237,10 +226,7 @@ public class NBSDecoder {
             }
         }
 
-        //YET ANOTHER EPIC DEBUG CODE STARTS FROM HERE
-        //System.out.println("Note Data: " + stringBuilder.toString());
-        //System.out.println("Layer Data: " + layerStringBuilder.toString());
-        //YET ANOTHER EPIC DEBUG CODE ENDS HERE
+
 
         return new SongData(title, author, speed, (int) ((Math.ceil((length + 1) / timeSignature) + 1) * timeSignature), stringBuilder.toString(), file, layerStringBuilder.toString(), (loopTick + 1), loopCount, customInstruments);
     }

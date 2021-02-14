@@ -1,6 +1,8 @@
-package com.diamondfire.helpbot.util;
+package com.diamondfire.helpbot.util.nbs;
+
 import java.math.BigDecimal;
-// stolen from Codeutils
+// from https://github.com/CodeUtilities/CodeUtilities
+
 
 
 public class NBSToTemplate {

@@ -1,5 +1,5 @@
-package com.diamondfire.helpbot.util;
-// stole from codeutils lol
+package com.diamondfire.helpbot.util.nbs;
+// from https://github.com/CodeUtilities/CodeUtilities
 public class SongData {
 
     String name;

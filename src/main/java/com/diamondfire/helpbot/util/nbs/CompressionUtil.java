@@ -1,9 +1,10 @@
-package com.diamondfire.helpbot.util;
+package com.diamondfire.helpbot.util.nbs;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.zip.*;
+//from https://github.com/CodeUtilities/CodeUtilities
 
 public class CompressionUtil {
 
