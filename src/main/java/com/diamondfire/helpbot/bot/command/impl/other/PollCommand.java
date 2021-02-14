@@ -89,7 +89,7 @@ public class PollCommand extends Command {
     
         int len = pollOptions.toArray().length; //get amount of poll options
         
-        //checks if there are the wrong amount of arguments
+        //checks if there are no arguments
         if (len == 0) {
     
             EmbedBuilder error = new EmbedBuilder();
