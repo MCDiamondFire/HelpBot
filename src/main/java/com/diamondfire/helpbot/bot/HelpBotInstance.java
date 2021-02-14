@@ -108,7 +108,6 @@ public class HelpBotInstance {
                 new ExcusedStaffCommand(),
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand(),
-                new JerePicsCommand(),
                 new NbsCommand()
         );
         
