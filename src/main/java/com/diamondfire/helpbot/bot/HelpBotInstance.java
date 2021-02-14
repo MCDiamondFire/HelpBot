@@ -109,7 +109,8 @@ public class HelpBotInstance {
                 new ExcuseStaffCommand(),
                 new ExcusedStaffCommand(),
                 new SupportBannedPlayersCommand(),
-                new DiscussionMuteCommand()
+                new DiscussionMuteCommand(),
+                new NbsCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
