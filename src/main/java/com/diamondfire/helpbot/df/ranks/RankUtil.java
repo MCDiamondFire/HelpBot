@@ -34,6 +34,10 @@ public class RankUtil {
     }
     
     public static Rank getHighRank(Rank[] ranks) {
+        if (ranks.length == 0) {
+            return null;
+        }
+        
         return ranks[ranks.length - 1];
     }
 }

@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.FormatUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -61,7 +61,7 @@ public class QueueCommand extends Command {
                     
                     int i = 0;
                     for (ResultSet set : result) {
-                        embed.addField(set.getString("player"), FormatUtil.formatMilliTime(set.getTime("time").getTime()), false);
+                        embed.addField(StringUtil.display(set.getString("player")), FormatUtil.formatMilliTime(set.getTime("time").getTime()), false);
                         i++;
                     }
                     embed.setTitle(String.format("Players in Queue (%s)", i));

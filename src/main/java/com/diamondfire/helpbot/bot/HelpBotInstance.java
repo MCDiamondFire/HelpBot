@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot;
 
+import com.diamondfire.helpbot.HelpBot;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;

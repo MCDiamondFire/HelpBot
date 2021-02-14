@@ -10,11 +10,14 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
+import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emote;
 
 import java.sql.ResultSet;
 
 public class BoostersCommand extends Command {
+    private static long[] emotes = new long[]{809172442957217812L, 809172442496630815L};
     
     @Override
     public String getName() {
@@ -64,7 +67,8 @@ public class BoostersCommand extends Command {
                         int multiplier = set.getInt("multiplier");
                         String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
                         
-                        embed.addField(String.format("%sx booster from %s ", multiplier, owner), String.format("Ends in: %s", durationName), false);
+                        Emote emote = event.getJDA().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
+                        embed.addField(String.format("%s %sx booster from %s ", emote.getAsMention(), multiplier, owner), String.format("Ends in: %s", durationName), false);
                     }
                     
                     event.reply(preset);

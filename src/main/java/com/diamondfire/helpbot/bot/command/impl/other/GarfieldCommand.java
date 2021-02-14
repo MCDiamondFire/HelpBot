@@ -41,7 +41,7 @@ public class GarfieldCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         try {
-            URL url = new URL("https://labscore.vercel.app/v1/garfield/link");
+            URL url = new URL("https://labscore.vercel.app/v2/garfield");
             try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
                 String link = JsonParser.parseString(in.readLine()).getAsJsonObject().get("link").getAsString();
                 
