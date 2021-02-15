@@ -16,7 +16,7 @@ public class CommandExecutor {
     
     private final ExecutorService POOL = Executors.newCachedThreadPool();
     private final CommandCheck[] checks = new CommandCheck[]{
-            new MutedCheck(),
+            // new MutedCheck(), - Not needed because fixed perms
             new DisabledCheck(),
             new PermissionCheck(),
             new CommandLog(),

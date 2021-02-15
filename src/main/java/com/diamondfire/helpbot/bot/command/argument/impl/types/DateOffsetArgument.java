@@ -14,6 +14,7 @@ public class DateOffsetArgument extends AbstractOffsetArgument {
                 new Duration(Calendar.DAY_OF_MONTH, 'd'),
                 new Duration(Calendar.DAY_OF_WEEK, 'w'),
                 new Duration(Calendar.MONTH, 'm'),
+                new Duration(Calendar.YEAR, 'y'),
         };
     }
     
