@@ -4,6 +4,14 @@ import java.util.Calendar;
 
 public class TimeOffsetArgument extends AbstractOffsetArgument {
     
+    public TimeOffsetArgument() {
+        super();
+    }
+    
+    public TimeOffsetArgument(boolean reverse) {
+        super(reverse);
+    }
+    
     @Override
     protected Duration[] getDurations() {
         return new Duration[]{

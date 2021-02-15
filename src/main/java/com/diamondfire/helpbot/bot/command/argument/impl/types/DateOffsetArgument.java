@@ -4,6 +4,10 @@ import java.util.Calendar;
 
 public class DateOffsetArgument extends AbstractOffsetArgument {
     
+    public DateOffsetArgument() {
+        super();
+    }
+    
     @Override
     protected Duration[] getDurations() {
         return new Duration[]{
