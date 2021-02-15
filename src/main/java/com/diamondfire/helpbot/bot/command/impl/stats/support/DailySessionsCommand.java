@@ -2,10 +2,9 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.DateArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
@@ -15,19 +14,20 @@ import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import com.diamondfire.helpbot.util.DateUtil;
 
 import java.sql.ResultSet;
+import java.time.Instant;
 import java.util.*;
 
 
-public class SessionGraphCommand extends Command {
+public class DailySessionsCommand extends Command {
     
     @Override
     public String getName() {
-        return "sessiongraph";
+        return "dailysessions";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"sessiongraph"};
+        return new String[]{"ds"};
     }
     
     @Override
@@ -46,7 +46,7 @@ public class SessionGraphCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("date",
-                        new DateArgument());
+                        new SingleArgumentContainer<>(new DateArgument()).optional(null));
         
     }
     
@@ -57,27 +57,35 @@ public class SessionGraphCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        Date date = event.getArgument("date");
+        Date date;
+        if (event.getArgument("date") == null) {
+            date = Date.from(Instant.now());
+        } else {
+            date = event.getArgument("date");
+        }
+        
         java.sql.Date sqlDate = DateUtil.toSqlDate(date);
         
         new DatabaseQuery()
-                .query(new BasicQuery("WITH RECURSIVE all_dates(dt) AS ( SELECT (SELECT DATE(time) FROM hypercube.support_sessions WHERE time > CURRENT_TIMESTAMP() - INTERVAL 24 HOURS ORDER BY time) dt UNION ALL SELECT dt + ? FROM all_dates WHERE dt + ? <= CURRENT_TIMESTAMP() ) SELECT dates.dt date, COALESCE(t.total, 0) AS total FROM all_dates dates LEFT JOIN (SELECT DATE(time) AS date, COUNT(time) AS total FROM hypercube.support_sessions GROUP BY DATE(time)) t ON t.date = dates.dt ORDER BY dates.dt",
-                    (statement) -> {
-                        statement.setDate(1, sqlDate);
-                        statement.setDate(2, sqlDate);
-                    })
+                .query(new BasicQuery("SELECT hour(time) AS time, COUNT(*) AS count\n" +
+                        "FROM hypercube.support_sessions\n" +
+                        "WHERE DATE(time) = ?\n" +
+                        "GROUP BY hour(time)\n" +
+                        "ORDER BY time",
+                        (statement) -> statement.setDate(1, sqlDate))
                 )
                 .compile()
                 .run((query) -> {
                     Map<GraphableEntry<?>, Integer> dates = new LinkedHashMap<>();
-                    int i = 0;
-                    for (ResultSet set : query) {
-                        String timedisplay = i+"";
-                        if(i < 10){
+                    ResultSet set = query.getResult();
+                    
+                    for (int i = 0; i < 25; i++) {
+                        boolean end = set.next();
+                        String timedisplay = i + "";
+                        if (i < 10) {
                             timedisplay = "0" + timedisplay;
                         }
-                        dates.put(new StringEntry(timedisplay + ":00"), set.getInt("total"));
-                        i++;
+                        dates.put(new StringEntry(timedisplay + ":00"), !end ? 0 : set.getInt("count"));
                     }
                     
                     event.getChannel().sendFile(new ChartGraphBuilder()
