@@ -7,6 +7,16 @@ import java.util.*;
 
 public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument<Date> {
     
+    private final boolean reverse;
+    
+    public AbstractOffsetArgument() {
+        this(false);
+    }
+    
+    public AbstractOffsetArgument(boolean reverse) {
+        this.reverse = reverse;
+    }
+    
     @Override
     protected Date parse(@NotNull String argument) throws ArgumentException {
         Calendar calendar = Calendar.getInstance();
@@ -23,7 +33,12 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
             
             if (!Character.isDigit(currentChar)) {
                 if (durationMap.containsKey(currentChar)) {
-                    calendar.add(durationMap.get(currentChar), Integer.parseInt(argument.substring(offset, i)));
+                    int key = Integer.parseInt(argument.substring(offset, i));
+                    if (reverse) {
+                       key *= -1;
+                    }
+                    
+                    calendar.add(durationMap.get(currentChar), key);
                     modified = true;
                 } else {
                     List<String> units = new ArrayList<>();
@@ -38,7 +53,12 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
         }
         
         if (!modified) {
-            throw new MalformedArgumentException("Malformed duration!");
+            List<String> units = new ArrayList<>();
+            for (Character character : durationMap.keySet()) {
+                units.add(character.toString());
+            }
+            
+            throw new MalformedArgumentException("Malformed duration!" + " \nPossible time units are: " + String.join(",", units));
         }
         
         return calendar.getTime();
