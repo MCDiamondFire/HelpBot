@@ -30,7 +30,7 @@ public class SupporteeSessionsCommand extends AbstractSessionLogCommand {
     protected List<Session> getSessions(String player) {
         List<Session> sessions = new ArrayList<>();
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? ORDER BY time", (statement) -> statement.setString(1, player)))
+                .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? ORDER BY time", (statement) -> statement.setString(1, player)))
                 .compile()
                 .run((result) -> {
                     for (ResultSet set : result) {

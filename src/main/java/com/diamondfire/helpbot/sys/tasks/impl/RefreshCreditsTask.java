@@ -16,6 +16,6 @@ public class RefreshCreditsTask implements MidnightTask {
         
         new DatabaseQuery()
                 .query(new BasicQuery("INSERT INTO owen.creator_rankings_log(uuid, points, `rank`, date) " +
-                        "SELECT uuid, points, cur_rank, CURRENT_DATE() FROM hypercube.creator_rankings WHERE points > 4990;")).compile();
+                        "SELECT uuid, points, cur_rank, CURRENT_DATE() FROM creator_rankings WHERE points > 4990;")).compile();
     }
 }

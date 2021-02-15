@@ -33,13 +33,17 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
             
             if (!Character.isDigit(currentChar)) {
                 if (durationMap.containsKey(currentChar)) {
-                    int key = Integer.parseInt(argument.substring(offset, i));
-                    if (reverse) {
-                       key *= -1;
-                    }
-                    
-                    calendar.add(durationMap.get(currentChar), key);
-                    modified = true;
+                   try {
+                       int key = Integer.parseInt(argument.substring(offset, i));
+                       if (reverse) {
+                           key *= -1;
+                       }
+    
+                       calendar.add(durationMap.get(currentChar), key);
+                       modified = true;
+                   } catch (NumberFormatException e) {
+                       throw new MalformedArgumentException("Malformed duration! Provided token " + currentChar + " had an invalid duration.");
+                   }
                 } else {
                     List<String> units = new ArrayList<>();
                     for (Character character : durationMap.keySet()) {

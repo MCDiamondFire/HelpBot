@@ -70,7 +70,7 @@ public class ExcuseStaffCommand extends Command {
         PresetBuilder builder = new PresetBuilder();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM hypercube.players WHERE name = ? OR uuid = ?",
+                .query(new BasicQuery("SELECT * FROM players WHERE name = ? OR uuid = ?",
                         (statement) -> {
                             statement.setString(1, username);
                             statement.setString(2, username);

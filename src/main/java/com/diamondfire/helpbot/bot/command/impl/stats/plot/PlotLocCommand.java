@@ -41,7 +41,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                 .addArgument("z",
                         new IntegerArgument())
                 .addArgument("node",
-                        new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4)).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4, 5)).optional(null));
     }
     
     @Override
@@ -57,7 +57,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
             boolean nodeSpecific = event.getArgument("node") != null;
             PreparedStatement statement;
             if (nodeSpecific) {
-                statement = connection.prepareStatement("SELECT * FROM hypercube.plots WHERE ? BETWEEN xmin AND xmin + (CASE" +
+                statement = connection.prepareStatement("SELECT * FROM plots WHERE ? BETWEEN xmin AND xmin + (CASE" +
                         "    WHEN plotsize = 1 THEN 51" +
                         "    WHEN plotsize = 2 THEN 101" +
                         "    WHEN plotsize = 3 THEN 301" +
@@ -68,7 +68,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                 
                 statement.setObject(3, event.getArgument("node"));
             } else {
-                statement = connection.prepareStatement("SELECT * FROM hypercube.plots WHERE ? BETWEEN xmin AND xmin + (CASE" +
+                statement = connection.prepareStatement("SELECT * FROM plots WHERE ? BETWEEN xmin AND xmin + (CASE" +
                         "    WHEN plotsize = 1 THEN 51" +
                         "    WHEN plotsize = 2 THEN 101" +
                         "    WHEN plotsize = 3 THEN 301" +

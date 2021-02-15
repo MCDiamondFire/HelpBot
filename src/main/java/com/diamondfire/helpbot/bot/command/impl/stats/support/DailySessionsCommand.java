@@ -68,7 +68,7 @@ public class DailySessionsCommand extends Command {
         
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT hour(time) AS time, COUNT(*) AS count\n" +
-                        "FROM hypercube.support_sessions\n" +
+                        "FROM support_sessions\n" +
                         "WHERE DATE(time) = ?\n" +
                         "GROUP BY hour(time)\n" +
                         "ORDER BY time",

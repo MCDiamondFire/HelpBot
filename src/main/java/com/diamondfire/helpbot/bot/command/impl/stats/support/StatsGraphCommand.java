@@ -46,11 +46,11 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, String player) {
         new DatabaseQuery()
                 .query(new BasicQuery("WITH RECURSIVE all_dates(dt) AS (\n" +
-                        "    SELECT (SELECT DATE(time) FROM hypercube.support_sessions WHERE staff = ? ORDER BY time LIMIT 1) dt\n" +
+                        "    SELECT (SELECT DATE(time) FROM support_sessions WHERE staff = ? ORDER BY time LIMIT 1) dt\n" +
                         "        UNION ALL\n" +
                         "    SELECT dt + INTERVAl 1 DAY FROM all_dates WHERE dt + INTERVAL 1 DAY <= CURRENT_TIMESTAMP()\n" +
                         ")\n" +
-                        "SELECT dates.dt date, COALESCE(t.total, 0) AS total FROM all_dates dates LEFT JOIN (SELECT DATE(time) AS date, COUNT(time) AS total FROM hypercube.support_sessions WHERE staff = ? GROUP BY DATE(time)) t ON t.date = dates.dt ORDER BY dates.dt",
+                        "SELECT dates.dt date, COALESCE(t.total, 0) AS total FROM all_dates dates LEFT JOIN (SELECT DATE(time) AS date, COUNT(time) AS total FROM support_sessions WHERE staff = ? GROUP BY DATE(time)) t ON t.date = dates.dt ORDER BY dates.dt",
                         (statement) -> {
                             statement.setString(1, player);
                             statement.setString(2, player);

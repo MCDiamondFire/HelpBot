@@ -51,7 +51,7 @@ public class StaffListCommand extends Command {
         builder.setChannel(event.getChannel().getIdLong());
         builder.setUser(event.getMember().getIdLong());
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM hypercube.ranks,hypercube.players\n" +
+                .query(new BasicQuery("SELECT * FROM ranks,players\n" +
                         "                        WHERE ranks.uuid = players.uuid\n" +
                         "                        AND (ranks.support > 0 || ranks.moderation > 0 || ranks.administration > 0 || ranks.builder = 1) AND ranks.retirement = 0"))
                 .compile()
