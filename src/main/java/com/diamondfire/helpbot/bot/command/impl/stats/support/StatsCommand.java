@@ -1,5 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -30,8 +33,18 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player")
+                                .optional(),
+                        new HelpContextArgument()
+                                .name("timeframe")
                                 .optional()
                 );
+    }
+    
+    @Override
+    public ArgumentSet compileArguments() {
+        return super.compileArguments()
+                .addArgument("timeframe",
+                        new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(null));
     }
     
     @Override
@@ -52,7 +65,13 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ?;", (statement) -> statement.setString(1, player)))
+                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ? AND (date > ? OR all = ?);",
+                        (statement) -> {
+                            statement.setString(1, player);
+                            
+                            statement.setDate(2, event.getArgument("timeframe"));
+                            statement.setBoolean(3, event.getArgument("timeframe") == null);
+                        }))
                 .compile()
                 .run((result) -> {
                     ResultSet set = result.getResult();
