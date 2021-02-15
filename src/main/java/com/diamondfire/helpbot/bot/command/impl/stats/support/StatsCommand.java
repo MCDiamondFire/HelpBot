@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.TimeOffsetArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -12,7 +12,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.FormatUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
@@ -44,7 +44,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
     public ArgumentSet compileArguments() {
         return super.compileArguments()
                 .addArgument("timeframe",
-                        new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(null));
+                        new SingleArgumentContainer<>(new TimeOffsetArgument(true)).optional(null));
     }
     
     @Override
@@ -65,12 +65,18 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ? AND (date > ? OR all = ?);",
+                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ? AND (time > ? OR ?);",
                         (statement) -> {
                             statement.setString(1, player);
                             
-                            statement.setDate(2, event.getArgument("timeframe"));
-                            statement.setBoolean(3, event.getArgument("timeframe") == null);
+                            java.util.Date date = event.getArgument("timeframe");
+                            Timestamp sqlTimestamp = null;
+                            if (date != null) {
+                                sqlTimestamp = DateUtil.toTimeStamp(date);
+                            }
+                            
+                            statement.setTimestamp(2, sqlTimestamp);
+                            statement.setBoolean(3, date == null);
                         }))
                 .compile()
                 .run((result) -> {
