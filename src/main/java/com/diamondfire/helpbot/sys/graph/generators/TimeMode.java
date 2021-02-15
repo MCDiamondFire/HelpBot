@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public enum TimeMode {
     
-    HOURLY("Hourly", "%d-%Hh", (num) -> num),
+    HOURLY("Hourly", "%m-%d-%Hh", (num) -> num),
     DAILY("Daily", "%y-%m-%d", (num) -> (int) TimeUnit.DAYS.toHours(num)),
     WEEKLY("Weekly", "%y-%m-%v", (num) -> (int) TimeUnit.DAYS.toHours(num * 7L)),
     MONTHLY("Monthly", "%y-%m", (num) -> (int) TimeUnit.DAYS.toHours(num * 30L)),

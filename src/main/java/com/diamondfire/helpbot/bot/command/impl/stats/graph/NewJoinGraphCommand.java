@@ -1,9 +1,11 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.graph;
 
 import com.diamondfire.helpbot.bot.command.help.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
+import com.diamondfire.helpbot.sys.graph.generators.context.TimeGraphContext;
 
-public class NewJoinGraphCommand extends AbstractGraphCommand {
+public class NewJoinGraphCommand extends AbstractGraphCommand<TimeGraphContext> {
     
     @Override
     public String getName() {
@@ -24,8 +26,16 @@ public class NewJoinGraphCommand extends AbstractGraphCommand {
     }
     
     @Override
-    public GraphGenerator getGraphGenerator() {
+    public GraphGenerator<TimeGraphContext> getGraphGenerator() {
         return GraphGenerators.NEW_PLAYERS;
+    }
+    
+    @Override
+    public TimeGraphContext createContext(CommandEvent event) {
+        TimeMode mode = event.getArgument("mode");
+        int amount = event.getArgument("amount");
+        
+        return new TimeGraphContext(mode, amount);
     }
 }
 

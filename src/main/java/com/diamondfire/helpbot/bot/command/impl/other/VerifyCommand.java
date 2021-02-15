@@ -10,8 +10,8 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.entities.*;
+import com.diamondfire.helpbot.util.Util;
+import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.ResultSet;
 
@@ -82,15 +82,18 @@ public class VerifyCommand extends Command {
                         );
                         Guild guild = event.getGuild();
                         guild.addRoleToMember(member, guild.getRoleById((VerifyCommand.ROLE_ID))).queue();
+    
+                        // Run the query before any messages sent to make sure that they are actually added.
+                        new DatabaseQuery()
+                                .query(new BasicQuery("INSERT INTO hypercube.linked_accounts (player_uuid, player_name, discord_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE discord_id = ?", (statement) -> {
+                                    statement.setString(1, uuid);
+                                    statement.setString(2, name);
+                                    statement.setString(3, userString);
+                                    statement.setString(4, userString);
+                                })).compile();
+                        
                         event.reply(builder);
                         
-                            new DatabaseQuery()
-                                    .query(new BasicQuery("INSERT INTO hypercube.linked_accounts (player_uuid, player_name, discord_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE discord_id = ?", (statement) -> {
-                                        statement.setString(1, uuid);
-                                        statement.setString(2, name);
-                                        statement.setString(3, userString);
-                                        statement.setString(4, userString);
-                                    })).compile();
                         Util.updateMember(member);
                         
                         PresetBuilder log = new PresetBuilder()

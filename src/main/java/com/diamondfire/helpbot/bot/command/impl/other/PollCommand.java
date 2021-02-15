@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -91,14 +93,9 @@ public class PollCommand extends Command {
         
         //checks if there are no arguments
         if (len == 0) {
-    
-            EmbedBuilder error = new EmbedBuilder();
-            error.setTitle("Error!");
-            error.setDescription("The arguments are incorrect. Correct arguments are:\n" + getConfig().getPrefix() + "poll [Question]\\|[Option 1]\\|[Option 2]\\|");
-            error.setColor(Color.RED);
-    
-            event.getChannel().sendMessage(error.build()).queue();
-            
+            PresetBuilder preset = new PresetBuilder();
+            preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "The arguments are incorrect. Correct arguments are:\\n\" + getConfig().getPrefix() + \"poll [Question]\\\\|[Option 1]\\\\|[Option 2]\\\\|"));
+            event.reply(preset);
             return;
         }
         
