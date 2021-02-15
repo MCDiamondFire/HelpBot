@@ -52,7 +52,7 @@ public class DailySessionsCommand extends Command {
     
     @Override
     public Permission getPermission() {
-        return Permission.USER;
+        return Permission.SUPPORT;
     }
     
     @Override
