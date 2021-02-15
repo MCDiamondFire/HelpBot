@@ -49,9 +49,6 @@ public class NbsCommand extends Command {
         TextChannel channel = event.getChannel();
         PresetBuilder preset = new PresetBuilder();
         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
-        EmbedBuilder warning = new EmbedBuilder()
-                .addField("Warning!","You need to attach an nbs file!",false)
-                .setColor(Color.RED);
         if(event.getMessage().getAttachments().isEmpty()) {
             event.reply(preset);
             return;
