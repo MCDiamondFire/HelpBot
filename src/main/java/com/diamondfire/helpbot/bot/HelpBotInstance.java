@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.bot;
 
-import com.diamondfire.helpbot.HelpBot;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.*;
@@ -110,7 +109,8 @@ public class HelpBotInstance {
                 new ExcusedStaffCommand(),
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand(),
-                new NbsCommand()
+                new NbsCommand(),
+                new DailySessionsCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
