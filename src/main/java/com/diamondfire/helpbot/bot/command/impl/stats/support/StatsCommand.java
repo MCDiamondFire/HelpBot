@@ -1,5 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.TimeOffsetArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -9,7 +12,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.FormatUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
@@ -30,8 +33,18 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player")
+                                .optional(),
+                        new HelpContextArgument()
+                                .name("timeframe")
                                 .optional()
                 );
+    }
+    
+    @Override
+    public ArgumentSet compileArguments() {
+        return super.compileArguments()
+                .addArgument("timeframe",
+                        new SingleArgumentContainer<>(new TimeOffsetArgument(true)).optional(null));
     }
     
     @Override
@@ -52,7 +65,19 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ?;", (statement) -> statement.setString(1, player)))
+                        "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ? AND (time > ? OR ?);",
+                        (statement) -> {
+                            statement.setString(1, player);
+                            
+                            java.util.Date date = event.getArgument("timeframe");
+                            Timestamp sqlTimestamp = null;
+                            if (date != null) {
+                                sqlTimestamp = DateUtil.toTimeStamp(date);
+                            }
+                            
+                            statement.setTimestamp(2, sqlTimestamp);
+                            statement.setBoolean(3, date == null);
+                        }))
                 .compile()
                 .run((result) -> {
                     ResultSet set = result.getResult();
@@ -69,7 +94,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                     
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count, SUM(duration) AS total_time, " +
-                                    "? IN (SELECT players.name FROM hypercube.ranks, hypercube.players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.administration = 0) AS support," +
+                                    "? IN (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.administration = 0) AS support," +
                                     "(COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {
                                 statement.setString(1, player);
                                 statement.setString(2, player);

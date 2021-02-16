@@ -49,7 +49,7 @@ public class QueueCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM hypercube.support_queue ORDER BY enter_time LIMIT 25;"))
+                .query(new BasicQuery("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM support_queue ORDER BY enter_time LIMIT 25;"))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {

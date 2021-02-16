@@ -17,7 +17,7 @@ public class DynamicRequirementProvider implements RequirementProvider {
     @Override
     public int getRequirement() {
         DatabaseResult result = new DatabaseQuery()
-                .query(new BasicQuery("SELECT req FROM hypercube.creator_req WHERE tier = ?", (statement) -> statement.setString(1, identifier)))
+                .query(new BasicQuery("SELECT req FROM creator_req WHERE tier = ?", (statement) -> statement.setString(1, identifier)))
                 .compile().get();
         
         try {

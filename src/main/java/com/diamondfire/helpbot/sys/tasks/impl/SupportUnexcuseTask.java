@@ -44,7 +44,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
         TextChannel channel = HelpBotInstance.getJda().getTextChannelById(EXPERT_CHAT);
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM hypercube.players WHERE players.uuid = ?", (statement) -> statement.setString(1, uuid)))
+                .query(new BasicQuery("SELECT * FROM players WHERE players.uuid = ?", (statement) -> statement.setString(1, uuid)))
                 .compile()
                 .run((result) -> {
                     EmbedBuilder embed = builder.getEmbed();
@@ -79,7 +79,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
                         "       excused_till," +
                         "       reason " +
                         "FROM owen.excused_staff " +
-                        "LEFT JOIN hypercube.ranks r ON excused_staff.uuid = r.uuid " +
+                        "LEFT JOIN ranks r ON excused_staff.uuid = r.uuid " +
                         "WHERE (support > 0 || moderation > 0) AND (excused_till > CURRENT_TIMESTAMP() || !handled) " +
                         "ORDER BY excused_till DESC;"))
                 .compile()

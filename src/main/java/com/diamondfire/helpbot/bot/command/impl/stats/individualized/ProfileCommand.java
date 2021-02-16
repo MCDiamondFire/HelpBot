@@ -56,8 +56,8 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
         
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * " +
-                        "FROM hypercube.ranks," +
-                        "     hypercube.players " +
+                        "FROM ranks," +
+                        "     players " +
                         "WHERE ranks.uuid = players.uuid" +
                         "  AND (players.uuid = ? || players.name = ?)", (statement) -> {
                     statement.setString(1, player);
@@ -100,9 +100,9 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT * FROM (SELECT (SELECT date AS liteban_join FROM litebans.history WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS liteban," +
                                     "     (SELECT (SELECT date AS owen_join FROM owen.join_log WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS owen_join," +
-                                    "     (SELECT (SELECT COUNT(*) AS votes FROM hypercube.plot_votes WHERE uuid = ?) temp FROM dual) AS votes," +
-                                    "     (SELECT (SELECT tokens FROM hypercube.user_tokens WHERE uuid = ?) temp FROM dual) AS credits," +
-                                    "     (SELECT (SELECT discord_id FROM hypercube.linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id", (statement) -> {
+                                    "     (SELECT (SELECT COUNT(*) AS votes FROM plot_votes WHERE uuid = ?) temp FROM dual) AS votes," +
+                                    "     (SELECT (SELECT tokens FROM user_tokens WHERE uuid = ?) temp FROM dual) AS credits," +
+                                    "     (SELECT (SELECT discord_id FROM linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id", (statement) -> {
                                 statement.setString(1, playerUUID);
                                 statement.setString(2, playerUUID);
                                 statement.setString(3, playerUUID);

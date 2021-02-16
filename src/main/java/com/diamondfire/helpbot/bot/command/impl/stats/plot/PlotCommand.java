@@ -43,7 +43,7 @@ public class PlotCommand extends AbstractPlotCommand {
     public ResultSet getPlot(CommandEvent event) {
         try {
             Connection connection = ConnectionProvider.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM hypercube.plots WHERE id = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE id = ?");
             statement.setInt(1, event.getArgument("id"));
             
             return statement.executeQuery();

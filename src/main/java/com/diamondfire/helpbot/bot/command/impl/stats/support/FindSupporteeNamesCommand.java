@@ -83,7 +83,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             for (NameDateRange range : nameRanges) {
                 if (range.getAfter() == null) {
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
+                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
                             }))
@@ -95,7 +95,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                             });
                 } else if (range.getBefore() == null) {
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
+                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getAfter()));
                             }))
@@ -107,7 +107,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                             });
                 } else {
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM hypercube.support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
+                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
                                 statement.setString(1, range.getName());
                                 statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
                                 statement.setDate(3, DateUtil.toSqlDate(range.getAfter()));

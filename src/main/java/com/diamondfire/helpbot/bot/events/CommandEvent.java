@@ -47,9 +47,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         replyHandler.reply(preset, getChannel());
     }
     
-    @SuppressWarnings("unchecked")
     public <T> T getArgument(String code) {
-        return (T) parsedArgumentSet.getArgument(code);
+        return parsedArgumentSet.getArgument(code);
     }
     
     public Map<String, ?> getArguments() {

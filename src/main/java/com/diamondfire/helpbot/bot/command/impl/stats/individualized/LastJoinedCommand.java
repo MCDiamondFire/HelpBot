@@ -67,7 +67,7 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
                             new MinecraftUserPreset(formattedName)
                     );
                     new DatabaseQuery()
-                            .query(new BasicQuery("SELECT time AS time FROM hypercube.player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
+                            .query(new BasicQuery("SELECT time AS time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
                             .compile()
                             .run((resultTableDate) -> {
                                 if (resultTableDate.isEmpty()) {

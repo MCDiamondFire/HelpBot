@@ -60,8 +60,8 @@ public class ExcusedStaffCommand extends Command {
                         "       excused_till," +
                         "       reason " +
                         "FROM owen.excused_staff " +
-                        "LEFT JOIN hypercube.ranks r ON excused_staff.uuid = r.uuid " +
-                        "LEFT JOIN hypercube.players p ON excused_staff.uuid = p.uuid " +
+                        "LEFT JOIN ranks r ON excused_staff.uuid = r.uuid " +
+                        "LEFT JOIN players p ON excused_staff.uuid = p.uuid " +
                         "WHERE (support > 0 || moderation > 0) AND (excused_till > CURRENT_TIMESTAMP() || !handled) " +
                         "ORDER BY excused_till DESC;"))
                 .compile()

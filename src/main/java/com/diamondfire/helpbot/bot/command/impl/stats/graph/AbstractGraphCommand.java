@@ -6,8 +6,9 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
+import com.diamondfire.helpbot.sys.graph.generators.context.TimeGraphContext;
 
-public abstract class AbstractGraphCommand extends Command {
+public abstract class AbstractGraphCommand<T> extends Command {
     
     @Override
     public ArgumentSet compileArguments() {
@@ -25,13 +26,14 @@ public abstract class AbstractGraphCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        TimeMode mode = event.getArgument("mode");
-        int amount = event.getArgument("amount");
+        T context = createContext(event);
         
-        event.getChannel().sendFile(getGraphGenerator().createGraph(mode, amount)).queue();
+        event.getChannel().sendFile(getGraphGenerator().createGraph(context)).queue();
     }
     
-    public abstract GraphGenerator getGraphGenerator();
+    public abstract GraphGenerator<T> getGraphGenerator();
+    
+    public abstract T createContext(CommandEvent event);
     
 }
 

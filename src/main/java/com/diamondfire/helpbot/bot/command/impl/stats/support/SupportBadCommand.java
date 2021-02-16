@@ -72,15 +72,15 @@ public class SupportBadCommand extends Command {
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT DISTINCT p.name, count " +
                         "FROM (SELECT players.name" +
-                        "      FROM hypercube.ranks," +
-                        "           hypercube.players" +
+                        "      FROM ranks," +
+                        "           players" +
                         "      WHERE ranks.uuid = players.uuid" +
                         "        AND ranks.support >= 1" +
                         "        AND ranks.moderation = 0" +
                         "        AND ranks.administration = 0" +
                         "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff WHERE excused_till > CURRENT_TIMESTAMP())) p" +
                         "         LEFT OUTER JOIN (SELECT DISTINCT staff AS name, COUNT(staff) AS count" +
-                        "                          FROM hypercube.support_sessions" +
+                        "                          FROM support_sessions" +
                         "                          WHERE time > CURRENT_TIMESTAMP() - INTERVAL ? DAY" +
                         "                          GROUP BY staff) cn ON cn.name = p.name " +
                         "WHERE cn.count < ?" +

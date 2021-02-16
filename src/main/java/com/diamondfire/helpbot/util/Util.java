@@ -116,7 +116,7 @@ public class Util {
         HashMap<Long, String> accounts = new HashMap<>();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT discord_id AS discord_id, player_name AS player FROM hypercube.linked_accounts WHERE discord_id IS NOT NULL AND player_name IS NOT NULL;"))
+                .query(new BasicQuery("SELECT discord_id AS discord_id, player_name AS player FROM linked_accounts WHERE discord_id IS NOT NULL AND player_name IS NOT NULL;"))
                 .compile()
                 .run((result) -> {
                     for (ResultSet set : result) {
@@ -177,7 +177,7 @@ public class Util {
     
     public static void updateMember(Member member) {
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT player_name AS name FROM hypercube.linked_accounts WHERE discord_id = ?;", (statement) -> {
+                .query(new BasicQuery("SELECT player_name AS name FROM linked_accounts WHERE discord_id = ?;", (statement) -> {
                     statement.setLong(1, member.getIdLong());
                 }))
                 .compile()
