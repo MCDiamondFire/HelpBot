@@ -5,6 +5,9 @@ import com.diamondfire.helpbot.bot.command.help.CommandCategory;
 import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReply;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.nbs.*;
 import com.google.gson.Gson;
@@ -44,16 +47,15 @@ public class NbsCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         TextChannel channel = event.getChannel();
-        EmbedBuilder warning = new EmbedBuilder()
-                .addField("Warning!","You need to attach an nbs file!",false)
-                .setColor(Color.RED);
+        PresetBuilder preset = new PresetBuilder();
+        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         if(event.getMessage().getAttachments().isEmpty()) {
-            channel.sendMessage(warning.build()).queue();
+            event.reply(preset);
             return;
         }
         Message.Attachment attachment = event.getMessage().getAttachments().get(0);
         if(!attachment.getFileExtension().equals("nbs")) {
-            channel.sendMessage(warning.build()).queue();
+            event.reply(preset);
             return;
         }
         EmbedBuilder errorEmbed = new EmbedBuilder()
@@ -75,8 +77,8 @@ public class NbsCommand extends Command {
                         .setColor(new Color(70,199,82))
                         .setTitle("Function Generated!")
                         .setThumbnail("https://static.wikia.nocookie.net/minecraft/images/9/9b/Note_Block.png/revision/latest?cb=20190921170620")
-                        .addField("Link: *Expires in 2 mins*","https://derpystuff.gitlab.io/code/l?link=" + json.get("link").getAsString(),false)
-                        .addField("Info:","Click the link shown above and click the button in the bottom left corner to copy the give command for the template. You will need this function to play songs: https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40",false);
+                        .addField("Link: __Expires in 2 mins__","[Function Link](https://derpystuff.gitlab.io/code/l?link=" + json.get("link").getAsString() + ")",false)
+                        .addField("Info:","Click the link shown above and click the button in the bottom left corner to copy the give command for the template. You will need [this function](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) to play songs.",false);
 
                     channel.sendMessage(embed.build()).queue();
                 } catch(OutdatedNBSException e) {
