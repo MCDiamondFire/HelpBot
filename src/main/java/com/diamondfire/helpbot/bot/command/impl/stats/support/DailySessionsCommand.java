@@ -79,13 +79,25 @@ public class DailySessionsCommand extends Command {
                     Map<GraphableEntry<?>, Integer> dates = new LinkedHashMap<>();
                     ResultSet set = query.getResult();
                     
-                    for (int i = 0; i < 25; i++) {
-                        boolean end = set.next();
-                        String timedisplay = i + "";
-                        if (i < 10) {
-                            timedisplay = "0" + timedisplay;
+                    {
+                        Map<Integer, Integer> entries = new LinkedHashMap<>();
+                        for (int i = 1; i < 25; i++) {
+                            entries.put(i, 0);
                         }
-                        dates.put(new StringEntry(timedisplay + ":00"), !end ? 0 : set.getInt("count"));
+                        
+                        while (set.next()) {
+                            entries.put(set.getInt("time"), set.getInt("count"));
+                        }
+                        
+                        for (Map.Entry<Integer, Integer> entry : entries.entrySet()) {
+                            int hour = entry.getKey(); // 1-24
+                            String timedisplay = hour + "";
+                            if (hour < 10) {
+                                timedisplay = "0" + timedisplay;
+                            }
+                            
+                            dates.put(new StringEntry(timedisplay + ":00"), entry.getValue());
+                        }
                     }
                     
                     event.getChannel().sendFile(new ChartGraphBuilder()
