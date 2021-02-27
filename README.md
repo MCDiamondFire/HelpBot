@@ -35,7 +35,6 @@ created, use the following format.
      "guild": long,
      "log_channel": long,
      "discussion_channel": long,
-     "clips_channel": long,
      "muted_role": long,
      "verified_role": long,
      
