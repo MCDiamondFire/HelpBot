@@ -6,6 +6,8 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgu
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.IOUtil;
@@ -46,10 +48,21 @@ public class SamQuotesCommand extends Command {
             
             String[] message = event.getMessage().getContentRaw().split("/");
             
+            if(message.length != 6 || message[5] == null || message[6] == null || message[5].length() != 18 || message[6].length() != 18) {
+    
+                PresetBuilder error = new PresetBuilder();
+                
+                error.withPreset(
+                        new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
+                );
+                
+                return;
+            }
+            
             long channelID = Long.parseLong(message[5]);
             long messageID = Long.parseLong(message[6]);
             
-            Objects.requireNonNull(event.getGuild().getTextChannelById(channelID)).retrieveMessageById(messageID).queue((messageText) -> {
+            event.getGuild().getTextChannelById(channelID).retrieveMessageById(messageID).queue((messageText) -> {
                 
                 if(messageText.getAuthor().getIdLong() == 132092551782989824L) {
                     
@@ -171,7 +184,11 @@ public class SamQuotesCommand extends Command {
                         File imageFile = new File(ExternalFiles.SAM_DIR, messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", "") + ".png");
                         ImageIO.write(combined, "PNG", imageFile);
                         
-                        event.getChannel().sendFile(imageFile).queue();
+                        PresetBuilder success = new PresetBuilder();
+                        
+                        success.withPreset(
+                                new InformativeReply(InformativeReplyType.SUCCESS, "Your SamQuote has been added!")
+                        );
                         
                     } catch (IOException e) {
                         
@@ -180,13 +197,12 @@ public class SamQuotesCommand extends Command {
                     }
                     
                 } else {
-                    
-                    EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("Error!");
-                    eb.setColor(Color.RED);
-                    eb.setDescription("That's not a samquote!");
-                    
-                    event.getChannel().sendMessage(eb.build()).queue();
+    
+                    PresetBuilder error = new PresetBuilder();
+    
+                    error.withPreset(
+                            new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
+                    );
                     
                 }
                 
