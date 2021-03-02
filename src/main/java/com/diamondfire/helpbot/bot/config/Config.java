@@ -68,10 +68,6 @@ public class Config {
         return getPropertyLong("discussion_channel");
     }
     
-    public long getClipsChannel() {
-        return getPropertyLong("clips_channel");
-    }
-    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }

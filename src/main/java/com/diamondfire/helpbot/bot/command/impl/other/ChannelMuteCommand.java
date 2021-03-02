@@ -37,11 +37,10 @@ public class ChannelMuteCommand extends Command {
     
     @Override
     protected ArgumentSet compileArguments() {
-        LocalDate nextWeek = LocalDate.now().plusDays(7);
         return new ArgumentSet()
                 .addArgument("user", new DiscordUserArgument())
-                .addArgument("channel", new StringArgument())
-                .addArgument("duration", new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(DateUtil.toDate(nextWeek)))
+                .addArgument("channel", new LongArgument())
+                .addArgument("duration", new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(null))
                 .addArgument("reason", new StringArgument());
     }
     
@@ -54,13 +53,17 @@ public class ChannelMuteCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder();
         long user = event.getArgument("user");
-        long channel = Long.parseLong(event.getArgument("channel"));
+        long channel = event.getArgument("channel");
         Date duration = event.getArgument("duration");
+        if (duration == null) {
+            duration = DateUtil.toDate(LocalDate.now().plusDays(7));
+        }
         String reason = event.getArgument("reason");
         if (reason.length() == 0) {
             reason = "No reason given";
         }
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
+        Date finalDuration = duration;
         event.getGuild().retrieveMemberById(user).queue((msg) -> {
                     //TODO Owen DBQuery
                     
@@ -74,7 +77,7 @@ public class ChannelMuteCommand extends Command {
                         textChannel.putPermissionOverride(member).deny(net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION, net.dv8tion.jda.api.Permission.MESSAGE_WRITE).queue();
                     });
                     
-                    HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration, false));
+                    HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, finalDuration, false));
                     event.reply(builder);
                 }, (error) -> {
                     builder.withPreset(
