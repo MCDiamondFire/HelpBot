@@ -74,7 +74,7 @@ public class SamQuotesCommand extends Command {
                     
                     try {
                         
-                        BufferedImage samPfp = ImageIO.read(Objects.requireNonNull(IOUtil.getFileFromSite(samProfilePic, "sampfp.png")));
+                        BufferedImage samPfp = ImageIO.read(IOUtil.getFileFromSite(samProfilePic, "sampfp.png"));
                         
                         String text = "             " + messageText.getContentRaw().replaceAll("[^a-zA-Z0-9 ]", "");
     
@@ -251,7 +251,7 @@ public class SamQuotesCommand extends Command {
     
             BufferedImage samPfp = null;
             try {
-                samPfp = ImageIO.read(Objects.requireNonNull(IOUtil.getFileFromSite("https://cdn.discordapp.com/avatars/132092551782989824/14368bddad31d5fb5501acc8338a8ab4.png?size=1024", "sampfp.png")));
+                samPfp = ImageIO.read(IOUtil.getFileFromSite("https://cdn.discordapp.com/avatars/132092551782989824/14368bddad31d5fb5501acc8338a8ab4.png?size=1024", "sampfp.png"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -334,7 +334,29 @@ public class SamQuotesCommand extends Command {
             g2d2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
     
             g2d2.setFont(font);
-            Color nameColor = new Color(45, 102, 212);
+            
+            double colorChance = Math.random();
+    
+    
+            Color nameColor;
+            
+            if (colorChance < 0.1) {
+                
+                nameColor = new Color(255, 153, 227);
+                
+            } else if (colorChance < 0.3) {
+                
+                nameColor = new Color(255, 225, 76);
+                
+            } else if (colorChance < 0.6) {
+                
+                nameColor = new Color(35, 255, 38);
+                
+            } else {
+                
+                nameColor = new Color(45, 102, 212);
+            }
+            
             g2d2.setColor(nameColor);
             g2d2.drawString("           SamMan_", 0, fm2.getAscent());
     
