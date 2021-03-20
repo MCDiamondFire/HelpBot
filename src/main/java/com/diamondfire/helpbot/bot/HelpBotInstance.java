@@ -66,6 +66,7 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),
+                new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
