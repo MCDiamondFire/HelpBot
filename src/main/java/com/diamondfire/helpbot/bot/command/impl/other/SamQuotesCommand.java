@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
+import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData; //use this if you want to add more data to ai sam
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class SamQuotesCommand extends Command {
@@ -35,7 +36,14 @@ public class SamQuotesCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a quote from Sam the Man.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("get"),
+                        new HelpContextArgument()
+                                .name("submit"),
+                        new HelpContextArgument()
+                                .name("generate"));
     }
     
     @Override
@@ -46,11 +54,9 @@ public class SamQuotesCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         
-        if (event.getArgument("action") == "submit") {
+        if (event.getArgument("action").equals("submit")) {
             
             String[] message = event.getMessage().getContentRaw().split("/");
-            
-            System.out.println(message.length);
             
             if(message.length != 7 || message[5] == null || message[6] == null || message[5].length() != 18 || message[6].length() != 18) {
     
@@ -59,6 +65,8 @@ public class SamQuotesCommand extends Command {
                 error.withPreset(
                         new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
                 );
+                
+                event.reply(error);
                 
                 return;
             }
@@ -194,6 +202,8 @@ public class SamQuotesCommand extends Command {
                                 new InformativeReply(InformativeReplyType.SUCCESS, "Your SamQuote has been added!")
                         );
                         
+                        event.reply(success);
+                        
                     } catch (IOException e) {
                         
                         e.printStackTrace();
@@ -208,10 +218,12 @@ public class SamQuotesCommand extends Command {
                             new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
                     );
                     
+                    event.reply(error);
+                    
                 }
                 
             });
-        } else if (event.getArgument("action") == "generate") {
+        } else if (event.getArgument("action").equals("generate")) {
     
             File file = new File("samquotes.txt");
             
