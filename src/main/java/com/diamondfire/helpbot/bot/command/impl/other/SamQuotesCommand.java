@@ -90,11 +90,9 @@ public class SamQuotesCommand extends Command {
                 
                 if(messageText.getAuthor().getIdLong() == 132092551782989824L) {
                     
-                    String samProfilePic = messageText.getAuthor().getAvatarUrl();
-                    
                     try {
                         
-                        BufferedImage samPfp = ImageIO.read(IOUtil.getFileFromSite(samProfilePic, "sampfp.png"));
+                        BufferedImage samPfp = ImageIO.read(ExternalFiles.SAMMAN);
                         
                         String text = "           " + messageText.getContentRaw().replaceAll("[^a-zA-Z0-9 ]", "");
     
@@ -103,11 +101,9 @@ public class SamQuotesCommand extends Command {
                         //crop pfp into a circle
     
                         BufferedImage circleBuffer = new BufferedImage(pfpWidth, pfpWidth, BufferedImage.TYPE_INT_ARGB);
-    
                         Graphics2D g2 = circleBuffer.createGraphics();
     
                         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-    
                         g2.setClip(new Ellipse2D.Float(0, 0, pfpWidth, pfpWidth));
                         g2.drawImage(samPfp, 0, 0, pfpWidth, pfpWidth, null);
     
