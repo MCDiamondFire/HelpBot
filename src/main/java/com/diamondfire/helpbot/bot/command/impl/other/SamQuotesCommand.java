@@ -36,14 +36,7 @@ public class SamQuotesCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a quote from Sam the Man.")
-                .category(CommandCategory.OTHER)
-                .addArgument(
-                        new HelpContextArgument()
-                                .name("get"),
-                        new HelpContextArgument()
-                                .name("submit"),
-                        new HelpContextArgument()
-                                .name("generate"));
+                .category(CommandCategory.OTHER);
     }
     
     @Override
@@ -54,7 +47,18 @@ public class SamQuotesCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         
-        if (event.getArgument("action").equals("submit")) {
+        if (event.getArgument("action") == null) {
+    
+            String[] strings = ExternalFiles.SAM_DIR.list();
+            File file = new File(ExternalFiles.SAM_DIR, strings[random.nextInt(strings.length)]);
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("Sam Quote");
+            builder.setImage("attachment://quote.png");
+            builder.setColor(new Color(87, 177, 71));
+    
+            event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
+    
+        } else if (event.getArgument("action").equals("submit")) {
             
             String[] message = event.getMessage().getContentRaw().split("/");
             
@@ -84,7 +88,7 @@ public class SamQuotesCommand extends Command {
                         
                         BufferedImage samPfp = ImageIO.read(IOUtil.getFileFromSite(samProfilePic, "sampfp.png"));
                         
-                        String text = "             " + messageText.getContentRaw().replaceAll("[^a-zA-Z0-9 ]", "");
+                        String text = "           " + messageText.getContentRaw().replaceAll("[^a-zA-Z0-9 ]", "");
     
                         int pfpWidth = samPfp.getWidth() * 10;
     
@@ -429,7 +433,7 @@ public class SamQuotesCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("action",
-                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate")).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get")).optional(null));
     }
     
 }
