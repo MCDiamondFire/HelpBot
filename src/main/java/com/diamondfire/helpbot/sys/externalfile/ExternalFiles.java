@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
 import java.io.File;
+import java.net.URL;
 
 public interface ExternalFiles {
     
@@ -47,5 +48,11 @@ public interface ExternalFiles {
             .isDirectory(false)
             .setName("swear_filter")
             .setFileType("json")
+            .buildFile();
+    
+    File SAMMAN = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("samman")
+            .setFileType("png")
             .buildFile();
 }
