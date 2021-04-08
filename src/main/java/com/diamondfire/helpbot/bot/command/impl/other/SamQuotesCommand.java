@@ -18,6 +18,7 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData; //use this if you want to add more data to ai sam
@@ -36,7 +37,14 @@ public class SamQuotesCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a quote from Sam the Man.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("get"),
+                        new HelpContextArgument()
+                                .name("submit"),
+                        new HelpContextArgument()
+                                .name("generate"));
     }
     
     @Override
@@ -267,7 +275,7 @@ public class SamQuotesCommand extends Command {
     
             BufferedImage samPfp = null;
             try {
-                samPfp = ImageIO.read(IOUtil.getFileFromSite("https://cdn.discordapp.com/avatars/132092551782989824/14368bddad31d5fb5501acc8338a8ab4.png?size=1024", "sampfp.png"));
+                samPfp = ImageIO.read(ExternalFiles.SAMMAN);
             } catch (IOException e) {
                 e.printStackTrace();
             }
