@@ -66,6 +66,7 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),
+                new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -111,7 +112,8 @@ public class HelpBotInstance {
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand(),
                 new NbsCommand(),
-                new DailySessionsCommand()
+                new DailySessionsCommand(),
+                new EightBallCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
