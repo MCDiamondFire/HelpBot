@@ -92,7 +92,11 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                             .compile()
                             .run((tableSet) -> {
                                 if (!tableSet.isEmpty()) {
-                                    embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
+                                    if (Integer.getInteger(genPointMetric(points, uuid)) > Integer.getInteger(FormatUtil.formatNumber(tableSet.getResult().getInt("points")))) {
+                                        embed.addField("Highest Point Count", genPointMetric(points, uuid), false);
+                                    } else {
+                                        embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
+                                    }
                                 }
                             });
                     
