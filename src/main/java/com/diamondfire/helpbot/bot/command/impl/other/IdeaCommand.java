@@ -81,7 +81,10 @@ public class IdeaCommand extends Command {
                 "A turn-based game",
                 "A strategy game",
                 "A bullet hell game",
-                
+                "A skyblock game",
+                "An educational game",
+                "A generic wire game",
+                "A grindy game"
         };
         String[] objectives = new String[]{
                 "where you adopt hamsters",
@@ -138,6 +141,28 @@ public class IdeaCommand extends Command {
                 "where you are staff",
                 "where you break people's hearts",
                 "where you rap like a god",
+                "where Ottelino rejoins the discord yet again",
+                "where you join the events team",
+                "where you get Discord Nitro",
+                "where you post clips",
+                "where you contribute to HelpBot",
+                "where Fejiberglibstein gives you big crazies",
+                "where Refriz says uwu",
+                "where you request support",
+                "where you ban people",
+                "where you post memes",
+                "where you go on a DiamondFire rant",
+                "where you perform big codes",
+                "where you break HelpBot",
+                "where you do the RyanLand",
+                "where you become a redditor",
+                "where you retire",
+                "where you generate samquotes",
+                "where you accidentally the cat",
+                "where Owen posts another strange video",
+                "where you admire hedgehogs",
+                "where you wear a mask",
+                "where you set a computer on fire",
         };
         String[] rewards = new String[]{
                 "for pleasure.",
@@ -191,16 +216,27 @@ public class IdeaCommand extends Command {
                 "for good game ideas.",
                 "for a volcano eruption.",
                 "for the new DiamondFire update.",
+                "to get banned.",
+                "for samquotes.",
+                "for love.",
+                "for Robot Game levels.",
+                "for Hypercube source code.",
+                "for warm blankets.",
+                "for the labsCore API.",
+                "for V-Bucks.",
+                "to get hugs from Owen.",
+                "to eat food.",
+                "for red pandas",
+                "to avoid COVID-19",
         };
         
         Random rdm = new Random();
         EmbedBuilder builder = new EmbedBuilder();
-            
-                    builder.setTitle("Idea");
-                    builder.setDescription(types[rdm.nextInt(types.length)] + " " + objectives[rdm.nextInt(objectives.length)] + " " + rewards[rdm.nextInt(rewards.length)]);
-                
+        
+        builder.setTitle("Idea");
+        builder.setDescription(types[rdm.nextInt(types.length)] + " " + objectives[rdm.nextInt(objectives.length)] + " " + rewards[rdm.nextInt(rewards.length)]);
+        
         event.getChannel().sendMessage(builder.build()).queue();
     }
     
 }
-
