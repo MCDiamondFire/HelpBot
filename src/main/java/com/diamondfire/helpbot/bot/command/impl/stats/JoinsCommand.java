@@ -40,12 +40,7 @@ public class JoinsCommand extends Command {
                 .compile()
                 .run((result) -> {
                     String count;
-                    if(result.isEmpty()) {
-                        count = "None (:rotating_light: this should not be happening :rotating_light:)";
-                    } else {
-                        count = FormatUtil.formatNumber(result.getResult().getInt("count"));
-                    }
-                    
+                    count = FormatUtil.formatNumber(result.getResult().getInt("count"));
                     builder.setDescription(String.format("A total of %s players have joined DiamondFire before!", count));
                 });
         
