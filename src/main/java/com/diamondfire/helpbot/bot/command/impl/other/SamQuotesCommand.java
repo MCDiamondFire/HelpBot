@@ -37,7 +37,14 @@ public class SamQuotesCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Gets a quote from Sam the Man.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("get"),
+                        new HelpContextArgument()
+                                .name("submit"),
+                        new HelpContextArgument()
+                                .name("generate"));
     }
     
     @Override
