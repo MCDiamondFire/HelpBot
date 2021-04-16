@@ -39,8 +39,7 @@ public class JoinsCommand extends Command {
                 .query(new BasicQuery("SELECT COUNT(*) AS count FROM players"))
                 .compile()
                 .run((result) -> {
-                    String count;
-                    count = FormatUtil.formatNumber(result.getResult().getInt("count"));
+                    String count = FormatUtil.formatNumber(result.getResult().getInt("count"));
                     builder.setDescription(String.format("A total of %s players have joined DiamondFire before!", count));
                 });
         
