@@ -113,7 +113,8 @@ public class HelpBotInstance {
                 new DiscussionMuteCommand(),
                 new NbsCommand(),
                 new DailySessionsCommand(),
-                new EightBallCommand()
+                new EightBallCommand(),
+                new JoinsCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
