@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData; //use this if you want to add more data to ai sam
+import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.addWord;
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class SamQuotesCommand extends Command {
@@ -44,7 +45,9 @@ public class SamQuotesCommand extends Command {
                         new HelpContextArgument()
                                 .name("submit"),
                         new HelpContextArgument()
-                                .name("generate"));
+                                .name("generate"),
+                        new HelpContextArgument()
+                                .name("reload"));
     }
     
     @Override
@@ -211,6 +214,8 @@ public class SamQuotesCommand extends Command {
                         );
                         
                         event.reply(success);
+    
+                        AddSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", ""));
                         
                     } catch (IOException e) {
                         
@@ -418,6 +423,14 @@ public class SamQuotesCommand extends Command {
     
             event.getChannel().sendMessage(builder.build()).addFile(samQuote, "quote.png").queue();
         
+        } else if (event.getArgument("action").equals("reload")) {
+    
+            try {
+                CacheData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    
         } else {
             
             String[] strings = ExternalFiles.SAM_DIR.list();
@@ -437,7 +450,35 @@ public class SamQuotesCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("action",
-                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get")).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get", "reload")).optional(null));
+    }
+    
+    private void AddSamquote(String samquote) {
+    
+        try {
+    
+            File file = new File("samquotes.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+    
+            String line;
+            String newFile = "";
+            
+            while ((line = br.readLine()) != null) {
+        
+                if (line != samquote) { newFile += line + "\n"; }
+            }
+            
+            newFile += samquote;
+    
+            FileWriter fileWriter = new FileWriter("samquotes.txt");
+            fileWriter.write(newFile);
+            fileWriter.close();
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
 }
