@@ -10,7 +10,6 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
-import com.diamondfire.helpbot.util.IOUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.imageio.ImageIO;
@@ -18,11 +17,9 @@ import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 
-import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData; //use this if you want to add more data to ai sam
-import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.addWord;
+import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData;
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class SamQuotesCommand extends Command {
@@ -43,11 +40,13 @@ public class SamQuotesCommand extends Command {
                         new HelpContextArgument()
                                 .name("get"),
                         new HelpContextArgument()
-                                .name("submit"),
+                                .name("submit (beginning word)"),
                         new HelpContextArgument()
                                 .name("generate"),
                         new HelpContextArgument()
-                                .name("reload"));
+                                .name("reload"),
+                        new HelpContextArgument()
+                                .name("count"));
     }
     
     @Override
@@ -260,8 +259,28 @@ public class SamQuotesCommand extends Command {
                 startingTexts.add(line.split(" ")[0]);
             }
             
-            String word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
+            String word;
             
+            if (event.getMessage().getContentRaw().split(" ").length == 2) {
+             
+                word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
+            } else {
+                
+                if (startingTexts.contains(event.getMessage().getContentRaw().split(" ")[2])) {
+    
+                    word = event.getMessage().getContentRaw().split(" ")[2];
+                    
+                } else {
+                    
+                    PresetBuilder error = new PresetBuilder();
+                    
+                    error.withPreset(
+                            new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")
+                    );
+                    
+                    return;
+                }
+            }
             String string = "";
             for (int i = 0; i < 50; i++) {
                 
@@ -431,6 +450,17 @@ public class SamQuotesCommand extends Command {
                 e.printStackTrace();
             }
     
+        } else if (event.getArgument("action").equals("count")) {
+    
+            String[] strings = ExternalFiles.SAM_DIR.list();
+    
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("Total Sam Quotes:");
+            builder.setDescription("" + strings.length);
+            builder.setColor(new Color(87, 177, 71));
+    
+            event.getChannel().sendMessage(builder.build()).queue();
+            
         } else {
             
             String[] strings = ExternalFiles.SAM_DIR.list();
@@ -450,7 +480,7 @@ public class SamQuotesCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("action",
-                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get", "reload")).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get", "reload", "count")).optional(null));
     }
     
     private void AddSamquote(String samquote) {
