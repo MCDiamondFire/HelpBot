@@ -91,14 +91,8 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                             .query(new BasicQuery("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid)))
                             .compile()
                             .run((tableSet) -> {
-                                
                                 if (!tableSet.isEmpty()) {
-                                    int maxPoints = tableSet.getResult().getInt("points");
-                                    if (maxPoints > points) {
-                                        embed.addField("Highest Point Count", FormatUtil.formatNumber(maxPoints), false);
-                                    } else {
-                                        embed.addField("Highest Point Count", FormatUtil.formatNumber(points), false);
-                                    }
+                                    embed.addField("Highest Point Count", FormatUtil.formatNumber(tableSet.getResult().getInt("points")), false);
                                 }
                             });
                     
