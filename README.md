@@ -42,3 +42,21 @@ created, use the following format.
      "role_react_message": long
      
    }
+```
+
+**Swear Filter**
+
+After setting up the config, you will need to paste the following into the swear filter file. Otherwise, commands will not work and it will error whenever a message is sent.
+
+```json
+{
+  "equal": [
+  ],
+  "prefix": [
+  ],
+  "suffix": [
+  ],
+  "part": [
+  ]
+}
+```
