@@ -483,7 +483,7 @@ public class SamQuotesCommand extends Command {
                         new SingleArgumentContainer<>(new DefinedObjectArgument<>("submit", "generate", "get", "reload", "count")).optional(null));
     }
     
-    private void AddSamquote(String samquote) {
+    private void addSamquote(String samquote) {
     
         try {
     
