@@ -214,7 +214,7 @@ public class SamQuotesCommand extends Command {
                         
                         event.reply(success);
     
-                        AddSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", ""));
+                        addSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", ""));
                         
                     } catch (IOException e) {
                         
