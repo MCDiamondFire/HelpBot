@@ -68,6 +68,10 @@ public class Config {
         return getPropertyLong("discussion_channel");
     }
     
+    public long getMemesChannel() { return getPropertyLong("memes_channel"); }
+    
+    public long getBestMemesChannel() { return getPropertyLong("best_memes_channel"); }
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }
