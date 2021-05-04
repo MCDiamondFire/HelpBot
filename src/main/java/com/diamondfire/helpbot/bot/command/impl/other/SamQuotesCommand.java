@@ -214,7 +214,7 @@ public class SamQuotesCommand extends Command {
                         
                         event.reply(success);
     
-                        AddSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", ""));
+                        AddSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9\s]", ""));
                         
                     } catch (IOException e) {
                         
@@ -236,51 +236,52 @@ public class SamQuotesCommand extends Command {
                 
             });
         } else if (event.getArgument("action").equals("generate")) {
-    
-            File file = new File("samquotes.txt");
-            
-            BufferedReader br = null;
-            try {
-                br = new BufferedReader(new FileReader(file));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            
-            ArrayList<String> startingTexts = new ArrayList<>();
-    
-            String line = null;
-            while (true) {
-                try {
-                    if ((line = br.readLine()) == null) break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                
-                startingTexts.add(line.split(" ")[0]);
-            }
             
             String word;
             
             if (event.getMessage().getContentRaw().split(" ").length == 2) {
-             
-                word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
-            } else {
-                
-                if (startingTexts.contains(event.getMessage().getContentRaw().split(" ")[2])) {
+                File file = new File("samquotes.txt");
     
-                    word = event.getMessage().getContentRaw().split(" ")[2];
-                    
-                } else {
-                    
-                    PresetBuilder error = new PresetBuilder();
-                    
-                    error.withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")
-                    );
-                    
+                BufferedReader br = null;
+                try {
+                    br = new BufferedReader(new FileReader(file));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+    
+                ArrayList<String> startingTexts = new ArrayList<>();
+    
+                String line = null;
+                while (true) {
+                    try {
+                        if ((line = br.readLine()) == null) break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+        
+                    startingTexts.add(line.split(" ")[0]);
+                }
+    
+                word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
+                
+            } else {
+                word = event.getMessage().getContentRaw().split(" ")[2];
+                try {
+                    if(getNextWord(word) == null) {
+                        PresetBuilder error = new PresetBuilder();
+    
+                        error.withPreset(
+                                new InformativeReply(InformativeReplyType.ERROR, "Sam has never said this word before!")
+                        );
+    
+                        return;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                     return;
                 }
             }
+            
             String string = "";
             for (int i = 0; i < 50; i++) {
                 
