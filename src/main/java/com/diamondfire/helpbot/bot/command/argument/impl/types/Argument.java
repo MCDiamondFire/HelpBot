@@ -2,6 +2,8 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
