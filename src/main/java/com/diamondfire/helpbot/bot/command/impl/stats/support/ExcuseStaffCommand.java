@@ -89,7 +89,7 @@ public class ExcuseStaffCommand extends Command {
                         new DatabaseQuery()
                                 .query(new BasicQuery("INSERT INTO owen.excused_staff (uuid,excused_by,excused_at,excused_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
                                     statement.setString(1, uuid);
-                                    statement.setString(2, event.getAuthor().getId());
+                                    statement.setString(2, event.getMember().getId());
                                     statement.setTimestamp(3, DateUtil.toTimeStamp(date));
                                     statement.setString(4, reason);
                                     

@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
@@ -110,7 +111,7 @@ public class PollCommand extends Command {
         });
         
         //delete original message
-        event.getMessage().delete().queue();
+        //HelpBotInstance.getJda().delete().queue();
         
     }
 }

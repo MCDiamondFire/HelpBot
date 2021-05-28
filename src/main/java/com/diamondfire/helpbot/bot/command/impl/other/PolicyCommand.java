@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -43,7 +44,7 @@ public class PolicyCommand extends Command {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(new InformativeReply(InformativeReplyType.INFO, "Privacy Policy", null));
         EmbedBuilder embed = preset.getEmbed();
-        embed.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
+        embed.setThumbnail(HelpBotInstance.getJda().getSelfUser().getAvatarUrl());
         embed.setDescription("This privacy policy is available for everyone to comply with Discord's Bot policy. To make it simple, only key points will be listed.");
         embed.addField("Data Collection", "HelpBot does store some data on its users. However, no personal information is ever stored.", false);
         embed.addField("Where does my data come from?", "HelpBot receives most of its information from DiamondFire. HelpBot will never show sensitive data such as ip addresses. ", false);

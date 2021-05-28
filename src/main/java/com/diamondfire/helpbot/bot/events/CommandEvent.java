@@ -6,23 +6,28 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.Argu
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
 import java.util.*;
 
-public class CommandEvent extends GuildMessageReceivedEvent {
+public class CommandEvent {
+    
+    private final Member member;
+    private final TextChannel channel;
     
     private final Command command;
-    private final ReplyHandler replyHandler = new ReplyHandler(getChannel());
+    private final ReplyHandler replyHandler;
     //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
     private String aliasedUsed = null;
     
-    public CommandEvent(Message message) {
-        super(message.getJDA(), 0, message);
-        String[] rawArgs = getMessage().getContentDisplay().split(" ");
+    public CommandEvent(Member member, TextChannel channel, ReplyAction replyAction) {
+        this.member = member;
+        this.channel = channel;
+        this.replyHandler  = new ReplyHandler(replyAction);
+        
+        String[] rawArgs = message.getContentDisplay().split(" ");
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
         
         
@@ -44,7 +49,7 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     }
     
     public void reply(PresetBuilder preset) {
-        replyHandler.reply(preset, getChannel());
+        replyHandler.reply(preset);
     }
     
     public <T> T getArgument(String code) {
@@ -61,5 +66,17 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     
     public String getAliasUsed() {
         return aliasedUsed;
+    }
+    
+    public Member getMember() {
+        return member;
+    }
+    
+    public TextChannel getChannel() {
+        return channel;
+    }
+    
+    public Guild getGuild() {
+        return channel.getGuild();
     }
 }

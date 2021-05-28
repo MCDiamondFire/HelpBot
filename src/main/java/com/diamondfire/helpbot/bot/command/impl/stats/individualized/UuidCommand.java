@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
-import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
@@ -20,7 +20,13 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext();
+        return new HelpContext()
+                .description("Get uuid of player.")
+                .addArgument(new HelpContextArgument()
+                        .name("player")
+                        .optional()
+                )
+                .category(CommandCategory.PLAYER_STATS);
     }
     
     @Override

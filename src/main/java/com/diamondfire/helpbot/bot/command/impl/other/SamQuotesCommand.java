@@ -261,26 +261,26 @@ public class SamQuotesCommand extends Command {
             
             String word;
             
-            if (event.getMessage().getContentRaw().split(" ").length == 2) {
-             
-                word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
-            } else {
-                
-                if (startingTexts.contains(event.getMessage().getContentRaw().split(" ")[2])) {
-    
-                    word = event.getMessage().getContentRaw().split(" ")[2];
-                    
-                } else {
-                    
-                    PresetBuilder error = new PresetBuilder();
-                    
-                    error.withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")
-                    );
-                    
-                    return;
-                }
-            }
+//            if (event.getMessage().getContentRaw().split(" ").length == 2) {
+//
+//                word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
+//            } else {
+//
+//                if (startingTexts.contains(event.getMessage().getContentRaw().split(" ")[2])) {
+//
+//                    word = event.getMessage().getContentRaw().split(" ")[2];
+//
+//                } else {
+//
+//                    PresetBuilder error = new PresetBuilder();
+//
+//                    error.withPreset(
+//                            new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")
+//                    );
+//
+//                    return;
+//                }
+//            }
             String string = "";
             for (int i = 0; i < 50; i++) {
                 

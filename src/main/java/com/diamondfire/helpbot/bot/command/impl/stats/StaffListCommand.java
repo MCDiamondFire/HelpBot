@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -118,7 +119,7 @@ public class StaffListCommand extends Command {
                                 EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Contributors");
                                 guild.pruneMemberCache();
                                 builder.addPage("Developers", devEmbed);
-                                builder.build().send(event.getJDA());
+                                builder.build().send(HelpBotInstance.getJda());
                             });
                 });
         

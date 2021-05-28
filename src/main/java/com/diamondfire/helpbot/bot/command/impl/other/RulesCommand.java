@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -93,7 +94,7 @@ public class RulesCommand extends Command {
         builder.addPage("Support Rules", supportRules);
         builder.addPage("Supportee Rules", supporteeRules);
         
-        builder.build().send(event.getJDA());
+        builder.build().send(HelpBotInstance.getJda());
     }
     
     private String list(String[] strings, String prefix) {

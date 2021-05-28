@@ -109,6 +109,10 @@ public class StringUtil {
     }
     
     public static String trim(String str, int max) {
+        if (str == null) {
+            return "";
+        }
+        
         if (str.length() > max) {
             return str.substring(0, max - 3) + "..";
         } else {

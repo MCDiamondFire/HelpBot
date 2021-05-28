@@ -71,7 +71,7 @@ public class MuteCommand extends Command {
             new DatabaseQuery()
                     .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
                         statement.setLong(1, user);
-                        statement.setLong(2, event.getAuthor().getIdLong());
+                        statement.setLong(2, event.getMember().getIdLong());
                         statement.setTimestamp(3, DateUtil.toTimeStamp(duration));
                         statement.setString(4, event.getArgument("reason"));
                         

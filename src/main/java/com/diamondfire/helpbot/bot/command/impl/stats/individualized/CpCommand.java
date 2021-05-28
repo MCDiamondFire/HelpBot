@@ -128,11 +128,11 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 
                                 embed.setImage("attachment://graph.png");
                                 try {
-                                    event.getReplyHandler().replyA(preset)
-                                            .addFile(new ChartGraphBuilder()
-                                                    .setGraphName(player + "'s CP Graph")
-                                                    .createGraph(entries), "graph.png")
-                                            .queue();
+//                                    event.getReplyHandler().replyA(preset)
+//                                            .addFile(new ChartGraphBuilder()
+//                                                    .setGraphName(player + "'s CP Graph")
+//                                                    .createGraph(entries), "graph.png")
+//                                            .queue();
                                 } catch (Exception ignored) {
                                     event.reply(preset);
                                 }

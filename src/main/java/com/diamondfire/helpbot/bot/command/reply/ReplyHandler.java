@@ -1,55 +1,38 @@
 package com.diamondfire.helpbot.bot.command.reply;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 
 public class ReplyHandler {
     
-    private final TextChannel channel;
+    private final ReplyAction action;
     
-    public ReplyHandler(TextChannel channel) {
-        this.channel = channel;
-    }
-    
-    public TextChannel getChannel() {
-        return channel;
+    public ReplyHandler(ReplyAction action) {
+        this.action = action;
     }
     
     public void reply(String content) {
-        textReply(content, getChannel()).queue();
+        textReply(content).queue();
     }
     
     public void reply(PresetBuilder preset) {
-        reply(preset, getChannel());
-    }
-    
-    public void reply(PresetBuilder preset, MessageChannel channel) {
-        reply(preset.getEmbed(), channel);
+        reply(preset);
     }
     
     public void reply(EmbedBuilder builder) {
-        embedReply(builder, getChannel()).queue();
+        embedReply(builder).queue();
     }
     
-    public void reply(EmbedBuilder builder, MessageChannel channel) {
-        embedReply(builder, channel).queue();
+    public ReplyAction replyA(PresetBuilder preset) {
+        return embedReply(preset.getEmbed());
     }
     
-    public MessageAction replyA(PresetBuilder preset) {
-        return replyA(preset, getChannel());
+    public ReplyAction embedReply(EmbedBuilder embed) {
+        return action.addEmbeds(embed.build());
     }
     
-    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        return embedReply(preset.getEmbed(), channel);
-    }
-    
-    public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
-        return channel.sendMessage(embed.build());
-    }
-    
-    public MessageAction textReply(String msg, MessageChannel channel) {
-        return channel.sendMessage(msg);
+    public ReplyAction textReply(String msg) {
+        return action.setContent(msg);
     }
     
 }

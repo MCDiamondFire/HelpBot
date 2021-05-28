@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -67,7 +68,7 @@ public class BoostersCommand extends Command {
                         int multiplier = set.getInt("multiplier");
                         String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
                         
-                        Emote emote = event.getJDA().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
+                        Emote emote = HelpBotInstance.getJda().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
                         embed.addField(String.format("%s %sx booster from %s ", emote.getAsMention(), multiplier, owner), String.format("Ends in: %s", durationName), false);
                     }
                     
