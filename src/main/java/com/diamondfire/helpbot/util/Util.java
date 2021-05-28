@@ -8,6 +8,8 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.ActionRow;
+import net.dv8tion.jda.api.interactions.button.Button;
 
 import java.io.*;
 import java.net.*;
@@ -189,5 +191,26 @@ public class Util {
                     ResultSet table = result.getResult();
                     updateMember(member, table.getString("name"), member.getGuild().getRoleById(VERIFIED));
                 });
+    }
+    
+    public static List<ActionRow> of(List<Button> components) {
+        Deque<Button> buttons = new ArrayDeque<>(components);
+        List<Button> queue = new ArrayList<>();
+        
+        List<ActionRow> rows = new ArrayList<>();
+        
+        while (!buttons.isEmpty()) {
+            queue.add(buttons.pop());
+            if (queue.size() >= 5) {
+                rows.add(ActionRow.of(queue));
+                queue.clear();
+            }
+        }
+        
+        if (!queue.isEmpty()) {
+            rows.add(ActionRow.of(queue));
+        }
+        
+        return rows;
     }
 }

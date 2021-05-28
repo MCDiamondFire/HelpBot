@@ -66,7 +66,7 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),
-                new ChannelMuteCommand(),
+                //new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -114,6 +114,7 @@ public class HelpBotInstance {
                 new NbsCommand(),
                 new DailySessionsCommand(),
                 new EightBallCommand(),
+                new OcrCommand(),
                 new JoinsCommand()
         );
         
@@ -124,7 +125,7 @@ public class HelpBotInstance {
                 .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent(), new GuildJoinEvent());
+                .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent());
         
         jda = builder.build();
         handler.initialize();

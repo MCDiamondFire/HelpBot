@@ -46,13 +46,12 @@ public class NewPlayersCommand extends Command {
                 );
         EmbedBuilder embed = preset.getEmbed();
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT players.name, approved_users.time FROM approved_users " +
-                        "LEFT JOIN players ON approved_users.uuid = players.uuid " +
-                        "WHERE time > CURRENT_TIMESTAMP() - INTERVAL 1 DAY ORDER BY time DESC LIMIT 20"))
+                .query(new BasicQuery("SELECT name, join_date FROM players " +
+                        "WHERE join_date > CURRENT_TIMESTAMP() - INTERVAL 1 DAY ORDER BY join_date DESC LIMIT 20"))
                 .compile()
                 .run((result) -> {
                     for (ResultSet set : result) {
-                        embed.addField(StringUtil.display(set.getString("name")), set.getTimestamp("time").toString(), false);
+                        embed.addField(StringUtil.display(set.getString("name")), set.getTimestamp("join_date").toString(), false);
                     }
                 });
         

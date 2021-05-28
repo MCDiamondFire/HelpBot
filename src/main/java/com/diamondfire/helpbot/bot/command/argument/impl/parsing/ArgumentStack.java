@@ -11,6 +11,8 @@ public class ArgumentStack {
     public ArgumentStack(List<ArgumentNode<?>> args, Collection<String> rawArgs) {
         this.stack = new RawArgumentStack(new ArrayDeque<>(rawArgs));
         this.args = new ArrayDeque<>(args);
+        
+        stack.stack.removeIf(String::isEmpty);
     }
     
     public RawArgumentStack getRawArguments() {

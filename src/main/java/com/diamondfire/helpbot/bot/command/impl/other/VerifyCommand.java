@@ -85,6 +85,11 @@ public class VerifyCommand extends Command {
     
                         // Run the query before any messages sent to make sure that they are actually added.
                         new DatabaseQuery()
+                                .query(new BasicQuery("UPDATE linked_accounts SET discord_id = null WHERE discord_id = ? ", (statement) -> {
+                                    statement.setString(1, userString);
+                                })).compile();
+                        
+                        new DatabaseQuery()
                                 .query(new BasicQuery("INSERT INTO linked_accounts (player_uuid, player_name, discord_id) VALUES (?,?,?) ON DUPLICATE KEY UPDATE discord_id = ?", (statement) -> {
                                     statement.setString(1, uuid);
                                     statement.setString(2, name);

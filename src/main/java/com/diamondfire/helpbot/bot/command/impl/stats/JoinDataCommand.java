@@ -87,7 +87,7 @@ public class JoinDataCommand extends Command {
         String dateTo = FormatUtil.formatDate(sqlDateTo);
         // Players that joined within a week of a certain date
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users WHERE time BETWEEN ? AND ?) AS a;", (statement) -> {
+                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM players WHERE join_date BETWEEN ? AND ?) AS a;", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
                 }))
@@ -111,8 +111,8 @@ public class JoinDataCommand extends Command {
         ranks.put(4, 0);
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT donor, COUNT(*) AS count FROM ranks WHERE donor != 0 AND uuid IN (SELECT DISTINCT uuid FROM approved_users " +
-                        "WHERE time BETWEEN ? AND ?) GROUP BY donor;", (statement) -> {
+                .query(new BasicQuery("SELECT donor, COUNT(*) AS count FROM ranks WHERE donor != 0 AND uuid IN (SELECT DISTINCT uuid FROM players " +
+                        "WHERE join_date BETWEEN ? AND ?) GROUP BY donor;", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);
                 }))
@@ -146,8 +146,8 @@ public class JoinDataCommand extends Command {
         Date between2 = c.getTime();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM approved_users " +
-                        "WHERE time BETWEEN ? AND ?) AS a WHERE uuid IN " +
+                .query(new BasicQuery("SELECT COUNT(*) AS count FROM (SELECT DISTINCT uuid FROM players " +
+                        "WHERE join_date BETWEEN ? AND ?) AS a WHERE uuid IN " +
                         "(SELECT DISTINCT uuid FROM player_join_log WHERE time BETWEEN ? AND ?);", (statement) -> {
                     statement.setDate(1, sqlDate);
                     statement.setDate(2, sqlDateTo);

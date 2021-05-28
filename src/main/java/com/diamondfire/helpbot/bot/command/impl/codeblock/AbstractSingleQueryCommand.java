@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -9,9 +10,11 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.sys.reactions.impl.ReactionHandler;
+import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.ActionRow;
+import net.dv8tion.jda.api.interactions.button.Button;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -24,11 +27,10 @@ public abstract class AbstractSingleQueryCommand extends Command {
         // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
         CodeObject referenceData = actions.get(0);
         Class<? extends CodeObject> classReference = referenceData.getClass();
-        Map<BasicReaction, CodeObject> emojis = new HashMap<>();
         PresetBuilder preset = new PresetBuilder();
         preset.withPreset(
                 new InformativeReply(InformativeReplyType.INFO, "Duplicate Objects Detected!",
-                        "What you are searching for contains a duplicate entry, please react accordingly so I can figure out what you are looking for.")
+                        "What you are searching for contains a duplicate entry. Let's narrow down your search.")
         );
         
         boolean isSameType = true;
@@ -39,42 +41,34 @@ public abstract class AbstractSingleQueryCommand extends Command {
             }
         }
         //If they are the same type, use the dupe emojis for that certain action type.
+        Map<String, CodeObject> buttonMap = new HashMap<>();
+        List<Button> buttons = new ArrayList<>();
         if (isSameType) {
-            emojis.putAll(referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions));
+            for (Map.Entry<BasicReaction, CodeObject> reaction : referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions).entrySet()) {
+                Button button = Button.secondary(reaction.getKey().toString(), reaction.getValue().getName());
+                
+                buttons.add(button);
+                buttonMap.put(button.getId(), reaction.getValue());
+            }
         } else {
             for (CodeObject data : actions) {
-                emojis.put(new BasicReaction(data.getEnum().getEmoji()), data);
+                long emoji = data.getEnum().getEmoji();
+                Button button = Button.secondary(String.valueOf(data.getEnum().getEmoji()), data.getName());
+                button.withEmoji(Emoji.ofEmote(HelpBotInstance.getJda().getEmoteById(emoji)));
+                
+                buttons.add(button);
+                buttonMap.put(button.getId(), data);
             }
         }
         
-        List<String> options = new ArrayList<>();
-        for (Map.Entry<BasicReaction, CodeObject> emoji : emojis.entrySet()) {
-            options.add(emoji.getKey().toString() + " - " + emoji.getValue().getName());
-        }
-        preset.getEmbed().addField("**Options**", StringUtil.listView("", options), false);
-        
-        channel.sendMessage(preset.getEmbed().build()).queue((message) -> {
-            ReactionHandler.waitReaction(userToWait, message, (event) -> {
+        channel.sendMessage(preset.getEmbed().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+            ButtonHandler.addListener(userToWait, message, (event) -> {
                 message.delete().queue();
                 
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
-                List<CodeObject> filteredData = new ArrayList<>();
-                for (Map.Entry<BasicReaction, CodeObject> emoji : emojis.entrySet()) {
-                    if (emoji.getKey().equalToReaction(event.getReactionEvent().getReactionEmote())) {
-                        filteredData.add(emoji.getValue());
-                    }
-                }
-                
-                if (filteredData.size() == 1) {
-                    onChosen.accept(filteredData.get(0), message.getTextChannel());
-                } else {
-                    sendMultipleMessage(filteredData, message.getTextChannel(), userToWait, onChosen);
-                }
-                
+                CodeObject object = buttonMap.get(event.getComponentId());
+                onChosen.accept(object, message.getTextChannel());
             });
-            for (BasicReaction reaction : emojis.keySet()) {
-                reaction.react(message).queue();
-            }
         });
         
     }

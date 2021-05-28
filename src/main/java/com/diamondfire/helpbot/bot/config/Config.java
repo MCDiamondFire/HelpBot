@@ -56,6 +56,10 @@ public class Config {
     
     // General constants
     
+    public String getlabsCoreToken() {
+        return getPropertyString("labs_token");
+    }
+    
     public long getGuild() {
         return getPropertyLong("guild");
     }

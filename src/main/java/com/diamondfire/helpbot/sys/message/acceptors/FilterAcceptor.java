@@ -7,6 +7,6 @@ public class FilterAcceptor implements MessageAcceptor {
     
     @Override
     public boolean accept(Message message) {
-        return ChatFilters.filterMessage(message);
+        return !ChatFilters.filterMessage(message);
     }
 }

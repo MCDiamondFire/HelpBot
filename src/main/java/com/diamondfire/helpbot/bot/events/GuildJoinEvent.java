@@ -17,7 +17,6 @@ public class GuildJoinEvent extends ListenerAdapter {
         if (event.getGuild().getIdLong() == HelpBotInstance.DF_GUILD) {
             Member member = event.getMember();
             Util.updateMember(member);
-            RoleReactListener.refreshRoles(member);
             MuteExpireTask.handle(member);
         }
     }

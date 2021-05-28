@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 import java.sql.ResultSet;
+import java.time.Instant;
 
 public class QueueCommand extends Command {
     
@@ -49,7 +50,7 @@ public class QueueCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT player, plot, node, staff, TIMEDIFF(CURRENT_TIMESTAMP(), enter_time) AS time FROM support_queue ORDER BY enter_time LIMIT 25;"))
+                .query(new BasicQuery("SELECT player, plot, node, staff, TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP(), enter_time)) AS time FROM support_queue ORDER BY enter_time LIMIT 25"))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
@@ -61,7 +62,7 @@ public class QueueCommand extends Command {
                     
                     int i = 0;
                     for (ResultSet set : result) {
-                        embed.addField(StringUtil.display(set.getString("player")), FormatUtil.formatMilliTime(set.getTime("time").getTime()), false);
+                        embed.addField(StringUtil.display(set.getString("player")), FormatUtil.formatMilliTime(Instant.EPOCH.plusSeconds(set.getInt("time")).toEpochMilli()), false);
                         i++;
                     }
                     embed.setTitle(String.format("Players in Queue (%s)", i));
