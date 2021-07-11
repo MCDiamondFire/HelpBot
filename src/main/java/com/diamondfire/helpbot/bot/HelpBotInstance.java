@@ -24,14 +24,13 @@ public class HelpBotInstance {
     private static final Config config = new Config();
     public static final long DF_GUILD = config.getGuild();
     public static final long LOG_CHANNEL = config.getLogChannel();
-    private static final CommandHandler handler = new CommandHandler();
     
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
     
     public static void initialize() throws LoginException {
         
-        handler.register(
+        CommandHandler.getInstance().register(
                 // codeblock commands
                 new CodeCommand(),
                 new RankCommand(),
@@ -128,15 +127,11 @@ public class HelpBotInstance {
                 .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent());
         
         jda = builder.build();
-        handler.initialize();
+        CommandHandler.getInstance().initialize();
     }
     
     public static JDA getJda() {
         return jda;
-    }
-    
-    public static CommandHandler getHandler() {
-        return handler;
     }
     
     public static Config getConfig() {
