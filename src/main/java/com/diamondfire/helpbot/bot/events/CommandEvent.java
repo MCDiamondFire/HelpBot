@@ -17,7 +17,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     
     private final Command command;
     private final ReplyHandler replyHandler = new ReplyHandler(getChannel());
-    //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
+    //TODO Cleanup and refactor this.
+    // I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
     private String aliasedUsed = null;
     

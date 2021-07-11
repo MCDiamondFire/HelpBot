@@ -43,14 +43,12 @@ public class CodeDifferenceHandler {
         txtReader.close();
         
         JsonReader reader = new JsonReader(new StringReader(json));
-        //reader.setLenient(true);
         
         BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.DB.getPath()));
         String json2 = txtReader2.lines().collect(Collectors.joining());
         txtReader2.close();
         
         JsonReader reader2 = new JsonReader(new StringReader(json2));
-        //reader2.setLenient(true);
         
         JsonObject objectOld;
         try {

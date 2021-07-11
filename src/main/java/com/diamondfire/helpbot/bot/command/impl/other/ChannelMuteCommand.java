@@ -10,6 +10,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
+import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
@@ -65,8 +67,17 @@ public class ChannelMuteCommand extends Command {
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
         Date finalDuration = duration;
         event.getGuild().retrieveMemberById(user).queue((msg) -> {
-                    //TODO Owen DBQuery
-                    
+                    event.getGuild().retrieveMemberById(user).queue((member) -> {
+                        new DatabaseQuery()
+                                .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
+                                    statement.setLong(1, user);
+                                    statement.setLong(2, event.getAuthor().getIdLong());
+                                    statement.setTimestamp(3, DateUtil.toTimeStamp(finalDuration));
+                                    statement.setString(4, event.getArgument("reason"));
+                                    
+                                }))
+                                .compile();
+                    });
                     
                     builder.withPreset(
                             new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("User will be muted for ``%s``.", FormatUtil.formatMilliTime(timeLeft)))
