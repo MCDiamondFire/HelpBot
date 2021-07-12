@@ -11,8 +11,6 @@ import java.util.stream.Collectors;
 
 public class CodeDifferenceHandler {
     
-    //TODO Cleanup
-    
     static StringBuilder differences = new StringBuilder();
     static ArrayList<String> differs = new ArrayList<>();
     
@@ -39,39 +37,17 @@ public class CodeDifferenceHandler {
     private static void generateDifferences() throws IOException {
         
         BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFiles.DB_COMPARE.getPath()));
-        String json = txtReader.lines().collect(Collectors.joining());
-        txtReader.close();
-        
-        JsonReader reader = new JsonReader(new StringReader(json));
-        
         BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.DB.getPath()));
-        String json2 = txtReader2.lines().collect(Collectors.joining());
-        txtReader2.close();
         
-        JsonReader reader2 = new JsonReader(new StringReader(json2));
+        List<JsonObject> jsonObjects = readDiff(txtReader,txtReader2);
         
-        JsonObject objectOld;
-        try {
-            objectOld = JsonParser.parseReader(reader).getAsJsonObject();
-        } catch (Exception e) {
-            System.out.println("Old db is corrupted, rewriting!");
-            Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return;
-        }
-        // Setup the reader to prevent parsing problems.
-        
-        JsonObject object = JsonParser.parseReader(reader2).getAsJsonObject();
-        
-        // object is new
-        // object old is old instance
-        
-        
-        compare(object.get("codeblocks").getAsJsonArray(), objectOld.get("codeblocks").getAsJsonArray(), "name");
-        compare(object.get("actions").getAsJsonArray(), objectOld.get("actions").getAsJsonArray(), "name");
-        compare(object.get("gameValues").getAsJsonArray(), objectOld.get("gameValues").getAsJsonArray(), "name");
-        compare(object.get("particles").getAsJsonArray(), objectOld.get("particles").getAsJsonArray(), "particle");
-        compare(object.get("potions").getAsJsonArray(), objectOld.get("potions").getAsJsonArray(), "potion");
-        compare(object.get("sounds").getAsJsonArray(), objectOld.get("sounds").getAsJsonArray(), "sound");
+        //Clean up here maybe possible but it isn't that bad
+        compare(jsonObjects.get(0).get("codeblocks").getAsJsonArray(), jsonObjects.get(1).get("codeblocks").getAsJsonArray(), "name");
+        compare(jsonObjects.get(0).get("actions").getAsJsonArray(), jsonObjects.get(1).get("actions").getAsJsonArray(), "name");
+        compare(jsonObjects.get(0).get("gameValues").getAsJsonArray(), jsonObjects.get(1).get("gameValues").getAsJsonArray(), "name");
+        compare(jsonObjects.get(0).get("particles").getAsJsonArray(), jsonObjects.get(1).get("particles").getAsJsonArray(), "particle");
+        compare(jsonObjects.get(0).get("potions").getAsJsonArray(), jsonObjects.get(1).get("potions").getAsJsonArray(), "potion");
+        compare(jsonObjects.get(0).get("sounds").getAsJsonArray(), jsonObjects.get(1).get("sounds").getAsJsonArray(), "sound");
         if (differs.size() >= 20) {
             differences.append(String.format("\n+ %s Modifications...", differs.size()));
         } else {
@@ -133,6 +109,38 @@ public class CodeDifferenceHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Does stuff with readers to parse old and new JSON data
+     *
+     * @param readers - readers being parsed
+     * @return parsed JsonObjects
+     * @throws IOException {@link BufferedReader#close()}
+     */
+    private static List<JsonObject> readDiff(BufferedReader... readers) throws IOException {
+        List<JsonObject> jsonObjects = new ArrayList<>();
+        
+        for (BufferedReader reader : readers) {
+            String rawJson = reader.lines().collect(Collectors.joining());
+            reader.close();
+            
+            JsonReader readerJson = new JsonReader(new StringReader(rawJson));
+            
+            JsonObject jsonObject = null;
+            try {
+                jsonObject = JsonParser.parseReader(readerJson).getAsJsonObject();
+            } catch (Exception e) {
+                System.out.println("Old db is corrupted, rewriting!");
+                Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            
+            assert jsonObject != null;
+            jsonObjects.add(jsonObject);
+        }
+        
+        
+        return jsonObjects;
     }
 }
 
