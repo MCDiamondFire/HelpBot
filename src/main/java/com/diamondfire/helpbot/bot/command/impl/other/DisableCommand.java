@@ -54,7 +54,7 @@ public class DisableCommand extends Command implements CommandDisableFlag {
         }
         
         if (command != null) {
-            HelpBotInstance.getHandler().getDisabledHandler().disable(command);
+            CommandHandler.getInstance().getDisabledHandler().disable(command);
             builder.withPreset(new InformativeReply(InformativeReplyType.SUCCESS, String.format("Command ``%s`` has been disabled.", command.getName())));
         } else {
             builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("Command ``%s`` could not be found.", name)));

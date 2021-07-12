@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
@@ -53,7 +54,7 @@ public class PermUnlocksCommand extends Command {
                 );
         
         List<String> commands = new ArrayList<>();
-        List<Command> commandList = new ArrayList<>(HelpBotInstance.getHandler().getCommands().values());
+        List<Command> commandList = new ArrayList<>(CommandHandler.getInstance().getCommands().values());
         commandList.sort(Comparator.comparingInt((command) -> command.getPermission().ordinal()));
         
         for (Command command : commandList) {
