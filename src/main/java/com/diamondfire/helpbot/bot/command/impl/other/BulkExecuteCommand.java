@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
@@ -43,7 +44,7 @@ public class BulkExecuteCommand extends Command {
     @Override
     public ArgumentSet compileArguments() {
         List<String> playerCommands = new ArrayList<>();
-        for (Command command : HelpBotInstance.getHandler().getCommands().values()) {
+        for (Command command : CommandHandler.getInstance().getCommands().values()) {
             if (command instanceof AbstractPlayerUUIDCommand) {
                 playerCommands.add(command.getName());
             }
@@ -69,7 +70,7 @@ public class BulkExecuteCommand extends Command {
         
         for (String player : playerNames) {
             try {
-                Command command1 = HelpBotInstance.getHandler().getCommands().get(command);
+                Command command1 = CommandHandler.getInstance().getCommands().get(command);
                 Field field = event.getClass().getDeclaredField("command");
                 field.trySetAccessible();
                 field.set(event, command1);

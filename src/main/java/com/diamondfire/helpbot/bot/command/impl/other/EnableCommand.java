@@ -44,7 +44,7 @@ public class EnableCommand extends Command implements CommandDisableFlag{
     
     @Override
     public void run(CommandEvent event) {
-        DisableCommandHandler handler = HelpBotInstance.getHandler().getDisabledHandler();
+        DisableCommandHandler handler = CommandHandler.getInstance().getDisabledHandler();
         PresetBuilder builder = new PresetBuilder();
         String name = event.getArgument("cmd");
         Command command = CommandHandler.getCommand(name);

@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
@@ -42,7 +43,7 @@ public class HelpCommand extends Command {
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("help",
-                new SingleArgumentContainer<>(new DefinedObjectArgument<>(HelpBotInstance.getHandler().getCommands().values().stream()
+                new SingleArgumentContainer<>(new DefinedObjectArgument<>(CommandHandler.getInstance().getCommands().values().stream()
                         .map(Command::getName)
                         .toArray(String[]::new))).optional(null));
     }
@@ -75,7 +76,7 @@ public class HelpCommand extends Command {
             categories.put(CommandCategory.CODE_BLOCK, new EmbedBuilder());
             categories.put(CommandCategory.OTHER, new EmbedBuilder());
             
-            List<Command> commandList = new ArrayList<>(HelpBotInstance.getHandler().getCommands().values());
+            List<Command> commandList = new ArrayList<>(CommandHandler.getInstance().getCommands().values());
             commandList.sort(Comparator.comparing(Command::getName));
             for (Command command : commandList) {
                 HelpContext context = command.getHelpContext();
@@ -97,7 +98,7 @@ public class HelpCommand extends Command {
             }
             selector.build().send(event.getJDA());
         } else {
-            Command command = HelpBotInstance.getHandler().getCommands().get(helpInfo);
+            Command command = CommandHandler.getInstance().getCommands().get(helpInfo);
             HelpContext context = command.getHelpContext();
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Command Information");

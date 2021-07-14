@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ParsedArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
@@ -16,7 +17,8 @@ public class CommandEvent extends GuildMessageReceivedEvent {
     
     private final Command command;
     private final ReplyHandler replyHandler = new ReplyHandler(getChannel());
-    //TODO Cleanup and refactor this. I'd like to see stuff like replying be put into it's whole own section and refactored as well.
+    //TODO Cleanup and refactor this.
+    // I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;
     private String aliasedUsed = null;
     
@@ -26,10 +28,10 @@ public class CommandEvent extends GuildMessageReceivedEvent {
         String commandPrefix = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length()).toLowerCase();
         
         
-        Command cmd = HelpBotInstance.getHandler().getCommands().get(commandPrefix.toLowerCase());
+        Command cmd = CommandHandler.getInstance().getCommands().get(commandPrefix.toLowerCase());
         if (cmd == null) {
             this.aliasedUsed = commandPrefix.toLowerCase();
-            cmd = HelpBotInstance.getHandler().getAliases().get(commandPrefix.toLowerCase());
+            cmd = CommandHandler.getInstance().getAliases().get(commandPrefix.toLowerCase());
         }
         
         this.command = cmd;
