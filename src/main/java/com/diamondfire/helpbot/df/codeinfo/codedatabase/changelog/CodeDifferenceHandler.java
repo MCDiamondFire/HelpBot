@@ -135,7 +135,6 @@ public class CodeDifferenceHandler {
                 Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             
-            assert jsonObject != null;
             jsonObjects.add(jsonObject);
         }
         

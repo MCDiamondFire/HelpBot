@@ -24,14 +24,12 @@ public class MinecraftPlayerUUIDArgument extends AbstractSimpleValueArgument<UUI
             } catch (IOException e) {
                 e.printStackTrace();
             }
-    
-            assert res != null;
+            
             try {
                  responseObject = JsonParser.parseString(res.string()).getAsJsonObject();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            assert responseObject != null;
             
             if (responseObject.has("id")) {
                 return UUID.fromString(responseObject.get("id").getAsString());
