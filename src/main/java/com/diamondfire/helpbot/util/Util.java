@@ -8,8 +8,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.ActionRow;
-import net.dv8tion.jda.api.interactions.button.Button;
+import net.dv8tion.jda.api.interactions.components.*;
 
 import java.io.*;
 import java.net.*;

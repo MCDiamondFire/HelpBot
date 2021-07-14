@@ -4,8 +4,8 @@ import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.interactions.ActionRow;
-import net.dv8tion.jda.api.interactions.button.Button;
+import net.dv8tion.jda.api.interactions.components.Button;
+
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class MultiSelector {
             
             Button button = Button.secondary(getButtonKey(page), page.getName());
             if (page.getCustomEmote() != null) {
-                button = button.withEmoji(Emoji.ofUnicode(page.getCustomEmote()));
+                button = button.withEmoji(Emoji.fromUnicode(page.getCustomEmote()));
             }
             
             pageMap.put(button.getId(), page);

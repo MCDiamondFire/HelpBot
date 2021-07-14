@@ -13,7 +13,7 @@ import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.button.Button;
+import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -46,7 +46,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             for (Map.Entry<BasicReaction, CodeObject> reaction : referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions).entrySet()) {
                 Button button = Button.secondary(reaction.getKey().toString(), reaction.getValue().getName());
                 
-                buttons.add(button.withEmoji(Emoji.ofEmote(reaction.getKey().getEmote())));
+                buttons.add(button.withEmoji(Emoji.fromEmote(reaction.getKey().getEmote())));
                 buttonMap.put(button.getId(), reaction.getValue());
             }
         } else {
@@ -54,7 +54,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 long emoji = data.getEnum().getEmoji();
                 Button button = Button.secondary(String.valueOf(data.getEnum().getEmoji()), data.getName());
                 
-                buttons.add(button.withEmoji(Emoji.ofEmote(HelpBotInstance.getJda().getEmoteById(emoji))));
+                buttons.add(button.withEmoji(Emoji.fromEmote(HelpBotInstance.getJda().getEmoteById(emoji))));
                 buttonMap.put(button.getId(), data);
             }
         }

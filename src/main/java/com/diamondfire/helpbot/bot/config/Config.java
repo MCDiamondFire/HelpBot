@@ -80,6 +80,10 @@ public class Config {
         return getPropertyLong("verified_role");
     }
     
+    public String getReportWehook() {
+        return getPropertyString("report_webhook");
+    }
+    
     private long getPropertyLong(String property) {
         return config.get(property).getAsLong();
     }

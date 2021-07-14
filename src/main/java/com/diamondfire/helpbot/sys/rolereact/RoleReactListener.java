@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.button.Button;
+import net.dv8tion.jda.api.interactions.components.Button;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class RoleReactListener extends ListenerAdapter {
                 String emoji = role.getEmoji();
                 Button button = Button.secondary(role.name(), role.getOverride() == null ? StringUtil.smartCaps(role.name().replace('_', ' ')) : role.getOverride());
                 
-                buttons.add(button.withEmoji(Emoji.ofUnicode(emoji)));
+                buttons.add(button.withEmoji(Emoji.fromUnicode(emoji)));
                 roleMap.put(button.getId(), role.getRoleID());
             }
             
@@ -52,10 +52,10 @@ public class RoleReactListener extends ListenerAdapter {
     
         ReplyAction action = event.deferReply(true);
         if (member.getRoles().contains(guildRole)) {
-            action.setContent("Added the " + guildRole.getAsMention() + " role to you!");
+            action.setContent("Removed the " + guildRole.getAsMention() + " role from you!");
             guild.removeRoleFromMember(member.getIdLong(), guildRole).reason("User unsubscribed to announcement!").queue();
         } else {
-            action.setContent("Removed the " + guildRole.getAsMention() + " role from you!");
+            action.setContent("Added the " + guildRole.getAsMention() + " role to you!");
             guild.addRoleToMember(member.getIdLong(), guildRole).reason("User subscribed to announcement!").queue();
         }
         action.queue();
