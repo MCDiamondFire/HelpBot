@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.TimeOffsetArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
+import com.diamondfire.helpbot.bot.command.impl.stats.individualized.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
