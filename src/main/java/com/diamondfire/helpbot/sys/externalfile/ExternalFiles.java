@@ -55,4 +55,10 @@ public interface ExternalFiles {
             .setName("samman")
             .setFileType("png")
             .buildFile();
+    
+    File TAGS = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("tags")
+            .setFileType("json")
+            .buildFile();
 }

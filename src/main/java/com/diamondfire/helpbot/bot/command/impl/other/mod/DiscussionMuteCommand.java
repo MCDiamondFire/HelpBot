@@ -1,8 +1,8 @@
-package com.diamondfire.helpbot.bot.command.impl.other.util;
+package com.diamondfire.helpbot.bot.command.impl.other.mod;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -16,43 +16,46 @@ import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
 
-import java.time.Instant;
+import java.time.*;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
 
-public class MuteCommand extends Command {
+public class DiscussionMuteCommand extends Command {
     
-    public static final long ROLE_ID = HelpBotInstance.getConfig().getMutedRole();
+    public static final long DISCUSSION_CHANNEL = HelpBotInstance.getConfig().getDiscussionChannel();
     
     @Override
     public String getName() {
-        return "mute";
+        return "discussionmute";
+    }
+    
+    @Override
+    public String[] getAliases() {
+        return new String[]{"weeklymute", "weekmute", "discmute"};
     }
     
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Mutes a player for a certain duration. The mute will automatically expire when the duration is over.")
+                .description("Mutes a player from discussion till the next Monday 6PM EST.")
                 .category(CommandCategory.OTHER)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("user"),
                         new HelpContextArgument()
-                                .name("duration"),
-                        new HelpContextArgument()
-                                .name("reason")
-                                .optional()
+                                .name("duration")
                 );
     }
     
     @Override
     protected ArgumentSet compileArguments() {
+        LocalDate nextMonday = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        
         return new ArgumentSet()
                 .addArgument("user",
                         new DiscordUserArgument())
                 .addArgument("duration",
-                        new TimeOffsetArgument())
-                .addArgument("reason",
-                        new SingleArgumentContainer<>(new MessageArgument()).optional("Not Specified"));
+                        new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(DateUtil.toDate(nextMonday)));
     }
     
     @Override
@@ -67,43 +70,26 @@ public class MuteCommand extends Command {
         Date duration = event.getArgument("duration");
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
         
-        event.getGuild().retrieveMemberById(user).queue((member) -> {
+        event.getGuild().retrieveMemberById(user).queue((msg) -> {
             new DatabaseQuery()
-                    .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
+                    .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,'Weekly Discussion Mute')", (statement) -> {
                         statement.setLong(1, user);
                         statement.setLong(2, event.getAuthor().getIdLong());
                         statement.setTimestamp(3, DateUtil.toTimeStamp(duration));
-                        statement.setString(4, event.getArgument("reason"));
                         
                     }))
                     .compile();
             
             builder.withPreset(
-                    new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for ``%s``. They have been notified.", FormatUtil.formatMilliTime(timeLeft)))
+                    new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for ``%s``.", FormatUtil.formatMilliTime(timeLeft)))
             );
             Guild guild = event.getGuild();
-            Role role = guild.getRoleById(MuteCommand.ROLE_ID);
-            if (role == null) {
-                builder.withPreset(
-                        new InformativeReply(InformativeReplyType.ERROR, "Could not find the muted role!")
-                );
-                event.reply(builder);
-                return;
-            }
-            
-            guild.addRoleToMember(member, role).queue((unused) -> {
-                member.getUser()
-                        .openPrivateChannel()
-                        .flatMap((e) -> e.sendMessage(String.format("You have been muted for %s for %s", FormatUtil.formatMilliTime(timeLeft), event.getArgument("reason"))))
-                        .queue();
-                HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
-            }, (error) -> {
-                builder.withPreset(
-                        new InformativeReply(InformativeReplyType.ERROR, "Error occurred! " + error.getMessage())
-                );
-                error.printStackTrace();
+            TextChannel channel = guild.getTextChannelById(DISCUSSION_CHANNEL);
+            guild.retrieveMemberById(user).queue((member) -> {
+                channel.putPermissionOverride(member).deny(net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION, net.dv8tion.jda.api.Permission.MESSAGE_WRITE).queue();
             });
             
+            HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration, true));
             event.reply(builder);
         }, (error) -> {
             builder.withPreset(

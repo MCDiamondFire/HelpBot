@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.other.util;
+package com.diamondfire.helpbot.bot.command.impl.other.dev;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;

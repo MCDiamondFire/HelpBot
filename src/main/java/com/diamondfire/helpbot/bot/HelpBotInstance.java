@@ -2,9 +2,12 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
+import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
 import com.diamondfire.helpbot.bot.command.impl.other.info.*;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.impl.*;
 import com.diamondfire.helpbot.bot.command.impl.other.util.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
@@ -72,6 +75,11 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),
+                
+                new NewTagCommand(),
+                new DelTagCommand(),
+                new EditTagCommand(),
+                new ListTagsCommand(),
                 //new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),

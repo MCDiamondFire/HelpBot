@@ -1,8 +1,8 @@
 package com.diamondfire.helpbot.sys.tasks.impl;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.bot.command.impl.other.util.DiscussionMuteCommand;
-import com.diamondfire.helpbot.bot.command.impl.other.util.MuteCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.DiscussionMuteCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.MuteCommand;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.OneTimeTask;

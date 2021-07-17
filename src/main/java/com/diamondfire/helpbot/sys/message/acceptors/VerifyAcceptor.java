@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.sys.message.acceptors;
 
-import com.diamondfire.helpbot.bot.command.impl.other.util.VerifyCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.VerifyCommand;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;

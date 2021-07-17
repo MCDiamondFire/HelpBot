@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.other.util;
+package com.diamondfire.helpbot.bot.command.impl.other.mod;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
