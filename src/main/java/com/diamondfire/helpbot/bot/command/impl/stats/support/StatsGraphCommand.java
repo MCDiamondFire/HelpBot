@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
+import com.diamondfire.helpbot.bot.command.impl.stats.individualized.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
