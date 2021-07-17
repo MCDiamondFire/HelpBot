@@ -1,14 +1,14 @@
-package com.diamondfire.helpbot.bot.command.impl.other.tag.impl;
+package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.tag.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -76,13 +76,11 @@ public class EditTagCommand extends Command {
                 .split(" +")));
         String newValue = String.join(" ", splitArgs.subList(3, splitArgs.size()));
         if (property == TagProperty.IMAGE && newValue.equals("none")) newValue = "";
-    
+        
         try {
-            Tag oldTag = TagHandler.getTag(activator);
-            Tag newTag = oldTag.clone();
-            newTag.set(property, newValue);
-            
-            TagHandler.editTag(oldTag, newTag);
+            Tag tag = TagHandler.getTag(activator);
+            property.edit(tag, newValue);
+            TagHandler.saveToJson();
             
             PresetBuilder preset = new PresetBuilder()
                     .withPreset(
@@ -90,7 +88,7 @@ public class EditTagCommand extends Command {
                     );
             event.reply(preset);
             
-        } catch (TagDoesntExistException | TagAlreadyExistsException | IOException | CloneNotSupportedException err) {
+        } catch (TagDoesntExistException | IOException err) {
             PresetBuilder preset = new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, "Error!", err.getMessage())

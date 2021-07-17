@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.other.tag;
+package com.diamondfire.helpbot.sys.tag;
 
 public class TagDoesntExistException extends Exception {
     public TagDoesntExistException(String message) {

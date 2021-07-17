@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 
 public class DiscordBoostersCommand extends Command {
@@ -64,19 +64,22 @@ public class DiscordBoostersCommand extends Command {
         });
     }
     
-    private String getFormattedBoosters(List<Member> members) {
+    private static String getFormattedBoosters(List<Member> members) {
         if (members.size() == 0) return "*None*";
+        
         else {
             SimpleDateFormat format = new SimpleDateFormat("y'y'M'm'D'd'");
-            String result = "";
             
+            List<String> elements = new ArrayList<>();
             for (Member member : members) {
                 String timeBoosted = format.format(member.getTimeBoosted());
-                result += "<@" + member.getId() + "> - " + timeBoosted + "\n";
+                elements.add(member.getAsMention() + " - " + timeBoosted);
             }
             
-            return result;
+            return String.join("\n", elements);
         }
     }
     
 }
+
+

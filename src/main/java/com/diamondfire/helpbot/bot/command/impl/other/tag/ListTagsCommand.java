@@ -1,9 +1,9 @@
-package com.diamondfire.helpbot.bot.command.impl.other.tag.impl;
+package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.TagHandler;
+import com.diamondfire.helpbot.sys.tag.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.entities.*;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.*;
 
 public class ListTagsCommand extends Command {
     
@@ -41,30 +41,25 @@ public class ListTagsCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         try {
-            JsonObject tags = TagHandler.getTags();
+            List<Tag> tags = TagHandler.getTags();
             String string = "";
-            Set<String> keySet = tags.keySet();
             
-            if (keySet.size() == 0) {
+            if (tags.size() == 0) {
                 string = "*None*";
                 
             } else {
-                for (String key : keySet) {
-                    JsonObject tag = tags.get(key).getAsJsonObject();
-                    string += "`" + tag.get("activator").getAsString() + "` ";
+                for (Tag tag : tags) {
+                    string += "`" + tag.getActivator() + "` ";
                 }
             }
             
             PresetBuilder preset = new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.INFO, "Tags",
-                                    "A list of all custom command tags added.\n\n"+string+"\n\u200b")
+                                    "A list of all custom command tags added.\n\n"+string)
                     );
             
-            User ryanland = event.getJDA().retrieveUserById(808966728201666620L).complete();
-            MessageEmbed embed = preset.getEmbed().setFooter("Tag system by "+ryanland.getAsTag(), ryanland.getAvatarUrl())
-                    .build();
-            event.getChannel().sendMessage(embed).queue();
+            event.reply(preset);
             
         } catch (IOException e) {
             e.printStackTrace();

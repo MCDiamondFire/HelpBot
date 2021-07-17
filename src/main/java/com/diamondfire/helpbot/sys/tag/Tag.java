@@ -1,10 +1,10 @@
-package com.diamondfire.helpbot.bot.command.impl.other.tag;
+package com.diamondfire.helpbot.sys.tag;
 
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
-public class Tag implements Cloneable {
+public class Tag {
     
     private String activator;
     private String title;
@@ -60,13 +60,6 @@ public class Tag implements Cloneable {
         this.image = image;
     }
     
-    public void set(TagProperty property, String newValue) {
-        if (property == TagProperty.ACTIVATOR) setActivator(newValue);
-        else if (property == TagProperty.TITLE) setTitle(newValue);
-        else if (property == TagProperty.RESPONSE) setResponse(newValue);
-        else if (property == TagProperty.IMAGE) setImage(newValue);
-    }
-    
     public JsonObject asJson() {
         JsonObject json = new JsonObject();
         json.addProperty("activator", this.activator);
@@ -89,10 +82,5 @@ public class Tag implements Cloneable {
         if (!getImage().equals("")) embed.setImage(getImage());
                 
         channel.sendMessage(embed.build()).queue();
-    }
-    
-    @Override
-    public Tag clone() throws CloneNotSupportedException {
-        return (Tag) super.clone();
     }
 }
