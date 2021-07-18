@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.*;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommandReceiver;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
@@ -128,15 +127,19 @@ public class HelpBotInstance {
                 new JoinsCommand()
         );
         
+        // ------------ Subcommands ------------------
+        // Register receivers here (NOTE: Do NOT register these in the command registerer as well!)
         SubCommandHandler.registerReceivers(
                 new TagCommandReceiver()
         );
+        // Register subcommands here
         SubCommandHandler.registerSubCommands(
                 new AddTagSubCommand(),
                 new EditTagSubCommand(),
                 new RemoveTagSubCommand(),
                 new ListTagsSubCommand()
         );
+        // --------------------------------------------
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
