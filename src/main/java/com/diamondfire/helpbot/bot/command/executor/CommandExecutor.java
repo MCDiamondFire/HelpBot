@@ -20,6 +20,7 @@ public class CommandExecutor {
             new DisabledCheck(),
             new PermissionCheck(),
             new CommandLog(),
+            new SubCommandCheck()
     };
     
     public void run(CommandEvent e) {

@@ -1,30 +1,32 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
-import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.tag.*;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReply;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
+import com.diamondfire.helpbot.bot.events.SubCommandEvent;
+import com.diamondfire.helpbot.sys.tag.Tag;
+import com.diamondfire.helpbot.sys.tag.TagAlreadyExistsException;
+import com.diamondfire.helpbot.sys.tag.TagHandler;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
-public class NewTagCommand extends Command {
+public class AddTagSubCommand extends SubCommand {
     
     @Override
     public String getName() {
-        return "newtag";
+        return "add";
     }
     
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Creates a new custom command tag. Use \"%space%\" in the title to add a space.")
-                .category(CommandCategory.OTHER)
                 .addArgument(
                         new HelpContextArgument()
                                 .name("activator"),
@@ -36,31 +38,20 @@ public class NewTagCommand extends Command {
     }
     
     @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument("activator",
-                new StringArgument()
-        ).addArgument("title",
-                new StringArgument()
-        ).addArgument("response",
-                new StringArgument()
-        );
-    }
-    
-    @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
     
     @Override
-    public void run(CommandEvent event) {
+    public void run(SubCommandEvent event) {
         // Get new activator and title
         String activator = event.getArgument("activator");
-        String title = ((String) event.getArgument("title")).replaceAll("%space%", " ");
+        String title = event.getArgument("title").replaceAll("%space%", " ");
         
         // Get response
         List<String> splitArgs = new LinkedList<>(Arrays.asList(event.getMessage().getContentRaw()
                 .split(" +")));
-        String response = String.join(" ", splitArgs.subList(3, splitArgs.size()));
+        String response = String.join(" ", splitArgs.subList(4, splitArgs.size()));
         
         // Construct Tag
         Tag tag = new Tag(activator, title, response, event.getAuthor().getIdLong(), "");
@@ -76,7 +67,7 @@ public class NewTagCommand extends Command {
         } catch (TagAlreadyExistsException | IOException err) {
             PresetBuilder preset = new PresetBuilder()
                     .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Error!", err.getMessage())
+                            new InformativeReply(InformativeReplyType.ERROR, err.getMessage())
                     );
             event.reply(preset);
         }

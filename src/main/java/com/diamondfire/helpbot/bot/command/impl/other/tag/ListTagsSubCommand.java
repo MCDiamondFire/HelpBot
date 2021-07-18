@@ -1,36 +1,26 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.sys.tag.*;
+import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.google.gson.JsonObject;
-import net.dv8tion.jda.api.entities.*;
+import com.diamondfire.helpbot.bot.events.SubCommandEvent;
+import com.diamondfire.helpbot.sys.tag.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
-public class ListTagsCommand extends Command {
+public class ListTagsSubCommand extends SubCommand {
     
     @Override
     public String getName() {
-        return "listtags";
+        return "list";
     }
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext()
-                .description("Lists all custom command tags.")
-                .category(CommandCategory.OTHER);
-    }
-    
-    @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet();
+        return new HelpContext();
     }
     
     @Override
@@ -39,7 +29,7 @@ public class ListTagsCommand extends Command {
     }
     
     @Override
-    public void run(CommandEvent event) {
+    public void run(SubCommandEvent event) {
         try {
             List<Tag> tags = TagHandler.getTags();
             String string = "";

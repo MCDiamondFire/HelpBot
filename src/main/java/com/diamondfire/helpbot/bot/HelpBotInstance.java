@@ -1,16 +1,14 @@
 package com.diamondfire.helpbot.bot;
 
-import com.diamondfire.helpbot.bot.command.CommandHandler;
+import com.diamondfire.helpbot.bot.command.*;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommandReceiver;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
 import com.diamondfire.helpbot.bot.command.impl.other.info.*;
 import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.DelTagCommand;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.EditTagCommand;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.ListTagsCommand;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.NewTagCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.*;
 import com.diamondfire.helpbot.bot.command.impl.other.util.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
@@ -78,11 +76,6 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),
-                
-                new NewTagCommand(),
-                new DelTagCommand(),
-                new EditTagCommand(),
-                new ListTagsCommand(),
                 //new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),
@@ -133,6 +126,16 @@ public class HelpBotInstance {
                 new EightBallCommand(),
                 new OcrCommand(),
                 new JoinsCommand()
+        );
+        
+        SubCommandHandler.registerReceivers(
+                new TagCommandReceiver()
+        );
+        SubCommandHandler.registerSubCommands(
+                new AddTagSubCommand(),
+                new EditTagSubCommand(),
+                new RemoveTagSubCommand(),
+                new ListTagsSubCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
