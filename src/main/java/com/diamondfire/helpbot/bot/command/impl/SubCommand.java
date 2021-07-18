@@ -4,14 +4,14 @@ import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.SubCommandEvent;
 
-public abstract class SubCommand {
+public interface SubCommand {
     
-    public abstract String getName();
+    String getName();
     
-    public abstract HelpContext getHelpContext();
+    HelpContext getHelpContext();
     
-    public abstract Permission getPermission();
+    Permission getPermission();
     
-    public abstract void run(SubCommandEvent event);
+    void run(SubCommandEvent event);
     
 }

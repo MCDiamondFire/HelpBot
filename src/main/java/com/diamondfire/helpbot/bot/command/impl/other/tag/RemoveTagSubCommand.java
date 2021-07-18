@@ -10,7 +10,7 @@ import com.diamondfire.helpbot.sys.tag.*;
 
 import java.io.IOException;
 
-public class RemoveTagSubCommand extends SubCommand {
+public class RemoveTagSubCommand implements SubCommand {
     
     @Override
     public String getName() {

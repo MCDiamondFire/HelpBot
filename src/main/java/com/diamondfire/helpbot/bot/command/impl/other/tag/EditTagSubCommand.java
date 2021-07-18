@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.sys.tag.*;
 import java.io.IOException;
 import java.util.*;
 
-public class EditTagSubCommand extends SubCommand {
+public class EditTagSubCommand implements SubCommand {
     
     @Override
     public String getName() {

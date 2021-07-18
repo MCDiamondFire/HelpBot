@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AddTagSubCommand extends SubCommand {
+public class AddTagSubCommand implements SubCommand {
     
     @Override
     public String getName() {
