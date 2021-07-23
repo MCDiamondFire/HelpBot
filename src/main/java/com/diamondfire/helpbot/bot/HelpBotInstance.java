@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
+import com.diamondfire.helpbot.bot.command.impl.other.StoreCommand;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
