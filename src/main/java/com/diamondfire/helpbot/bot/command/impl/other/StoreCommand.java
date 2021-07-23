@@ -7,17 +7,14 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.util.WebUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.*;
-import java.net.*;
 import java.util.*;
 
 
 public class StoreCommand extends Command {
-    
-    final String url = "https://df.vatten.dev/store/";
     
     @Override
     public String getName() {
@@ -50,11 +47,7 @@ public class StoreCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
         try{
-    
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            BufferedReader res = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            JsonObject json = JsonParser.parseString(res.readLine()).getAsJsonObject();
-            
+            JsonObject json = WebUtil.getJson("https://df.vatten.dev/store/").getAsJsonObject();
             builder.setTitle("<:diamondfire:867472383098486794> DiamondFire Store <:diamondfire:867472383098486794>", "https://store.mcdiamondfire.com/");
             boolean sale = json.has("sale");
             if(sale) builder.setDescription("\n<a:boostx3:809172442496630815> **SALE! " + (int) (json.get("sale").getAsFloat() * 100) + "% OFF!** <a:boostx3:809172442496630815>\n");
