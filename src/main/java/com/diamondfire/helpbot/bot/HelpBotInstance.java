@@ -1,13 +1,13 @@
 package com.diamondfire.helpbot.bot;
 
-import com.diamondfire.helpbot.bot.command.*;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
 import com.diamondfire.helpbot.bot.command.impl.other.info.*;
 import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
-import com.diamondfire.helpbot.bot.command.impl.other.tag.*;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommand;
 import com.diamondfire.helpbot.bot.command.impl.other.util.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
@@ -124,22 +124,9 @@ public class HelpBotInstance {
                 new DailySessionsCommand(),
                 new EightBallCommand(),
                 new OcrCommand(),
-                new JoinsCommand()
+                new JoinsCommand(),
+                new TagCommand()
         );
-        
-        // ------------ Subcommands ------------------
-        // Register receivers here (NOTE: Do NOT register these in the command registerer as well!)
-        SubCommandHandler.registerReceivers(
-                new TagCommandReceiver()
-        );
-        // Register subcommands here
-        SubCommandHandler.registerSubCommands(
-                new AddTagSubCommand(),
-                new EditTagSubCommand(),
-                new RemoveTagSubCommand(),
-                new ListTagsSubCommand()
-        );
-        // --------------------------------------------
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)

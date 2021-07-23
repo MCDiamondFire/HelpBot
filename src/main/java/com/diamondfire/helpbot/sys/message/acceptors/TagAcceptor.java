@@ -1,9 +1,7 @@
 package com.diamondfire.helpbot.sys.message.acceptors;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.sys.tag.Tag;
-import com.diamondfire.helpbot.sys.tag.TagDoesntExistException;
-import com.diamondfire.helpbot.sys.tag.TagHandler;
+import com.diamondfire.helpbot.sys.tag.*;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.IOException;

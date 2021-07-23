@@ -91,7 +91,7 @@ public class NBSToTemplate {
 
                 if (currentNotes.length() > 1930) {
                     currentNotes = new StringBuilder(revertString);
-                    currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
+                    currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes, slot));
                     currentNotes.setLength(0);
                     noteCount = 0;
                     finalNote = true;
@@ -101,7 +101,7 @@ public class NBSToTemplate {
 
                 if (i >= songData.length - 1) {
                     if (!finalNote) {
-                        currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes.toString(), slot));
+                        currentBlock.append(String.format(",{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":%d}", currentNotes, slot));
                         currentNotes.setLength(0);
                     }
                     closeChest = true;
@@ -117,7 +117,7 @@ public class NBSToTemplate {
                 }
 
                 currentBlock.append(String.format("]},\"action\":\"%s\"},", varActionType));
-                code.append(currentBlock.toString());
+                code.append(currentBlock);
                 currentBlock.setLength(0);
                 currentNotes.setLength(0);
 
@@ -148,7 +148,7 @@ public class NBSToTemplate {
                 currentSlot++;
             }
             instList.append("]},\"action\":\"CreateList\"},");
-            code.append(instList.toString());
+            code.append(instList);
         }
 
         //CreateList: songData

@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class DiscordBoostersCommand extends Command {
     
@@ -69,13 +69,13 @@ public class DiscordBoostersCommand extends Command {
         
         else {
             SimpleDateFormat format = new SimpleDateFormat("y'y'M'm'D'd'");
-            
+    
             List<String> elements = new ArrayList<>();
             for (Member member : members) {
                 String timeBoosted = format.format(member.getTimeBoosted());
                 elements.add(member.getAsMention() + " - " + timeBoosted);
             }
-            
+    
             return String.join("\n", elements);
         }
     }

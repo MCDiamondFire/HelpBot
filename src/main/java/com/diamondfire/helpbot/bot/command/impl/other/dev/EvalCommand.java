@@ -3,20 +3,16 @@ package com.diamondfire.helpbot.bot.command.impl.other.dev;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
-import com.diamondfire.helpbot.bot.command.help.CommandCategory;
-import com.diamondfire.helpbot.bot.command.help.HelpContext;
-import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import javax.script.*;
 import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -1,15 +1,10 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-import java.util.*;
-
-public class TagCommandReceiver extends SubCommandReceiver {
+public class TagCommand extends SubCommandHolder {
     
     @Override
     public String getName() {
@@ -26,23 +21,9 @@ public class TagCommandReceiver extends SubCommandReceiver {
                         new HelpContextArgument()
                                 .name("add/edit/remove/list"),
                         new HelpContextArgument()
-                                .name("add edit remove: activator")
-                                .optional(),
-                        new HelpContextArgument()
-                                .name("add: title/edit: property")
-                                .optional(),
-                        new HelpContextArgument()
-                                .name("add: response/edit: new value")
+                                .name("...")
                                 .optional()
-                                
                 );
-    }
-    
-    @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument("add/edit/remove/list",
-                new StringArgument()
-        );
     }
     
     @Override
@@ -51,17 +32,13 @@ public class TagCommandReceiver extends SubCommandReceiver {
     }
     
     @Override
-    public void run(CommandEvent event) {
-    }
-    
-    @Override
-    public List<SubCommand> getSubCommands() {
-        return Arrays.asList(
+    public SubCommand[] getSubCommands() {
+        return new SubCommand[]{
                 new AddTagSubCommand(),
                 new EditTagSubCommand(),
                 new RemoveTagSubCommand(),
                 new ListTagsSubCommand()
-        );
+        };
     }
 }
 

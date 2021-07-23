@@ -1,17 +1,19 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.SubCommandEvent;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
 
 import java.io.IOException;
 import java.util.*;
 
-public class EditTagSubCommand implements SubCommand {
+public class EditTagSubCommand extends SubCommand {
     
     @Override
     public String getName() {
@@ -30,12 +32,21 @@ public class EditTagSubCommand implements SubCommand {
     }
     
     @Override
+    protected ArgumentSet compileArguments() {
+        return new ArgumentSet().addArgument(
+                "activator", new StringArgument()
+        ).addArgument(
+                "property", new StringArgument()
+        );
+    }
+    
+    @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
     
     @Override
-    public void run(SubCommandEvent event) {
+    public void run(CommandEvent event) {
         // Get activator and property
         String activator = event.getArgument("activator");
         String prop = event.getArgument("property");

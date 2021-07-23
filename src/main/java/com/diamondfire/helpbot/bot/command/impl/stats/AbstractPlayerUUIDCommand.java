@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
+package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;

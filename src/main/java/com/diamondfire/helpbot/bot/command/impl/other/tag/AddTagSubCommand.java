@@ -1,23 +1,19 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
-import com.diamondfire.helpbot.bot.command.help.HelpContext;
-import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReply;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
-import com.diamondfire.helpbot.bot.events.SubCommandEvent;
-import com.diamondfire.helpbot.sys.tag.Tag;
-import com.diamondfire.helpbot.sys.tag.TagAlreadyExistsException;
-import com.diamondfire.helpbot.sys.tag.TagHandler;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.tag.*;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public class AddTagSubCommand implements SubCommand {
+public class AddTagSubCommand extends SubCommand {
     
     @Override
     public String getName() {
@@ -38,15 +34,27 @@ public class AddTagSubCommand implements SubCommand {
     }
     
     @Override
+    protected ArgumentSet compileArguments() {
+        return new ArgumentSet().addArgument(
+                "activator", new StringArgument()
+        ).addArgument(
+                "title", new StringArgument()
+        ).addArgument(
+                "response", new StringArgument()
+        );
+    }
+    
+    @Override
     public Permission getPermission() {
         return Permission.EXPERT;
     }
     
     @Override
-    public void run(SubCommandEvent event) {
+    public void run(CommandEvent event) {
         // Get new activator and title
         String activator = event.getArgument("activator");
-        String title = event.getArgument("title").replaceAll("%space%", " ");
+        String title = event.getArgument("title");
+        title = title.replaceAll("%space%", " ");
         
         // Get response
         List<String> splitArgs = new LinkedList<>(Arrays.asList(event.getMessage().getContentRaw()

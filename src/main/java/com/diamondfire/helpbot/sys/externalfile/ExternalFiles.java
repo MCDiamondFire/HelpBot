@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
 import java.io.File;
-import java.net.URL;
 
 public interface ExternalFiles {
     

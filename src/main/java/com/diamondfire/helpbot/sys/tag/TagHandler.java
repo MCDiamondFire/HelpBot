@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class TagHandler {
     
-    private static List<Tag> tags = new ArrayList<>();
+    private static final List<Tag> tags = new ArrayList<>();
     private static final File FILE = ExternalFiles.TAGS;
     
     public static List<Tag> getTags() throws IOException {
@@ -46,7 +46,7 @@ public class TagHandler {
             
             json.add(tag.getActivator(), obj);
         }
-        
+    
         FILE.delete();
         FILE.createNewFile();
         Files.write(FILE.toPath(), json.toString().getBytes(), StandardOpenOption.WRITE);

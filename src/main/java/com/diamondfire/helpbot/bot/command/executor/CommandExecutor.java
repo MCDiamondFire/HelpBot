@@ -19,11 +19,10 @@ public class CommandExecutor {
             new MutedCheck(),
             new DisabledCheck(),
             new PermissionCheck(),
-            new CommandLog(),
-            new SubCommandCheck()
+            new CommandLog()
     };
     
-    public void run(CommandEvent e) {
+    public void run(CommandEvent e, String[] args) {
         Command command = e.getCommand();
         if (command == null) {
             return;
@@ -39,7 +38,7 @@ public class CommandExecutor {
                     }
                 }
                 
-                e.pushArguments(e.getMessage().getContentRaw().split(" "));
+                e.pushArguments(args);
                 command.run(e);
             } catch (ArgumentException exception) {
                 builder.withPreset(

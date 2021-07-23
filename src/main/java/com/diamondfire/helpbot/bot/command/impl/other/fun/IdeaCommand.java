@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
+
 import java.util.Random;
 
 public class IdeaCommand extends Command {

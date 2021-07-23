@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.interactions.components.Button;
 
-
 import java.util.*;
 
 public class MultiSelector {
