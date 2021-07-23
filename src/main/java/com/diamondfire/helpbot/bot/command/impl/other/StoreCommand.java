@@ -83,7 +83,7 @@ public class StoreCommand extends Command {
     
             ArrayList<String> fieldval = new ArrayList<>();
             for(JsonElement purchase : json.getAsJsonArray("recent-purchases")) {
-                fieldval.add(" **" + purchase.getAsJsonObject().get("player").getAsString() + "** bought **" + purchase.getAsJsonObject().get("item").getAsString() + "**");
+                fieldval.add("**" + purchase.getAsJsonObject().get("player").getAsString() + "** bought **" + purchase.getAsJsonObject().get("item").getAsString() + "**");
             }
             builder.addField(":partying_face: Recent Purchases", String.join("\n", fieldval), false);
             
