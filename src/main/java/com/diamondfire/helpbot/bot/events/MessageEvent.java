@@ -12,8 +12,8 @@ public class MessageEvent extends ListenerAdapter {
     private static final MessageAcceptor[] acceptors = {
             new ReportAcceptor(),
             new FilterAcceptor(),
-            new TagAcceptor(),
             new CommandAcceptor(),
+            new TagAcceptor(),
             new VerifyAcceptor()
     };
     

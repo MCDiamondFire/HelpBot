@@ -42,7 +42,7 @@ public class PollCommand extends Command {
     
     @Override
     public Permission getPermission() {
-        return Permission.DEVELOPER;
+        return Permission.ADMINISTRATOR;
     }
     
     @Override
