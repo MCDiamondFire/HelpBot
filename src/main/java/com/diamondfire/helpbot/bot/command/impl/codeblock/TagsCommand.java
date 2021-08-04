@@ -77,7 +77,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     
     @Override
     public String[] getAliases() {
-        return new String[]{"codetags", "tag"};
+        return new String[]{"codetags"};
     }
     
     @Override

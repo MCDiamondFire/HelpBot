@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -18,7 +19,7 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
     }
     
     @Override
-    protected Date parse(@NotNull String argument) throws ArgumentException {
+    protected Date parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         Calendar calendar = Calendar.getInstance();
         int offset = 0;
         boolean modified = false;

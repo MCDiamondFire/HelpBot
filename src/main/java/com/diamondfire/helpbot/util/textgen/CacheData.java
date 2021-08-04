@@ -1,8 +1,7 @@
 package com.diamondfire.helpbot.util.textgen;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.addWord;
 

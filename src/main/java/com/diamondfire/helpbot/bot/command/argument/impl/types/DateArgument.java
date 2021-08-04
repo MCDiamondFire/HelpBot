@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.*;
@@ -19,7 +20,7 @@ public class DateArgument extends AbstractSimpleValueArgument<Date> {
     }
     
     @Override
-    public Date parse(@NotNull String msg) throws ArgumentException {
+    public Date parse(@NotNull String msg, CommandEvent event) throws ArgumentException {
         try {
             return format.parse(msg);
         } catch (ParseException parseException) {

@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.entities.Member;

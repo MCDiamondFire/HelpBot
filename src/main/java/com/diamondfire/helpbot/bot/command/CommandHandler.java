@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.bot.command;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -44,8 +43,12 @@ public class CommandHandler {
         
     }
     
+    public void run(CommandEvent e, String[] args) {
+        COMMAND_EXECUTOR.run(e, args);
+    }
+    
     public void run(CommandEvent e) {
-        COMMAND_EXECUTOR.run(e);
+        run(e, e.getRawArgs());
     }
     
     public HashMap<String, Command> getCommands() {

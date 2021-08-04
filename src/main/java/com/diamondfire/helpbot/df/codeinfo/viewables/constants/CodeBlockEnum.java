@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.constants;
 
-import com.diamondfire.helpbot.HelpBot;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.Emote;
 

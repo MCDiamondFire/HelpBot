@@ -2,12 +2,21 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
-import com.diamondfire.helpbot.bot.command.impl.other.*;
+import com.diamondfire.helpbot.bot.command.impl.other.StoreCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
+import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
+import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
+import com.diamondfire.helpbot.bot.command.impl.other.info.*;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.util.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.metrics.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.top.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
@@ -117,7 +126,8 @@ public class HelpBotInstance {
                 new DailySessionsCommand(),
                 new EightBallCommand(),
                 new OcrCommand(),
-                new JoinsCommand()
+                new JoinsCommand(),
+                new TagCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())

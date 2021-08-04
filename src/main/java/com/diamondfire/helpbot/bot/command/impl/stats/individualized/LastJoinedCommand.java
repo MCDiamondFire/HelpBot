@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.sql.*;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
     
