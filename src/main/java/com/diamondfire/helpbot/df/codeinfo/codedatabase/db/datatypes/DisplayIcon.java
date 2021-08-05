@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 

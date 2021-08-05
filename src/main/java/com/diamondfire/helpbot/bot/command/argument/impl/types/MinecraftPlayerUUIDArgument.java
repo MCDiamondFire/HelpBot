@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.google.gson.*;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class MinecraftPlayerUUIDArgument extends AbstractSimpleValueArgument<UUID> {
     
     @Override
-    protected UUID parse(@NotNull String argument) throws ArgumentException {
+    protected UUID parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         if (argument.contains("-") || argument.length() > 16) {
             return UUID.fromString(argument);
         } else {

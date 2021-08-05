@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +21,8 @@ public class ClampedIntegerArgument extends IntegerArgument {
     }
     
     @Override
-    public Integer parse(@NotNull String msg) throws ArgumentException {
-        int num = super.parse(msg);
+    public Integer parse(@NotNull String msg, CommandEvent event) throws ArgumentException {
+        int num = super.parse(msg, event);
         
         if (num <= max && num >= min) {
             return num;

@@ -9,15 +9,14 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.util.FormatUtil;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 
 import java.sql.ResultSet;
 
 public class BoostersCommand extends Command {
-    private static long[] emotes = new long[]{809172442957217812L, 809172442496630815L};
+    private static final long[] emotes = new long[]{809172442957217812L, 809172442496630815L};
     
     @Override
     public String getName() {

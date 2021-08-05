@@ -76,7 +76,7 @@ public class IOUtil {
     
     
     public static File getFileFromSite(String url, String name) {
-        try (InputStream in = new URL(url).openStream();) {
+        try (InputStream in = new URL(url).openStream()) {
             File tempFile = ExternalFileUtil.generateFile(name);
             
             Files.write(tempFile.toPath(), in.readAllBytes(), StandardOpenOption.WRITE);

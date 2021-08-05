@@ -13,6 +13,7 @@ public class MessageEvent extends ListenerAdapter {
             new ReportAcceptor(),
             new FilterAcceptor(),
             new CommandAcceptor(),
+            new TagAcceptor(),
             new VerifyAcceptor()
     };
     

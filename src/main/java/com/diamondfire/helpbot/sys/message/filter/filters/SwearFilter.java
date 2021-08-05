@@ -67,12 +67,8 @@ public class SwearFilter extends ChatFilter {
         
         // This is fairly easy to bypass, but still good to have
         String concatenated = getImplicit(message.replace(" ", ""));
-        
-        if (BLOCKED_MESSAGES.contains(concatenated)) {
-            return true;
-        }
-        
-        return false;
+
+        return BLOCKED_MESSAGES.contains(concatenated);
     }
     
     private static final HashMap<Character, Character> CHARACTER_MAP;
