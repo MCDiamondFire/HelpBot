@@ -26,14 +26,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
             return;
         }
         
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
             return;
         }
         
@@ -52,10 +52,10 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessage(builder.build()).addFile(actionIcon).queue();
+            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon).queue();
         } else {
             builder.setThumbnail(customHead);
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
         }
     }
     

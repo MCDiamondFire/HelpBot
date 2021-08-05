@@ -72,7 +72,7 @@ public class NbsCommand extends Command {
                             .addField("Link: __Expires in 2 minutes__","[Template Link](https://derpystuff.gitlab.io/code/l?link=" + json.get("link").getAsString() + ")",false)
                             .addField("Info:","Click the link shown above and click the button in the bottom left corner to copy the give command for the template. You will need [this function](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) to play songs.",false);
                     
-                    channel.sendMessage(embed.build()).queue();
+                    channel.sendMessageEmbeds(embed.build()).queue();
                 } catch(OutdatedNBSException | IOException e) {
                     e.printStackTrace();
                     event.reply(error);

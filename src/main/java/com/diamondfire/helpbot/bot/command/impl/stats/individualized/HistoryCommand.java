@@ -139,7 +139,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                                 embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
                             }
                             
-                            msgs.add(privateChannel.sendMessage(embed.build()));
+                            msgs.add(privateChannel.sendMessageEmbeds(embed.build()));
                         }
                         
                         // Retrieve normal punishments
@@ -157,7 +157,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                             EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
                             if (punishmentStrings.size() == 0) {
                             } else if (presetBuilder.isValidLength()) {
-                                msgs.add(privateChannel.sendMessage(presetBuilder.build()));
+                                msgs.add(privateChannel.sendMessageEmbeds(presetBuilder.build()));
                             } else {
                                 try {
                                     File sendFile = ExternalFileUtil.generateFile("history.txt");

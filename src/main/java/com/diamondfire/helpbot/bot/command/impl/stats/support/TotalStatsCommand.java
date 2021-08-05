@@ -137,7 +137,7 @@ public class TotalStatsCommand extends Command {
                         
                     });
             
-            msg.editMessage(embed.build()).queue();
+            msg.editMessageEmbeds(embed.build()).queue();
         });
         
     }

@@ -80,7 +80,7 @@ public class StoreCommand extends Command {
             }
             builder.addField(":partying_face: Recent Purchases", String.join("\n", fieldval), false);
             
-            event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
         }catch(Exception e) {
             event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to retrieve store items.")));
         }

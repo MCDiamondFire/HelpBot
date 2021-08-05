@@ -100,7 +100,7 @@ public class Util {
     }
     
     public static void log(EmbedBuilder builder) {
-        HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessage(builder.build()).queue();
+        HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessageEmbeds(builder.build()).queue();
     }
     
     public static final long VERIFIED = HelpBotInstance.getConfig().getVerifiedRole();

@@ -11,14 +11,14 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.PlainComponentSerializer;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
+import com.github.steveice10.mc.auth.service.AuthenticationService;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.*;
-import com.github.steveice10.packetlib.*;
 import com.github.steveice10.packetlib.event.session.*;
 import com.github.steveice10.packetlib.packet.Packet;
-import com.github.steveice10.packetlib.tcp.TcpSessionFactory;
+import com.github.steveice10.packetlib.tcp.TcpClientSession;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
@@ -67,7 +67,7 @@ public class FetchDataCommand extends Command {
         builder.setTitle("Fetching Code Database...");
         builder.setDescription("Please wait a moment!");
         
-        Message sentMessage = channel.sendMessage(builder.build()).complete();
+        Message sentMessage = channel.sendMessageEmbeds(builder.build()).complete();
         
         try {
             start(sentMessage);
@@ -108,15 +108,19 @@ public class FetchDataCommand extends Command {
     }
     
     private void start(Message message) throws RequestException {
-        MinecraftProtocol protocol = new MinecraftProtocol(USERNAME, PASSWORD);
-        Client client = new Client("beta.mcdiamondfire.com", 25565, protocol, new TcpSessionFactory());
-        Session session = client.getSession();
+        AuthenticationService authService = new AuthenticationService();
+        authService.setUsername(USERNAME);
+        authService.setPassword(PASSWORD);
+        authService.login();
+    
+        MinecraftProtocol protocol = new MinecraftProtocol(authService.getSelectedProfile(), authService.getAccessToken());
+        TcpClientSession client = new TcpClientSession("beta.mcdiamondfire.com", 25565, protocol);
         
         status(message, "Connecting to DiamondFire...");
         ready = false;
         
-        client.getSession().connect();
-        client.getSession().addListener(new SessionAdapter() {
+        client.connect();
+        client.addListener(new SessionAdapter() {
             @Override
             public void packetReceived(PacketReceivedEvent event) {
                 Packet packet = event.getPacket();
@@ -146,7 +150,7 @@ public class FetchDataCommand extends Command {
                         status(message, "Receiving data...");
                         ready = true;
                     } else if (text.startsWith("}")) {
-                        session.disconnect("HelpBot data collection has concluded. ");
+                        client.disconnect("HelpBot data collection has concluded. ");
                     }
                     
                     if (ready) {
@@ -157,7 +161,7 @@ public class FetchDataCommand extends Command {
             }
         });
         
-        while (session.isConnected()) {
+        while (client.isConnected()) {
             try {
                 Thread.sleep(1);
             } catch (Exception ignored) {
@@ -174,7 +178,7 @@ public class FetchDataCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Error occurred!");
         builder.setDescription(e.getMessage());
-        message.editMessage(builder.build()).queue();
+        message.editMessageEmbeds(builder.build()).queue();
         e.printStackTrace();
     }
     
@@ -182,7 +186,7 @@ public class FetchDataCommand extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Status");
         builder.setDescription(status);
-        message.editMessage(builder.build()).queue();
+        message.editMessageEmbeds(builder.build()).queue();
     }
     
 }
