@@ -1,7 +1,8 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.google.gson.*;
 import okhttp3.*;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.UUID;
 
-public class MinecraftPlayerUUIDArgument extends AbstractSimpleValueArgument<UUID> {
+public class MojangPlayerUUIDArgument extends AbstractSimpleValueArgument<UUID> {
     
     @Override
     protected UUID parse(@NotNull String argument, CommandEvent event) throws ArgumentException {

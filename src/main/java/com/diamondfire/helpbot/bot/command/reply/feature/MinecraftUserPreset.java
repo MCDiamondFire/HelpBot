@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.reply.feature;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -7,6 +8,11 @@ public class MinecraftUserPreset implements ReplyPreset {
     
     private final String uuid;
     private final String player;
+    
+    public MinecraftUserPreset(Player player) {
+        this.player = player.name();
+        this.uuid = player.uuidString();
+    }
     
     public MinecraftUserPreset(String player) {
         this.player = player;

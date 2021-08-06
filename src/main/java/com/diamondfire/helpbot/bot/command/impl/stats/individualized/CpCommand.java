@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -49,17 +50,16 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "CP Info", null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        
+    
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM creator_rankings WHERE uuid = ? OR name = ?;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
+                .query(new BasicQuery("SELECT * FROM creator_rankings WHERE uuid = ?;", (statement) -> {
+                    statement.setString(1, player.uuidString());
                 }))
                 .compile()
                 .run((table) -> {
@@ -69,29 +69,29 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                         event.reply(preset);
                         return;
                     }
-                    
+                
                     ResultSet set = table.getResult();
-                    
+                
                     int points = set.getInt("points");
                     int rank = set.getInt("cur_rank");
                     CreatorLevel level = CreatorLevel.getLevel(rank);
                     CreatorLevel nextLevel = CreatorLevel.getNextLevel(CreatorLevel.getLevel(rank));
                     int nextLevelReq = nextLevel.getRequirementProvider().getRequirement();
-                    
+                
                     String formattedName = set.getString("name");
                     String uuid = set.getString("uuid");
                     preset.withPreset(
                             new MinecraftUserPreset(formattedName, uuid)
                     );
-                    
+                
                     embed.addField("Current Rank", level.display(true), false);
                     embed.addField("Current Points", genPointMetric(points, uuid), false);
-                    
+                
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT * FROM owen.creator_rankings_log WHERE uuid = ? ORDER BY points DESC LIMIT 1", (statement) -> statement.setString(1, uuid)))
                             .compile()
                             .run((tableSet) -> {
-                                
+                            
                                 if (!tableSet.isEmpty()) {
                                     int maxPoints = tableSet.getResult().getInt("points");
                                     if (maxPoints > points) {
@@ -101,17 +101,17 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                     }
                                 }
                             });
-                    
+                
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) + 1 AS place FROM creator_rankings WHERE points > ?", (statement) -> statement.setInt(1, points)))
                             .compile()
                             .run((tableSet) -> embed.addField("Current Leaderboard Place", FormatUtil.formatNumber(tableSet.getResult().getInt("place")), false));
-                    
+                
                     if (level != CreatorLevel.DIAMOND) {
                         embed.addField("Next Rank", nextLevel.display(true), true);
                         embed.addField("Next Rank Points", FormatUtil.formatNumber(nextLevelReq) + String.format(" (%s to go)", FormatUtil.formatNumber(nextLevelReq - points)), false);
                     }
-                    
+                
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT DATE_FORMAT(date, '%d-%m') AS time,points FROM owen.creator_rankings_log WHERE uuid = ?;", (statement) -> statement.setString(1, uuid)))
                             .compile()
@@ -120,12 +120,12 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                     event.reply(preset);
                                     return;
                                 }
-                                
+                            
                                 Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
                                 for (ResultSet rs : resultTable) {
                                     entries.put(new StringEntry(rs.getString("time")), rs.getInt("points"));
                                 }
-                                
+                            
                                 embed.setImage("attachment://graph.png");
                                 try {
                                     event.getReplyHandler().replyA(preset)
@@ -137,7 +137,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                     event.reply(preset);
                                 }
                             });
-                    
+                
                 });
     }
     

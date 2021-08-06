@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
-import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData;
+import static com.diamondfire.helpbot.util.textgen.CacheData.cacheData;
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class SamQuotesCommand extends Command {
@@ -445,7 +445,7 @@ public class SamQuotesCommand extends Command {
         } else if (event.getArgument("action").equals("reload")) {
     
             try {
-                CacheData();
+                cacheData();
             } catch (IOException e) {
                 e.printStackTrace();
             }

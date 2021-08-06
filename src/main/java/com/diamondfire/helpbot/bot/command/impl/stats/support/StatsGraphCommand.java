@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -43,17 +44,18 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         new DatabaseQuery()
-                .query(new BasicQuery("WITH RECURSIVE all_dates(dt) AS (\n" +
-                        "    SELECT (SELECT DATE(time) FROM support_sessions WHERE staff = ? ORDER BY time LIMIT 1) dt\n" +
-                        "        UNION ALL\n" +
-                        "    SELECT dt + INTERVAl 1 DAY FROM all_dates WHERE dt + INTERVAL 1 DAY <= CURRENT_TIMESTAMP()\n" +
-                        ")\n" +
-                        "SELECT dates.dt date, COALESCE(t.total, 0) AS total FROM all_dates dates LEFT JOIN (SELECT DATE(time) AS date, COUNT(time) AS total FROM support_sessions WHERE staff = ? GROUP BY DATE(time)) t ON t.date = dates.dt ORDER BY dates.dt",
+                .query(new BasicQuery("""
+                        WITH RECURSIVE all_dates(dt) AS (
+                            SELECT (SELECT DATE(time) FROM support_sessions WHERE staff = ? ORDER BY time LIMIT 1) dt
+                                UNION ALL
+                            SELECT dt + INTERVAl 1 DAY FROM all_dates WHERE dt + INTERVAL 1 DAY <= CURRENT_TIMESTAMP()
+                        )
+                        SELECT dates.dt date, COALESCE(t.total, 0) AS total FROM all_dates dates LEFT JOIN (SELECT DATE(time) AS date, COUNT(time) AS total FROM support_sessions WHERE staff = ? GROUP BY DATE(time)) t ON t.date = dates.dt ORDER BY dates.dt""",
                         (statement) -> {
-                            statement.setString(1, player);
-                            statement.setString(2, player);
+                            statement.setString(1, player.name());
+                            statement.setString(2, player.name());
                         }))
                 .compile()
                 .run((query) -> {
@@ -61,13 +63,12 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
                     for (ResultSet set : query) {
                         dates.put(new DateEntry(set.getDate("date")), set.getInt("total"));
                     }
-                    
+                
                     event.getChannel().sendFile(new ChartGraphBuilder()
                             .setGraphName(String.format("%s's sessions", player))
                             .createGraph(dates)).queue();
-                    
+                
                 });
-        
     }
     
 }
