@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-    implementation ("net.dv8tion:JDA:4.3.0_298") {
-       // exclude module: 'opus-java'
+    implementation ("net.dv8tion:JDA:4.3.0_305") {
+       exclude module: 'opus-java'
     }
     implementation 'club.minnced:discord-webhooks:0.5.7'
     implementation  'ch.qos.logback:logback-classic:1.2.3'

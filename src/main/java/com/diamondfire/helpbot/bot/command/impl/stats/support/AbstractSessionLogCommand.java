@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -20,8 +21,8 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
-        List<Session> sessions = getSessions(player);
+    protected void execute(CommandEvent event, Player player) {
+        List<Session> sessions = getSessions(player.name());
         StringBuilder builder = new StringBuilder();
         
         for (Session session : sessions) {

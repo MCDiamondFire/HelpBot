@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -41,12 +42,12 @@ public class HelpedByCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> statement.setString(1, player)))
+                .query(new BasicQuery("SELECT COUNT(name) AS total, name,staff FROM support_sessions WHERE staff = ? GROUP BY name ORDER BY count(name) DESC LIMIT 25;", (statement) -> statement.setString(1, player.name())))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {

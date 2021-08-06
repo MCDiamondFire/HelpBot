@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.sys.tag;
 
 public enum TagProperty {
-    ACTIVATOR("activator", true){
+    ACTIVATOR("activator", true) {
         @Override
         public void edit(Tag tag, String newValue) {
             tag.setActivator(newValue);
@@ -22,7 +22,7 @@ public enum TagProperty {
     AUTHOR_ID("authorId", false) {
         @Override
         public void edit(Tag tag, String newValue) {
-            throw new UnsupportedOperationException("The `"+this.getProperty()+"` property cannot be modified.");
+            throw new UnsupportedOperationException("The `" + this.getProperty() + "` property cannot be modified.");
         }
     },
     IMAGE("image", true) {
@@ -40,19 +40,19 @@ public enum TagProperty {
         this.modifiable = modifiable;
     }
     
-    public String getProperty() {
-            return property;
-        }
-        
-    public boolean isModifiable() {
-            return modifiable;
-        }
-        
     public static TagProperty getByProperty(String prop) {
         for (TagProperty tagProperty : TagProperty.values()) {
             if (tagProperty.getProperty().equals(prop)) return tagProperty;
         }
         return null;
+    }
+    
+    public String getProperty() {
+        return property;
+    }
+    
+    public boolean isModifiable() {
+        return modifiable;
     }
     
     public abstract void edit(Tag tag, String newValue);

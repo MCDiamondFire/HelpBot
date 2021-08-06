@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -44,19 +45,20 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Session Stats", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Session Stats", null),
+                        new MinecraftUserPreset(player)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        
+    
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT COUNT(*) AS count," +
                         "SUM(duration) AS total_duration," +
                         "MIN(time) AS earliest_time," +
                         "MAX(time) AS latest_time," +
-                        "COUNT(DISTINCT staff) AS unique_helped, name FROM support_sessions WHERE name = ?;", (statement) -> statement.setString(1, player)))
+                        "COUNT(DISTINCT staff) AS unique_helped, name FROM support_sessions WHERE name = ?;", (statement) -> statement.setString(1, player.name())))
                 .compile()
                 .run((result) -> {
                     ResultSet set = result.getResult();
@@ -65,28 +67,24 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player has not been in a session!"));
                         return;
                     }
-                    String formattedName = set.getString("name");
-                    preset.withPreset(
-                            new MinecraftUserPreset(formattedName)
-                    );
                     
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count FROM support_sessions " +
-                                    "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> statement.setString(1, player)))
+                                    "WHERE name = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> statement.setString(1, player.name())))
                             .compile()
                             .run((resultBadTable) -> embed.addField("Sessions this month:", resultBadTable.getResult().getInt("count") + "", true));
-                    
+                
                     embed.addField("Total Sessions", set.getInt("count") + "", true);
                     embed.addField("Unique Support Members", set.getInt("unique_helped") + "", true);
                     embed.addField("Total Session Time", FormatUtil.formatMilliTime(set.getLong("total_duration")), true);
                     embed.addField("Earliest Session", FormatUtil.formatDate(set.getDate("earliest_time")), true);
                     embed.addField("Latest Session", FormatUtil.formatDate(set.getDate("latest_time")), true);
-                    
+                
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
                                     "MAX(duration) AS longest_duration " +
-                                    "FROM support_sessions WHERE duration != 0 AND name = ?;", (statement) -> statement.setString(1, player)))
+                                    "FROM support_sessions WHERE duration != 0 AND name = ?;", (statement) -> statement.setString(1, player.name())))
                             .compile()
                             .run((timeResult) -> {
                                 ResultSet timeSet = timeResult.getResult();
@@ -94,9 +92,9 @@ public class SupporteeStatsCommand extends AbstractPlayerUUIDCommand {
                                 embed.addField("Shortest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("shortest_duration")), true);
                                 embed.addField("Longest Session Time", FormatUtil.formatMilliTime(timeSet.getLong("longest_duration")), true);
                             });
-                    
+                
                 });
-        
+    
         event.reply(preset);
     }
     

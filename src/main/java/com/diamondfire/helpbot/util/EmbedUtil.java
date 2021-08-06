@@ -96,6 +96,6 @@ public class EmbedUtil {
     }
     
     public static void labsCoreBranding(EmbedBuilder builder) {
-        builder.setFooter("Powered by labsCore", "https://cdn.discordapp.com/avatars/682654466453012553/2f757bb489436ceeda1a9759b92c4478.png?width=935&height=935");
+        builder.setFooter("Powered by labsCore", "https://cdn.discordapp.com/avatars/682654466453012553/d5145deebed60efda6e2e9a0dca09ddd.webp?size=256");
     }
 }

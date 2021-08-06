@@ -60,4 +60,10 @@ public interface ExternalFiles {
             .setName("tags")
             .setFileType("json")
             .buildFile();
+    
+    File SAM_QUOTES = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("samquotes")
+            .setFileType("txt")
+            .buildFile();
 }
