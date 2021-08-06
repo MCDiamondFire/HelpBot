@@ -81,6 +81,6 @@ public class Tag {
                 .setFooter("Written by "+user.getAsTag(), user.getAvatarUrl());
         if (!getImage().equals("")) embed.setImage(getImage());
                 
-        channel.sendMessage(embed.build()).queue();
+        channel.sendMessageEmbeds(embed.build()).queue();
     }
 }

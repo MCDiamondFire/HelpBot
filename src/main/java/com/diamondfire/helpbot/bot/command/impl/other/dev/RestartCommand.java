@@ -43,7 +43,7 @@ public class RestartCommand extends Command {
         builder.setTitle("Restarting!");
         builder.setDescription("This may take a moment");
         
-        event.getChannel().sendMessage(builder.build()).queue((msg) -> {
+        event.getChannel().sendMessageEmbeds(builder.build()).queue((msg) -> {
             RestartHandler.logRestart(msg);
             System.exit(0);
         });

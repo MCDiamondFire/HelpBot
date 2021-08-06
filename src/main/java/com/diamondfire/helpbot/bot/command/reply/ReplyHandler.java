@@ -45,7 +45,7 @@ public class ReplyHandler {
     }
     
     public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
-        return channel.sendMessage(embed.build());
+        return channel.sendMessageEmbeds(embed.build());
     }
     
     public MessageAction textReply(String msg, MessageChannel channel) {

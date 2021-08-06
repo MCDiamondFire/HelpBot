@@ -21,10 +21,10 @@ public class CodeCommand extends AbstractSingleQueryCommand {
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessage(builder.build()).addFile(actionIcon).queue();
+            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon).queue();
         } else {
             builder.setThumbnail(customHead);
-            channel.sendMessage(builder.build()).queue();
+            channel.sendMessageEmbeds(builder.build()).queue();
         }
         
     }

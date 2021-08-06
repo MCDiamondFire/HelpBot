@@ -59,7 +59,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             }
         }
         
-        channel.sendMessage(preset.getEmbed().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+        channel.sendMessageEmbeds(preset.getEmbed().build()).setActionRows(Util.of(buttons)).queue((message) -> {
             ButtonHandler.addListener(userToWait, message, (event) -> {
                 message.delete().queue();
                 

@@ -39,7 +39,7 @@ public abstract class AbstractFileListCommand extends Command {
         } catch (IOException e) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Could not generate file!");
-            event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
             return;
         }
         
