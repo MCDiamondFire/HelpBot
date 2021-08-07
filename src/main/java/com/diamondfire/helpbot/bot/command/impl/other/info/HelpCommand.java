@@ -108,7 +108,7 @@ public class HelpCommand extends Command {
             builder.addField("Category", context.getCommandCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
             
-            event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
         }
         
     }

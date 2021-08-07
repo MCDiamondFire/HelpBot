@@ -183,6 +183,3 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     }
     
 }
-
-
-

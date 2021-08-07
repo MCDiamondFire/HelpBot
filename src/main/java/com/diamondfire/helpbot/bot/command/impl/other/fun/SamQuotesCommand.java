@@ -66,7 +66,7 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(file, "quote.png").queue();
     
         } else if (event.getArgument("action").equals("submit")) {
             
@@ -440,7 +440,7 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).addFile(samQuote, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(samQuote, "quote.png").queue();
         
         } else if (event.getArgument("action").equals("reload")) {
     
@@ -459,7 +459,7 @@ public class SamQuotesCommand extends Command {
             builder.setDescription("" + strings.length);
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
             
         } else {
             
@@ -470,7 +470,7 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
             
-            event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(file, "quote.png").queue();
             
         }
         
