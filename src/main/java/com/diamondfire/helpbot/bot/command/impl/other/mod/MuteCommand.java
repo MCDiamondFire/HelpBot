@@ -79,7 +79,7 @@ public class MuteCommand extends Command {
                     .compile();
             
             builder.withPreset(
-                    new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for ``%s``. They have been notified.", FormatUtil.formatMilliTime(timeLeft)))
+                    new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for `%s`. They have been notified.", FormatUtil.formatMilliTime(timeLeft)))
             );
             Guild guild = event.getGuild();
             Role role = guild.getRoleById(MuteCommand.ROLE_ID);
