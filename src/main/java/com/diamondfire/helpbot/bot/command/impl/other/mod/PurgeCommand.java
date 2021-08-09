@@ -10,8 +10,6 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.entities.*;
 
-import java.util.List;
-
 public class PurgeCommand extends Command {
     
     @Override public String getName() { return "purge"; }
@@ -19,7 +17,7 @@ public class PurgeCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Removes the most recent messages sent in a channel. Maxiumum 100 messages.")
+                .description("Removes the most recent messages sent in a channel. Maximum 100 messages.")
                 .category(CommandCategory.OTHER)
                 .addArgument(
                         new HelpContextArgument()
@@ -45,15 +43,16 @@ public class PurgeCommand extends Command {
         
         int messagesToRemove = event.getArgument("count");
         
-        if (messagesToRemove > 100 || messagesToRemove < 0) {
+        if (messagesToRemove > 100 || messagesToRemove < 2) {
             builder.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, "Message count not within 0 to 100.")
+                    new InformativeReply(InformativeReplyType.ERROR, "Message count not within 2 to 100.")
             );
             event.reply(builder);
         } else {
             TextChannel channel = event.getChannel();
-            List<Message> messages = channel.getHistory().retrievePast(messagesToRemove).complete();
-            channel.deleteMessages(messages).complete();
+            channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
+                channel.deleteMessages(messages).queue();
+            });
         }
     }
 }
