@@ -45,7 +45,7 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
         
         //Discord didn't want to preview the skin, why? I don't know..
         EmbedBuilder embed = preset.getEmbed();
-        embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player + "/180");
+        embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player.name() + "/180");
         event.reply(preset);
     }
     

@@ -47,13 +47,6 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet()
-                .addArgument("player",
-                        new SingleArgumentContainer<>(new MojangPlayerUUIDArgument()).optional(null));
-    }
-    
-    @Override
     protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();

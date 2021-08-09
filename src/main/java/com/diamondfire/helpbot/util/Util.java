@@ -47,6 +47,14 @@ public class Util {
         return nums;
     }
     
+    public static UUID toUuid(String str) {
+        if (str.contains("-")) {
+            return UUID.fromString(str);
+        } else {
+            return UUID.fromString(str.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
+        }
+    }
+    
     public static File fetchMinecraftTextureFile(String fileName) {
         File imagesDir = ExternalFiles.IMAGES_DIR;
         try {

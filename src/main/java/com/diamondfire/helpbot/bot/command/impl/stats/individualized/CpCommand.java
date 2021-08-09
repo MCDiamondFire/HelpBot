@@ -130,7 +130,7 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 try {
                                     event.getReplyHandler().replyA(preset)
                                             .addFile(new ChartGraphBuilder()
-                                                    .setGraphName(player + "'s CP Graph")
+                                                    .setGraphName(player.name() + "'s CP Graph")
                                                     .createGraph(entries), "graph.png")
                                             .queue();
                                 } catch (Exception ignored) {
