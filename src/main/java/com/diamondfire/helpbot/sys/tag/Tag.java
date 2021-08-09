@@ -75,10 +75,11 @@ public class Tag {
         User user = channel.getJDA().retrieveUserById(getAuthorId()).complete();
         
         EmbedBuilder embed = new EmbedBuilder()
-                .setTitle(getTitle()+" (*"+user.getAsTag()+"*)")
+                .setTitle(getTitle())
+                .setAuthor("By "+user.getAsTag())
                 .setDescription(getResponse()+"\n\u200b")
                 .setColor(0x969dba)
-                .setFooter("Executed by "+requester.getAsTag(), user.getAvatarUrl());
+                .setFooter("Executed by "+requester.getAsTag(), requester.getAvatarUrl());
         if (!getImage().equals("")) embed.setImage(getImage());
                 
         channel.sendMessageEmbeds(embed.build()).queue();
