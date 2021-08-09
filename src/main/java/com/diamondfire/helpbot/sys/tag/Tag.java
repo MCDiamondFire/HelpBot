@@ -71,14 +71,14 @@ public class Tag {
         return json;
     }
     
-    public void sendResponse(TextChannel channel) {
+    public void sendResponse(TextChannel channel, User requester) {
         User user = channel.getJDA().retrieveUserById(getAuthorId()).complete();
         
         EmbedBuilder embed = new EmbedBuilder()
-                .setTitle(getTitle())
+                .setTitle(getTitle()+" (*"+user.getAsTag()+"*)")
                 .setDescription(getResponse()+"\n\u200b")
                 .setColor(0x969dba)
-                .setFooter("Written by "+user.getAsTag(), user.getAvatarUrl());
+                .setFooter("Executed by "+requester.getAsTag(), user.getAvatarUrl());
         if (!getImage().equals("")) embed.setImage(getImage());
                 
         channel.sendMessageEmbeds(embed.build()).queue();
