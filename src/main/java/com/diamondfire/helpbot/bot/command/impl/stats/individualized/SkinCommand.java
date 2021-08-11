@@ -39,7 +39,7 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
     protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Skin", player), null),
+                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Skin", player.name()), null),
                         new MinecraftUserPreset(player)
                 );
         
