@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
-import static com.diamondfire.helpbot.util.textgen.CacheData.CacheData;
+import static com.diamondfire.helpbot.util.textgen.CacheData.cacheData;
 import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class SamQuotesCommand extends Command {
@@ -66,7 +66,7 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(file, "quote.png").queue();
     
         } else if (event.getArgument("action").equals("submit")) {
             
@@ -440,12 +440,12 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).addFile(samQuote, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(samQuote, "quote.png").queue();
         
         } else if (event.getArgument("action").equals("reload")) {
     
             try {
-                CacheData();
+                cacheData();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -459,7 +459,7 @@ public class SamQuotesCommand extends Command {
             builder.setDescription("" + strings.length);
             builder.setColor(new Color(87, 177, 71));
     
-            event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
             
         } else {
             
@@ -470,7 +470,7 @@ public class SamQuotesCommand extends Command {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
             
-            event.getChannel().sendMessage(builder.build()).addFile(file, "quote.png").queue();
+            event.getChannel().sendMessageEmbeds(builder.build()).addFile(file, "quote.png").queue();
             
         }
         

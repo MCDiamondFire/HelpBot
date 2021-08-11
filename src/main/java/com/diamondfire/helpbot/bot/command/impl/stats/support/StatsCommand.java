@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.TimeOffsetArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -53,10 +54,11 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Support Stats", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Support Stats", null),
+                        new MinecraftUserPreset(player)
                 );
         EmbedBuilder embed = preset.getEmbed();
         
@@ -67,7 +69,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         "MAX(time) AS latest_time," +
                         "COUNT(DISTINCT name) AS unique_helped, staff FROM support_sessions WHERE staff = ? AND (time > ? OR ?);",
                         (statement) -> {
-                            statement.setString(1, player);
+                            statement.setString(1, player.name());
                             
                             java.util.Date date = event.getArgument("timeframe");
                             Timestamp sqlTimestamp = null;
@@ -87,17 +89,12 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                         return;
                     }
                     
-                    String formattedName = set.getString("staff");
-                    preset.withPreset(
-                            new MinecraftUserPreset(formattedName)
-                    );
-                    
                     new DatabaseQuery()
                             .query(new BasicQuery("SELECT COUNT(*) AS count, SUM(duration) AS total_time, " +
                                     "? IN (SELECT players.name FROM ranks, players WHERE ranks.uuid = players.uuid AND ranks.support >= 1 AND ranks.moderation = 0 AND ranks.administration = 0) AS support," +
                                     "(COUNT(*) < 5) AS bad FROM support_sessions WHERE staff = ? AND time > CURRENT_TIMESTAMP() - INTERVAL 30 DAY;", (statement) -> {
-                                statement.setString(1, player);
-                                statement.setString(2, player);
+                                statement.setString(1, player.name());
+                                statement.setString(2, player.name());
                             }))
                             .compile()
                             .run((resultBadTable) -> {
@@ -108,7 +105,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                                     new DatabaseQuery()
                                             .query(new BasicQuery("SELECT (time + INTERVAL 30 DAY) AS bad_time " +
                                                     "FROM support_sessions WHERE staff = ?" +
-                                                    "ORDER BY TIME DESC LIMIT 1 OFFSET 4;", (statement) -> statement.setString(1, player)))
+                                                    "ORDER BY TIME DESC LIMIT 1 OFFSET 4;", (statement) -> statement.setString(1, player.name())))
                                             .compile()
                                             .run((resultBad) -> {
                                                 if (resultBad.isEmpty()) {
@@ -135,7 +132,7 @@ public class StatsCommand extends AbstractPlayerUUIDCommand {
                             .query(new BasicQuery("SELECT AVG(duration) AS average_duration," +
                                     "MIN(duration) AS shortest_duration," +
                                     "MAX(duration) AS longest_duration " +
-                                    "FROM support_sessions WHERE duration != 0 AND staff = ?;", (statement) -> statement.setString(1, player)))
+                                    "FROM support_sessions WHERE duration != 0 AND staff = ?;", (statement) -> statement.setString(1, player.name())))
                             .compile()
                             .run((resultTableTime) -> {
                                 ResultSet timeSet = resultTableTime.getResult();

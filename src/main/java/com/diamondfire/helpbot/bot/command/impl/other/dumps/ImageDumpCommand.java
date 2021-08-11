@@ -50,7 +50,7 @@ public class ImageDumpCommand extends Command {
             } catch (IOException e) {
                 PresetBuilder builderError = new PresetBuilder();
                 builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to send zip file."));
-                msg.editMessage(builderError.getEmbed().build()).queue();
+                msg.editMessageEmbeds(builderError.getEmbed().build()).queue();
             }
         });
         

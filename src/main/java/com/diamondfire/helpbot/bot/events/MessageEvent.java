@@ -14,6 +14,7 @@ public class MessageEvent extends ListenerAdapter {
             new FilterAcceptor(),
             new TagAcceptor(),
             new CommandAcceptor(),
+            new TagAcceptor(),
             new VerifyAcceptor()
     };
     

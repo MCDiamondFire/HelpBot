@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -44,29 +45,24 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null)
+                        new InformativeReply(InformativeReplyType.INFO, "Owned Plots", null),
+                        new MinecraftUserPreset(player)
                 );
+        
         EmbedBuilder embed = preset.getEmbed();
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM plots WHERE owner_name = ? OR owner = ? LIMIT 25;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
+                .query(new BasicQuery("SELECT * FROM plots WHERE owner = ? LIMIT 25;", (statement) -> {
+                    statement.setString(1, player.uuidString());
                 }))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
-                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player was not found, or they have no plots."));
+                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player does not have any plots!"));
                         return;
                     }
-                    
-                    ResultSet set = result.getResult();
-                    String formattedName = set.getString("owner_name");
-                    preset.withPreset(
-                            new MinecraftUserPreset(formattedName)
-                    );
                     
                     for (ResultSet plot : result) {
                         String[] stats = {
@@ -76,10 +72,10 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                         embed.addField(StringUtil.display(plot.getString("name")) +
                                         String.format(" **(%s)**", plot.getInt("id")),
                                 String.join("\n", stats), false);
-                        
+                    
                     }
                 });
-        
+    
         event.reply(preset);
     }
     

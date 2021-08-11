@@ -5,18 +5,32 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
-import com.google.gson.*;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.components.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.util.*;
 
 public class Util {
+    
+    public static final long VERIFIED = HelpBotInstance.getConfig().getVerifiedRole();
     
     public static Deque<String> getUnicodeNumbers() {
         Deque<String> nums = new ArrayDeque<>();
@@ -31,6 +45,14 @@ public class Util {
         nums.add("\u0039\uFE0F\u20E3");
         nums.add("\uD83D\uDD1F");
         return nums;
+    }
+    
+    public static UUID toUuid(String str) {
+        if (str.contains("-")) {
+            return UUID.fromString(str);
+        } else {
+            return UUID.fromString(str.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
+        }
     }
     
     public static File fetchMinecraftTextureFile(String fileName) {
@@ -100,10 +122,8 @@ public class Util {
     }
     
     public static void log(EmbedBuilder builder) {
-        HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessage(builder.build()).queue();
+        HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.LOG_CHANNEL).sendMessageEmbeds(builder.build()).queue();
     }
-    
-    public static final long VERIFIED = HelpBotInstance.getConfig().getVerifiedRole();
     
     public static void updateGuild(HashMap<Long, String> accounts, Guild guild) {
         Role verifiedRoles = guild.getRoleById(VERIFIED);

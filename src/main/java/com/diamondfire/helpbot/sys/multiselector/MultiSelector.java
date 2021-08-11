@@ -42,10 +42,10 @@ public class MultiSelector {
             buttons.add(button);
         }
         
-        jda.getTextChannelById(channel).sendMessage(pages[0].getPage().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setActionRows(Util.of(buttons)).queue((message) -> {
             ButtonHandler.addListener(user, message, event -> {
                 event.deferEdit().queue();
-                message.editMessage(pageMap.get(event.getComponentId()).getPage().build()).setActionRows(message.getActionRows()).queue();
+                message.editMessageEmbeds(pageMap.get(event.getComponentId()).getPage().build()).setActionRows(message.getActionRows()).queue();
             }, true);
         });
     }

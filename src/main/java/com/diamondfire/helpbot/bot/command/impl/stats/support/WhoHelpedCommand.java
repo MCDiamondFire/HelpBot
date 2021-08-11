@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -41,24 +42,24 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
                         new MinecraftUserPreset(player),
                         new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + player, null)
                 );
         EmbedBuilder embed = preset.getEmbed();
-        
+    
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player)))
+                .query(new BasicQuery("SELECT COUNT(staff) AS total, staff,name FROM support_sessions WHERE name = ? GROUP BY staff ORDER BY count(staff) DESC;", (statement) -> statement.setString(1, player.name())))
                 .compile()
                 .run((result) -> {
-                    
+                
                     if (result.isEmpty()) {
                         embed.setDescription("Nobody!");
                         return;
                     }
-                    
+                
                     ResultSet set = result.getResult();
                     List<String> sessions = new ArrayList<>();
                     String formattedName = set.getString("name");
@@ -66,13 +67,13 @@ public class WhoHelpedCommand extends AbstractPlayerUUIDCommand {
                             new MinecraftUserPreset(formattedName),
                             new InformativeReply(InformativeReplyType.INFO, "Players who have helped " + formattedName, null)
                     );
-                    
+                
                     for (ResultSet ignored : result) {
                         sessions.add(set.getInt("total") + " " + set.getString("staff"));
                     }
-                    
+                
                     EmbedUtil.addFields(embed, sessions, true);
-                    
+                
                 });
         event.reply(preset);
     }

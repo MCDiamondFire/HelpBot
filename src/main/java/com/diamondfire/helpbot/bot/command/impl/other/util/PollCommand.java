@@ -42,7 +42,7 @@ public class PollCommand extends Command {
     
     @Override
     public Permission getPermission() {
-        return Permission.DEVELOPER;
+        return Permission.ADMINISTRATOR;
     }
     
     @Override
@@ -99,7 +99,7 @@ public class PollCommand extends Command {
         builder.setDescription(String.join(" ", fullPollOptions)); //adds poll options
         builder.setColor(new Color(33, 40, 97));
         
-        event.getChannel().sendMessage(builder.build()).queue((message) -> { //send embed message
+        event.getChannel().sendMessageEmbeds(builder.build()).queue((message) -> { //send embed message
             
             //add reactions
             Deque<String> nums = Util.getUnicodeNumbers();

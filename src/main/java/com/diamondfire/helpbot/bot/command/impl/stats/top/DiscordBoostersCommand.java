@@ -7,8 +7,10 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.util.DateUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.utils.TimeFormat;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -72,7 +74,7 @@ public class DiscordBoostersCommand extends Command {
     
             List<String> elements = new ArrayList<>();
             for (Member member : members) {
-                String timeBoosted = format.format(member.getTimeBoosted());
+                String timeBoosted = format.format(DateUtil.toDate(member.getTimeBoosted().toInstant().toEpochMilli()));
                 elements.add(member.getAsMention() + " - " + timeBoosted);
             }
     

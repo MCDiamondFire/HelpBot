@@ -127,7 +127,8 @@ public class HelpBotInstance {
                 new EightBallCommand(),
                 new OcrCommand(),
                 new JoinsCommand(),
-                new TagCommand()
+                new TagCommand(),
+                new PurgeCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())

@@ -10,7 +10,12 @@ public class CommandAcceptor implements MessageAcceptor {
     @Override
     public boolean accept(Message message) {
         if (message.getContentDisplay().startsWith(HelpBotInstance.getConfig().getPrefix()) && !message.getAuthor().isBot()) {
-            CommandHandler.getInstance().run(new CommandEvent(message));
+            CommandEvent event = new CommandEvent(message);
+            if (event.getCommand() == null) {
+                return false;
+            }
+            
+            CommandHandler.getInstance().run(event);
             return true;
         }
         
