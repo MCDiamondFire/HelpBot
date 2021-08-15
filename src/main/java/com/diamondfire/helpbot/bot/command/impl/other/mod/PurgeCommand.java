@@ -8,7 +8,10 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
+
+import java.time.format.DateTimeFormatter;
 
 public class PurgeCommand extends Command {
     
@@ -51,6 +54,27 @@ public class PurgeCommand extends Command {
         } else {
             TextChannel channel = event.getChannel();
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
+                // Adds the messages to the messageBuilder object
+                MessageBuilder messageBuilder = new MessageBuilder();
+                messageBuilder.append("Here are the messages you purged;\n");
+                
+                for (Message m : messages) {
+                    messageBuilder
+                            .append("[")
+                            .append(m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME))
+                            .append("] (").append(m.getAuthor().getAsMention()).append("): ")
+                            .append(m.getContentRaw())
+                            .append("\n");
+                }
+                
+                // Builds the MessageBuilder object and iterates through it.
+                // messageBuilder.buildAll() returns a queue of messages, split if the content exceeds 2000 characters.
+                for (Message message : messageBuilder.buildAll()) {
+                    event.getAuthor().openPrivateChannel().flatMap(userChannel ->
+                            userChannel.sendMessage(message)).queue();
+                }
+                
+                // Removes the messages.
                 channel.deleteMessages(messages).queue();
             });
         }
