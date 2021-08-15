@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 
 public class PurgeCommand extends Command {
     
@@ -58,6 +59,7 @@ public class PurgeCommand extends Command {
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("Here are the messages you purged;\n");
                 
+                // Iterates through the message history and appends the values to the MessageBuilder.
                 for (Message m : messages) {
                     messageBuilder
                             .append("[")
