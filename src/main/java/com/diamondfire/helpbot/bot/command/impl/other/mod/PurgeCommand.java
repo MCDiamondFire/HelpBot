@@ -12,7 +12,8 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 public class PurgeCommand extends Command {
     
@@ -58,6 +59,7 @@ public class PurgeCommand extends Command {
                 // Adds the messages to the messageBuilder object
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("Here are the messages you purged;\n");
+                HashMap<Message.Attachment, Message> attachments = new HashMap<>();
                 
                 // Iterates through the message history and appends the values to the MessageBuilder.
                 for (Message m : messages) {
@@ -67,6 +69,11 @@ public class PurgeCommand extends Command {
                             .append("] (").append(m.getAuthor().getAsMention()).append("): ")
                             .append(m.getContentRaw())
                             .append("\n");
+                    if (!m.getAttachments().isEmpty()) {
+                        for (Message.Attachment a : m.getAttachments()) {
+                            attachments.put(a, m);
+                        }
+                    }
                 }
                 
                 // Builds the MessageBuilder object and iterates through it.
@@ -74,6 +81,29 @@ public class PurgeCommand extends Command {
                 for (Message message : messageBuilder.buildAll()) {
                     event.getAuthor().openPrivateChannel().flatMap(userChannel ->
                             userChannel.sendMessage(message)).queue();
+                }
+                
+                // Sends media
+                for (Message.Attachment attachment : attachments.keySet()) {
+                    event.getAuthor().openPrivateChannel().flatMap(userChannel ->
+                    {
+                        try {
+                            MessageBuilder aBuilder = new MessageBuilder();
+                            Message mObject = attachments.get(attachment);
+                            aBuilder.append("[")
+                                    .append(mObject
+                                            .getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME))
+                                    .append("] ")
+                                    .append(mObject
+                                            .getAuthor().getAsMention());
+                            return userChannel
+                                    .sendMessage(aBuilder.build())
+                                    .addFile(attachment.downloadToFile().get());
+                        } catch (InterruptedException | ExecutionException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }).queue();
                 }
                 
                 // Removes the messages.
