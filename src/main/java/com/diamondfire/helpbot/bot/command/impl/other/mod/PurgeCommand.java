@@ -64,11 +64,12 @@ public class PurgeCommand extends Command {
                 // Iterates through the message history and appends the values to the MessageBuilder.
                 for (Message m : messages) {
                     messageBuilder
-                            .append("[")
-                            .append(m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME))
-                            .append("] (").append(m.getAuthor().getAsMention()).append("): ")
-                            .append(m.getContentRaw())
-                            .append("\n");
+                            .append(
+                                    String.format("[%s] (%s): %s",
+                                            m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                                            m.getAuthor().getAsMention(),
+                                            m.getContentRaw())
+                            );
                     if (!m.getAttachments().isEmpty()) {
                         for (Message.Attachment a : m.getAttachments()) {
                             attachments.put(a, m);
@@ -87,22 +88,15 @@ public class PurgeCommand extends Command {
                 for (Message.Attachment attachment : attachments.keySet()) {
                     event.getAuthor().openPrivateChannel().flatMap(userChannel ->
                     {
-                        try {
-                            MessageBuilder aBuilder = new MessageBuilder();
-                            Message mObject = attachments.get(attachment);
-                            aBuilder.append("[")
-                                    .append(mObject
-                                            .getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME))
-                                    .append("] ")
-                                    .append(mObject
-                                            .getAuthor().getAsMention());
-                            return userChannel
-                                    .sendMessage(aBuilder.build())
-                                    .addFile(attachment.downloadToFile().get());
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
+                        MessageBuilder aBuilder = new MessageBuilder();
+                        Message mObject = attachments.get(attachment);
+                        aBuilder.append(String.format(
+                                "[%s] %s sent this attachment: %s",
+                                        mObject.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                                        mObject.getAuthor().getAsMention(),
+                                        attachment.getProxyUrl()));
+                        return userChannel
+                                .sendMessage(aBuilder.build());
                     }).queue();
                 }
                 
