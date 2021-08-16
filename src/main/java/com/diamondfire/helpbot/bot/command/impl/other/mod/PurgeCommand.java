@@ -8,9 +8,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 
+import java.io.File;
+import java.nio.file.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -57,47 +60,42 @@ public class PurgeCommand extends Command {
             TextChannel channel = event.getChannel();
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
                 // Adds the messages to the messageBuilder object
-                MessageBuilder messageBuilder = new MessageBuilder();
-                messageBuilder.append("Here are the messages you purged;\n");
-                HashMap<Message.Attachment, Message> attachments = new HashMap<>();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("Here are the messages you purged;\n");
                 
                 // Iterates through the message history and appends the values to the MessageBuilder.
                 for (Message m : messages) {
-                    messageBuilder
+                    stringBuilder
                             .append(
                                     String.format("[%s] (%s): %s",
                                             m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                                            m.getAuthor().getAsMention(),
+                                            m.getAuthor().getName(),
                                             m.getContentRaw())
                             );
                     if (!m.getAttachments().isEmpty()) {
                         for (Message.Attachment a : m.getAttachments()) {
-                            attachments.put(a, m);
+                            stringBuilder.append(
+                                    String.format(" [ATTACHMENT: %s ]\n",
+                                            a.getProxyUrl())
+                            );
                         }
+                    } else {
+                        stringBuilder.append(
+                                "\n"
+                        );
                     }
                 }
                 
-                // Builds the MessageBuilder object and iterates through it.
-                // messageBuilder.buildAll() returns a queue of messages, split if the content exceeds 2000 characters.
-                for (Message message : messageBuilder.buildAll()) {
-                    event.getAuthor().openPrivateChannel().flatMap(userChannel ->
-                            userChannel.sendMessage(message)).queue();
-                }
-                
-                // Sends media
-                for (Message.Attachment attachment : attachments.keySet()) {
-                    event.getAuthor().openPrivateChannel().flatMap(userChannel ->
-                    {
-                        MessageBuilder aBuilder = new MessageBuilder();
-                        Message mObject = attachments.get(attachment);
-                        aBuilder.append(String.format(
-                                "[%s] %s sent this attachment: %s",
-                                        mObject.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                                        mObject.getAuthor().getAsMention(),
-                                        attachment.getProxyUrl()));
-                        return userChannel
-                                .sendMessage(aBuilder.build());
-                    }).queue();
+                try {
+                    File file = ExternalFileUtil.generateFile("purge_log.txt");
+                    Files.writeString(file.toPath(), stringBuilder.toString(), StandardOpenOption.WRITE);
+                    
+                    event.getAuthor().openPrivateChannel().flatMap(
+                            userChannel -> userChannel.sendFile(file)
+                    ).queue();
+                    
+                } catch (Exception e) {
+                    throw new IllegalStateException();
                 }
                 
                 // Removes the messages.
