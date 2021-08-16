@@ -17,7 +17,7 @@ public class TagAcceptor implements MessageAcceptor {
             try {
                 // Get Tag and send response
                 Tag tag = TagHandler.getTag(parsedText);
-                tag.sendResponse(message.getTextChannel());
+                tag.sendResponse(message.getTextChannel(), message.getAuthor());
                 
                 // Delete origin message
                 message.delete().queue();

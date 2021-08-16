@@ -14,8 +14,10 @@ public class TagCommand extends SubCommandHolder {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Controls custom command tags. Notes:\n- New: Use \"%space%\" in the title for spaces."+
-                        "\n- Edit: Use \"none\" for image to remove the image.")
+                .description("""
+                        Controls custom command tags. Notes:
+                        - New: Use "%space%" in the title for spaces.
+                        - Edit: Use "none" for image to remove the image.""")
                 .category(CommandCategory.OTHER)
                 .addArgument(
                         new HelpContextArgument()
