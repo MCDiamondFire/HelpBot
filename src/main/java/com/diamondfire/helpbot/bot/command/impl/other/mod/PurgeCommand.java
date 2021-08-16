@@ -61,12 +61,10 @@ public class PurgeCommand extends Command {
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
                 // Adds the messages to the messageBuilder object
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Here are the messages you purged;\n");
                 
                 // Iterates through the message history and appends the values to the MessageBuilder.
                 for (Message m : messages) {
-                    stringBuilder
-                            .append(
+                    stringBuilder.insert(0,
                                     String.format("[%s] (%s): %s",
                                             m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
                                             m.getAuthor().getName(),
@@ -74,17 +72,19 @@ public class PurgeCommand extends Command {
                             );
                     if (!m.getAttachments().isEmpty()) {
                         for (Message.Attachment a : m.getAttachments()) {
-                            stringBuilder.append(
+                            stringBuilder.insert(0,
                                     String.format(" [ATTACHMENT: %s ]\n",
                                             a.getProxyUrl())
                             );
                         }
                     } else {
-                        stringBuilder.append(
+                        stringBuilder.insert(0,
                                 "\n"
                         );
                     }
                 }
+    
+                stringBuilder.insert(0, "Here are the messages you purged;\n");
                 
                 try {
                     File file = ExternalFileUtil.generateFile("purge_log.txt");
