@@ -13,6 +13,14 @@ public class TagHandler {
     private static final List<Tag> tags = new ArrayList<>();
     private static final File FILE = ExternalFiles.TAGS;
     
+    static {
+        try {
+            cacheJson();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static List<Tag> getTags() throws IOException {
         return tags;
     }
