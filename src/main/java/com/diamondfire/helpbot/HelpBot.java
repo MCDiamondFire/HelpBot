@@ -11,9 +11,8 @@ import java.io.IOException;
 
 public class HelpBot {
     
-    public static void main(String[] args) throws LoginException, IOException {
+    public static void main(String[] args) throws LoginException {
         CodeDatabase.initialize();
-        TagHandler.cacheJson();
         HelpBotInstance.initialize();
         CodeDifferenceHandler.refresh();
     }
