@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.EndlessStringArgument;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.QuoteStringArgument;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Rank;
