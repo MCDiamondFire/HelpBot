@@ -52,7 +52,7 @@ public class NBSDecoder {
         speed = actualSpeed / 100f; //speed
         dataInputStream.readBoolean(); //autosave
         dataInputStream.readByte(); //autosave duration
-        timeSignature = (short) dataInputStream.readByte(); //time signature
+        timeSignature = dataInputStream.readByte(); //time signature
         readInt(dataInputStream); //minutes spent
         readInt(dataInputStream); //left clicks
         readInt(dataInputStream); //right clicks
@@ -222,7 +222,7 @@ public class NBSDecoder {
                         }
                     }
                 }
-                stringBuilder.append(columnStringBuilder.toString());
+                stringBuilder.append(columnStringBuilder);
             }
         }
 

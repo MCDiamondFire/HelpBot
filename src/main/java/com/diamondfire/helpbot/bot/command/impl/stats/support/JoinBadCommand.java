@@ -68,7 +68,7 @@ public class JoinBadCommand extends Command {
                         "      FROM ranks," +
                         "           players" +
                         "      WHERE ranks.uuid = players.uuid" +
-                        "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff WHERE excused_till > CURRENT_TIMESTAMP())" +
+                        "        AND players.uuid NOT IN (SELECT DISTINCT uuid FROM owen.excused_staff WHERE handled = false)" +
                         "        AND ranks.administration = 0" +
                         "        AND ranks.support > 0 | ranks.moderation > 0) p" +
                         "         LEFT JOIN (SELECT uuid, MAX(time) AS latest FROM player_join_log GROUP BY uuid) cn" +

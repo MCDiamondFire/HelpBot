@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -35,15 +36,16 @@ public class SkinCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Skin", player), null),
+                        new InformativeReply(InformativeReplyType.INFO, String.format("%s's Skin", player.name()), null),
                         new MinecraftUserPreset(player)
                 );
+        
         //Discord didn't want to preview the skin, why? I don't know..
         EmbedBuilder embed = preset.getEmbed();
-        embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player + "/180");
+        embed.setImage("https://external-content.duckduckgo.com/iu/?reload=" + System.currentTimeMillis() + "&u=" + "https://mc-heads.net/body/" + player.name() + "/180");
         event.reply(preset);
     }
     

@@ -27,7 +27,7 @@ public class SessionsCommand extends AbstractSessionLogCommand {
     }
     
     @Override
-    protected List<AbstractSessionLogCommand.Session> getSessions(String player) {
+    protected List<Session> getSessions(String player) {
         List<Session> sessions = new ArrayList<>();
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM support_sessions WHERE staff = ? ORDER BY time", (statement) -> statement.setString(1, player)))

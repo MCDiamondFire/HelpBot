@@ -107,4 +107,12 @@ public class StringUtil {
     public static byte[] toBase64(byte[] Base64F) {
         return Base64.getEncoder().encode(Base64F);
     }
+    
+    public static String trim(String str, int max) {
+        if (str.length() > max) {
+            return str.substring(0, max - 3) + "..";
+        } else {
+            return str;
+        }
+    }
 }

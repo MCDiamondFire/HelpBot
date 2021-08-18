@@ -48,4 +48,22 @@ public interface ExternalFiles {
             .setName("swear_filter")
             .setFileType("json")
             .buildFile();
+    
+    File SAMMAN = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("samman")
+            .setFileType("png")
+            .buildFile();
+    
+    File TAGS = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("tags")
+            .setFileType("json")
+            .buildFile();
+    
+    File SAM_QUOTES = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("samquotes")
+            .setFileType("txt")
+            .buildFile();
 }

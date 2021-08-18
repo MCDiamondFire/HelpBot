@@ -8,7 +8,7 @@ provide codeblock information.
 
 **Contribution**
 
-HelpBot is created in **java 11** and there are no current rules in place for contribution. If you want to add/modify
+HelpBot is created in **java 16** and there are no current rules in place for contribution. If you want to add/modify
 something you are able to create a **fork** and submit a **pull request**.
 
 Most pull requests are accepted, do not be afraid to make a change I promise I do not bite.
@@ -42,3 +42,21 @@ created, use the following format.
      "role_react_message": long
      
    }
+```
+
+**Swear Filter**
+
+After setting up the config, you will need to paste the following into the swear filter file. Otherwise, commands will not work and it will error whenever a message is sent.
+
+```json
+{
+  "equal": [
+  ],
+  "prefix": [
+  ],
+  "suffix": [
+  ],
+  "part": [
+  ]
+}
+```

@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.MalformedArgumentException;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +12,7 @@ public class DiscordUserArgument extends AbstractSimpleValueArgument<Long> {
     private final Pattern pattern = Pattern.compile("<@!?(\\d+)>");
     
     @Override
-    public Long parse(@NotNull String msg) throws MalformedArgumentException {
+    public Long parse(@NotNull String msg, CommandEvent event) throws MalformedArgumentException {
         
         try {
             return Long.parseLong(msg);

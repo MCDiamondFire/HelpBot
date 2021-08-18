@@ -6,7 +6,6 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
-import com.diamondfire.helpbot.sys.graph.generators.context.TimeGraphContext;
 
 public abstract class AbstractGraphCommand<T> extends Command {
     

@@ -62,7 +62,7 @@ public class ExcusedStaffCommand extends Command {
                         "FROM owen.excused_staff " +
                         "LEFT JOIN ranks r ON excused_staff.uuid = r.uuid " +
                         "LEFT JOIN players p ON excused_staff.uuid = p.uuid " +
-                        "WHERE (support > 0 || moderation > 0) AND (excused_till > CURRENT_TIMESTAMP() || !handled) " +
+                        "WHERE (support > 0 || moderation > 0) AND (!handled) " +
                         "ORDER BY excused_till DESC;"))
                 .compile()
                 .run((result) -> {

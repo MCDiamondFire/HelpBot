@@ -37,25 +37,17 @@ public class FormatUtil {
     
     public static long getTimeUnit(long millis, TimeUnit unit) {
         TimeUnit milli = TimeUnit.MILLISECONDS;
-        
-        switch (unit) {
-            case DAYS:
-                return milli.toDays(millis);
-            case HOURS:
-                return milli.toHours(millis) - TimeUnit.DAYS.toHours(milli.toDays(millis));
-            case MINUTES:
-                return milli.toMinutes(millis) - TimeUnit.HOURS.toMinutes(milli.toHours(millis));
-            case SECONDS:
-                return milli.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(milli.toMinutes(millis));
-            case MILLISECONDS:
-                return milli.toMillis(millis) - TimeUnit.SECONDS.toMillis(milli.toSeconds(millis));
-            case MICROSECONDS:
-                return millis;
-            case NANOSECONDS:
-                return milli.toNanos(millis);
-            default:
-                throw new UnsupportedOperationException();
-        }
+    
+        return switch (unit) {
+            case DAYS -> milli.toDays(millis);
+            case HOURS -> milli.toHours(millis) - TimeUnit.DAYS.toHours(milli.toDays(millis));
+            case MINUTES -> milli.toMinutes(millis) - TimeUnit.HOURS.toMinutes(milli.toHours(millis));
+            case SECONDS -> milli.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(milli.toMinutes(millis));
+            case MILLISECONDS -> milli.toMillis(millis) - TimeUnit.SECONDS.toMillis(milli.toSeconds(millis));
+            case MICROSECONDS -> millis;
+            case NANOSECONDS -> milli.toNanos(millis);
+            default -> throw new UnsupportedOperationException();
+        };
     }
     
     public static String formatTime(long duration, TimeUnit unit) {

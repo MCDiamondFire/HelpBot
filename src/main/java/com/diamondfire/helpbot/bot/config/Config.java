@@ -56,6 +56,10 @@ public class Config {
     
     // General constants
     
+    public String getlabsCoreToken() {
+        return getPropertyString("labs_token");
+    }
+    
     public long getGuild() {
         return getPropertyLong("guild");
     }
@@ -74,6 +78,10 @@ public class Config {
     
     public long getVerifiedRole() {
         return getPropertyLong("verified_role");
+    }
+    
+    public String getReportWehook() {
+        return getPropertyString("report_webhook");
     }
     
     private long getPropertyLong(String property) {

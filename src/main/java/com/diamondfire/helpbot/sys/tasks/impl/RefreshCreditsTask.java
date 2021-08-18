@@ -12,7 +12,7 @@ public class RefreshCreditsTask implements MidnightTask {
     public void run() {
         PresetBuilder preset = new PresetBuilder();
         preset.withPreset(new InformativeReply(InformativeReplyType.INFO, "Credit log db has been updated"));
-        RESPONSE_CHANNEL.sendMessage(preset.getEmbed().build()).queue();
+        RESPONSE_CHANNEL.sendMessageEmbeds(preset.getEmbed().build()).queue();
         
         new DatabaseQuery()
                 .query(new BasicQuery("INSERT INTO owen.creator_rankings_log(uuid, points, `rank`, date) " +

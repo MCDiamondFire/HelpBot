@@ -2,12 +2,21 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
-import com.diamondfire.helpbot.bot.command.impl.other.*;
+import com.diamondfire.helpbot.bot.command.impl.other.StoreCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
+import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
+import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
+import com.diamondfire.helpbot.bot.command.impl.other.info.*;
+import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
+import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommand;
+import com.diamondfire.helpbot.bot.command.impl.other.util.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.graph.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.individualized.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.metrics.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.plot.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.support.*;
+import com.diamondfire.helpbot.bot.command.impl.stats.top.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
@@ -16,6 +25,7 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import okhttp3.OkHttpClient;
 
 import javax.security.auth.login.LoginException;
 
@@ -24,14 +34,14 @@ public class HelpBotInstance {
     private static final Config config = new Config();
     public static final long DF_GUILD = config.getGuild();
     public static final long LOG_CHANNEL = config.getLogChannel();
-    private static final CommandHandler handler = new CommandHandler();
+    public static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
     
     public static void initialize() throws LoginException {
         
-        handler.register(
+        CommandHandler.getInstance().register(
                 // codeblock commands
                 new CodeCommand(),
                 new RankCommand(),
@@ -65,6 +75,9 @@ public class HelpBotInstance {
                 new UnmuteCommand(),
                 new VerifyCommand(),
                 new PollCommand(),
+                new IdeaCommand(),
+                new StoreCommand(),
+                //new ChannelMuteCommand(),
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -110,7 +123,12 @@ public class HelpBotInstance {
                 new SupportBannedPlayersCommand(),
                 new DiscussionMuteCommand(),
                 new NbsCommand(),
-                new DailySessionsCommand()
+                new DailySessionsCommand(),
+                new EightBallCommand(),
+                new OcrCommand(),
+                new JoinsCommand(),
+                new TagCommand(),
+                new PurgeCommand()
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
@@ -120,18 +138,18 @@ public class HelpBotInstance {
                 .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReactionEvent(), new ReadyEvent(), new GuildJoinEvent());
+                .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new MessageEditEvent());
         
         jda = builder.build();
-        handler.initialize();
+        CommandHandler.getInstance().initialize();
     }
     
     public static JDA getJda() {
         return jda;
     }
     
-    public static CommandHandler getHandler() {
-        return handler;
+    public static OkHttpClient getHttpClient() {
+        return HTTP_CLIENT;
     }
     
     public static Config getConfig() {

@@ -1,18 +1,22 @@
 package com.diamondfire.helpbot.sys.rolereact;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.util.StringUtil;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.react.*;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 public class RoleReactListener extends ListenerAdapter {
     
     private static final long MESSAGE_ID = 762167137775124491L;
     private static final long CHANNEL_ID = 762158470019022858L;
+    
+    private static final Map<String, Long> roleMap = new HashMap<>();
     
     public RoleReactListener() {
         if (HelpBotInstance.getConfig().isDevBot()) {
@@ -21,85 +25,40 @@ public class RoleReactListener extends ListenerAdapter {
         
         HelpBotInstance.getJda().getTextChannelById(CHANNEL_ID).retrieveMessageById(MESSAGE_ID).queue((msg) -> {
             
-            for (MessageReaction reaction : msg.getReactions()) {
-                if (ReactRole.fromEmoji(reaction.getReactionEmote().getEmoji()) == null) {
-                    reaction.clearReactions().queue();
-                }
-            }
-            
-            List<String> emojis = new ArrayList<>();
+            List<Button> buttons = new ArrayList<>();
             for (ReactRole role : ReactRole.values()) {
                 String emoji = role.getEmoji();
-                msg.addReaction(emoji).queue();
+                Button button = Button.secondary(role.name(), role.getOverride() == null ? StringUtil.smartCaps(role.name().replace('_', ' ')) : role.getOverride());
                 
-                String message;
-                if (role.getOverride() == null) {
-                    message = StringUtil.smartCaps(role.name().replace('_', ' '));
-                } else {
-                    message = role.getOverride();
-                }
-                
-                emojis.add(emoji + " " + String.format("``%s``", message));
+                buttons.add(button.withEmoji(Emoji.fromUnicode(emoji)));
+                roleMap.put(button.getId(), role.getRoleID());
             }
             
-            msg.editMessage("__**Reaction Roles**__ \nReact with any of the following to receive pings regarding that topic.\n" + StringUtil.listView("", emojis)).queue();
+            msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself").setActionRows(Util.of(buttons)).queue();
         });
     }
     
+    
     @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
-        if (event.getUser().isBot()) return;
+    public void onButtonClick(@NotNull ButtonClickEvent event) {
+        if (!roleMap.containsKey(event.getComponentId())) {
+            return;
+        }
         
-        try {
-            Role role = genericReact(event);
-            
-            event.getGuild().addRoleToMember(event.getUserIdLong(), role).reason("User subscribed to announcement!").queue();
-        } catch (IllegalStateException ignored) {
-        }
-    }
+        long role = roleMap.get(event.getComponentId());
+        Guild guild = event.getGuild();
+        Role guildRole = event.getGuild().getRoleById(role);
+        Member member = event.getMember();
     
-    @Override
-    public void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent event) {
-        try {
-            Role role = genericReact(event);
-            
-            event.getGuild().removeRoleFromMember(event.getUserIdLong(), role).reason("User unsubscribed from announcement!").queue();
-        } catch (IllegalStateException ignored) {
-        }
-    }
-    
-    private Role genericReact(GenericGuildMessageReactionEvent reactionEvent) throws IllegalStateException {
-        MessageReaction.ReactionEmote emote = reactionEvent.getReactionEmote();
-        Guild guild = reactionEvent.getGuild();
-        if (reactionEvent.getMessageIdLong() == MESSAGE_ID && emote.isEmoji() && !HelpBotInstance.getConfig().isDevBot()) {
-            ReactRole role = ReactRole.fromEmoji(emote.getEmoji());
-            if (role == null) {
-                return null;
-            }
-            
-            return guild.getRoleById(role.getRoleID());
+        ReplyAction action = event.deferReply(true);
+        if (member.getRoles().contains(guildRole)) {
+            action.setContent("Removed the " + guildRole.getAsMention() + " role from you!");
+            guild.removeRoleFromMember(member.getIdLong(), guildRole).reason("User unsubscribed to announcement!").queue();
         } else {
-            throw new IllegalStateException();
+            action.setContent("Added the " + guildRole.getAsMention() + " role to you!");
+            guild.addRoleToMember(member.getIdLong(), guildRole).reason("User subscribed to announcement!").queue();
         }
-        
-    }
-    
-    public static void refreshRoles(Member member) throws IllegalStateException {
-        HelpBotInstance.getJda().getTextChannelById(CHANNEL_ID).retrieveMessageById(MESSAGE_ID).queue((msg) -> {
-            for (MessageReaction reactionEmote : msg.getReactions()) {
-                reactionEmote.retrieveUsers()
-                        .cache(false)
-                        .forEachAsync((user) -> {
-                            if (user.getIdLong() == member.getIdLong()) {
-                                ReactRole role = ReactRole.fromEmoji(reactionEmote.getReactionEmote().getEmoji());
-                                
-                                member.getGuild().addRoleToMember(member, member.getGuild().getRoleById(role.getRoleID())).queue();
-                                return false;
-                            }
-                            return true;
-                        });
-            }
-        });
+        action.queue();
     }
     
 }

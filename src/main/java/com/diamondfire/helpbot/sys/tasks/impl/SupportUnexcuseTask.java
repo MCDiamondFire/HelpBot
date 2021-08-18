@@ -56,7 +56,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
                     );
                     embed.setTitle(String.format("Excuse has expired! (%s day duration)", Duration.between(initDate.toInstant(), Instant.now()).toDays()));
                     
-                    channel.sendMessage(embed.build()).queue();
+                    channel.sendMessageEmbeds(embed.build()).queue();
                     
                     new DatabaseQuery()
                             .query(new BasicQuery("UPDATE owen.excused_staff SET handled = true WHERE uuid = ?", (statement) -> statement.setString(1, uuid)))
@@ -80,7 +80,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
                         "       reason " +
                         "FROM owen.excused_staff " +
                         "LEFT JOIN ranks r ON excused_staff.uuid = r.uuid " +
-                        "WHERE (support > 0 || moderation > 0) AND (excused_till > CURRENT_TIMESTAMP() || !handled) " +
+                        "WHERE (support > 0 || moderation > 0) AND handled = false " +
                         "ORDER BY excused_till DESC;"))
                 .compile()
                 .run((result) -> {

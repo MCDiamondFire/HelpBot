@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MultiArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 import java.util.*;
 
@@ -14,7 +15,7 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
     }
     
     @Override
-    public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args) throws ArgumentException {
+    public ParsedArgument<?> parse(String identifier, ArgumentStack.RawArgumentStack args, CommandEvent event) throws ArgumentException {
         Deque<String> rawArgs = args.popStack();
         List<A> approvedArgumentValues = new ArrayList<>();
         Argument<A> arg = getContainer().getArgument();
@@ -22,7 +23,7 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
         
         for (int i = 0; i < arguments; i++) {
             try {
-                approvedArgumentValues.add(arg.parseValue(rawArgs));
+                approvedArgumentValues.add(arg.parseValue(rawArgs, event));
             } catch (Exception e) {
                 break;
             }

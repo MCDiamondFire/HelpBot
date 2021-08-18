@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -38,8 +39,8 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
-        JsonObject profile = Util.getPlayerProfile(player);
+    protected void execute(CommandEvent event, Player player) {
+        JsonObject profile = Util.getPlayerProfile(player.name());
         PresetBuilder builder = new PresetBuilder();
         List<NameDateRange> nameRanges = new ArrayList<>();
         Set<String> names = new HashSet<>();
@@ -130,7 +131,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                 builder.getEmbed().addField("", "Player hasn't been helped by anybody!", false);
             }
             
-            msg.editMessage(builder.getEmbed().build()).override(true).queue();
+            msg.editMessageEmbeds(builder.getEmbed().build()).override(true).queue();
         });
     }
     

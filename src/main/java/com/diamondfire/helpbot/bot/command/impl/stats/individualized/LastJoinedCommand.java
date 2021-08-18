@@ -1,20 +1,25 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
-import com.diamondfire.helpbot.bot.command.help.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
+import com.diamondfire.helpbot.bot.command.help.CommandCategory;
+import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReply;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.InformativeReplyType;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.TimeFormat;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
 public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
     
@@ -41,53 +46,28 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, String player) {
+    protected void execute(CommandEvent event, Player player) {
         PresetBuilder preset = new PresetBuilder()
                 .withPreset(
-                        new MinecraftUserPreset(player),
+                        new MinecraftUserPreset(player.name()),
                         new InformativeReply(InformativeReplyType.INFO, null, null)
                 );
         EmbedBuilder embed = preset.getEmbed();
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT players.uuid,players.name FROM players WHERE players.uuid = ? OR players.name = ?;", (statement) -> {
-                    statement.setString(1, player);
-                    statement.setString(2, player);
-                }))
+                .query(new BasicQuery("SELECT time AS time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, player.uuidString())))
                 .compile()
-                .run((result) -> {
-                    if (result.isEmpty()) {
-                        preset.getEmbed().clear();
-                        preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player not found!"));
+                .run((resultTableDate) -> {
+                    if (resultTableDate.isEmpty()) {
+                        embed.addField("Last Seen", "A long time ago...", false);
                         return;
                     }
                     
-                    ResultSet set = result.getResult();
-                    String formattedName = set.getString("name");
-                    preset.withPreset(
-                            new MinecraftUserPreset(formattedName)
-                    );
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT time AS time FROM player_join_log WHERE uuid = ? ORDER BY time DESC LIMIT 1;", (statement) -> statement.setString(1, set.getString("uuid"))))
-                            .compile()
-                            .run((resultTableDate) -> {
-                                if (resultTableDate.isEmpty()) {
-                                    embed.addField("Last Seen", "A long time ago...", false);
-                                    return;
-                                }
-                                
-                                ResultSet setTime = resultTableDate.getResult();
-                                Timestamp date = setTime.getTimestamp("time");
-                                if (Permission.EXPERT.hasPermission(event.getMember())) {
-                                    embed.setFooter("Last Seen");
-                                    embed.setTimestamp(date.toInstant().plus(5, ChronoUnit.HOURS));
-                                } else {
-                                    embed.addField("Last Seen", FormatUtil.formatDate(date), false);
-                                }
-                                
-                            });
+                    ResultSet setTime = resultTableDate.getResult();
+                    Timestamp date = setTime.getTimestamp("time");
+                    embed.addField("Last Seen", TimeFormat.RELATIVE.format(date.getTime()), false);
+    
                 });
         
         event.reply(preset);
     }
-    
 }

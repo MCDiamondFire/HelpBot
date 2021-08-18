@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,7 +16,6 @@ public class GuildJoinEvent extends ListenerAdapter {
         if (event.getGuild().getIdLong() == HelpBotInstance.DF_GUILD) {
             Member member = event.getMember();
             Util.updateMember(member);
-            RoleReactListener.refreshRoles(member);
             MuteExpireTask.handle(member);
         }
     }
