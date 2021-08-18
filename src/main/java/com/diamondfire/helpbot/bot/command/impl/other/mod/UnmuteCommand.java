@@ -2,10 +2,10 @@ package com.diamondfire.helpbot.bot.command.impl.other.mod;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DiscordUserArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.DiscordUserArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -43,12 +43,12 @@ public class UnmuteCommand extends Command {
                 .addArgument("user",
                         new DiscordUserArgument())
                 .addArgument("reason",
-                        new SingleArgumentContainer<>(new MessageArgument()).optional("Not Specified"));
+                        new SingleArgumentContainer<>(new MessageArgument()).optional(event -> "Not Specified"));
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.MODERATION;
+    public Rank getRank() {
+        return Rank.MODERATION;
     }
     
     @Override

@@ -1,11 +1,12 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.Enum.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.Enum.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.EndlessStringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -37,16 +38,15 @@ public class EditTagSubCommand extends SubCommand {
         return new ArgumentSet().addArgument(
                 "activator", new StringArgument()
         ).addArgument(
-                "property", new EnumArgument<TagProperty>()
-                        .setEnum(TagProperty.class)
+                "property", new EnumArgument<>(TagProperty.class)
         ).addArgument(
                 "newValue", new EndlessStringArgument()
         );
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.EXPERT
+    public Rank getRank() {
+        return Rank.EXPERT
                 .setOverrides(this, 808966728201666620L);
     }
     

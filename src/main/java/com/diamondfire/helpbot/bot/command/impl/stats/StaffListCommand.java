@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
@@ -41,8 +41,8 @@ public class StaffListCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override
@@ -56,17 +56,17 @@ public class StaffListCommand extends Command {
                         "                        AND (ranks.support > 0 || ranks.moderation > 0 || ranks.administration > 0 || ranks.builder = 1) AND ranks.retirement = 0"))
                 .compile()
                 .runAsync((result) -> {
-                    Map<Rank, List<String>> ranks = new HashMap<>();
+                    Map<com.diamondfire.helpbot.df.ranks.Rank, List<String>> ranks = new HashMap<>();
                     registerRank(ranks,
-                            Rank.JRHELPER,
-                            Rank.HELPER,
-                            Rank.EXPERT,
-                            Rank.JRMOD,
-                            Rank.MOD,
-                            Rank.SR_MOD,
-                            Rank.ADMIN,
-                            Rank.OWNER,
-                            Rank.DEVELOPER);
+                            com.diamondfire.helpbot.df.ranks.Rank.JRHELPER,
+                            com.diamondfire.helpbot.df.ranks.Rank.HELPER,
+                            com.diamondfire.helpbot.df.ranks.Rank.EXPERT,
+                            com.diamondfire.helpbot.df.ranks.Rank.JRMOD,
+                            com.diamondfire.helpbot.df.ranks.Rank.MOD,
+                            com.diamondfire.helpbot.df.ranks.Rank.SR_MOD,
+                            com.diamondfire.helpbot.df.ranks.Rank.ADMIN,
+                            com.diamondfire.helpbot.df.ranks.Rank.OWNER,
+                            com.diamondfire.helpbot.df.ranks.Rank.DEVELOPER);
                     
                     for (ResultSet set : result) {
                         String name = StringUtil.display(set.getString("name"));
@@ -75,34 +75,34 @@ public class StaffListCommand extends Command {
                         int administrationNum = set.getInt("administration");
                         
                         if (administrationNum > 0) {
-                            ranks.get(Rank.fromBranch(RankBranch.ADMINISTRATION, administrationNum)).add(name);
+                            ranks.get(com.diamondfire.helpbot.df.ranks.Rank.fromBranch(RankBranch.ADMINISTRATION, administrationNum)).add(name);
                         }
                         if (moderationNum == 0 && supportNum > 0 && administrationNum == 0) {
-                            ranks.get(Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
+                            ranks.get(com.diamondfire.helpbot.df.ranks.Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
                         } else if (moderationNum > 0 && administrationNum == 0) {
-                            ranks.get(Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
+                            ranks.get(com.diamondfire.helpbot.df.ranks.Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
                         }
                     }
                     
                     EmbedBuilder supportPage = new EmbedBuilder();
-                    EmbedUtil.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
-                    EmbedUtil.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
-                    EmbedUtil.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
+                    EmbedUtil.addFields(supportPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.EXPERT), "", "Experts");
+                    EmbedUtil.addFields(supportPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.HELPER), "", "Helpers");
+                    EmbedUtil.addFields(supportPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.JRHELPER), "", "JrHelpers");
                     builder.addPage("Support", supportPage);
                     
                     EmbedBuilder modPage = new EmbedBuilder();
-                    EmbedUtil.addFields(modPage, ranks.get(Rank.SR_MOD), "", "SrMods");
-                    EmbedUtil.addFields(modPage, ranks.get(Rank.MOD), "", "Mods");
-                    EmbedUtil.addFields(modPage, ranks.get(Rank.JRMOD), "", "JrMods");
+                    EmbedUtil.addFields(modPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.SR_MOD), "", "SrMods");
+                    EmbedUtil.addFields(modPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.MOD), "", "Mods");
+                    EmbedUtil.addFields(modPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.JRMOD), "", "JrMods");
                     builder.addPage("Moderation", modPage);
                     
                     EmbedBuilder adminPage = new EmbedBuilder();
-                    EmbedUtil.addFields(adminPage, ranks.get(Rank.OWNER), "", "Owner");
-                    EmbedUtil.addFields(adminPage, ranks.get(Rank.ADMIN), "", "Admins");
+                    EmbedUtil.addFields(adminPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.OWNER), "", "Owner");
+                    EmbedUtil.addFields(adminPage, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.ADMIN), "", "Admins");
                     builder.addPage("Administration", adminPage);
                     
                     EmbedBuilder devEmbed = new EmbedBuilder();
-                    EmbedUtil.addFields(devEmbed, ranks.get(Rank.DEVELOPER), "", "DiamondFire Developers");
+                    EmbedUtil.addFields(devEmbed, ranks.get(com.diamondfire.helpbot.df.ranks.Rank.DEVELOPER), "", "DiamondFire Developers");
                     
                     Guild guild = event.getGuild();
                     Role botDev = guild.getRoleById(589238520145510400L);
@@ -124,8 +124,8 @@ public class StaffListCommand extends Command {
         
     }
     
-    private void registerRank(Map<Rank, List<String>> map, Rank... ranks) {
-        for (Rank rank : ranks) {
+    private void registerRank(Map<com.diamondfire.helpbot.df.ranks.Rank, List<String>> map, com.diamondfire.helpbot.df.ranks.Rank... ranks) {
+        for (com.diamondfire.helpbot.df.ranks.Rank rank : ranks) {
             map.put(rank, new ArrayList<>());
         }
     }

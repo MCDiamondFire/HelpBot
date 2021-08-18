@@ -6,11 +6,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 
-public abstract class AbstractSimpleValueArgument<T> extends Argument<T> {
+public abstract class AbstractSimpleValueFallbackArgument<T> extends FallbackArgument<T> {
     
     @Override
+    @SuppressWarnings("all")
     public T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
-        return parse(args.pop(), event);
+        return parse(args.peek(), event);
     }
     
     protected abstract T parse(@NotNull String argument, CommandEvent event) throws ArgumentException;

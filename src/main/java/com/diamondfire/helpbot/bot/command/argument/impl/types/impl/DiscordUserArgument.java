@@ -1,6 +1,7 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.impl;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.MalformedArgumentException;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import org.jetbrains.annotations.NotNull;

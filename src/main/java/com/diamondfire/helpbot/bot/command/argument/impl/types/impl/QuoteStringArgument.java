@@ -1,12 +1,13 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.impl;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class QuoteStringArgument implements Argument<String> {
+public class QuoteStringArgument extends Argument<String> {
     
     private static final String ERROR_MESSAGE = "Invalid quote, must start and end with `'` or `\"`.";
     

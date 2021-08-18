@@ -2,10 +2,10 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.ClampedIntegerArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.ClampedIntegerArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -42,12 +42,12 @@ public class JoinBadCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("days",
-                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, 100)).optional(30));
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1, 100)).optional(event -> 30));
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.EXPERT;
+    public Rank getRank() {
+        return Rank.EXPERT;
     }
     
     @Override

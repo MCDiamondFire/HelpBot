@@ -2,9 +2,9 @@ package com.diamondfire.helpbot.bot.command.impl.stats.plot;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.*;
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.ConnectionProvider;
 
@@ -45,8 +45,8 @@ public class PlotLocCommand extends AbstractPlotCommand {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     // If someone who knows MYSQL enough that they can add plotsize as some sort of "local" variable. Go for it.

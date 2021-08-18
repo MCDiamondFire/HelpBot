@@ -2,10 +2,10 @@ package com.diamondfire.helpbot.bot.command.impl.other.info;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -35,18 +35,18 @@ public class PermUnlocksCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("permission",
-                        new DefinedObjectArgument<>(Permission.values())
+                        new DefinedObjectArgument<>(Rank.values())
                 );
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override
     public void run(CommandEvent event) {
-        Permission permission = event.getArgument("permission");
+        Rank permission = event.getArgument("permission");
         PresetBuilder builder = new PresetBuilder()
                 .withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "Commands unlocked by: " + permission, null)
@@ -54,16 +54,16 @@ public class PermUnlocksCommand extends Command {
         
         List<String> commands = new ArrayList<>();
         List<Command> commandList = new ArrayList<>(CommandHandler.getInstance().getCommands().values());
-        commandList.sort(Comparator.comparingInt((command) -> command.getPermission().ordinal()));
+        commandList.sort(Comparator.comparingInt((command) -> command.getRank().ordinal()));
         
         for (Command command : commandList) {
-            if (command.getPermission().hasPermission(permission)) {
+            if (command.getRank().hasPermission(permission)) {
                 StringBuilder cmdName = new StringBuilder();
                 cmdName.append(command.getName());
                 
-                if (command.getPermission() != permission) {
+                if (command.getRank() != permission) {
                     cmdName.append(" (From ")
-                            .append(command.getPermission())
+                            .append(command.getRank())
                             .append(')');
                 }
                 

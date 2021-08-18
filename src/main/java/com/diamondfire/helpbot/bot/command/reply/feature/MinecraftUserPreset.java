@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.bot.command.reply.feature;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft.Player;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 

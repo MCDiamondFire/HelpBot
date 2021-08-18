@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.graph;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
 
@@ -19,8 +19,8 @@ public abstract class AbstractGraphCommand<T> extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override

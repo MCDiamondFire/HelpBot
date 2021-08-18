@@ -23,7 +23,7 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
         
         for (int i = 0; i < arguments; i++) {
             try {
-                approvedArgumentValues.add(arg.parseValue(rawArgs, event));
+                approvedArgumentValues.add(arg.parsed(rawArgs, event));
             } catch (Exception e) {
                 break;
             }

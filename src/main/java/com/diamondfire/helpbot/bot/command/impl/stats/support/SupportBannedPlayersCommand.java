@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -34,8 +34,8 @@ public class SupportBannedPlayersCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.EXPERT;
+    public Rank getRank() {
+        return Rank.EXPERT;
     }
     
     @Override

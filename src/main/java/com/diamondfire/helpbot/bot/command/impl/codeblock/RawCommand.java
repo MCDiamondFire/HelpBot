@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.StringUtil;
@@ -45,8 +45,8 @@ public class RawCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.BOT_DEVELOPER;
+    public Rank getRank() {
+        return Rank.BOT_DEVELOPER;
     }
     
     @Override

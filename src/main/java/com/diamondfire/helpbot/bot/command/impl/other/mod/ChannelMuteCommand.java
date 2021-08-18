@@ -3,10 +3,10 @@ package com.diamondfire.helpbot.bot.command.impl.other.mod;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -14,6 +14,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.*;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 
 import java.time.*;
@@ -47,8 +48,8 @@ public class ChannelMuteCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.MODERATION;
+    public Rank getRank() {
+        return Rank.MODERATION;
     }
     
     @Override
@@ -85,7 +86,7 @@ public class ChannelMuteCommand extends Command {
                     Guild punishmentGuild = event.getGuild();
                     TextChannel textChannel = punishmentGuild.getTextChannelById(channel);
                     punishmentGuild.retrieveMemberById(user).queue((member) -> {
-                        textChannel.putPermissionOverride(member).deny(net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION, net.dv8tion.jda.api.Permission.MESSAGE_WRITE).queue();
+                        textChannel.putPermissionOverride(member).deny(Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_WRITE).queue();
                     });
                     
                     HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, finalDuration, false));

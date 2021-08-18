@@ -1,14 +1,15 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.impl;
 
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class DefinedObjectArgument<T> implements Argument<T> {
+public class DefinedObjectArgument<T> extends Argument<T> {
     
     private boolean trailing = false;
     private final Map<String, T> objectMap = new HashMap<>();
