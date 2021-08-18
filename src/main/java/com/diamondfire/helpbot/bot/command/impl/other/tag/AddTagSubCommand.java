@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -9,9 +9,9 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
+import com.diamondfire.helpbot.sys.tag.exceptions.TagAlreadyExistsException;
 
 import java.io.IOException;
-import java.util.*;
 
 public class AddTagSubCommand extends SubCommand {
     
@@ -38,9 +38,9 @@ public class AddTagSubCommand extends SubCommand {
         return new ArgumentSet().addArgument(
                 "activator", new StringArgument()
         ).addArgument(
-                "title", new StringArgument()
+                "title", new QuoteStringArgument()
         ).addArgument(
-                "response", new StringArgument()
+                "response", new EndlessStringArgument()
         );
     }
     
@@ -52,33 +52,29 @@ public class AddTagSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        // Get new activator and title
+        // Get new activator, title and response
         String activator = event.getArgument("activator");
         String title = event.getArgument("title");
-        title = title.replaceAll("%space%", " ");
-        
-        // Get response
-        List<String> splitArgs = new LinkedList<>(Arrays.asList(event.getMessage().getContentRaw()
-                .split(" +")));
-        String response = String.join(" ", splitArgs.subList(4, splitArgs.size()));
+        String response = event.getArgument("response");
         
         // Construct Tag
         Tag tag = new Tag(activator, title, response, event.getAuthor().getIdLong(), "");
     
+        // Reply with result
         try {
             TagHandler.newTag(tag);
-            PresetBuilder preset = new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.SUCCESS, "Success", "Successfully added a new tag.")
-                    );
-            event.reply(preset);
             
+            event.reply(new PresetBuilder()
+                    .withPreset(
+                            new InformativeReply(InformativeReplyType.SUCCESS,
+                                    "Success", "Successfully added a new tag.")
+                    ));
         } catch (TagAlreadyExistsException | IOException err) {
-            PresetBuilder preset = new PresetBuilder()
+            
+            event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, err.getMessage())
-                    );
-            event.reply(preset);
+                    ));
         }
     }
     
