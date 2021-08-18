@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.file.*;
+import java.util.List;
 
 public class ExternalFile extends File {
     
@@ -12,8 +13,12 @@ public class ExternalFile extends File {
         super(pathname);
     }
     
-    public String getContent() throws IOException {
+    public String read() throws IOException {
         return new String(Files.readAllBytes(toPath()));
+    }
+    
+    public List<String> readAllLines() throws IOException {
+        return Files.readAllLines(toPath());
     }
     
     public void write(byte[] content) throws IOException {
@@ -40,6 +45,14 @@ public class ExternalFile extends File {
             throw new UnsupportedOperationException();
         }
         
-        return JsonParser.parseString(getContent()).getAsJsonObject();
+        return JsonParser.parseString(read()).getAsJsonObject();
+    }
+    
+    public void copy(File file) throws IOException {
+        copy(file.toPath());
+    }
+    
+    public void copy(Path path) throws IOException {
+        Files.copy(toPath(), path, StandardCopyOption.REPLACE_EXISTING);
     }
 }
