@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.sys.tag;
 
-import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.sys.externalfile.*;
 import com.diamondfire.helpbot.sys.tag.exceptions.*;
 import com.diamondfire.helpbot.util.serializer.*;
 import com.google.gson.*;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class TagHandler {
     
     private static final List<Tag> TAGS = new ArrayList<>();
-    private static final File FILE = ExternalFiles.TAGS;
+    private static final ExternalFile FILE = ExternalFiles.TAGS;
     
     static {
         try {
@@ -30,17 +30,15 @@ public class TagHandler {
     
     public static void cacheJson() throws IOException {
         // Read the file and update the cache
-        String content = new String(Files.readAllBytes(FILE.toPath()));
+        JsonObject json = FILE.parseJson();
         
-        if (content.isEmpty()) {
-            content = "{}";
-        }
+        List<JsonObject> objects = json.keySet().stream()
+                .map(key -> json.get(key).getAsJsonObject())
+                .collect(Collectors.toList());
         
-        JsonObject obj = JsonParser.parseString(content).getAsJsonObject();
-        
-        for (String key : obj.keySet()) {
+        for (JsonObject object : objects) {
             TAGS.add(TagSerializer.getInstance().deserialize(
-                    obj.get(key).getAsJsonObject()
+                    object
             ));
         }
     }
@@ -48,13 +46,11 @@ public class TagHandler {
     public static void save() throws IOException {
         JsonObject json = new JsonObject();
         
-        for (Tag tag : TAGS) {
-            json.add(tag.getActivator(), tag.serialize());
-        }
+        TAGS.forEach(tag -> json.add(
+                tag.getActivator(), tag.serialize()
+        ));
     
-        FILE.delete();
-        FILE.createNewFile();
-        Files.write(FILE.toPath(), json.toString().getBytes(), StandardOpenOption.WRITE);
+        FILE.write(json);
     }
     
     public static void newTag(Tag tag) throws TagAlreadyExistsException, IOException {
