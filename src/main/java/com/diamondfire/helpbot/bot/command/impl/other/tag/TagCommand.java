@@ -16,7 +16,6 @@ public class TagCommand extends SubCommandHolder {
         return new HelpContext()
                 .description("""
                         Controls custom command tags. Notes:
-                        - New: Use "%space%" in the title for spaces.
                         - Edit: Use "none" for image to remove the image.""")
                 .category(CommandCategory.OTHER)
                 .addArgument(

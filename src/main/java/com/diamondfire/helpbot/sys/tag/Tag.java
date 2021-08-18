@@ -1,10 +1,14 @@
 package com.diamondfire.helpbot.sys.tag;
 
+import com.diamondfire.helpbot.util.serializer.TagSerializer;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.NotNull;
 
-public class Tag {
+import java.io.Serializable;
+
+public class Tag implements Serializable {
     
     private String activator;
     private String title;
@@ -29,7 +33,7 @@ public class Tag {
     }
     
     public String getTitle() {
-        return this.title;
+        return title;
     }
     
     public void setTitle(String title) {
@@ -37,7 +41,7 @@ public class Tag {
     }
     
     public String getResponse() {
-        return this.response;
+        return response;
     }
     
     public void setResponse(String response) {
@@ -45,7 +49,7 @@ public class Tag {
     }
     
     public long getAuthorId() {
-        return this.authorId;
+        return authorId;
     }
     
     public void setAuthorId(long authorId) {
@@ -53,35 +57,30 @@ public class Tag {
     }
     
     public String getImage() {
-        return this.image;
+        return image;
     }
     
     public void setImage(String image) {
         this.image = image;
     }
     
-    public JsonObject asJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("activator", this.activator);
-        json.addProperty("title", this.title);
-        json.addProperty("response", this.response);
-        json.addProperty("authorId", this.authorId);
-        json.addProperty("image", this.image);
-        
-        return json;
-    }
-    
-    public void sendResponse(TextChannel channel, User requester) {
-        User user = channel.getJDA().retrieveUserById(getAuthorId()).complete();
+    public void sendResponse(TextChannel channel, @NotNull User requester) {
         
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle(getTitle())
-                .setAuthor("By "+user.getAsTag())
-                .setDescription(getResponse()+"\n\u200b")
+                .setDescription(getResponse() + "\n\u200b")
                 .setColor(0x969dba)
-                .setFooter("Executed by "+requester.getAsTag(), requester.getAvatarUrl());
-        if (!getImage().equals("")) embed.setImage(getImage());
+                .setFooter("Executed by " + requester.getAsTag(), requester.getAvatarUrl());
+        
+        if (!getImage().isEmpty()) {
+            embed.setImage(getImage());
+        }
                 
         channel.sendMessageEmbeds(embed.build()).queue();
     }
+    
+    public JsonObject serialize() {
+        return TagSerializer.getInstance().serialize(this);
+    }
+    
 }

@@ -1,7 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.Enum.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -9,9 +10,9 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
+import com.diamondfire.helpbot.sys.tag.exceptions.TagDoesNotExistException;
 
 import java.io.IOException;
-import java.util.*;
 
 public class EditTagSubCommand extends SubCommand {
     
@@ -36,7 +37,10 @@ public class EditTagSubCommand extends SubCommand {
         return new ArgumentSet().addArgument(
                 "activator", new StringArgument()
         ).addArgument(
-                "property", new StringArgument()
+                "property", new EnumArgument<TagProperty>()
+                        .setEnum(TagProperty.class)
+        ).addArgument(
+                "newValue", new EndlessStringArgument()
         );
     }
     
@@ -48,45 +52,34 @@ public class EditTagSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        // Get activator and property
+        
+        // Get activator, property and newValue
         String activator = event.getArgument("activator");
-        String prop = event.getArgument("property");
+        TagProperty property = event.getArgument("property");
+        String newValue = event.getArgument("newValue");
         
-        // Check if property is valid
-        TagProperty property = TagProperty.getByProperty(prop);
-        if (property == null || !property.isModifiable()) {
-            PresetBuilder preset = new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR,
-                                    "This is not a valid property. Choose from: `activator`, `title`, `response`, `image`")
-                    );
-            event.reply(preset);
-            return;
+        if (property == TagProperty.IMAGE && newValue.equals("none")) {
+            newValue = "";
         }
-        
-        // Get new value
-        List<String> splitArgs = new LinkedList<>(Arrays.asList(event.getMessage().getContentRaw()
-                .split(" +")));
-        String newValue = String.join(" ", splitArgs.subList(4, splitArgs.size()));
-        if (property == TagProperty.IMAGE && newValue.equals("none")) newValue = "";
     
         try {
             Tag tag = TagHandler.getTag(activator);
-            property.edit(tag, newValue);
-            TagHandler.saveToJson();
+            property.set(tag, newValue);
+            TagHandler.save();
             
-            PresetBuilder preset = new PresetBuilder()
+            event.reply(new PresetBuilder()
                     .withPreset(
-                            new InformativeReply(InformativeReplyType.SUCCESS, "Successfully modified tag.")
-                    );
-            event.reply(preset);
+                            new InformativeReply(InformativeReplyType.SUCCESS,
+                                    "Successfully modified tag.")
+                    ));
             
-        } catch (TagDoesntExistException | IOException err) {
-            PresetBuilder preset = new PresetBuilder()
+        } catch (TagDoesNotExistException | IOException err) {
+            event.reply(new PresetBuilder()
                     .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, err.getMessage())
-                    );
-            event.reply(preset);
+                            new InformativeReply(InformativeReplyType.ERROR,
+                                    err.getMessage())
+                    ));
+            
             err.printStackTrace();
         }
     }
