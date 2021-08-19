@@ -6,14 +6,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 
-public abstract class FallbackArgument<T> extends Argument<T> {
+public interface FallbackArgument<T> extends Argument<T> {
     
     @Override
-    public T parsed(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
+    default T parsed(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
         T result;
     
         try {
-            result = super.parsed(args, event);
+            result = Argument.super.parsed(args, event);
             args.pop();
         
         } catch (Exception e) {
@@ -34,6 +34,6 @@ public abstract class FallbackArgument<T> extends Argument<T> {
      * @param event The Command event.
      * @return The new value.
      */
-    public abstract T ifFail(CommandEvent event);
+    T ifFail(CommandEvent event);
     
 }

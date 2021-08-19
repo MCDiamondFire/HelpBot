@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class DefinedObjectArgument<T> extends Argument<T> {
+public class DefinedObjectArgument<T> implements Argument<T> {
     
     private boolean trailing = false;
     private final Map<String, T> objectMap = new HashMap<>();

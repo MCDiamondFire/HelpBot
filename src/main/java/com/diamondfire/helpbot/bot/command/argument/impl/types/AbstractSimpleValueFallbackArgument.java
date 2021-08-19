@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 
-public abstract class AbstractSimpleValueFallbackArgument<T> extends FallbackArgument<T> {
+public abstract class AbstractSimpleValueFallbackArgument<T> implements FallbackArgument<T> {
     
     @Override
     @SuppressWarnings("all")

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 
-public abstract class AbstractSimpleValueArgument<T> extends Argument<T> {
+public abstract class AbstractSimpleValueArgument<T> implements Argument<T> {
     
     @Override
     public T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {

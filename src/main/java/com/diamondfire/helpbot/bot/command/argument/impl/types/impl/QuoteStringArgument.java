@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class QuoteStringArgument extends Argument<String> {
+public class QuoteStringArgument implements Argument<String> {
     
     private static final String ERROR_MESSAGE = "Invalid quote, must start and end with `'` or `\"`.";
     

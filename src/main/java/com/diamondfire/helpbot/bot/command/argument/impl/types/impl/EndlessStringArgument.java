@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Deque;
 
-public class EndlessStringArgument extends Argument<String> {
+public class EndlessStringArgument implements Argument<String> {
     
     @Override
     public String parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {

@@ -13,13 +13,13 @@ import java.util.Deque;
  *
  * @param <T> parsed value type
  */
-public abstract class Argument<T> {
+public interface Argument<T> {
     
-    public T parsed(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
+    default T parsed(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
         return parseValue(args, event);
     }
     
-    protected abstract T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException;
+    T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException;
     
     
 }
