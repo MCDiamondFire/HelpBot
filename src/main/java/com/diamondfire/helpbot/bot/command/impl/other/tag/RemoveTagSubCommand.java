@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
+import com.diamondfire.helpbot.sys.tag.exceptions.TagDoesNotExistException;
 
 import java.io.IOException;
 
@@ -38,7 +39,8 @@ public class RemoveTagSubCommand extends SubCommand {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT;
+        return Permission.EXPERT
+                .setOverrides(this, 808966728201666620L);
     }
     
     @Override
@@ -48,20 +50,19 @@ public class RemoveTagSubCommand extends SubCommand {
         
         try {
             TagHandler.deleteTag(activator);
-            PresetBuilder preset = new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.SUCCESS,
-                                    "Successfully deleted tag with activator `"+activator+"`.")
-                    );
-            event.reply(preset);
             
-        } catch (TagDoesntExistException | IOException err) {
-            PresetBuilder preset = new PresetBuilder()
+            event.reply(new PresetBuilder()
+                    .withPreset(
+                            new InformativeReply(InformativeReplyType.SUCCESS, String.format(
+                                    "Successfully deleted tag with activator `%s`.", activator))
+                    ));
+            
+        } catch (TagDoesNotExistException | IOException err) {
+            event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR,
                                     err.getMessage())
-                    );
-            event.reply(preset);
+                    ));
         }
     }
     

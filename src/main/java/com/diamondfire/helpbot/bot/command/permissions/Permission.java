@@ -1,8 +1,10 @@
 package com.diamondfire.helpbot.bot.command.permissions;
 
+import com.diamondfire.helpbot.bot.command.impl.Command;
 import net.dv8tion.jda.api.entities.Member;
 
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public enum Permission {
     BOT_DEVELOPER(589238520145510400L, 999),
@@ -16,6 +18,7 @@ public enum Permission {
     USER(349434193517740033L, 1);
     
     private static final HashMap<Long, Permission> roleMap = new HashMap<>();
+    private static final HashMap<Command, Set<Long>> overrides = new HashMap<>();
     
     static {
         for (Permission perm : values()) {
@@ -37,6 +40,15 @@ public enum Permission {
             return USER;
         }
         return perm;
+    }
+    
+    public Permission setOverrides(Command command, Long... userIds) {
+        overrides.put(command, Arrays.stream(userIds).collect(Collectors.toSet()));
+        return this;
+    }
+    
+    public static Set<Long> getOverrides(Command command) {
+        return Objects.requireNonNullElse(overrides.get(command), new HashSet<>());
     }
     
     public long getRole() {

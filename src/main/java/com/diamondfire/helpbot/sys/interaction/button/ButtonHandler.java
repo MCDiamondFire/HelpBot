@@ -45,15 +45,8 @@ public class ButtonHandler {
         }
     }
     
-    private static class ButtonListener {
-        
-        private final long user;
-        private final Consumer<ButtonClickEvent> consumer;
-        
-        private ButtonListener(long user, Consumer<ButtonClickEvent> consumer) {
-            this.user = user;
-            this.consumer = consumer;
-        }
+    private record ButtonListener(long user, Consumer<ButtonClickEvent> consumer) {
+    
     }
     
 }
