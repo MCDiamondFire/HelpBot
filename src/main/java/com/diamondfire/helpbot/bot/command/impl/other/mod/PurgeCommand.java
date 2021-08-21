@@ -48,7 +48,7 @@ public class PurgeCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         PresetBuilder builder = new PresetBuilder();
-        
+    
         int messagesToRemove = event.getArgument("count");
         
         if (messagesToRemove > 100 || messagesToRemove < 2) {
@@ -84,15 +84,19 @@ public class PurgeCommand extends Command {
                     }
                 }
     
-                stringBuilder.insert(0, "Here are the messages you purged;\n");
+                stringBuilder.insert(0,
+                        String.format("%s purged %s messages in #%s",
+                                event.getAuthor().getAsTag(),
+                                messagesToRemove,
+                                event.getChannel().getName()));
                 
                 try {
                     File file = ExternalFileUtil.generateFile("purge_log.txt");
                     Files.writeString(file.toPath(), stringBuilder.toString(), StandardOpenOption.WRITE);
+    
+                    TextChannel evidenceLog = event.getJDA().getTextChannelById(772863698581848073L);
                     
-                    event.getAuthor().openPrivateChannel().flatMap(
-                            userChannel -> userChannel.sendFile(file)
-                    ).queue();
+                    evidenceLog.sendFile(file).queue();
                     
                 } catch (Exception e) {
                     throw new IllegalStateException();
