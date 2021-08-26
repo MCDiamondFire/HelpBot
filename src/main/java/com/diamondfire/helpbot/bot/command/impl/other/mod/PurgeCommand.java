@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other.mod;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
@@ -9,14 +10,11 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 
 import java.io.File;
 import java.nio.file.*;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 public class PurgeCommand extends Command {
     
@@ -94,8 +92,11 @@ public class PurgeCommand extends Command {
                     File file = ExternalFileUtil.generateFile("purge_log.txt");
                     Files.writeString(file.toPath(), stringBuilder.toString(), StandardOpenOption.WRITE);
     
-                    TextChannel evidenceLog = event.getJDA().getTextChannelById(772863698581848073L);
-                    
+                    TextChannel evidenceLog = event.getJDA().getTextChannelById(
+                            HelpBotInstance.getConfig().getPurgeEvidenceChannel()
+                    );
+    
+                    assert evidenceLog != null;
                     evidenceLog.sendFile(file).queue();
                     
                 } catch (Exception e) {
