@@ -15,7 +15,7 @@ public class TaskRegistry {
         register(
                 new CodeDatabaseTask(),
                 new GraphChannelTask(),
-                new RefreshCreditsTask(),
+                //new RefreshCreditsTask(),
                 new SupporterClassTask(),
                 new NameUpdateTask()
         );
