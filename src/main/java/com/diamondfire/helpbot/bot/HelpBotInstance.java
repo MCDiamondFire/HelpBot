@@ -106,7 +106,7 @@ public class HelpBotInstance {
                 new NamesCommand(),
                 new PlayerJoinGraphCommand(),
                 //new CpCommand(),
-                new CpRequirementsCommand(),
+                //new CpRequirementsCommand(),
                 new VoteGivenLeaderboard(),
                 new PlotVoteGraphCommand(),
                 new JoinDataCommand(),
