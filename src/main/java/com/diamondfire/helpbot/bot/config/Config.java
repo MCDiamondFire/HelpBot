@@ -72,6 +72,10 @@ public class Config {
         return getPropertyLong("discussion_channel");
     }
     
+    public long getPurgeEvidenceChannel() {
+        return getPropertyLong("purge_evidence_channel");
+    }
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }
