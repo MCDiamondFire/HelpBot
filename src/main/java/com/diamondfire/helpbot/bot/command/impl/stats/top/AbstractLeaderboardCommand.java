@@ -2,9 +2,9 @@ package com.diamondfire.helpbot.bot.command.impl.stats.top;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.StringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -24,8 +24,8 @@ public abstract class AbstractLeaderboardCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override

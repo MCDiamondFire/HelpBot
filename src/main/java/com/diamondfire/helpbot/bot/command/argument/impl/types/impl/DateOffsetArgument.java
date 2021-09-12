@@ -1,4 +1,6 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.impl;
+
+import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractOffsetArgument;
 
 import java.util.Calendar;
 

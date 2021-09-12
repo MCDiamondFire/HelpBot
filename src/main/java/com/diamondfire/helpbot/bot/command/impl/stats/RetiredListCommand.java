@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
@@ -40,8 +40,8 @@ public class RetiredListCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override
@@ -56,18 +56,18 @@ public class RetiredListCommand extends Command {
                         "AND ranks.support = 0"))
                 .compile()
                 .run((result) -> {
-                    Map<Rank, List<String>> retiredList = new HashMap<>();
-                    retiredList.put(Rank.RETIRED, new ArrayList<>());
-                    retiredList.put(Rank.EMERITUS, new ArrayList<>());
+                    Map<com.diamondfire.helpbot.df.ranks.Rank, List<String>> retiredList = new HashMap<>();
+                    retiredList.put(com.diamondfire.helpbot.df.ranks.Rank.RETIRED, new ArrayList<>());
+                    retiredList.put(com.diamondfire.helpbot.df.ranks.Rank.EMERITUS, new ArrayList<>());
                     
                     for (ResultSet set : result) {
-                        retiredList.get(Rank.fromBranch(RankBranch.RETIREMENT, set.getInt("retirement"))).add(StringUtil.display(set.getString("name")));
+                        retiredList.get(com.diamondfire.helpbot.df.ranks.Rank.fromBranch(RankBranch.RETIREMENT, set.getInt("retirement"))).add(StringUtil.display(set.getString("name")));
                     }
                     
                     EmbedBuilder retired = new EmbedBuilder();
-                    EmbedUtil.addFields(retired, retiredList.get(Rank.RETIRED), "", "", true);
+                    EmbedUtil.addFields(retired, retiredList.get(com.diamondfire.helpbot.df.ranks.Rank.RETIRED), "", "", true);
                     EmbedBuilder emeritus = new EmbedBuilder();
-                    EmbedUtil.addFields(emeritus, retiredList.get(Rank.EMERITUS), "", "", true);
+                    EmbedUtil.addFields(emeritus, retiredList.get(com.diamondfire.helpbot.df.ranks.Rank.EMERITUS), "", "", true);
                     
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);

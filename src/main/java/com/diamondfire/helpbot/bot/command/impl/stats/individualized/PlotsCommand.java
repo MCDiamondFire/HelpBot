@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
@@ -40,8 +40,8 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override

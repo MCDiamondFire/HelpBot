@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.stats.support;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -36,8 +36,8 @@ public class ExcusedStaffCommand extends Command {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.EXPERT;
+    public Rank getRank() {
+        return Rank.EXPERT;
     }
     
     @Override
@@ -74,7 +74,7 @@ public class ExcusedStaffCommand extends Command {
                         Date date = set.getDate("excused_till");
                         String reason = set.getString("reason");
                         String excused_by = set.getString("excused_by");
-                        Rank rank = RankUtil.getHighRank(set);
+                        com.diamondfire.helpbot.df.ranks.Rank rank = RankUtil.getHighRank(set);
                         String name = set.getString("name");
                         
                         if (names.contains(name)) {

@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.*;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 
 public class TagCommand extends SubCommandHolder {
     
@@ -28,8 +28,8 @@ public class TagCommand extends SubCommandHolder {
     }
     
     @Override
-    public Permission getPermission() {
-        return Permission.USER;
+    public Rank getRank() {
+        return Rank.USER;
     }
     
     @Override

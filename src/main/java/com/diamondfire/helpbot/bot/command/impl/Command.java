@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.HelpContext;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public abstract class Command {
@@ -34,7 +34,7 @@ public abstract class Command {
         }
     }
     
-    public abstract Permission getPermission();
+    public abstract Rank getRank();
     
     public abstract void run(CommandEvent event);
 }
