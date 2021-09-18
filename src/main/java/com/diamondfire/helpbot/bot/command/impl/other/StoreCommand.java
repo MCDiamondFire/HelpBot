@@ -54,7 +54,11 @@ public class StoreCommand extends Command {
             JsonObject json = WebUtil.getJson("https://df.vatten.dev/store/").getAsJsonObject();
             builder.setTitle("<:diamondfire:867472383098486794> DiamondFire Store <:diamondfire:867472383098486794>", "https://store.mcdiamondfire.com/");
             boolean sale = json.has("sale");
-            if(sale) builder.setDescription("\n<a:boostx3:809172442496630815> **SALE! " + (int) (json.get("sale").getAsFloat() * 100) + "% OFF!** <a:boostx3:809172442496630815>\n");
+            if(sale) {
+                builder.setDescription("\n<a:boostx3:809172442496630815> **SALE! " + (int) (json.get("sale").getAsFloat() * 100) + "% OFF!** <a:boostx3:809172442496630815>\n");
+            } else {
+                builder.setDescription("");
+            }
             
             //lazy reorganizing
             JsonObject items = new JsonObject();
