@@ -11,7 +11,6 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
-import com.google.gson.*;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -40,7 +39,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     protected void execute(CommandEvent event, Player player) {
-        JsonObject profile = Util.getPlayerProfile(player.name());
+        UserProfile profile = Util.getPlayerProfile(player.name());
         PresetBuilder builder = new PresetBuilder();
         List<NameDateRange> nameRanges = new ArrayList<>();
         Set<String> names = new HashSet<>();
@@ -53,23 +52,22 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             return;
         }
         
-        String mainName = profile.get("name").getAsString();
+        String mainName = profile.getUsername();
         
-        JsonArray array = profile.get("name_history").getAsJsonArray();
+        ArrayList<Pair<String, Long>> array = profile.getNameHistory();
         
         
         for (int i = array.size() - 1; i >= 0; i--) {
-            JsonElement nameElement = array.get(i);
-            JsonObject obj = nameElement.getAsJsonObject();
-            JsonElement changedAt = obj.get("changedToAt");
+            Pair<String, Long> nameChange = array.get(i);
+            Long changedAt = nameChange.getSecond();
             if (changedAt == null) {
-                nameRanges.add(new NameDateRange(obj.get("name").getAsString(), null, DateUtil.toDate(LocalDate.now())));
+                nameRanges.add(new NameDateRange(nameChange.getFirst(), null, DateUtil.toDate(LocalDate.now())));
                 continue;
             }
             
-            Date changeDate = DateUtil.toDate(changedAt.getAsLong());
+            Date changeDate = DateUtil.toDate(changedAt);
             
-            nameRanges.add(new NameDateRange(obj.get("name").getAsString(), changeDate, lastDate));
+            nameRanges.add(new NameDateRange(nameChange.getFirst(), changeDate, lastDate));
             lastDate = changeDate;
             
         }

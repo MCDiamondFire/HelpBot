@@ -2,8 +2,10 @@ package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.*;
 import com.diamondfire.helpbot.bot.command.help.*;
+import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
@@ -11,13 +13,12 @@ import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
-import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.*;
 
 
-public class NamesCommand extends AbstractPlayerUUIDCommand {
+public class NamesCommand extends Command {
     
     @Override
     public String getName() {
@@ -37,8 +38,14 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                 .addArgument(
                         new HelpContextArgument()
                                 .name("player|uuid")
-                                .optional()
                 );
+    }
+    
+    @Override
+    protected ArgumentSet compileArguments() {
+        return new ArgumentSet()
+                .addArgument("player|uuid",
+                        new SingleArgumentContainer<>(new StringArgument()));
     }
     
     @Override
@@ -47,11 +54,11 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    protected void execute(CommandEvent event, Player player) {
+    public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         EmbedBuilder embed = preset.getEmbed();
         try {
-            JsonObject profile = Util.getPlayerProfile(player.name());
+            UserProfile profile = Util.getPlayerProfile(event.getArgument("player|uuid"));
         
             // Incase api fails. Shrug
             if (profile == null) {
@@ -63,10 +70,9 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
             }
         
             List<String> names = new ArrayList<>();
-            String displayName = profile.get("name").getAsString();
-            for (JsonElement nameElement : profile.get("name_history").getAsJsonArray()) {
-                JsonObject obj = nameElement.getAsJsonObject();
-                JsonElement changedAt = obj.get("changedToAt");
+            String displayName = profile.getUsername();
+            for (Pair<String, Long> nameChange : profile.getNameHistory()) {
+                Long changedAt = nameChange.getSecond();
             
                 preset.withPreset(
                         new MinecraftUserPreset(displayName),
@@ -74,9 +80,9 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
                 );
             
                 if (changedAt == null) {
-                    names.add(String.format("%s", obj.get("name").getAsString()));
+                    names.add(String.format("%s", nameChange.getFirst()));
                 } else {
-                    names.add(obj.get("name").getAsString() + String.format(" (%s)", FormatUtil.formatDate(DateUtil.toDate(changedAt.getAsLong()))));
+                    names.add(nameChange.getFirst() + String.format(" (%s)", FormatUtil.formatDate(DateUtil.toDate(changedAt))));
                 }
             
             }
@@ -86,6 +92,9 @@ public class NamesCommand extends AbstractPlayerUUIDCommand {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        preset.withPreset(
+                new InformativeReply(InformativeReplyType.ERROR, "Player not found!")
+        );
         event.reply(preset);
     }
     

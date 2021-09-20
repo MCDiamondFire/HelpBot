@@ -95,22 +95,19 @@ public class Util {
         return Math.max(min, Math.min(num, max));
     }
     
-    public static JsonObject getPlayerProfile(String player) {
+    public static UserProfile getPlayerProfile(String player) {
         try {
-            URL profile = new URL("https://mc-heads.net/minecraft/profile/" + player);
-            URLConnection connection = profile.openConnection();
-            StringBuilder stringBuilder = new StringBuilder();
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                stringBuilder.append(inputLine);
-            
-            JsonElement element = JsonParser.parseString(stringBuilder.toString());
-            if (!element.isJsonObject()) {
-                return null;
+            if(player.length() <= 16) {
+                player = WebUtil.getJson("https://api.mojang.com/users/profiles/minecraft/" + player).getAsJsonObject().get("id").getAsString();
             }
             
-            return element.getAsJsonObject();
+            JsonArray names = WebUtil.getJson("https://api.mojang.com/user/profiles/" + player + "/names").getAsJsonArray();
+            
+            JsonObject profile = WebUtil.getJson("https://sessionserver.mojang.com/session/minecraft/profile/" + player).getAsJsonObject();
+            
+            profile.add("name_history", names);
+            
+            return UserProfile.fromJson(profile);
         } catch (IOException ignored) {
         }
         
