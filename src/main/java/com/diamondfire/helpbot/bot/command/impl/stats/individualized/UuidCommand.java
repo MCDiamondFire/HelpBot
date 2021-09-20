@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft.Player;
-import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Rank;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -17,7 +17,10 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext();
+        return new HelpContext()
+                .addArgument(new HelpContextArgument()
+                        .name("player name|uuid")
+                        .optional());
     }
     
     @Override

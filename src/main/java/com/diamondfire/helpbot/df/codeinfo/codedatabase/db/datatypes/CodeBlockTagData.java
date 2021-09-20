@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes;
 
 import com.google.gson.*;
+import com.diamondfire.helpbot.util.Util;
 
 import java.util.*;
 
@@ -43,12 +44,20 @@ public class CodeBlockTagData {
         return option.toArray(new CodeBlockTagOption[]{});
     }
     
+    public String[] getAliases() {
+        return Util.fromJsonArray(data.get("aliases").getAsJsonArray());
+    }
+    
     public DisplayIcon getItem() {
         return new DisplayIcon((JsonObject) data.get("icon"));
     }
     
     public String getDefaultValue() {
         return data.get("defaultOption").getAsString();
+    }
+    
+    public JsonObject getJson() {
+        return data;
     }
     
     public static class CodeBlockTagOption {
@@ -65,6 +74,10 @@ public class CodeBlockTagData {
         
         public DisplayIcon getIcon() {
             return new DisplayIcon(optionData.get("icon").getAsJsonObject());
+        }
+    
+        public JsonObject getJson() {
+            return optionData;
         }
     }
     

@@ -59,7 +59,7 @@ public class EvalCommand extends Command {
         String code = event.getArgument("code");
         
         // Red is a bad boy, sometimes he decides he wants to open 500 tabs on my computer! This is here to stop Red, nothing else.
-        if (HelpBotInstance.getConfig().isDevBot()) {
+        if (HelpBotInstance.getConfig().isDevBot() && event.getAuthor().getIdLong() != 246778942323818506L) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("No.");
             builder.setColor(Color.red);
