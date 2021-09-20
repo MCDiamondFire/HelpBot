@@ -5,7 +5,6 @@ import java.io.*;
 public class ExternalFileUtil {
     
     public static File generateFile(String name) throws IOException {
-        
         File file = new File(ExternalFiles.OTHER_CACHE_DIR, name);
         if (file.exists()) {
             file.delete();

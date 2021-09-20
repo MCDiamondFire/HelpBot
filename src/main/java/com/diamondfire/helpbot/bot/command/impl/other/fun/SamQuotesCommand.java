@@ -429,7 +429,7 @@ public class SamQuotesCommand extends Command {
             g.drawImage(img2, 5, 5, bgColor, null);
             g.drawImage(circleBuffer, 5, 5, height, height, bgColor, null);
     
-            File samQuote = new File(ExternalFiles.IMAGES_DIR, "quote.png");
+            File samQuote = new File(ExternalFiles.OTHER_CACHE_DIR, "quote.png");
             try {
                 ImageIO.write(combined, "PNG", samQuote);
             } catch (IOException e) {
