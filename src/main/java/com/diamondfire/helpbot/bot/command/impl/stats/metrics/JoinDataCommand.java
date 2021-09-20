@@ -2,13 +2,14 @@ package com.diamondfire.helpbot.bot.command.impl.stats.metrics;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.df.ranks.Rank;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
@@ -50,7 +51,7 @@ public class JoinDataCommand extends Command {
                 .addArgument("date",
                         new DateArgument())
                 .addArgument("days",
-                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(event -> 7))
+                        new SingleArgumentContainer<>(new ClampedIntegerArgument(1)).optional(7))
                 .addArgument("daterejoin",
                         new SingleArgumentContainer<>(new DateArgument()).optional(null))
                 .addArgument("daysrejoin",
@@ -59,8 +60,8 @@ public class JoinDataCommand extends Command {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.ADMINISTRATOR;
+    public Permission getPermission() {
+        return Permission.ADMINISTRATOR;
     }
     
     @Override
@@ -123,10 +124,10 @@ public class JoinDataCommand extends Command {
                 });
         
         embed.addField(String.format("Players that have joined within %s and %s that have donor ranks.", dateFrom, dateTo), String.join("\n", new String[]{
-                format(com.diamondfire.helpbot.df.ranks.Rank.OVERLORD) + ranks.get(4),
-                format(com.diamondfire.helpbot.df.ranks.Rank.MYTHIC) + ranks.get(3),
-                format(com.diamondfire.helpbot.df.ranks.Rank.EMPEROR) + " " + ranks.get(2),
-                format(com.diamondfire.helpbot.df.ranks.Rank.NOBLE) + ranks.get(1)
+                format(Rank.OVERLORD) + ranks.get(4),
+                format(Rank.MYTHIC) + ranks.get(3),
+                format(Rank.EMPEROR) + " " + ranks.get(2),
+                format(Rank.NOBLE) + ranks.get(1)
         }), false);
         
         
@@ -168,7 +169,7 @@ public class JoinDataCommand extends Command {
         event.reply(builder);
     }
     
-    private String format(com.diamondfire.helpbot.df.ranks.Rank rank) {
+    private String format(Rank rank) {
         return rank.getRankEmote().getAsMention() + " ";
     }
 }

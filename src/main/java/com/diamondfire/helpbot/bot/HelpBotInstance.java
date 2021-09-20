@@ -73,7 +73,6 @@ public class HelpBotInstance {
                 new MuteCommand(),
                 new MutedCommand(),
                 new UnmuteCommand(),
-                new LockCommand(),
                 new VerifyCommand(),
                 new PollCommand(),
                 new IdeaCommand(),

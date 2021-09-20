@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -38,12 +38,12 @@ public class EightBallCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("question",
-                        new SingleArgumentContainer<>(new MessageArgument()).optional(event -> "Is vatten super duper cool?"));
+                        new SingleArgumentContainer<>(new MessageArgument()).optional("Is vatten super duper cool?"));
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     @Override

@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 import java.util.Deque;
@@ -20,10 +20,10 @@ public class SingleArgumentParser<A> extends ArgumentParser<SingleArgumentContai
         Deque<String> rawArgs = args.popStack();
         Argument<A> arg = getContainer().getArgument();
         
-        if (rawArgs.peek() == null && !(arg instanceof FallbackArgument<?>)) {
+        if (rawArgs.peek() == null) {
             throw new MissingArgumentException("Expected an argument, but got nothing.");
         }
         
-        return new ParsedArgument<>(identifier, arg.parsed(rawArgs, event));
+        return new ParsedArgument<>(identifier, arg.parseValue(rawArgs, event));
     }
 }

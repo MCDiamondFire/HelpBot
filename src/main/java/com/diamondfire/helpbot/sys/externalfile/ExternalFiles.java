@@ -4,82 +4,66 @@ import java.io.File;
 
 public interface ExternalFiles {
     
-    ExternalFile DB = new ExternalFileBuilder()
+    File DB = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("db")
-            .setFileType(ExternalFileType.JSON)
+            .setFileType("json")
             .buildFile();
     
-    ExternalFile DB_COMPARE = new ExternalFileBuilder()
+    File DB_COMPARE = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("db_last")
-            .setFileType(ExternalFileType.JSON)
+            .setFileType("json")
             .buildFile();
     
-    ExternalFile OTHER_CACHE_DIR = new ExternalFileBuilder()
-            .isDirectory()
+    File OTHER_CACHE_DIR = new ExternalFileBuilder()
+            .isDirectory(true)
             .setName("other_cache")
             .buildFile();
     
-    ExternalFile IMAGES_DIR = new ExternalFileBuilder()
-            .isDirectory()
+    File IMAGES_DIR = new ExternalFileBuilder()
+            .isDirectory(true)
             .setName("images")
             .buildFile();
     
-    ExternalFile SAM_DIR = new ExternalFileBuilder()
-            .isDirectory()
+    File SAM_DIR = new ExternalFileBuilder()
+            .isDirectory(true)
             .setName("samquotes")
             .buildFile();
     
-    ExternalFile CONFIG = new ExternalFileBuilder()
+    File CONFIG = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("config")
-            .setFileType(ExternalFileType.JSON)
-            .setDefaultContent("""
-                    {
-                      "token": "bot token",
-                      "prefix": "?",
-                      "dev_bot": true,
-
-                      "mc_email": "Minecraft@email.com",
-                      "mc_password": "MinecraftPassword",
-
-                      "db_link": "jdbc:db_type://ip:port/schema",
-                      "db_user": "dbuser",
-                      "db_password": "dbpassword",
-
-                      "guild": 0,
-                      "log_channel": 0,
-                      "discussion_channel": 0,
-                      "muted_role": 0,
-                      "verified_role": 0,
-
-                      "role_react_channel": 0,
-                      "role_react_message": 0
-
-                    }""")
+            .setFileType("json")
             .buildFile();
     
-    ExternalFile DISABLED_COMMANDS = new ExternalFileBuilder()
+    File DISABLED_COMMANDS = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("disabled_commands")
-            .setFileType(ExternalFileType.TEXT)
+            .setFileType("txt")
             .buildFile();
     
-    ExternalFile FILTER = new ExternalFileBuilder()
+    File FILTER = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("swear_filter")
-            .setFileType(ExternalFileType.JSON)
+            .setFileType("json")
             .buildFile();
     
-    ExternalFile SAMMAN = new ExternalFileBuilder()
+    File SAMMAN = new ExternalFileBuilder()
             .isDirectory(false)
             .setName("samman")
-            .setFileType(ExternalFileType.PNG)
+            .setFileType("png")
             .buildFile();
     
-    ExternalFile TAGS = new ExternalFileBuilder()
+    File TAGS = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("tags")
-            .setFileType(ExternalFileType.JSON)
+            .setFileType("json")
             .buildFile();
     
-    ExternalFile SAM_QUOTES = new ExternalFileBuilder()
+    File SAM_QUOTES = new ExternalFileBuilder()
+            .isDirectory(false)
             .setName("samquotes")
-            .setFileType(ExternalFileType.TEXT)
+            .setFileType("txt")
             .buildFile();
 }

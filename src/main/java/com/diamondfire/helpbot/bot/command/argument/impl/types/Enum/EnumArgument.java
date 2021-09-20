@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types.impl.Enum;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.Enum;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
@@ -10,10 +10,11 @@ import java.util.stream.Collectors;
 
 public class EnumArgument<E extends Enum<E> & EnumArgument.InputEnum> extends AbstractSimpleValueArgument<E> {
     
-    private final EnumSet<E> associatedEnum;
+    private EnumSet<E> associatedEnum;
     
-    public EnumArgument(Class<E> anEnum) {
+    public EnumArgument<E> setEnum(Class<E> anEnum) {
         associatedEnum = EnumSet.allOf(anEnum);
+        return this;
     }
     
     @Override

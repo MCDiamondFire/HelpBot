@@ -2,9 +2,9 @@ package com.diamondfire.helpbot.bot.command.impl.stats;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public abstract class AbstractPlayerUUIDCommand extends Command {
@@ -17,8 +17,8 @@ public abstract class AbstractPlayerUUIDCommand extends Command {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     @Override

@@ -1,13 +1,12 @@
 package com.diamondfire.helpbot.bot.command.permissions;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public enum Rank {
+public enum Permission {
     BOT_DEVELOPER(589238520145510400L, 999),
     DEVELOPER(519740942861860874L, 999),
     // Ask DragonSlasher, not me.
@@ -18,32 +17,32 @@ public enum Rank {
     RETIRED_SUPPORT(235159617108181003L, 2),
     USER(349434193517740033L, 1);
     
-    private static final HashMap<Long, Rank> roleMap = new HashMap<>();
+    private static final HashMap<Long, Permission> roleMap = new HashMap<>();
     private static final HashMap<Command, Set<Long>> overrides = new HashMap<>();
     
     static {
-        for (Rank perm : values()) {
-            roleMap.put(perm.getRoleId(), perm);
+        for (Permission perm : values()) {
+            roleMap.put(perm.getRole(), perm);
         }
     }
     
     private final long role;
     private final int permissionLevel;
     
-    Rank(long roleID, int permissionLevel) {
+    Permission(long roleID, int permissionLevel) {
         this.role = roleID;
         this.permissionLevel = permissionLevel;
     }
     
-    public static Rank fromRole(long roleID) {
-        Rank perm = roleMap.get(roleID);
+    public static Permission fromRole(long roleID) {
+        Permission perm = roleMap.get(roleID);
         if (perm == null) {
             return USER;
         }
         return perm;
     }
     
-    public Rank setOverrides(Command command, Long... userIds) {
+    public Permission setOverrides(Command command, Long... userIds) {
         overrides.put(command, Arrays.stream(userIds).collect(Collectors.toSet()));
         return this;
     }
@@ -52,11 +51,7 @@ public enum Rank {
         return Objects.requireNonNullElse(overrides.get(command), new HashSet<>());
     }
     
-    public Role getRole() {
-        return HelpBotInstance.getJda().getRoleById(getRoleId());
-    }
-    
-    public long getRoleId() {
+    public long getRole() {
         return role;
     }
     
@@ -65,10 +60,10 @@ public enum Rank {
     }
     
     public boolean hasPermission(Member member) {
-        return hasPermission(RankHandler.getPermission(member));
+        return hasPermission(PermissionHandler.getPermission(member));
     }
     
-    public boolean hasPermission(Rank permission) {
+    public boolean hasPermission(Permission permission) {
         return getPermissionLevel() <= permission.getPermissionLevel();
     }
 }

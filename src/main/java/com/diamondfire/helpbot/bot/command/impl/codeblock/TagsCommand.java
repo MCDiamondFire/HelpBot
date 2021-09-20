@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.Util;
@@ -81,8 +81,8 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     @Override

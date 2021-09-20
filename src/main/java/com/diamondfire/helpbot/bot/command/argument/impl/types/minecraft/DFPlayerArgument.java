@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
