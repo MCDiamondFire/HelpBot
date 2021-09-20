@@ -1,8 +1,7 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types.impl;
+package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import org.jetbrains.annotations.NotNull;

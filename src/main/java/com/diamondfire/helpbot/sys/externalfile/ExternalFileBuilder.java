@@ -1,12 +1,11 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
-import java.io.*;
+import java.io.File;
 
 public class ExternalFileBuilder {
     
     String fileName;
-    ExternalFileType fileType = ExternalFileType.UNKNOWN;
-    byte[] defaultContent = null;
+    String fileType = "unk";
     boolean directory = false;
     
     public ExternalFileBuilder setName(String fileName) {
@@ -14,22 +13,8 @@ public class ExternalFileBuilder {
         return this;
     }
     
-    public ExternalFileBuilder setFileType(ExternalFileType fileType) {
+    public ExternalFileBuilder setFileType(String fileType) {
         this.fileType = fileType;
-        return this;
-    }
-    
-    public ExternalFileBuilder setDefaultContent(byte[] defaultContent) {
-        this.defaultContent = defaultContent;
-        return this;
-    }
-    
-    public ExternalFileBuilder setDefaultContent(String defaultContent) {
-        return setDefaultContent(defaultContent.getBytes());
-    }
-    
-    public ExternalFileBuilder isDirectory() {
-        this.directory = true;
         return this;
     }
     
@@ -38,30 +23,22 @@ public class ExternalFileBuilder {
         return this;
     }
     
-    public ExternalFile buildFile() {
-        ExternalFile file = new ExternalFile(fileName + (directory ? "" : "." + fileType.getExtension()));
+    public File buildFile() {
+        File file = new File(fileName + (directory ? "" : "." + fileType));
         try {
             if (!file.exists()) {
                 if (directory) {
                     file.mkdir();
-                    
                 } else {
                     file.createNewFile();
-                    
-                    if (defaultContent == null) {
-                        defaultContent = fileType.getDefaultContent();
-                    }
-                    if (defaultContent != null) {
-                        file.write(defaultContent);
-                    }
                 }
                 
             }
             
-        } catch (IOException err) {
-            err.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
         return file;
+        
     }
 }

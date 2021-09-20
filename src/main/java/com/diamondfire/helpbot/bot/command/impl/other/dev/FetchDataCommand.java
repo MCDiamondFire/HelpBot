@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
 import com.diamondfire.helpbot.bot.command.help.CommandCategory;
 import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
@@ -65,8 +65,8 @@ public class FetchDataCommand extends Command {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.BOT_DEVELOPER;
+    public Permission getPermission() {
+        return Permission.BOT_DEVELOPER;
     }
     
     // TODO: flag code

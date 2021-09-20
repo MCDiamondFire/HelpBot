@@ -33,7 +33,7 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
                 rawArguments.pushStack();
             } catch (MissingArgumentException exception) {
                 if (argumentContainer.isOptional()) {
-                    parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue(event)));
+                    parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue()));
                 } else {
                     exception.setContext(command, i, event);
                     throw exception;

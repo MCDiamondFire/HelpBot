@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.impl.other.info;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.DefinedObjectArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.DefinedObjectArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.*;
@@ -48,8 +48,8 @@ public class HelpCommand extends Command {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     @Override
@@ -65,7 +65,7 @@ public class HelpCommand extends Command {
             EmbedBuilder homeBuilder = new EmbedBuilder();
             homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055");
             homeBuilder.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
-            homeBuilder.setFooter("Your permissions: " + RankHandler.getPermission(event.getMember()));
+            homeBuilder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
             selector.addPage("Home", homeBuilder, true);
             
             // Initialize the pages in advance so we can get a nice order.
@@ -80,7 +80,7 @@ public class HelpCommand extends Command {
             for (Command command : commandList) {
                 HelpContext context = command.getHelpContext();
                 CommandCategory category = context.getCommandCategory();
-                if (category != null && command.getRank().hasPermission(event.getMember())) {
+                if (category != null && command.getPermission().hasPermission(event.getMember())) {
                     EmbedBuilder embedBuilder = categories.get(category);
                     embedBuilder.addField(FormatUtil.displayCommand(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
                     
@@ -106,7 +106,7 @@ public class HelpCommand extends Command {
             builder.addField("Aliases", (command.getAliases().length == 0 ? "None" : String.join(", ", command.getAliases())), false);
             builder.addField("Argument", FormatUtil.displayArguments(context), true);
             builder.addField("Category", context.getCommandCategory().toString(), true);
-            builder.addField("Role Required", String.format("<@&%s>", command.getRank().getRoleId()), true);
+            builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
             
             event.getChannel().sendMessageEmbeds(builder.build()).queue();
         }

@@ -15,12 +15,7 @@ import java.util.Deque;
  */
 public interface Argument<T> {
     
-    default T parsed(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException {
-        return parseValue(args, event);
-    }
-    
     T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException;
-    
     
 }
 

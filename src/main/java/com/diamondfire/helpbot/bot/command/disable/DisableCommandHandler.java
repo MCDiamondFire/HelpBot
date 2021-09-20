@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.disable;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.sys.externalfile.*;
+import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 
 import java.io.*;
 import java.nio.file.*;
@@ -11,7 +11,7 @@ import java.util.*;
 public class DisableCommandHandler {
     
     private final List<String> disabledCommands = new ArrayList<>();
-    private static final ExternalFile FILE = ExternalFiles.DISABLED_COMMANDS;
+    private static final File FILE = ExternalFiles.DISABLED_COMMANDS;
     
     public boolean isDisabled(Command command) {
         return disabledCommands.contains(command.getName());
@@ -19,8 +19,7 @@ public class DisableCommandHandler {
     
     public void initialize() {
         try {
-            List<String> lines = FILE.readAllLines();
-            
+            List<String> lines = Files.readAllLines(FILE.toPath());
             for (String cmd : lines) {
                 disable(CommandHandler.getCommand(cmd));
             }
@@ -33,7 +32,9 @@ public class DisableCommandHandler {
     public void save() {
         String string = String.join("\n", disabledCommands);
         try {
-            FILE.write(string);
+            FILE.delete();
+            FILE.createNewFile();
+            Files.write(FILE.toPath(), string.getBytes(), StandardOpenOption.WRITE);
             
         } catch (IOException e) {
             e.printStackTrace();

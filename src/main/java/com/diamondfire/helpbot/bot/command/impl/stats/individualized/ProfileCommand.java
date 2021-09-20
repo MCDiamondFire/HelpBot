@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.individualized;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.types.impl.minecraft.Player;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
@@ -44,8 +44,8 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     @Override
@@ -75,7 +75,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     
                     String rankString;
                     {
-                        com.diamondfire.helpbot.df.ranks.Rank highRank = RankUtil.getHighRank(set);
+                        Rank highRank = RankUtil.getHighRank(set);
                         if (highRank == null) {
                             rankString = "";
                         } else {
@@ -87,9 +87,9 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     embed.addField("UUID", playerUUID, false);
                     embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
                 
-                    com.diamondfire.helpbot.df.ranks.Rank[] ranks = RankUtil.getRanks(set);
+                    Rank[] ranks = RankUtil.getRanks(set);
                     List<String> ranksList = new ArrayList<>();
-                    for (com.diamondfire.helpbot.df.ranks.Rank rank : ranks) {
+                    for (Rank rank : ranks) {
                         ranksList.add(String.format("[%s]", rank.getRankName()));
                     }
                 

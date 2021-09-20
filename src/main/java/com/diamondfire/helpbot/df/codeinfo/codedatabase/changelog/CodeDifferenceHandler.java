@@ -130,11 +130,9 @@ public class CodeDifferenceHandler {
             JsonObject jsonObject = null;
             try {
                 jsonObject = JsonParser.parseReader(readerJson).getAsJsonObject();
-                
             } catch (Exception e) {
                 System.out.println("Old db is corrupted, rewriting!");
-                
-                ExternalFiles.DB.copy(ExternalFiles.DB_COMPARE);
+                Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             
             jsonObjects.add(jsonObject);

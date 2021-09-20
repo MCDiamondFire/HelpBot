@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.other.util;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.permissions.Rank;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
@@ -19,8 +19,8 @@ public abstract class AbstractFileListCommand extends Command {
     }
     
     @Override
-    public Rank getRank() {
-        return Rank.USER;
+    public Permission getPermission() {
+        return Permission.USER;
     }
     
     protected void generate(CommandEvent event, List<? extends CodeObject> data) {
