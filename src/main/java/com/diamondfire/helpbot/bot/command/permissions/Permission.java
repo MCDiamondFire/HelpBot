@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.permissions;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -7,15 +8,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public enum Permission {
-    BOT_DEVELOPER(589238520145510400L, 999),
-    DEVELOPER(519740942861860874L, 999),
+    BOT_DEVELOPER(999),
+    DEVELOPER(999),
     // Ask DragonSlasher, not me.
-    ADMINISTRATOR(180794313494495233L, 666),
-    MODERATION(180794061429538816L, 5),
-    EXPERT(299109861696995329L, 4),
-    SUPPORT(180794530398732288L, 3),
-    RETIRED_SUPPORT(235159617108181003L, 2),
-    USER(349434193517740033L, 1);
+    ADMINISTRATOR(666),
+    MODERATION(5),
+    EXPERT(4),
+    SUPPORT(3),
+    RETIRED_SUPPORT(2),
+    USER(1);
     
     private static final HashMap<Long, Permission> roleMap = new HashMap<>();
     private static final HashMap<Command, Set<Long>> overrides = new HashMap<>();
@@ -29,8 +30,8 @@ public enum Permission {
     private final long role;
     private final int permissionLevel;
     
-    Permission(long roleID, int permissionLevel) {
-        this.role = roleID;
+    Permission(int permissionLevel) {
+        this.role = Long.parseLong((String) HelpBotInstance.getConfig().getPermissionRoleMap().get(name()));
         this.permissionLevel = permissionLevel;
     }
     

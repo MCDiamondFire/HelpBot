@@ -4,9 +4,11 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 
 import java.io.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Config {
+    private static final Gson gson = new Gson();
     
     private final JsonObject config;
     
@@ -86,6 +88,10 @@ public class Config {
     
     public String getReportWehook() {
         return getPropertyString("report_webhook");
+    }
+    
+    public Map getPermissionRoleMap() {
+        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), Map.class);
     }
     
     private long getPropertyLong(String property) {
