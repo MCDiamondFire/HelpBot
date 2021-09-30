@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.graph;
 
 import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
 import com.diamondfire.helpbot.sys.graph.generators.context.TimeGraphContext;
 

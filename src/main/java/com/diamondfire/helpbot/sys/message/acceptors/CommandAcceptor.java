@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.sys.message.acceptors;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import net.dv8tion.jda.api.entities.Message;
 
 public class CommandAcceptor implements MessageAcceptor {

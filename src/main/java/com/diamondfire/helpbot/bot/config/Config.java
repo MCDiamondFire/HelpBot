@@ -34,6 +34,10 @@ public class Config {
         return config.get("dev_bot").getAsBoolean();
     }
     
+    public boolean useSlashCommands() {
+        return config.get("slash_commands").getAsBoolean();
+    }
+    
     // Mc account
     public String getMcEmail() {
         return getPropertyString("mc_email");

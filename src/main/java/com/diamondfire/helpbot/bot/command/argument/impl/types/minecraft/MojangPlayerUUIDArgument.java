@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

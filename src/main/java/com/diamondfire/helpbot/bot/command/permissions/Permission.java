@@ -18,6 +18,7 @@ public enum Permission {
     RETIRED_SUPPORT(2),
     USER(1);
     
+    public static final Permission[] VALUES = values();
     private static final HashMap<Long, Permission> roleMap = new HashMap<>();
     private static final HashMap<Command, Set<Long>> overrides = new HashMap<>();
     

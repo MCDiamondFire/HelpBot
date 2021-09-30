@@ -1,13 +1,20 @@
 package com.diamondfire.helpbot.bot.command;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.*;
 
-public class CommandHandler {
+public class CommandHandler extends ListenerAdapter {
     
     private final HashMap<String, Command> CMDS = new HashMap<>();
     private final HashMap<String, Command> ALIASES = new HashMap<>();
@@ -40,7 +47,40 @@ public class CommandHandler {
                 this.ALIASES.put(alias.toLowerCase(), command);
             }
         }
-        
+    }
+    
+    public void setupSlashCommands() {
+        boolean slashCommands = HelpBotInstance.getConfig().useSlashCommands();
+        Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
+    
+        if (slashCommands) {
+            guild.updateCommands()
+                    .addCommands(CMDS.values().stream()
+                            .map(SlashCommands::createCommandData)
+                            .toList())
+                    .queue(commands1 -> {
+                        Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();
+                    
+                        for (net.dv8tion.jda.api.interactions.commands.Command command :
+                                commands1) {
+                            Command command1 = CMDS.get(command.getName());
+                            List<CommandPrivilege> commandPrivileges = new ArrayList<>();
+                            for (Permission perm :
+                                    Permission.VALUES) {
+                                if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel())
+                                    commandPrivileges.add(CommandPrivilege.enableRole(perm.getRole()));
+                            }
+                            privilegeMap.put(command.getId(), commandPrivileges);
+                        }
+                    
+                        guild.updateCommandPrivileges(privilegeMap).queue();
+                    });
+        }
+    }
+    
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+        COMMAND_EXECUTOR.run(event)
     }
     
     public void run(CommandEvent e, String[] args) {

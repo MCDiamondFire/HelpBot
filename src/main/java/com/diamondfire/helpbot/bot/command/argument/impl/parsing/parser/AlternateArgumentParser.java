@@ -3,7 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 
 public class AlternateArgumentParser<A> extends ArgumentParser<AlternateArgumentContainer<A>, A> {
     

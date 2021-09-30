@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.restart.RestartHandler;
 import com.diamondfire.helpbot.sys.rolereact.RoleReactListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,5 +18,7 @@ public class ReadyEvent extends ListenerAdapter {
         HelpBotInstance.getScheduler().initialize();
         
         event.getJDA().addEventListener(new RoleReactListener());
+        
+        CommandHandler.getInstance().setupSlashCommands();
     }
 }
