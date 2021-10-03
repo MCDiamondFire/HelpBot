@@ -96,7 +96,7 @@ public class MuteCommand extends Command {
             guild.addRoleToMember(member, role).queue((unused) -> {
                 member.getUser()
                         .openPrivateChannel()
-                        .flatMap((e) -> e.sendMessageEmbeds(getMuteEmbed(event.getMember(),event.getArgument("reason"),timeLeft)))
+                        .flatMap((e) -> e.sendMessageEmbeds(getMuteEmbed(event.getArgument("reason"),timeLeft)))
                         .queue();
                 HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
             }, (error) -> {
@@ -117,7 +117,7 @@ public class MuteCommand extends Command {
         
     }
     
-    private MessageEmbed getMuteEmbed(Member moderator, String reason, long duration) {
+    private MessageEmbed getMuteEmbed(String reason, long duration) {
         EmbedBuilder muteEmbedBuilder = new EmbedBuilder()
                 .setTitle("You have been muted!")
                 .setDescription(
