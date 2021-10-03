@@ -122,11 +122,10 @@ public class MuteCommand extends Command {
                 .setTitle("You have been muted!")
                 .setDescription(
                         "**Reason**: " + reason + "\n" +
-                        "**Moderator**: " + moderator + "\n" +
                         "**Duration**: " + FormatUtil.formatMilliTime(duration) + "\n" +
                         "*If you feel as if this punishment is unfair you may appeal on the forums https://mcdiamondfire.com*"
                 )
-                .setColor(new Color(208,97,97));
+                .setColor(new Color(208, 97, 97));
         return muteEmbedBuilder.build();
     }
 }
