@@ -228,7 +228,6 @@ public class IdeaCommand extends Command {
                 "to get hugs from Owen.",
                 "to eat food.",
                 "for red pandas",
-                "to avoid COVID-19",
         };
         
         Random rdm = new Random();
