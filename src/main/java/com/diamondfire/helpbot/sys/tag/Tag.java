@@ -45,6 +45,7 @@ public class Tag implements Serializable {
     }
     
     public void setResponse(String response) {
+        response = response.replace("\\n", "\n");
         this.response = response;
     }
     

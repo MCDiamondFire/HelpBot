@@ -14,8 +14,10 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.impl.MuteExpireTask;
 import com.diamondfire.helpbot.util.*;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
+import java.awt.*;
 import java.time.Instant;
 import java.util.Date;
 
@@ -94,7 +96,7 @@ public class MuteCommand extends Command {
             guild.addRoleToMember(member, role).queue((unused) -> {
                 member.getUser()
                         .openPrivateChannel()
-                        .flatMap((e) -> e.sendMessage(String.format("You have been muted for %s for %s", FormatUtil.formatMilliTime(timeLeft), event.getArgument("reason"))))
+                        .flatMap((e) -> e.sendMessageEmbeds(getMuteEmbed(event.getArgument("reason"),timeLeft)))
                         .queue();
                 HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
             }, (error) -> {
@@ -113,5 +115,17 @@ public class MuteCommand extends Command {
             event.reply(builder);
         });
         
+    }
+    
+    private MessageEmbed getMuteEmbed(String reason, long duration) {
+        EmbedBuilder muteEmbedBuilder = new EmbedBuilder()
+                .setTitle("You have been muted!")
+                .setDescription(
+                        "**Reason**: " + reason + "\n" +
+                        "**Duration**: " + FormatUtil.formatMilliTime(duration) + "\n" +
+                        "*If you feel as if this punishment is unfair you may appeal on the forums https://mcdiamondfire.com*"
+                )
+                .setColor(new Color(208, 97, 97));
+        return muteEmbedBuilder.build();
     }
 }
