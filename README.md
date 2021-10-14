@@ -12,6 +12,7 @@ HelpBot is created in **java 16** and there are no current rules in place for co
 something you are able to create a **fork** and submit a **pull request**.
 
 Most pull requests are accepted, do not be afraid to make a change I promise I do not bite.
+Please give me time to review your PR however, as it takes a little bit for me to maek sure that your PR is up to standards. Testing will help!
 
 **Config File**
 
