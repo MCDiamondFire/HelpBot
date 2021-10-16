@@ -56,6 +56,7 @@ public class AddTagSubCommand extends SubCommand {
         String activator = event.getArgument("activator");
         String title = event.getArgument("title");
         String response = event.getArgument("response");
+        response = response.replace("\\n", "\n");
         
         // Construct Tag
         Tag tag = new Tag(activator, title, response, event.getAuthor().getIdLong(), "");
