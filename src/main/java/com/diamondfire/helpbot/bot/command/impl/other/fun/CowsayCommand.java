@@ -17,7 +17,10 @@ public class CowsayCommand extends Command {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext().description("generates ASCII art pictures of a cow with a message").category(CommandCategory.OTHER).addArgument(new HelpContextArgument().name("message"));
+        return new HelpContext().description("generates ASCII art pictures of a cow with a message")
+                .category(CommandCategory.OTHER)
+                .addArgument(new HelpContextArgument()
+                        .name("message"));
     }
     
     @Override
