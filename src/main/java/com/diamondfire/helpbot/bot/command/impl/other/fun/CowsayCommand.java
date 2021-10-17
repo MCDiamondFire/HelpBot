@@ -64,17 +64,4 @@ public class CowsayCommand extends Command {
         
         event.getMessage().getChannel().sendMessageEmbeds(builder.build()).queue();
     }
-    
-    /*
-    
- _________
-< message >
- ---------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----w |
-                ||     ||
-    
-     */
 }
