@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.impl.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.FormatUtil;
 
 public class ArgumentException extends Exception {
@@ -25,8 +25,12 @@ public class ArgumentException extends Exception {
         
         if (command instanceof SubCommand) {
             String prefix = HelpBotInstance.getConfig().getPrefix();
+            String subCommandName = "unknown, slash command?";
             
-            argMessage = event.getRawArgs()[0] + " " + argMessage.substring(prefix.length());
+            if (event instanceof MessageCommandEvent messageCommandEvent) {
+                subCommandName = messageCommandEvent.getRawArgs()[0];
+            }
+            argMessage = subCommandName + " " + argMessage.substring(prefix.length());
         }
         
         message = argMessage + "\n\n" + getMessage();

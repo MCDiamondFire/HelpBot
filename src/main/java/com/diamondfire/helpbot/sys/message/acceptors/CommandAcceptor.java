@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.sys.message.acceptors;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import net.dv8tion.jda.api.entities.Message;
 
 public class CommandAcceptor implements MessageAcceptor {
@@ -10,7 +10,7 @@ public class CommandAcceptor implements MessageAcceptor {
     @Override
     public boolean accept(Message message) {
         if (message.getContentDisplay().startsWith(HelpBotInstance.getConfig().getPrefix()) && !message.getAuthor().isBot()) {
-            CommandEvent event = new CommandEvent(message);
+            MessageCommandEvent event = new MessageCommandEvent(message);
             if (event.getCommand() == null) {
                 return false;
             }

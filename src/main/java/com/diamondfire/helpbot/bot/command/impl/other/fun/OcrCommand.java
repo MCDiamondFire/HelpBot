@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
@@ -9,7 +10,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -56,9 +57,13 @@ public class OcrCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
+        if (SlashCommands.requireMessageCommand(event)) return;
+        
+        MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
+        
         String imgUrl = event.getArgument("url");
         if (imgUrl == null) {
-           List<Message.Attachment> attachments = event.getMessage().getAttachments();
+           List<Message.Attachment> attachments = messageCommandEvent.getMessage().getAttachments();
            if (attachments.isEmpty()) {
                event.reply(
                        new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Please provide an attachment or url!"))

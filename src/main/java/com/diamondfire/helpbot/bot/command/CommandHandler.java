@@ -5,7 +5,8 @@ import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -50,15 +51,25 @@ public class CommandHandler extends ListenerAdapter {
     }
     
     public void setupSlashCommands() {
+        System.out.println("Initializing slash commands...");
         boolean slashCommands = HelpBotInstance.getConfig().useSlashCommands();
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
     
         if (slashCommands) {
             guild.updateCommands()
                     .addCommands(CMDS.values().stream()
-                            .map(SlashCommands::createCommandData)
+                            .map(command -> {
+                                try {
+                                    return SlashCommands.createCommandData(command);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    return null;
+                                }
+                            })
+                            .filter(Objects::nonNull)
                             .toList())
                     .queue(commands1 -> {
+                        System.out.println("Commands registered. Setting up permissions...");
                         Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();
                     
                         for (net.dv8tion.jda.api.interactions.commands.Command command :
@@ -73,21 +84,23 @@ public class CommandHandler extends ListenerAdapter {
                             privilegeMap.put(command.getId(), commandPrivileges);
                         }
                     
-                        guild.updateCommandPrivileges(privilegeMap).queue();
-                    });
+                        guild.updateCommandPrivileges(privilegeMap).queue(stringListMap -> {
+                            System.out.println("Slash command permissions registered.");
+                        }, Throwable::printStackTrace);
+                    }, Throwable::printStackTrace);
         }
     }
     
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
-        COMMAND_EXECUTOR.run(event)
+        COMMAND_EXECUTOR.run(event);
     }
     
     public void run(CommandEvent e, String[] args) {
         COMMAND_EXECUTOR.run(e, args);
     }
     
-    public void run(CommandEvent e) {
+    public void run(MessageCommandEvent e) {
         run(e, e.getRawArgs());
     }
     

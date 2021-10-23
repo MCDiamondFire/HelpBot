@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.executor.checks.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -69,7 +69,14 @@ public class CommandExecutor {
             );
         
             {
-                PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), e.getMessage().getContentRaw())));
+                String commandStr = "unknown";
+                if (e instanceof MessageCommandEvent messageCommandEvent) {
+                    commandStr =  messageCommandEvent.getMessage().getContentRaw();
+                } else if (e instanceof com.diamondfire.helpbot.bot.events.commands.SlashCommandEvent slashCommandEvent) {
+                    // todo commandStr with slash commands
+                    commandStr = "slash command used";
+                }
+                PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), commandStr)));
                 EmbedBuilder embed = preset.getEmbed();
             
                 try (StringWriter writer = new StringWriter();

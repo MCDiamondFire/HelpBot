@@ -55,6 +55,11 @@ public class MessageCommandEvent extends GuildMessageReceivedEvent implements Co
     }
     
     @Override
+    public void replyEphemeral(PresetBuilder preset) {
+        reply(preset);
+    }
+    
+    @Override
     public <T> T getArgument(String code) {
         return parsedArgumentSet.getArgument(code);
     }

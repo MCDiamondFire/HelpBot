@@ -1,12 +1,13 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
+import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.nbs.*;
 import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -40,17 +41,21 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
+        if (SlashCommands.requireMessageCommand(event)) return;
+    
+        MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
+        
         TextChannel channel = event.getChannel();
         PresetBuilder nbsPreset = new PresetBuilder()
             .withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder error = new PresetBuilder()
             .withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while processing/generating!"));
         
-        if(event.getMessage().getAttachments().isEmpty()) {
+        if(messageCommandEvent.getMessage().getAttachments().isEmpty()) {
             event.reply(nbsPreset);
             return;
         }
-        Message.Attachment attachment = event.getMessage().getAttachments().get(0);
+        Message.Attachment attachment = messageCommandEvent.getMessage().getAttachments().get(0);
         if(!attachment.getFileExtension().equals("nbs")) {
             event.reply(nbsPreset);
             return;
