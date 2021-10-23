@@ -50,6 +50,7 @@ public class HelpBotInstance {
                 new SearchCommand(),
                 new TagsCommand(),
                 // others
+                new CowsayCommand(),
                 new MimicCommand(),
                 new FetchDataCommand(),
                 new InfoCommand(),

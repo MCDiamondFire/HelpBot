@@ -38,7 +38,7 @@ public class EightBallCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("question",
-                        new SingleArgumentContainer<>(new MessageArgument()).optional("Is vatten super duper cool?"));
+                        new SingleArgumentContainer<>(new MessageArgument()));
     }
     
     @Override
