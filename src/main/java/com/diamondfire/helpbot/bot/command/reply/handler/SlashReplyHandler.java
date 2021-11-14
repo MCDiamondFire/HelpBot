@@ -24,6 +24,7 @@ public record SlashReplyHandler(SlashCommandEvent internalEvent) implements Repl
     @Deprecated
     @Override
     public void reply(PresetBuilder preset, MessageChannel channel) {
+        throw new UnsupportedOperationException();
     }
     
     @Override
@@ -39,28 +40,30 @@ public record SlashReplyHandler(SlashCommandEvent internalEvent) implements Repl
     @Deprecated
     @Override
     public void reply(EmbedBuilder builder, MessageChannel channel) {
+        throw new UnsupportedOperationException();
     }
     
+    @Deprecated
     @Override
     public MessageAction replyA(PresetBuilder preset) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     
     @Deprecated
     @Override
     public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     
     @Deprecated
     @Override
     public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
-        return null;
+        throw new UnsupportedOperationException();
     }
     
     @Deprecated
     @Override
     public MessageAction textReply(String msg, MessageChannel channel) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }
