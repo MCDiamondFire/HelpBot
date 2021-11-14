@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -21,4 +22,8 @@ public class SubCommandArgument extends AbstractSimpleValueArgument<SubCommand> 
         }
     }
     
+    @Override
+    public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean isRequired) {
+        return null; // We have special handling for other args.
+    }
 }

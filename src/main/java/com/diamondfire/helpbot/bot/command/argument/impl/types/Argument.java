@@ -3,8 +3,11 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Deque;
 
 /**
@@ -17,5 +20,12 @@ public interface Argument<T> {
     
     T parseValue(@NotNull Deque<String> args, CommandEvent event) throws ArgumentException;
     
+    default OptionType optionType() {
+        return OptionType.STRING;
+    }
+    
+    default OptionData createOptionData(@Nonnull String name, @Nonnull String description, boolean isRequired) {
+        return new OptionData(optionType(), name, description, isRequired);
+    }
 }
 

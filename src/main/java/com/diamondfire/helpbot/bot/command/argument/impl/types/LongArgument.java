@@ -4,10 +4,12 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.Argu
 import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class LongArgument extends AbstractSimpleValueArgument<Long>{
+public class LongArgument extends AbstractSimpleValueArgument<Long> {
     
     @Override
     protected Long parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         return Long.parseLong(argument);
     }
+    
+    // Leave OptionType as STRING due to discord only having 53 bit precision on longs.
 }

@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.bot.events.commands.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,18 +57,21 @@ public class CommandHandler extends ListenerAdapter {
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
     
         if (slashCommands) {
+            List<CommandData> commandDataList = CMDS.values().stream()
+                    .map(command -> {
+                        try {
+                            return SlashCommands.createCommandData(command);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .toList();
+            System.out.println(String.format("Registering %s commands...", commandDataList.size()));
+            
             guild.updateCommands()
-                    .addCommands(CMDS.values().stream()
-                            .map(command -> {
-                                try {
-                                    return SlashCommands.createCommandData(command);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    return null;
-                                }
-                            })
-                            .filter(Objects::nonNull)
-                            .toList())
+                    .addCommands(commandDataList)
                     .queue(commands1 -> {
                         System.out.println("Commands registered. Setting up permissions...");
                         Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();

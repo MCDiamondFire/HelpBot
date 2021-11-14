@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.bot.command.slash;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentNode;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.command.help.CommandCategory;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -49,9 +51,28 @@ public class SlashCommands {
         return data;
     }
     
-    private static void addOptions(Command command, BaseCommand<CommandData> baseCommand) {
+    private static void addOptions(Command command, CommandData commandData) {
         for (ArgumentNode<?> argument : command.getArguments().getArguments()) {
-        
+            OptionData optionData = convertArgument(argument);
+            if (optionData != null) commandData.addOptions(optionData);
         }
+    }
+    
+    private static void addOptions(Command command, SubcommandData commandData) {
+        for (ArgumentNode<?> argument : command.getArguments().getArguments()) {
+            OptionData optionData = convertArgument(argument);
+            if (optionData != null) commandData.addOptions(optionData);
+        }
+    }
+    
+    private static OptionData convertArgument(ArgumentNode<?> node) {
+        ArgumentContainer<?> container = node.getContainer();
+        if (container instanceof SingleContainer singleContainer) {
+            Argument<?> argument = singleContainer.getArgument();
+            return argument.createOptionData(node.getIdentifier(), "noop", !container.isOptional());
+        }
+        
+        // no impl for AlternateArgumentContainer yet
+        return null;
     }
 }

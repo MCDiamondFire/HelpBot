@@ -4,6 +4,8 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -62,5 +64,12 @@ public class DefinedObjectArgument<T> implements Argument<T> {
         return closestAction.getValue() >= 0.85 ? objectMap.get(closestAction.getKey()) : null;
     }
     
-    
+    @Override
+    public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean isRequired) {
+        return Argument.super.createOptionData(name, description, isRequired)
+                .addChoices(objectMap.keySet()
+                        .stream()
+                        .map(s -> new Command.Choice(s, s))
+                        .toArray(Command.Choice[]::new));
+    }
 }
