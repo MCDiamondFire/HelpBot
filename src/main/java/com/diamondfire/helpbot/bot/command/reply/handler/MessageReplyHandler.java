@@ -4,6 +4,10 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.AttachmentOption;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public record MessageReplyHandler(TextChannel channel) implements ReplyHandler {
     public void reply(String content) {
@@ -24,6 +28,11 @@ public record MessageReplyHandler(TextChannel channel) implements ReplyHandler {
     
     public void reply(EmbedBuilder builder, MessageChannel channel) {
         embedReply(builder, channel).queue();
+    }
+    
+    @Override
+    public void replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        channel.sendMessageEmbeds(preset.getEmbed().build()).addFile(file, name, options).queue();
     }
     
     public MessageAction replyA(PresetBuilder preset) {

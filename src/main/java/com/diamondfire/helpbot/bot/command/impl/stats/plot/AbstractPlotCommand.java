@@ -92,7 +92,7 @@ public abstract class AbstractPlotCommand extends Command {
             } else {
                 File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
                 embed.setThumbnail("attachment://" + mcItem.getName());
-                event.getReplyHandler().replyA(preset).addFile(mcItem).queue();
+                event.getReplyHandler().replyFile(preset, mcItem, mcItem.getName());
             }
             
         } catch (SQLException | IllegalStateException e) {

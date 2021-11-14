@@ -82,17 +82,16 @@ public class TagHandler {
     }
     
     public static @NotNull Tag getTag(String activator) throws TagDoesNotExistException, IOException {
-        Tag tag = TAGS.stream()
+        List<Tag> tags = TAGS.stream()
                 .filter(t -> t.getActivator().equals(activator))
-                .collect(Collectors.toList())
-                .get(0);
+                .collect(Collectors.toList());
         
-        if (tag == null) {
+        if (tags.size() < 1) {
             throw new TagDoesNotExistException(String.format(
                     "A tag with activator `%s` does not exist.", activator));
         }
         
-        return tag;
+        return tags.get(0);
     }
     
 }

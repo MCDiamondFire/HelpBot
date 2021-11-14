@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.IOUtil;
 
@@ -38,22 +38,44 @@ public class ImageDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        File images = ExternalFiles.IMAGES_DIR;
         PresetBuilder builder = new PresetBuilder();
-        builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
-        event.getReplyHandler().replyA(builder).queue((msg) -> {
-            try {
-                File zip = IOUtil.zipFile(images.toPath(), "images.zip");
-                event.getChannel().sendFile(zip).queue((fileMsg) -> {
-                    msg.delete().queue();
-                });
-            } catch (IOException e) {
-                PresetBuilder builderError = new PresetBuilder();
-                builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to send zip file."));
-                msg.editMessageEmbeds(builderError.getEmbed().build()).queue();
-            }
-        });
+        if (event instanceof MessageCommandEvent) {
+            builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
+            event.getReplyHandler().replyA(builder).queue((msg) -> {
+                File zip = createZip();
+                if (zip != null) {
+                    event.getChannel().sendFile(zip).queue((fileMsg) -> {
+                        msg.delete().queue();
+                    });
+                } else {
+                    msg.editMessageEmbeds(createErrorPreset().getEmbed().build()).queue();
+                }
+            });
+        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
+            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+                File zip = createZip();
+                if (zip != null) {
+                    interactionHook.editOriginal("").addFile(zip).queue();
+                } else {
+                    interactionHook.editOriginalEmbeds(createErrorPreset().getEmbed().build()).queue();
+                }
+            });
+        }
         
+    }
+    
+    private File createZip() {
+        try {
+            return IOUtil.zipFile(ExternalFiles.IMAGES_DIR.toPath(), "images.zip");
+        } catch (IOException e) {
+            return null;
+        }
+    }
+    
+    private PresetBuilder createErrorPreset() {
+        PresetBuilder builderError = new PresetBuilder();
+        builderError.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to send zip file."));
+        return builderError;
     }
     
 }

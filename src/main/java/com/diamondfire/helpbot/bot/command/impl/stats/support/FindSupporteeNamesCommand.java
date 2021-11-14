@@ -7,11 +7,12 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.MinecraftUserPreset;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
+import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -43,7 +44,6 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
         JsonObject profile = Util.getPlayerProfile(player.name());
         PresetBuilder builder = new PresetBuilder();
         List<NameDateRange> nameRanges = new ArrayList<>();
-        Set<String> names = new HashSet<>();
         Date lastDate = null;
         if (profile == null) {
             builder.withPreset(
@@ -75,64 +75,81 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
         }
         
         
-        PresetBuilder loadingPreset = new PresetBuilder();
-        loadingPreset.withPreset(
-                new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
-        );
-        
-        event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
-            for (NameDateRange range : nameRanges) {
-                if (range.getAfter() == null) {
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
-                                statement.setString(1, range.getName());
-                                statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
-                            }))
-                            .compile()
-                            .run((result) -> {
-                                if (!result.isEmpty()) {
-                                    names.add(range.getName());
-                                }
-                            });
-                } else if (range.getBefore() == null) {
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
-                                statement.setString(1, range.getName());
-                                statement.setDate(2, DateUtil.toSqlDate(range.getAfter()));
-                            }))
-                            .compile()
-                            .run((result) -> {
-                                if (!result.isEmpty()) {
-                                    names.add(range.getName());
-                                }
-                            });
-                } else {
-                    new DatabaseQuery()
-                            .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
-                                statement.setString(1, range.getName());
-                                statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
-                                statement.setDate(3, DateUtil.toSqlDate(range.getAfter()));
-                            }))
-                            .compile()
-                            .run((result) -> {
-                                if (!result.isEmpty()) {
-                                    names.add(range.getName());
-                                }
-                            });
-                }
-            }
-            
-            builder.withPreset(
-                    new MinecraftUserPreset(mainName),
-                    new InformativeReply(InformativeReplyType.INFO, "Player has been helped on", null)
+        if (event instanceof MessageCommandEvent) {
+            PresetBuilder loadingPreset = new PresetBuilder();
+            loadingPreset.withPreset(
+                    new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
             );
-            EmbedUtil.addFields(builder.getEmbed(), names);
-            if (names.isEmpty()) {
-                builder.getEmbed().addField("", "Player hasn't been helped by anybody!", false);
-            }
             
-            msg.editMessageEmbeds(builder.getEmbed().build()).override(true).queue();
-        });
+            event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
+                PresetBuilder namesEmbed = createNamesEmbed(mainName, nameRanges);
+        
+                msg.editMessageEmbeds(namesEmbed.getEmbed().build()).override(true).queue();
+            });
+        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
+            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+                PresetBuilder namesEmbed = createNamesEmbed(mainName, nameRanges);
+    
+                interactionHook.editOriginalEmbeds(namesEmbed.getEmbed().build()).queue();
+            });
+        }
+    }
+    
+    private PresetBuilder createNamesEmbed(String mainName, List<NameDateRange> nameRanges) {
+        PresetBuilder builder = new PresetBuilder();
+        Set<String> names = new HashSet<>();
+        
+        for (NameDateRange range : nameRanges) {
+            if (range.getAfter() == null) {
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time > ? LIMIT 1", (statement) -> {
+                            statement.setString(1, range.getName());
+                            statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
+                        }))
+                        .compile()
+                        .run((result) -> {
+                            if (!result.isEmpty()) {
+                                names.add(range.getName());
+                            }
+                        });
+            } else if (range.getBefore() == null) {
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time < ? LIMIT 1", (statement) -> {
+                            statement.setString(1, range.getName());
+                            statement.setDate(2, DateUtil.toSqlDate(range.getAfter()));
+                        }))
+                        .compile()
+                        .run((result) -> {
+                            if (!result.isEmpty()) {
+                                names.add(range.getName());
+                            }
+                        });
+            } else {
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT * FROM support_sessions WHERE name = ? AND time BETWEEN ? AND ? LIMIT 1", (statement) -> {
+                            statement.setString(1, range.getName());
+                            statement.setDate(2, DateUtil.toSqlDate(range.getBefore()));
+                            statement.setDate(3, DateUtil.toSqlDate(range.getAfter()));
+                        }))
+                        .compile()
+                        .run((result) -> {
+                            if (!result.isEmpty()) {
+                                names.add(range.getName());
+                            }
+                        });
+            }
+        }
+    
+        builder.withPreset(
+                new MinecraftUserPreset(mainName),
+                new InformativeReply(InformativeReplyType.INFO, "Player has been helped on", null)
+        );
+        EmbedUtil.addFields(builder.getEmbed(), names);
+        if (names.isEmpty()) {
+            builder.getEmbed().addField("", "Player hasn't been helped by anybody!", false);
+        }
+        
+        return builder;
     }
     
     private static class NameDateRange {
