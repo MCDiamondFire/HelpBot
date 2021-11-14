@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
@@ -46,11 +46,15 @@ public class TotalStatsCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Please wait a moment, statistics are currently being calculated.")
                 );
         
-        event.getReplyHandler().replyA(presetBefore).queue((msg) -> {
-            
-            msg.editMessageEmbeds(createStatsEmbed().getEmbed().build()).queue();
-        });
-        
+        if (event instanceof MessageCommandEvent) {
+            event.getReplyHandler().replyA(presetBefore).queue((msg) -> {
+                msg.editMessageEmbeds(createStatsEmbed().getEmbed().build()).queue();
+            });
+        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
+            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+                interactionHook.editOriginalEmbeds(createStatsEmbed().getEmbed().build()).queue();
+            });
+        }
     }
     
     private PresetBuilder createStatsEmbed() {
