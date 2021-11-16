@@ -17,7 +17,8 @@ import java.sql.ResultSet;
 
 public class VerifyCommand extends Command {
     
-    public static final long ROLE_ID = 349434193517740033L;
+    // Use user permission so we pull from the config. Unless a role change is needed this can stay.
+    public static final long ROLE_ID = /* 349434193517740033L */ Permission.USER.getRole();
     
     @Override
     public String getName() {

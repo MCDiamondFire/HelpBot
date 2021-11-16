@@ -76,11 +76,10 @@ public class StaffListCommand extends Command {
                         
                         if (administrationNum > 0) {
                             ranks.get(Rank.fromBranch(RankBranch.ADMINISTRATION, administrationNum)).add(name);
-                        }
-                        if (moderationNum == 0 && supportNum > 0 && administrationNum == 0) {
-                            ranks.get(Rank.fromBranch(RankBranch.SUPPORT, supportNum)).add(name);
-                        } else if (moderationNum > 0 && administrationNum == 0) {
-                            ranks.get(Rank.fromBranch(RankBranch.MODERATION, moderationNum)).add(name);
+                        } else if (supportNum == 0 && moderationNum > 0) {
+                            ranks.get(Rank.fromBranch(RankBranch.MODERATION, supportNum)).add(name);
+                        } else if (supportNum > 0) {
+                            ranks.get(Rank.fromBranch(RankBranch.SUPPORT, moderationNum)).add(name);
                         }
                     }
                     
@@ -105,12 +104,13 @@ public class StaffListCommand extends Command {
                     EmbedUtil.addFields(devEmbed, ranks.get(Rank.DEVELOPER), "", "DiamondFire Developers");
                     
                     Guild guild = event.getGuild();
-                    Role botDev = guild.getRoleById(589238520145510400L);
+                    Role botDev = guild.getRoleById(Permission.BOT_DEVELOPER.getRole());
                     guild.findMembers((member -> member.getRoles().contains(botDev)))
                             .onSuccess((members) -> {
                                 List<String> memberNames = new ArrayList<>();
                                 for (Member member : members) {
-                                    if (!member.getUser().isBot()) {
+                                    // Exclude devs from this list for cleanliness.
+                                    if (!member.getUser().isBot() && !ranks.get(Rank.DEVELOPER).contains(member.getEffectiveName())) {
                                         memberNames.add(member.getEffectiveName());
                                     }
                                 }

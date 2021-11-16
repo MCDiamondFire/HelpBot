@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class DiscordBoostersCommand extends Command {
     
             List<String> elements = new ArrayList<>();
             for (Member member : members) {
-                String timeBoosted = format.format(DateUtil.toDate(member.getTimeBoosted().toInstant().toEpochMilli()));
+                String timeBoosted = format.format(getTimeBoosted(member));
                 elements.add(member.getAsMention() + " - " + timeBoosted);
             }
     
@@ -81,6 +82,10 @@ public class DiscordBoostersCommand extends Command {
         }
     }
     
+    // Discord returns when a user started boosting so we need to find how long then to now is. (Not needed for sorting as we can sort earliest -> latest.)
+    private static long getTimeBoosted(Member member) {
+        return System.currentTimeMillis() - member.getTimeBoosted().toInstant().toEpochMilli();
+    }
 }
 
 

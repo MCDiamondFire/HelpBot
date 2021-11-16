@@ -10,7 +10,7 @@ public class GraphChannelTask implements MidnightTask {
     
     @Override
     public void run() {
-        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(736019542882517062L);
+        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(HelpBotInstance.getConfig().getGraphChannel());
         channel.getHistoryFromBeginning(50).queue(messageHistory -> channel.purgeMessages(messageHistory.getRetrievedHistory()));
     
         TimeGraphContext context = new TimeGraphContext(TimeMode.DAILY, 14);

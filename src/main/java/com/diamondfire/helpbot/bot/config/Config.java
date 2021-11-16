@@ -82,6 +82,14 @@ public class Config {
         return getPropertyLong("purge_evidence_channel");
     }
     
+    public long getGraphChannel() {
+        return getPropertyLong("graph_channel");
+    }
+    
+    public long getExpertChatChannel() {
+        return getPropertyLong("expert_chat_channel");
+    }
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }

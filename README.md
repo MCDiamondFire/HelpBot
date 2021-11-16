@@ -22,27 +22,38 @@ created, use the following format.
 
 ```json
 {
-     "token": "bot token",
-     "prefix": "?",
-     "dev_bot": true,
-     
-     "mc_email": "Minecraft@email.com",
-     "mc_password": "MinecraftPassword",
-     
-     "db_link": "jdbc:db_type://ip:port/schema",
-     "db_user": "dbuser",
-     "db_password": "dbpassword",
-     
-     "guild": long,
-     "log_channel": long,
-     "discussion_channel": long,
-     "muted_role": long,
-     "verified_role": long,
-     
-     "role_react_channel": long,
-     "role_react_message": long
-     
-   }
+    "token": "bot token",
+    "prefix": "?",
+    "dev_bot": true,
+    "slash_commands": true,
+    
+    "mc_email": "Minecraft@email.com",
+    "mc_password": "MinecraftPassword",
+    
+    "db_link": "jdbc:db_type://ip:port/schema",
+    "db_user": "dbuser",
+    "db_password": "dbpassword",
+    
+    "guild": long,
+    "log_channel": long,
+    "discussion_channel": long,
+    "muted_role": long,
+    "verified_role": long,
+    
+    "role_react_channel": long,
+    "role_react_message": long,
+
+    "permission_roles": {
+        "BOT_DEVELOPER": "role id",
+        "DEVELOPER": "role id",
+        "ADMINISTRATOR": "role id",
+        "MODERATION": "role id",e
+        "EXPERT": "role id",
+        "SUPPORT": "role id",
+        "RETIRED_SUPPORT": "role id",
+        "USER": "role id"
+    }
+}
 ```
 
 **Swear Filter**
@@ -51,13 +62,13 @@ After setting up the config, you will need to paste the following into the swear
 
 ```json
 {
-  "equal": [
-  ],
-  "prefix": [
-  ],
-  "suffix": [
-  ],
-  "part": [
-  ]
+    "equal": [
+    ],
+    "prefix": [
+    ],
+    "suffix": [
+    ],
+    "part": [
+    ]
 }
 ```
