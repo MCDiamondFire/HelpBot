@@ -66,10 +66,16 @@ public class DefinedObjectArgument<T> implements Argument<T> {
     
     @Override
     public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean isRequired) {
-        return Argument.super.createOptionData(name, description, isRequired)
-                .addChoices(objectMap.keySet()
-                        .stream()
-                        .map(s -> new Command.Choice(s, s))
-                        .toArray(Command.Choice[]::new));
+        OptionData optionData = Argument.super.createOptionData(name, description, isRequired);
+        
+        // stop errors with help command
+        if (objectMap.size() <= 25) {
+                optionData.addChoices(objectMap.keySet()
+                    .stream()
+                    .map(s -> new Command.Choice(s, s))
+                    .toArray(Command.Choice[]::new));
+        }
+        
+        return optionData;
     }
 }

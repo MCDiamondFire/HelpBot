@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.MalformedArgumentException;
 import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.utils.MiscUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,5 +25,10 @@ public class DiscordUserArgument extends AbstractSimpleValueArgument<Long> {
             return MiscUtil.parseSnowflake(matcher.group(1));
         }
         throw new MalformedArgumentException("Bad user argument provided, must either be a ping or an id.");
+    }
+    
+    @Override
+    public OptionType optionType() {
+        return OptionType.USER;
     }
 }
