@@ -39,11 +39,15 @@ public class DefinedObjectArgument<T> implements Argument<T> {
         }
         
         
+        return internalCompare(compareString);
+    }
+    
+    public T internalCompare(String compareString) throws ArgumentException {
         T option = getClosestOption(compareString);
         if (option == null) {
             throw new MalformedArgumentException("Please pick from the given list: " + String.join(", ", objectMap.keySet()));
         }
-        
+    
         return option;
     }
     

@@ -18,7 +18,7 @@ import java.util.UUID;
 public class MojangPlayerUUIDArgument extends AbstractSimpleValueArgument<UUID> {
     
     @Override
-    protected UUID parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
+    public UUID parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         if (argument.length() > 16) {
            return Util.toUuid(argument);
         } else {

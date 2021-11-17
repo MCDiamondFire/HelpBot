@@ -20,7 +20,7 @@ public class EnumArgument<E extends Enum<E> & EnumArgument.InputEnum> extends Ab
     }
     
     @Override
-    protected E parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
+    public E parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         for (E enumValue : associatedEnum) {
             if (argument.equals(enumValue.getName())) {
                 return enumValue;

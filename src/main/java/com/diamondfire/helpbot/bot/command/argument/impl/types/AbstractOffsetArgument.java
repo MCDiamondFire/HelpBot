@@ -19,7 +19,7 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
     }
     
     @Override
-    protected Date parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
+    public Date parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         Calendar calendar = Calendar.getInstance();
         int offset = 0;
         boolean modified = false;

@@ -7,9 +7,7 @@ public class ParsedArgumentSet {
     private final Map<String, ParsedArgument<?>> arguments = new HashMap<>();
     
     public ParsedArgumentSet(Map<String, ParsedArgument<?>> finalizedArguments) throws IllegalArgumentException {
-        for (Map.Entry<String, ParsedArgument<?>> argument : finalizedArguments.entrySet()) {
-            arguments.put(argument.getKey(), argument.getValue());
-        }
+        arguments.putAll(finalizedArguments);
     }
     
     public Map<String, ?> getArguments() {

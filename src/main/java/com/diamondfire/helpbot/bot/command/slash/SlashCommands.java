@@ -1,8 +1,10 @@
 package com.diamondfire.helpbot.bot.command.slash;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentNode;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.CommandCategory;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -10,6 +12,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.StringUtil;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.build.*;
 
 import java.util.*;
@@ -87,7 +90,7 @@ public class SlashCommands {
     private static OptionData convertArgument(ArgumentNode<?> node) {
         try {
             ArgumentContainer<?> container = node.getContainer();
-            if (container instanceof SingleContainer singleContainer) {
+            if (container instanceof SingleArgumentContainer singleContainer) {
                 Argument<?> argument = singleContainer.getArgument();
                 return argument.createOptionData(node.getIdentifier().toLowerCase(Locale.ROOT), "noop", !container.isOptional());
             }
@@ -96,7 +99,50 @@ public class SlashCommands {
             e.printStackTrace();
         }
         
-        // no impl for AlternateArgumentContainer yet
+        // no impl for AlternateArgumentContainer yet - also only for staff commands
         return null;
+    }
+    
+    public static Map<String, ?> parseSlashArgs(SlashCommandEvent event) throws ArgumentException {
+        // expected: capture of ?; got: capture of ?; thank you java
+        Map<String, Object> argMap = new HashMap<>();
+        
+        for (ArgumentNode<?> argumentNode : event.getCommand().getArguments().getArguments()) {
+            String identifier = argumentNode.getIdentifier();
+            ArgumentContainer<?> container = argumentNode.getContainer();
+            OptionMapping optionMapping = event.getInternalEvent().getOption(identifier);
+            if (optionMapping == null) {
+                if (container.isOptional()) {
+                    argMap.put(identifier, container.getDefaultValue());
+                } else {
+                    throw new MissingArgumentException("Expected an argument, but got nothing.");
+                }
+            } else {
+                if (container instanceof SingleArgumentContainer singleArgumentContainer) {
+                    Argument<?> argument = singleArgumentContainer.getArgument();
+                    
+                    if (argument instanceof IntegerArgument) {
+                        argMap.put(identifier, (int) optionMapping.getAsLong());
+                    } else if (argument instanceof DiscordUserArgument) {
+                        argMap.put(identifier, optionMapping.getAsLong());
+                    } else if (argument instanceof AbstractSimpleValueArgument simpleValueArgument) {
+                        argMap.put(identifier, simpleValueArgument.parse(optionMapping.getAsString(), event));
+                    } else if (argument instanceof QuoteStringArgument || argument instanceof GreedyStringArgument) {
+                        argMap.put(identifier, optionMapping.getAsString());
+                    } else if (argument instanceof DefinedObjectArgument definedObjectArgument) {
+                        argMap.put(identifier, definedObjectArgument.internalCompare(optionMapping.getAsString()));
+                    } else {
+                        argMap.put(identifier, argument.parseValue(new ArrayDeque<>(Arrays.asList(optionMapping.getAsString().split(" "))), event));
+                    }
+                } else {
+                    throw new ArgumentException(
+                            String.format("Unable to parse arguments due to a discord limitation. Please run this command using message-based commands! (%s)",
+                                    HelpBotInstance.getConfig().getPrefix() + event.getCommand().getName())
+                    );
+                }
+            }
+        }
+        
+        return argMap;
     }
 }

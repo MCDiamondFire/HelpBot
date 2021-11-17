@@ -39,7 +39,7 @@ public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
     }
     
     @Override
-    protected Player parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
+    public Player parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         Player player = fetchPlayer(argument);
         if (player == null) {
             throw new MalformedArgumentException("Player has not joined DiamondFire before, or does not exist.");

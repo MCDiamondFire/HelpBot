@@ -12,11 +12,16 @@ import java.util.Map;
 public class SlashCommandEvent implements CommandEvent {
     private final net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent;
     private final SlashReplyHandler slashReplyHandler;
+    private Map<String, ?> argumentMap;
     private Command command;
     
     public SlashCommandEvent(net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent) {
         this.internalEvent = internalEvent;
         this.slashReplyHandler = new SlashReplyHandler(internalEvent);
+    }
+    
+    public void putArguments(Map<String, ?> input) {
+        argumentMap = input;
     }
     
     @Override
@@ -42,9 +47,10 @@ public class SlashCommandEvent implements CommandEvent {
         internalEvent.replyEmbeds(preset.getEmbed().build()).setEphemeral(true).queue();
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getArgument(String code) {
-        return null;
+        return (T) argumentMap.get(code);
     }
     
     @Override

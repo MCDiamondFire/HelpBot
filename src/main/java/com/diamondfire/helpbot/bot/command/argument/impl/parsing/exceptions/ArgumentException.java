@@ -25,10 +25,12 @@ public class ArgumentException extends Exception {
         
         if (command instanceof SubCommand) {
             String prefix = HelpBotInstance.getConfig().getPrefix();
-            String subCommandName = "unknown, slash command?";
+            String subCommandName = "unknown";
             
             if (event instanceof MessageCommandEvent messageCommandEvent) {
                 subCommandName = messageCommandEvent.getRawArgs()[0];
+            } if (event instanceof SlashCommandEvent slashCommandEvent) {
+                subCommandName = slashCommandEvent.getInternalEvent().getSubcommandName();
             }
             argMessage = subCommandName + " " + argMessage.substring(prefix.length());
         }

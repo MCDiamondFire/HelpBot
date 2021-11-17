@@ -8,7 +8,6 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.commands.*;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class CommandHandler extends ListenerAdapter {
+public class CommandHandler {
     
     private final HashMap<String, Command> CMDS = new HashMap<>();
     private final HashMap<String, Command> ALIASES = new HashMap<>();
@@ -34,9 +33,9 @@ public class CommandHandler extends ListenerAdapter {
     }
     
     public static Command getCommand(String name) {
-        Command cmd = CommandHandler.getInstance().getCommands().get(name.toLowerCase());
+        Command cmd = CommandHandler.getInstance().getCommands().get(name.toLowerCase(Locale.ROOT));
         if (cmd == null) {
-            cmd = CommandHandler.getInstance().getAliases().get(name.toLowerCase());
+            cmd = CommandHandler.getInstance().getAliases().get(name.toLowerCase(Locale.ROOT));
         }
         
         return cmd;
@@ -95,8 +94,7 @@ public class CommandHandler extends ListenerAdapter {
         }
     }
     
-    @Override
-    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+    public void run(@NotNull SlashCommandEvent event) {
         COMMAND_EXECUTOR.run(event);
     }
     

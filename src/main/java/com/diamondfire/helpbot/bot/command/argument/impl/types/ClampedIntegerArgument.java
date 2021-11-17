@@ -34,7 +34,8 @@ public class ClampedIntegerArgument extends IntegerArgument {
     
     @Override
     public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean isRequired) {
-        return super.createOptionData(name, description, isRequired)
+        String fmt = (description.isEmpty() ? "" : " ") + (max == Integer.MAX_VALUE ? String.format("(%d+)", min) : String.format("(%d - %d)", min, max));
+        return super.createOptionData(name, description + fmt, isRequired)
                 .setRequiredRange(min, max);
     }
 }

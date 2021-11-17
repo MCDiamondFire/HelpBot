@@ -13,6 +13,6 @@ public abstract class AbstractSimpleValueArgument<T> implements Argument<T> {
         return parse(args.pop(), event);
     }
     
-    protected abstract T parse(@NotNull String argument, CommandEvent event) throws ArgumentException;
+    public abstract T parse(@NotNull String argument, CommandEvent event) throws ArgumentException;
     
 }

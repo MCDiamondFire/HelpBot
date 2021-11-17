@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class LongArgument extends AbstractSimpleValueArgument<Long> {
     
     @Override
-    protected Long parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
+    public Long parse(@NotNull String argument, CommandEvent event) throws ArgumentException {
         return Long.parseLong(argument);
     }
     
