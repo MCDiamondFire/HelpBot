@@ -45,7 +45,6 @@ public class NbsCommand extends Command {
     
         MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
         
-        TextChannel channel = event.getChannel();
         PresetBuilder nbsPreset = new PresetBuilder()
             .withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder error = new PresetBuilder()
@@ -77,7 +76,7 @@ public class NbsCommand extends Command {
                             .addField("Link: __Expires in 2 minutes__","[Template Link](https://derpystuff.gitlab.io/code/l?link=" + json.get("link").getAsString() + ")",false)
                             .addField("Info:","Click the link shown above and click the button in the bottom left corner to copy the give command for the template. You will need [this function](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) to play songs.",false);
                     
-                    channel.sendMessageEmbeds(embed.build()).queue();
+                    event.getReplyHandler().reply(embed);
                 } catch(OutdatedNBSException | IOException e) {
                     e.printStackTrace();
                     event.reply(error);

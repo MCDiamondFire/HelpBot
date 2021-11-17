@@ -118,6 +118,6 @@ public class GenerateSamquoteSubCommand extends SubCommand {
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        event.getChannel().sendMessageEmbeds(builder.build()).addFile(samQuote, "quote.png").queue();
+        event.getReplyHandler().replyFile(builder, samQuote, "quote.png");
     }
 }

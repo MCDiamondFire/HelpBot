@@ -27,7 +27,7 @@ public abstract class AbstractGraphCommand<T> extends Command {
     public void run(CommandEvent event) {
         T context = createContext(event);
         
-        event.getChannel().sendFile(getGraphGenerator().createGraph(context)).queue();
+        event.getReplyHandler().replyFile("", getGraphGenerator().createGraph(context), "graph.png");
     }
     
     public abstract GraphGenerator<T> getGraphGenerator();

@@ -82,7 +82,7 @@ public class QueryCommand extends Command {
             e.printStackTrace(new PrintWriter(sw));
             String sStackTrace = sw.toString();
             builder.setTitle("Query failed! " + e.getClass().getName());
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.getReplyHandler().reply(builder);
             event.getChannel().sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
         }
         

@@ -57,7 +57,7 @@ public class GarfieldCommand extends Command {
             builder.setTitle(":rotating_light: API BROKE :rotating_light:");
             builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
         }
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.getReplyHandler().reply(builder);
     }
     
 }

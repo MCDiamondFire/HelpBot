@@ -41,6 +41,6 @@ public class CountSamquotesSubCommand extends SubCommand {
         builder.setDescription("" + strings.length);
         builder.setColor(new Color(87, 177, 71));
     
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.getReplyHandler().reply(builder);
     }
 }

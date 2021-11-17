@@ -59,8 +59,7 @@ public class HelpCommand extends Command {
             
             Map<CommandCategory, EmbedBuilder> categories = new LinkedHashMap<>();
             MultiSelectorBuilder selector = new MultiSelectorBuilder();
-            selector.setUser(event.getAuthor().getIdLong());
-            selector.setChannel(event.getChannel().getIdLong());
+            selector.setEvent(event);
             
             EmbedBuilder homeBuilder = new EmbedBuilder();
             homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055");
@@ -107,8 +106,8 @@ public class HelpCommand extends Command {
             builder.addField("Argument", FormatUtil.displayArguments(context), true);
             builder.addField("Category", context.getCommandCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
-            
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+    
+            event.getReplyHandler().reply(builder);
         }
         
     }

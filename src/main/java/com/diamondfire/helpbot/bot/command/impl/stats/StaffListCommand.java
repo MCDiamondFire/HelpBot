@@ -48,8 +48,7 @@ public class StaffListCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setChannel(event.getChannel().getIdLong());
-        builder.setUser(event.getMember().getIdLong());
+        builder.setEvent(event);
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM ranks,players\n" +
                         "                        WHERE ranks.uuid = players.uuid\n" +

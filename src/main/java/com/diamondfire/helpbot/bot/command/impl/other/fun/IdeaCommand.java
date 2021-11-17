@@ -224,7 +224,7 @@ public class IdeaCommand extends Command {
         builder.setTitle("Idea");
         builder.setDescription(types[rdm.nextInt(types.length)] + " " + objectives[rdm.nextInt(objectives.length)] + " " + rewards[rdm.nextInt(rewards.length)]);
         
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.getReplyHandler().reply(builder);
     }
     
 }

@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.sys.multiselector;
 
+import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.Contract;
 
@@ -8,18 +9,10 @@ import java.util.*;
 public class MultiSelectorBuilder {
     
     private final ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
-    private long channel;
-    private long userID;
+    private CommandEvent event;
     
-    @Contract("_, -> this")
-    public MultiSelectorBuilder setUser(long userID) {
-        this.userID = userID;
-        return this;
-    }
-    
-    @Contract("_, -> this")
-    public MultiSelectorBuilder setChannel(long channel) {
-        this.channel = channel;
+    public MultiSelectorBuilder setEvent(CommandEvent commandEvent) {
+        event = commandEvent;
         return this;
     }
     
@@ -54,7 +47,7 @@ public class MultiSelectorBuilder {
     }
     
     public MultiSelector build() {
-        return new MultiSelector(channel, userID, pages);
+        return new MultiSelector(pages, event);
     }
     
     

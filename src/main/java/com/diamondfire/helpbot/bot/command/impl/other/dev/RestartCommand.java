@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.bot.restart.RestartHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -43,6 +43,7 @@ public class RestartCommand extends Command {
         builder.setTitle("Restarting!");
         builder.setDescription("This may take a moment");
         
+        if (event instanceof SlashCommandEvent slashCommandEvent) slashCommandEvent.getInternalEvent().reply("Restarting... (Message below!)").queue();
         event.getChannel().sendMessageEmbeds(builder.build()).queue((msg) -> {
             RestartHandler.logRestart(msg);
             System.exit(0);

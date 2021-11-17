@@ -32,7 +32,17 @@ public record MessageReplyHandler(TextChannel channel) implements ReplyHandler {
     
     @Override
     public void replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        channel.sendMessageEmbeds(preset.getEmbed().build()).addFile(file, name, options).queue();
+        replyFile(preset.getEmbed(), file, name, options);
+    }
+    
+    @Override
+    public void replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        channel.sendMessageEmbeds(embed.build()).addFile(file, name, options).queue();
+    }
+    
+    @Override
+    public void replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        channel.sendMessage(content).addFile(file, name, options).queue();
     }
     
     public MessageAction replyA(PresetBuilder preset) {

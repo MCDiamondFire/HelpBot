@@ -47,8 +47,7 @@ public class RetiredListCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setChannel(event.getChannel().getIdLong());
-        builder.setUser(event.getMember().getIdLong());
+        builder.setEvent(event);
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM ranks, players WHERE ranks.uuid = players.uuid " +
                         "AND ranks.retirement > 0 " +

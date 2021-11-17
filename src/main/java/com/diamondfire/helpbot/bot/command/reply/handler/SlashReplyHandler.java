@@ -34,7 +34,17 @@ public record SlashReplyHandler(SlashCommandEvent internalEvent) implements Repl
     
     @Override
     public void replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        internalEvent.replyEmbeds(preset.getEmbed().build()).addFile(file, name, options).queue();
+        replyFile(preset.getEmbed(), file, name, options);
+    }
+    
+    @Override
+    public void replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        internalEvent.replyEmbeds(embed.build()).addFile(file, name, options).queue();
+    }
+    
+    @Override
+    public void replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        internalEvent.reply(content).addFile(file, name, options).queue();
     }
     
     @Deprecated

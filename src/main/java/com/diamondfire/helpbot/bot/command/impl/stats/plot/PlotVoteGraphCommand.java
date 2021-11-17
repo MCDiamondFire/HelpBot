@@ -70,9 +70,13 @@ public class PlotVoteGraphCommand extends Command {
                         entries.add(new StringEntry(set.getString("time")));
                     }
                     
-                    event.getChannel().sendFile(new ChartGraphBuilder()
-                            .setGraphName(String.format("Votes on plot %s this month", plotID))
-                            .createGraphFromCollection(entries)).queue();
+                    event.getReplyHandler().replyFile(
+                            "",
+                            new ChartGraphBuilder()
+                                    .setGraphName(String.format("Votes on plot %s this month", plotID))
+                                    .createGraphFromCollection(entries),
+                            "graph.png"
+                    );
                 });
     }
     

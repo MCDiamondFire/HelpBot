@@ -40,8 +40,7 @@ public class RulesCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setChannel(event.getChannel().getIdLong());
-        builder.setUser(event.getMember().getIdLong());
+        builder.setEvent(event);
         
         EmbedBuilder rulesEmbed = new EmbedBuilder();
         rulesEmbed.addField("Minecraft Server Rules", "https://mcdiamondfire.com/rules/", true);

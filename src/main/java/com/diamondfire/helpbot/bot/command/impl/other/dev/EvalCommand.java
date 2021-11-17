@@ -64,7 +64,7 @@ public class EvalCommand extends Command {
             builder.setTitle("No.");
             builder.setColor(Color.red);
 
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.getReplyHandler().reply(builder);
             return;
         }
         
@@ -83,7 +83,7 @@ public class EvalCommand extends Command {
             
             builder.setTitle("Eval Result");
             builder.addField("Object Returned:", String.format("```js\n%s```", EmbedUtil.fieldSafe(object)), false);
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.getReplyHandler().reply(builder);
             
         } catch (Throwable e) {
             StringWriter sw = new StringWriter();
@@ -91,7 +91,7 @@ public class EvalCommand extends Command {
             String sStackTrace = sw.toString();
             
             builder.setTitle("Eval failed!");
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.getReplyHandler().reply(builder);
             event.getChannel().sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
         }
         

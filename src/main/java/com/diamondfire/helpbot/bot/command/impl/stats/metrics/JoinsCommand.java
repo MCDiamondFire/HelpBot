@@ -42,7 +42,7 @@ public class JoinsCommand extends Command {
                     String count = FormatUtil.formatNumber(result.getResult().getInt("count"));
                     builder.setDescription(String.format("A total of %s players have joined DiamondFire before!", count));
                 });
-        
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+    
+        event.getReplyHandler().reply(builder);
     }
 }

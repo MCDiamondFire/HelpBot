@@ -16,6 +16,8 @@ public interface ReplyHandler {
     void reply(EmbedBuilder builder);
     void reply(EmbedBuilder builder, MessageChannel channel);
     void replyFile(PresetBuilder preset, @Nonnull final File file, @Nonnull final String name, @Nonnull AttachmentOption... options);
+    void replyFile(EmbedBuilder embed, @Nonnull final File file, @Nonnull final String name, @Nonnull AttachmentOption... options);
+    void replyFile(String content, @Nonnull final File file, @Nonnull final String name, @Nonnull AttachmentOption... options);
     
     MessageAction replyA(PresetBuilder preset);
     MessageAction replyA(PresetBuilder preset, MessageChannel channel);

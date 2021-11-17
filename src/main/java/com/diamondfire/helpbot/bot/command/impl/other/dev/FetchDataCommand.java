@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.bot.command.help.CommandCategory;
 import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog.CodeDifferenceHandler;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
@@ -72,6 +72,8 @@ public class FetchDataCommand extends Command {
     // TODO: flag code
     @Override
     public void run(CommandEvent event) {
+        if (event instanceof SlashCommandEvent slashCommandEvent) slashCommandEvent.getInternalEvent().reply("Command output will be shown below.").setEphemeral(true).queue();
+    
         List<String> flags = event.getArgument("flag");
         if (flags == null) {
             setup(event.getChannel());

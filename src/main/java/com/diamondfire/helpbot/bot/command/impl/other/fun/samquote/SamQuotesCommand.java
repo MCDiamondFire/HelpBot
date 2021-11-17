@@ -60,7 +60,7 @@ public class SamQuotesCommand extends SubCommandHolder {
             builder.setImage("attachment://quote.png");
             builder.setColor(new Color(87, 177, 71));
             
-            event.getChannel().sendMessageEmbeds(builder.build()).addFile(file, "quote.png").queue();
+            event.getReplyHandler().replyFile(builder, file, "quote.png");
         } else {
             super.run(event);
         }
