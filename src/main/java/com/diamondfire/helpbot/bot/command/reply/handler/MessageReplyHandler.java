@@ -9,7 +9,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public record MessageReplyHandler(TextChannel channel) implements ReplyHandler {
+public class MessageReplyHandler implements ReplyHandler {
+    private final TextChannel channel;
+    public MessageReplyHandler(TextChannel channel) {
+        this.channel = channel;
+    }
+    
     public void reply(String content) {
         textReply(content, channel).queue();
     }

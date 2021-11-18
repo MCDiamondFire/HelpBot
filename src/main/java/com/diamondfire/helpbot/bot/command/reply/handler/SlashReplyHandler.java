@@ -10,7 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public record SlashReplyHandler(SlashCommandEvent internalEvent) implements ReplyHandler {
+public class SlashReplyHandler implements ReplyHandler {
+    private final SlashCommandEvent internalEvent;
+    public SlashReplyHandler(SlashCommandEvent internalEvent) {
+        this.internalEvent = internalEvent;
+    }
+    
     @Override
     public void reply(String content) {
         internalEvent.reply(content).queue();
