@@ -65,6 +65,11 @@ public class FetchDataCommand extends Command {
     }
     
     @Override
+    public boolean supportsSlashCommands() {
+        return false;
+    }
+    
+    @Override
     public Permission getPermission() {
         return Permission.BOT_DEVELOPER;
     }
@@ -72,8 +77,6 @@ public class FetchDataCommand extends Command {
     // TODO: flag code
     @Override
     public void run(CommandEvent event) {
-        if (event instanceof SlashCommandEvent slashCommandEvent) slashCommandEvent.getInternalEvent().reply("Command output will be shown below.").setEphemeral(true).queue();
-    
         List<String> flags = event.getArgument("flag");
         if (flags == null) {
             setup(event.getChannel());

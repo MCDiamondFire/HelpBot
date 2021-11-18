@@ -33,7 +33,7 @@ public enum Permission {
     
     Permission(int permissionLevel) {
         // This is a string due to a weird GSON error I can't be bothered to fix.
-        this.role = Long.parseLong((String) HelpBotInstance.getConfig().getPermissionRoleMap().get(name()));
+        this.role = HelpBotInstance.getConfig().getPermissionRoleMap().get(name());
         this.permissionLevel = permissionLevel;
     }
     

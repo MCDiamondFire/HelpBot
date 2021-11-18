@@ -44,14 +44,14 @@ created, use the following format.
     "role_react_message": long,
 
     "permission_roles": {
-        "BOT_DEVELOPER": "role id",
-        "DEVELOPER": "role id",
-        "ADMINISTRATOR": "role id",
-        "MODERATION": "role id",e
-        "EXPERT": "role id",
-        "SUPPORT": "role id",
-        "RETIRED_SUPPORT": "role id",
-        "USER": "role id"
+        "BOT_DEVELOPER": long,
+        "DEVELOPER": long,
+        "ADMINISTRATOR": long,
+        "MODERATION": long,
+        "EXPERT": long,
+        "SUPPORT": long,
+        "RETIRED_SUPPORT": long,
+        "USER": long
     }
 }
 ```

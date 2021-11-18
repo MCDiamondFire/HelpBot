@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot.config;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.util.Map;
@@ -102,8 +103,8 @@ public class Config {
         return getPropertyString("report_webhook");
     }
     
-    public Map getPermissionRoleMap() {
-        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), Map.class);
+    public Map<String, Long> getPermissionRoleMap() {
+        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), new TypeToken<Map<String, Long>>(){}.getType());
     }
     
     private long getPropertyLong(String property) {
