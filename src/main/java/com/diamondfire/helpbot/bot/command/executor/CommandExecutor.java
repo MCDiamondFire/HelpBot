@@ -58,6 +58,13 @@ public class CommandExecutor {
         }
         event.setCommand(command);
         
+        if (!command.supportsSlashCommands()) {
+            event.reply(new PresetBuilder().withPreset(
+                    new InformativeReply(InformativeReplyType.ERROR, "This command can only be run through a message!")
+            ));
+            return;
+        }
+        
         CompletableFuture.runAsync(() -> {
             // parse args
             try {

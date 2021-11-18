@@ -18,20 +18,6 @@ import net.dv8tion.jda.api.interactions.commands.build.*;
 import java.util.*;
 
 public class SlashCommands {
-    public static boolean requireMessageCommand(CommandEvent event, String desc) {
-        if (!(event instanceof MessageCommandEvent)) {
-            event.reply(new PresetBuilder().withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, desc)
-            ));
-            return true;
-        }
-        
-        return false;
-    }
-    
-    public static boolean requireMessageCommand(CommandEvent event) {
-        return requireMessageCommand(event, "This command can only be run through a message!");
-    }
     
     public static CommandData createCommandData(Command command) {
         CommandCategory category = command.getHelpContext().getCommandCategory();

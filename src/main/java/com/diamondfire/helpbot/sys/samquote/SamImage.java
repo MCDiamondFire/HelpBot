@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.impl.other.fun.samquote;
+package com.diamondfire.helpbot.sys.samquote;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 
@@ -125,7 +125,7 @@ public class SamImage {
         return img;
     }
     
-    protected static BufferedImage createFull(String text) throws IOException {
+    public static BufferedImage createFull(String text) throws IOException {
         BufferedImage circleBuffer = SamImage.cropSamPfp();
     
         //convert text into image

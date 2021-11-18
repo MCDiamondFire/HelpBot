@@ -57,21 +57,24 @@ public class OcrCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        if (SlashCommands.requireMessageCommand(event)) return;
-        
-        MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
-        
         String imgUrl = event.getArgument("url");
         if (imgUrl == null) {
-           List<Message.Attachment> attachments = messageCommandEvent.getMessage().getAttachments();
-           if (attachments.isEmpty()) {
-               event.reply(
-                       new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Please provide an attachment or url!"))
-               );
-               return;
-           } else {
-               imgUrl = attachments.get(0).getProxyUrl();
-           }
+            if (event instanceof MessageCommandEvent messageCommandEvent) {
+                List<Message.Attachment> attachments = messageCommandEvent.getMessage().getAttachments();
+                if (attachments.isEmpty()) {
+                    event.reply(
+                            new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Please provide an attachment or url!"))
+                    );
+                    return;
+                } else {
+                    imgUrl = attachments.get(0).getProxyUrl();
+                }
+            } else {
+                event.reply(
+                        new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Please provide a url!"))
+                );
+                return;
+            }
         }
     
         HttpURLConnection connection = null;

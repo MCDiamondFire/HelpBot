@@ -15,6 +15,10 @@ public abstract class Command {
         return true;
     }
     
+    public boolean supportsSlashCommands() {
+        return true;
+    }
+    
     public String[] getAliases() {
         return new String[0];
     }

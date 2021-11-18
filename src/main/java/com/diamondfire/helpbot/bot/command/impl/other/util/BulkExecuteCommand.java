@@ -42,6 +42,11 @@ public class BulkExecuteCommand extends Command {
     }
     
     @Override
+    public boolean supportsSlashCommands() {
+        return false;
+    }
+    
+    @Override
     public ArgumentSet compileArguments() {
         List<String> playerCommands = new ArrayList<>();
         for (Command command : CommandHandler.getInstance().getCommands().values()) {
@@ -64,7 +69,6 @@ public class BulkExecuteCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        if (SlashCommands.requireMessageCommand(event)) return;
         MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
         
         PresetBuilder builder = new PresetBuilder();

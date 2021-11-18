@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.sys.samquote.SamImage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -44,21 +45,6 @@ public class SubmitSamquoteSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-//        What is this? I have no idea.
-
-//        String[] message = messageCommandEvent.getMessage().getContentRaw().split("/");
-//        if(message.length != 7 || message[5] == null || message[6] == null || message[5].length() != 18 || message[6].length() != 18) {
-//
-//            PresetBuilder error = new PresetBuilder();
-//
-//            error.withPreset(
-//                    new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
-//            );
-//
-//            event.reply(error);
-//
-//            return;
-//        }
     
         long channelID = event.getArgument("channel_id");
         long messageID = event.getArgument("message_id");

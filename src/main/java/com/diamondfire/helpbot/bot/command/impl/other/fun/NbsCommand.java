@@ -34,6 +34,11 @@ public class NbsCommand extends Command {
     }
     
     @Override
+    public boolean supportsSlashCommands() {
+        return false;
+    }
+    
+    @Override
     protected ArgumentSet compileArguments() { return new ArgumentSet(); }
     
     @Override
@@ -41,8 +46,6 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        if (SlashCommands.requireMessageCommand(event)) return;
-    
         MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
         
         PresetBuilder nbsPreset = new PresetBuilder()

@@ -109,7 +109,7 @@ public class StaffListCommand extends Command {
                                 List<String> memberNames = new ArrayList<>();
                                 for (Member member : members) {
                                     // Exclude devs from this list for cleanliness.
-                                    if (!member.getUser().isBot() && !ranks.get(Rank.DEVELOPER).contains(member.getEffectiveName())) {
+                                    if (!member.getUser().isBot()) {
                                         memberNames.add(member.getEffectiveName());
                                     }
                                 }
