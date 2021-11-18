@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
-import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;

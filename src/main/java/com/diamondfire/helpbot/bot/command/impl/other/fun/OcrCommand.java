@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;

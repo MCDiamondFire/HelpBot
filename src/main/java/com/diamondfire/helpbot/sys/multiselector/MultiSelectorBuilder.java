@@ -9,10 +9,12 @@ import java.util.*;
 public class MultiSelectorBuilder {
     
     private final ArrayList<MultiSelectorPage> pages = new ArrayList<>(10);
-    private CommandEvent event;
+    private long channel;
+    private long user;
     
     public MultiSelectorBuilder setEvent(CommandEvent commandEvent) {
-        event = commandEvent;
+        user = commandEvent.getMember().getIdLong();
+        channel = commandEvent.getChannel().getIdLong();
         return this;
     }
     
@@ -47,7 +49,7 @@ public class MultiSelectorBuilder {
     }
     
     public MultiSelector build() {
-        return new MultiSelector(pages, event);
+        return new MultiSelector(pages, channel, user);
     }
     
     

@@ -35,7 +35,6 @@ public class MessageCommandEvent extends GuildMessageReceivedEvent implements Co
         this.command = cmd;
     }
     
-    @Override
     public void pushArguments(String[] rawArgs) throws ArgumentException  {
         this.parsedArgumentSet = ArgumentParser.parseArgs(command, Arrays.copyOfRange(rawArgs, 1, rawArgs.length), this);
     }

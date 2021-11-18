@@ -12,11 +12,13 @@ import java.util.*;
 public class MultiSelector {
     
     private final MultiSelectorPage[] pages;
-    private final CommandEvent event;
+    private final long channel;
+    private final long user;
     
-    public MultiSelector(List<MultiSelectorPage> pages, CommandEvent commandEvent) {
+    public MultiSelector(List<MultiSelectorPage> pages, long channel, long user) {
         this.pages = pages.toArray(new MultiSelectorPage[0]);
-        this.event = commandEvent;
+        this.channel = channel;
+        this.user = user;
     }
     
     public void send(JDA jda) {
@@ -41,11 +43,12 @@ public class MultiSelector {
             buttons.add(button);
         }
         
-        if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().reply("The output of your command will be displayed below.").setEphemeral(true).queue();
-        }
-        event.getChannel().sendMessageEmbeds(pages[0].getPage().build()).setActionRows(Util.of(buttons)).queue((message) -> {
-            ButtonHandler.addListener(event.getMember().getIdLong(), message, event -> {
+        // TODO
+//        if (event instanceof SlashCommandEvent slashCommandEvent) {
+//            slashCommandEvent.getInternalEvent().reply("The output of your command will be displayed below.").setEphemeral(true).queue();
+//        }
+        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+            ButtonHandler.addListener(user, message, event -> {
                 event.deferEdit().queue();
                 message.editMessageEmbeds(pageMap.get(event.getComponentId()).getPage().build()).setActionRows(message.getActionRows()).queue();
             }, true);

@@ -10,8 +10,6 @@ import net.dv8tion.jda.api.entities.*;
 import java.util.*;
 
 public interface CommandEvent {
-    void pushArguments(String[] rawArgs) throws ArgumentException;
-    
     Command getCommand();
     
     void setCommand(Command command);

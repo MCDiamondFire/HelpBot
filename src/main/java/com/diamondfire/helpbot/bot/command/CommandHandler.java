@@ -5,10 +5,9 @@ import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.commands.*;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.jetbrains.annotations.NotNull;
@@ -75,12 +74,10 @@ public class CommandHandler {
                         System.out.println("Commands registered. Setting up permissions...");
                         Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();
                     
-                        for (net.dv8tion.jda.api.interactions.commands.Command command :
-                                commands1) {
+                        for (net.dv8tion.jda.api.interactions.commands.Command command : commands1) {
                             Command command1 = CMDS.get(command.getName());
                             List<CommandPrivilege> commandPrivileges = new ArrayList<>();
-                            for (Permission perm :
-                                    Permission.VALUES) {
+                            for (Permission perm : Permission.VALUES) {
                                 if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel())
                                     commandPrivileges.add(CommandPrivilege.enableRole(perm.getRole()));
                             }
@@ -89,8 +86,8 @@ public class CommandHandler {
                     
                         guild.updateCommandPrivileges(privilegeMap).queue(stringListMap -> {
                             System.out.println("Slash command permissions registered.");
-                        }, Throwable::printStackTrace);
-                    }, Throwable::printStackTrace);
+                        });
+                    });
         }
     }
     
@@ -98,7 +95,7 @@ public class CommandHandler {
         COMMAND_EXECUTOR.run(event);
     }
     
-    public void run(CommandEvent e, String[] args) {
+    public void run(MessageCommandEvent e, String[] args) {
         COMMAND_EXECUTOR.run(e, args);
     }
     

@@ -6,16 +6,14 @@ import com.diamondfire.helpbot.bot.command.executor.checks.*;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.commands.*;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class CommandExecutor {
     
@@ -27,7 +25,7 @@ public class CommandExecutor {
             new CommandLog()
     };
     
-    public void run(CommandEvent e, String[] args) {
+    public void run(MessageCommandEvent e, String[] args) {
         Command command = e.getCommand();
         if (command == null) {
             return;

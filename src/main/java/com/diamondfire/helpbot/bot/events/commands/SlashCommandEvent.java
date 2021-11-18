@@ -1,6 +1,5 @@
 package com.diamondfire.helpbot.bot.events.commands;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
 import com.diamondfire.helpbot.bot.command.reply.handler.*;
@@ -23,9 +22,6 @@ public class SlashCommandEvent implements CommandEvent {
     public void putArguments(Map<String, ?> input) {
         argumentMap = input;
     }
-    
-    @Override
-    public void pushArguments(String[] rawArgs) throws ArgumentException {}
     
     @Override
     public Command getCommand() {
@@ -55,7 +51,7 @@ public class SlashCommandEvent implements CommandEvent {
     
     @Override
     public Map<String, ?> getArguments() {
-        return null;
+        return argumentMap;
     }
     
     @Override

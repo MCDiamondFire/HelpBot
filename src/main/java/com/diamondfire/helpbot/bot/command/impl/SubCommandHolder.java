@@ -29,7 +29,7 @@ public abstract class SubCommandHolder extends Command {
             List<String> args = new ArrayList<>(Arrays.asList(rawArgs));
             args.remove(1);
     
-            CommandHandler.getInstance().run(event, args.toArray(String[]::new));
+            CommandHandler.getInstance().run(messageCommandEvent, args.toArray(String[]::new));
         }
     }
 

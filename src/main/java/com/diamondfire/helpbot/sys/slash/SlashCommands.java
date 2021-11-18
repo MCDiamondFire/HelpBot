@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.slash;
+package com.diamondfire.helpbot.sys.slash;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ArgumentNode;

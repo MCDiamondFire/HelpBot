@@ -10,7 +10,8 @@ import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
+import com.diamondfire.helpbot.bot.events.commands.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -63,6 +64,9 @@ public class BulkExecuteCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
+        if (SlashCommands.requireMessageCommand(event)) return;
+        MessageCommandEvent messageCommandEvent = (MessageCommandEvent) event;
+        
         PresetBuilder builder = new PresetBuilder();
         List<String> playerNames = event.getArgument("players");
         String command = event.getArgument("cmd");
@@ -74,7 +78,7 @@ public class BulkExecuteCommand extends Command {
                 field.trySetAccessible();
                 field.set(event, command1);
                 
-                event.pushArguments(new String[]{"dummy", player});
+                messageCommandEvent.pushArguments(new String[]{"dummy", player});
                 command1.run(event);
             } catch (Exception e) {
                 builder.withPreset(
