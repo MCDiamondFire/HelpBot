@@ -9,18 +9,21 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
+import java.io.File;
+import java.util.Random;
 
-public class CountSamquotesSubCommand extends SubCommand {
+public class GetSamquoteSubCommand extends SubCommand {
+    
+    private static final Random random = new Random();
     
     @Override
     public String getName() {
-        return "count";
+        return "get";
     }
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext()
-                .description("Gets the total number of stored samquotes.");
+        return new HelpContext();
     }
     
     @Override
@@ -35,13 +38,17 @@ public class CountSamquotesSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        String[] strings = ExternalFiles.SAM_DIR.list();
+        runStatic(event);
+    }
     
+    public static void runStatic(CommandEvent event) {
+        String[] strings = ExternalFiles.SAM_DIR.list();
+        File file = new File(ExternalFiles.SAM_DIR, strings[random.nextInt(strings.length)]);
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("Total Sam Quotes:");
-        builder.setDescription("" + strings.length);
+        builder.setTitle("Sam Quote");
+        builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        event.getReplyHandler().reply(builder);
+        event.getReplyHandler().replyFile(builder, file, "quote.png");
     }
 }

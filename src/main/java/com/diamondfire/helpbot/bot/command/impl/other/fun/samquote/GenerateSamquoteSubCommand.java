@@ -30,6 +30,7 @@ public class GenerateSamquoteSubCommand extends SubCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
+                .description("Generates a fake (but real sounding) samquote.")
                 .addArgument(new HelpContextArgument().name("starting word").optional());
     }
     

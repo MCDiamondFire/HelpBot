@@ -18,7 +18,8 @@ public class ReloadSamquotesSubCommand extends SubCommand {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext();
+        return new HelpContext()
+                .description("Reloads the list of samquotes.");
     }
     
     @Override

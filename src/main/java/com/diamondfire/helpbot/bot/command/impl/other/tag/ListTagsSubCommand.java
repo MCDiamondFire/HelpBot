@@ -21,7 +21,8 @@ public class ListTagsSubCommand extends SubCommand {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext();
+        return new HelpContext()
+                .description("Lists all custom command tags.");
     }
     
     @Override

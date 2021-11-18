@@ -16,8 +16,6 @@ import java.util.*;
 
 public class SamQuotesCommand extends SubCommandHolder {
     
-    private static final Random random = new Random();
-    
     @Override
     public String getName() {
         return "samquote";
@@ -53,14 +51,7 @@ public class SamQuotesCommand extends SubCommandHolder {
     @Override
     public void run(CommandEvent event) {
         if (event.getArgument("subcommand") == null) {
-            String[] strings = ExternalFiles.SAM_DIR.list();
-            File file = new File(ExternalFiles.SAM_DIR, strings[random.nextInt(strings.length)]);
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle("Sam Quote");
-            builder.setImage("attachment://quote.png");
-            builder.setColor(new Color(87, 177, 71));
-            
-            event.getReplyHandler().replyFile(builder, file, "quote.png");
+            GetSamquoteSubCommand.runStatic(event);
         } else {
             super.run(event);
         }
@@ -70,7 +61,10 @@ public class SamQuotesCommand extends SubCommandHolder {
     public SubCommand[] getSubCommands() {
         return new SubCommand[] {
                 new ReloadSamquotesSubCommand(),
-                new CountSamquotesSubCommand()
+                new CountSamquotesSubCommand(),
+                new SubmitSamquoteSubCommand(),
+                new GenerateSamquoteSubCommand(),
+                new GetSamquoteSubCommand()
         };
     }
     

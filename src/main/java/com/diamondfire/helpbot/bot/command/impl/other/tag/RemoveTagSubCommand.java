@@ -23,6 +23,7 @@ public class RemoveTagSubCommand extends SubCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
+                .description("Removes a custom command tag.")
                 .addArgument(
                         new HelpContextArgument()
                             .name("activator")

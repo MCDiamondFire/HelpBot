@@ -24,6 +24,7 @@ public class EditTagSubCommand extends SubCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
+                .description("Edits custom command tags.")
                 .addArgument(
                         new HelpContextArgument()
                             .name("activator"),

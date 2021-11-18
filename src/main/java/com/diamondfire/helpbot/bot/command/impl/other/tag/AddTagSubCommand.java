@@ -23,6 +23,7 @@ public class AddTagSubCommand extends SubCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
+                .description("Adds a custom command tag.")
                 .addArgument(
                         new HelpContextArgument()
                                 .name("activator"),

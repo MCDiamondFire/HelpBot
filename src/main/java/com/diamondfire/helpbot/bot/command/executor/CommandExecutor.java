@@ -1,9 +1,9 @@
 package com.diamondfire.helpbot.bot.command.executor;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.executor.checks.*;
-import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.io.*;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +50,14 @@ public class CommandExecutor {
     public void run(SlashCommandEvent event) {
         Command command = CommandHandler.getInstance().getCommands().get(event.getInternalEvent().getName().toLowerCase(Locale.ROOT));
         if (command == null) return;
+        if (command instanceof SubCommandHolder subCommandHolder) {
+            Optional<SubCommand> optionalSubCommand = Arrays.stream(subCommandHolder.getSubCommands()).filter(subCommand -> subCommand.getName().equalsIgnoreCase(event.getInternalEvent().getSubcommandName())).findFirst();
+            if (optionalSubCommand.isEmpty()) {
+                event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Invalid Subcommand!", "Choose from " + event.getCommand().getHelpContext().getArguments().get(0).getArgumentName())));
+                return;
+            }
+            command = optionalSubCommand.get();
+        }
         event.setCommand(command);
         
         CompletableFuture.runAsync(() -> {
@@ -63,7 +71,7 @@ public class CommandExecutor {
                 return;
             }
             
-            runCommandInternal(command, event);
+            runCommandInternal(event.getCommand(), event);
         }, POOL);
     }
     
