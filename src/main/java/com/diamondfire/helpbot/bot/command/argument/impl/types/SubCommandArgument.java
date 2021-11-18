@@ -24,6 +24,6 @@ public class SubCommandArgument extends AbstractSimpleValueArgument<SubCommand> 
     
     @Override
     public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean isRequired) {
-        return null; // We have special handling for other args.
+        throw new IllegalStateException("SubCommandArgument should never be converted in slash commands."); // We have special handling for other args.
     }
 }

@@ -120,7 +120,10 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 if (sameActions.size() == 1) {
                     onChosen.accept(sameActions.get(0), event.getChannel());
                 } else if (sameActions.size() > 1) {
-                    if (event instanceof SlashCommandEvent slashCommandEvent) slashCommandEvent.getInternalEvent().reply("Please see the message below to find the item you want.").setEphemeral(true).queue();
+                    // TODO make this work correctly with slash commands
+                    if (event instanceof SlashCommandEvent slashCommandEvent) {
+                        slashCommandEvent.getInternalEvent().reply("Please see the message below to find the item you want.").setEphemeral(true).queue();
+                    }
                     sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
                 }
                 
