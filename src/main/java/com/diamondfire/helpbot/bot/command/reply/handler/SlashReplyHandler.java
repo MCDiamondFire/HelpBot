@@ -35,7 +35,8 @@ public class SlashReplyHandler implements ReplyHandler {
     }
     
     public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return internalEvent.reply(content).addFile(file, name, options)
+        return internalEvent.reply(content)
+                .addFile(file, name, options)
                 .submit()
                 .thenApply(SlashFollowupReplyHandler::new);
     }
@@ -45,7 +46,8 @@ public class SlashReplyHandler implements ReplyHandler {
     }
     
     public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return internalEvent.replyEmbeds(embed.build()).addFile(file, name, options)
+        return internalEvent.replyEmbeds(embed.build())
+                .addFile(file, name, options)
                 .submit()
                 .thenApply(SlashFollowupReplyHandler::new);
     }

@@ -33,6 +33,11 @@ public class RestartCommand extends Command {
     }
     
     @Override
+    public boolean supportsSlashCommands() {
+        return false; // Make responses cleaner + prevent accidental restarts.
+    }
+    
+    @Override
     public Permission getPermission() {
         return Permission.BOT_DEVELOPER;
     }
@@ -43,9 +48,6 @@ public class RestartCommand extends Command {
         builder.setTitle("Restarting!");
         builder.setDescription("This may take a moment");
         
-        if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().reply("Restarting... (Message below!)").queue();
-        }
         event.getChannel().sendMessageEmbeds(builder.build()).queue((msg) -> {
             RestartHandler.logRestart(msg);
             System.exit(0);
