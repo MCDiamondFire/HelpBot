@@ -34,20 +34,22 @@ public class SlashReplyHandler implements ReplyHandler {
                 .thenApply(SlashFollowupReplyHandler::new);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.reply(content)
-                .addFile(file, name, options)
+                .addFile(data, name, options)
                 .submit()
                 .thenApply(SlashFollowupReplyHandler::new);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return replyFile(preset.getEmbed(), file, name, options);
+    @Override
+    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+        return replyFile(preset.getEmbed(), data, name, options);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+    @Override
+    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.replyEmbeds(embed.build())
-                .addFile(file, name, options)
+                .addFile(data, name, options)
                 .submit()
                 .thenApply(SlashFollowupReplyHandler::new);
     }

@@ -9,7 +9,8 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Random;
 
 public class GetSamquoteSubCommand extends SubCommand {
@@ -49,6 +50,10 @@ public class GetSamquoteSubCommand extends SubCommand {
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        event.getReplyHandler().replyFile(builder, file, "quote.png");
+        try {
+            event.getReplyHandler().replyFile(builder, Files.readAllBytes(file.toPath()), "quote.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,6 +8,9 @@ import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class ActionDumpCommand extends Command {
     
     @Override
@@ -34,7 +37,11 @@ public class ActionDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Action Dump"), ExternalFiles.DB, ExternalFiles.DB.getName());
+        try {
+            event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Action Dump"), Files.readAllBytes(ExternalFiles.DB.toPath()), ExternalFiles.DB.getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
 }

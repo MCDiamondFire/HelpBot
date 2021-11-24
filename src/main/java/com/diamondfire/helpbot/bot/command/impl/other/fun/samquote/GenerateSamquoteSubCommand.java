@@ -100,26 +100,22 @@ public class GenerateSamquoteSubCommand extends SubCommand {
             }
         }
     
-        String text = "           " + string;
+//        String text = "           " + string;
     
-        BufferedImage combined = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            combined = SamImage.createFull(text);
+            ImageIO.write(SamImage.createFull(string.toString()), "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
+            event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Unable to create samquote image.")));
+            return;
         }
-    
-        File samQuote = new File(ExternalFiles.OTHER_CACHE_DIR, "quote.png");
-        try {
-            ImageIO.write(combined, "PNG", samQuote);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Sam Quote");
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
-    
-        event.getReplyHandler().replyFile(builder, samQuote, "quote.png");
+        
+        event.getReplyHandler().replyFile(builder, baos.toByteArray(), "quote.png");
     }
 }

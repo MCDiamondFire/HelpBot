@@ -34,18 +34,20 @@ public class MessageReplyHandler implements ReplyHandler {
                 .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return replyFile(preset.getEmbed(), file, name, options);
+    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+        return replyFile(preset.getEmbed(), data, name, options);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return channel.sendMessageEmbeds(embed.build()).addFile(file, name, options)
+    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+        return channel.sendMessageEmbeds(embed.build())
+                .addFile(data, name, options)
                 .submit()
                 .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        return channel.sendMessage(content).addFile(file, name, options)
+    public CompletableFuture<FollowupReplyHandler> replyFile(String content, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+        return channel.sendMessage(content)
+                .addFile(data, name, options)
                 .submit()
                 .thenApply(MessageFollowupReplyHandler::new);
     }

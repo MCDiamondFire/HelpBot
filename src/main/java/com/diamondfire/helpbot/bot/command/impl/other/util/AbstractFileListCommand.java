@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class AbstractFileListCommand extends Command {
@@ -24,25 +25,12 @@ public abstract class AbstractFileListCommand extends Command {
     }
     
     protected void generate(CommandEvent event, List<? extends CodeObject> data) {
-        File file;
-        try {
-            file = ExternalFileUtil.generateFile(data.get(0).getEnum().getName().toLowerCase().replace(" ", "-") + "-list.txt");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file.getPath(), true))) {
-                List<String> names = new ArrayList<>();
-                for (CodeObject item : data) {
-                    names.add(item.getItem().getItemName());
-                }
-                
-                writer.append(String.join("|", names));
-            }
-            
-        } catch (IOException e) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle("Could not generate file!");
-            event.getReplyHandler().reply(builder);
-            return;
+        List<String> names = new ArrayList<>();
+        for (CodeObject item : data) {
+            names.add(item.getItem().getItemName());
         }
         
-        event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("File Generated"), file, file.getName());
+        event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("File Generated"), String.join("|", names).getBytes(StandardCharsets.UTF_8),
+                data.get(0).getEnum().getName().toLowerCase().replace(" ", "-") + "-list.txt");
     }
 }

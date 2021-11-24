@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 
@@ -35,10 +36,7 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
         }
         
         try {
-            File file = ExternalFileUtil.generateFile("session_log.txt");
-            Files.writeString(file.toPath(), builder.toString(), StandardOpenOption.WRITE);
-            
-            event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Session Log"), file, file.getName());
+            event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Session Log"), builder.toString().getBytes(StandardCharsets.UTF_8), "session_log.txt");
         } catch (Exception e) {
             throw new IllegalStateException();
         }
