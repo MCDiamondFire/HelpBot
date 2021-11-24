@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.sys.multiselector;
 
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.jetbrains.annotations.Contract;
 

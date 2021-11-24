@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArg
 import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 
 public abstract class AbstractPlayerUUIDCommand extends Command {
     

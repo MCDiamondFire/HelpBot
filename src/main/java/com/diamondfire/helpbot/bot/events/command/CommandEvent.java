@@ -1,6 +1,5 @@
-package com.diamondfire.helpbot.bot.events.commands;
+package com.diamondfire.helpbot.bot.events.command;
 
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
 import com.diamondfire.helpbot.bot.command.reply.handler.ReplyHandler;
@@ -15,9 +14,6 @@ public interface CommandEvent {
     void setCommand(Command command);
     
     void reply(PresetBuilder preset);
-    
-    // NOTE: This will not reply ephemerally on platforms where it is unsupported.
-    void replyEphemeral(PresetBuilder presetBuilder);
     
     <T> T getArgument(String code);
     

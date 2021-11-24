@@ -7,8 +7,8 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.*;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.bot.events.command.*;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -108,12 +108,7 @@ public class PollCommand extends Command {
             }
             
         });
-        
-        //delete original message
-        if (event instanceof MessageCommandEvent messageCommandEvent) {
-            messageCommandEvent.getMessage().delete().queue();
-        } else {
-            event.replyEphemeral(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.SUCCESS, "Created poll.")));
-        }
+    
+        CommandUtil.replyEphemeralOrDeleteCommand(event, "Created poll.");
     }
 }

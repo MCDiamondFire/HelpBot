@@ -85,7 +85,7 @@ public class DisplayIcon {
         if (icon.get("head") == null) {
             return null;
         }
-        JsonObject headUrl = JsonParser.parseString(new String(StringUtil.fromBase64(icon.get("head").getAsString().getBytes()))).getAsJsonObject();
+        JsonObject headUrl = JsonParser.parseString(new String(CompressionUtil.fromBase64(icon.get("head").getAsString().getBytes()))).getAsJsonObject();
         
         return Util.getPlayerHead(headUrl.get("textures").getAsJsonObject().get("SKIN").getAsJsonObject().get("url").getAsString().substring(38));
     }

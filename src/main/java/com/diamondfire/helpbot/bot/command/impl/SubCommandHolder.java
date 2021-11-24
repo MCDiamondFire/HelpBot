@@ -4,7 +4,7 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.SubCommandArgument;
-import com.diamondfire.helpbot.bot.events.commands.*;
+import com.diamondfire.helpbot.bot.events.command.*;
 
 import java.util.*;
 

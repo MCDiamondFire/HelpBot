@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.events.commands;
+package com.diamondfire.helpbot.bot.events.command;
 
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
@@ -36,11 +36,6 @@ public class SlashCommandEvent implements CommandEvent {
     @Override
     public void reply(PresetBuilder preset) {
         slashReplyHandler.reply(preset);
-    }
-    
-    @Override
-    public void replyEphemeral(PresetBuilder preset) {
-        internalEvent.replyEmbeds(preset.getEmbed().build()).setEphemeral(true).queue();
     }
     
     @SuppressWarnings("unchecked")

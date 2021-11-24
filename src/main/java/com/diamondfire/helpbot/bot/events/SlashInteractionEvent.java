@@ -8,6 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public class SlashInteractionEvent extends ListenerAdapter {
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
-        CommandHandler.getInstance().run(new com.diamondfire.helpbot.bot.events.commands.SlashCommandEvent(event));
+        CommandHandler.getInstance().run(new com.diamondfire.helpbot.bot.events.command.SlashCommandEvent(event));
     }
 }

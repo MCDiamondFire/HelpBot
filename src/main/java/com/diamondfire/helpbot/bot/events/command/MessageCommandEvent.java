@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.events.commands;
+package com.diamondfire.helpbot.bot.events.command;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.CommandHandler;
@@ -51,12 +51,7 @@ public class MessageCommandEvent extends GuildMessageReceivedEvent implements Co
     
     @Override
     public void reply(PresetBuilder preset) {
-        replyHandler.reply(preset, getChannel());
-    }
-    
-    @Override
-    public void replyEphemeral(PresetBuilder preset) {
-        reply(preset);
+        replyHandler.reply(preset);
     }
     
     @Override

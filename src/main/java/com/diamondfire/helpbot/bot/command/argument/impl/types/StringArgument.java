@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class StringArgument extends AbstractSimpleValueArgument<String> {

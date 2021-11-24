@@ -88,26 +88,6 @@ public class StringUtil {
         return number == 1 ? text : text + "s";
     }
     
-    /**
-     * Decodes from Base64
-     *
-     * @param Base64F Compressed Data
-     * @return Decoded Data
-     */
-    public static byte[] fromBase64(byte[] Base64F) {
-        return Base64.getDecoder().decode(Base64F);
-    }
-    
-    /**
-     * Encodes into Base64
-     *
-     * @param Base64F Data
-     * @return Encoded Data
-     */
-    public static byte[] toBase64(byte[] Base64F) {
-        return Base64.getEncoder().encode(Base64F);
-    }
-    
     public static String trim(String str, int max) {
         if (str.length() > max) {
             return str.substring(0, max - 3) + "...";

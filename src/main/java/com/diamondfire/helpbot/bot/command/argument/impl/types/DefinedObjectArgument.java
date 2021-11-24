@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
-import com.diamondfire.helpbot.bot.events.commands.CommandEvent;
+import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;

@@ -5,9 +5,8 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgum
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.commands.*;
+import com.diamondfire.helpbot.bot.events.command.*;
+import com.diamondfire.helpbot.util.CommandUtil;
 
 
 public class MimicCommand extends Command {
@@ -43,11 +42,7 @@ public class MimicCommand extends Command {
         String msg = event.getArgument("msg");
         event.getChannel().sendMessage(msg).queue();
     
-        if (event instanceof MessageCommandEvent messageCommandEvent) {
-            messageCommandEvent.getMessage().delete().queue();
-        } else {
-            event.replyEphemeral(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.SUCCESS, "Sent message in channel.")));
-        }
+        CommandUtil.replyEphemeralOrDeleteCommand(event, "Sent message in channel.");
     }
     
 }

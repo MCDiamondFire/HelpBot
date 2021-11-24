@@ -1,84 +1,81 @@
 package com.diamondfire.helpbot.bot.command.reply.handler;
 
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.handler.followup.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 public class SlashReplyHandler implements ReplyHandler {
-    private final SlashCommandEvent internalEvent;
-    public SlashReplyHandler(SlashCommandEvent internalEvent) {
+    private final CommandInteraction internalEvent;
+    public SlashReplyHandler(CommandInteraction internalEvent) {
         this.internalEvent = internalEvent;
     }
     
-    @Override
-    public void reply(String content) {
-        internalEvent.reply(content).queue();
+    public CompletableFuture<FollowupReplyHandler> reply(String content) {
+        return internalEvent.reply(content)
+                .submit()
+                .thenApply(SlashFollowupReplyHandler::new);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
+        return reply(preset.getEmbed());
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
+        return internalEvent.replyEmbeds(builder.build())
+                .submit()
+                .thenApply(SlashFollowupReplyHandler::new);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return internalEvent.reply(content).addFile(file, name, options)
+                .submit()
+                .thenApply(SlashFollowupReplyHandler::new);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return replyFile(preset.getEmbed(), file, name, options);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return internalEvent.replyEmbeds(embed.build()).addFile(file, name, options)
+                .submit()
+                .thenApply(SlashFollowupReplyHandler::new);
     }
     
     @Override
-    public void reply(PresetBuilder preset) {
-        reply(preset.getEmbed());
-    }
-    
-    @Deprecated
-    @Override
-    public void reply(PresetBuilder preset, MessageChannel channel) {
-        throw new UnsupportedOperationException();
+    public CompletableFuture<FollowupReplyHandler> deferReply() {
+        return internalEvent.deferReply()
+                .submit()
+                .thenApply(SlashFollowupReplyHandler::new);
     }
     
     @Override
-    public void reply(EmbedBuilder builder) {
-        internalEvent.replyEmbeds(builder.build()).queue();
+    public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
+        return deferReply();
     }
     
     @Override
-    public void replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        replyFile(preset.getEmbed(), file, name, options);
+    public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
+        return deferReply();
     }
     
     @Override
-    public void replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        internalEvent.replyEmbeds(embed.build()).addFile(file, name, options).queue();
+    public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
+        return deferReply();
     }
     
-    @Override
-    public void replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        internalEvent.reply(content).addFile(file, name, options).queue();
-    }
     
-    @Deprecated
-    @Override
-    public void reply(EmbedBuilder builder, MessageChannel channel) {
-        throw new UnsupportedOperationException();
-    }
     
-    @Deprecated
     @Override
     public MessageAction replyA(PresetBuilder preset) {
-        throw new UnsupportedOperationException();
-    }
-    
-    @Deprecated
-    @Override
-    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        throw new UnsupportedOperationException();
-    }
-    
-    @Deprecated
-    @Override
-    public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
-        throw new UnsupportedOperationException();
-    }
-    
-    @Deprecated
-    @Override
-    public MessageAction textReply(String msg, MessageChannel channel) {
         throw new UnsupportedOperationException();
     }
 }

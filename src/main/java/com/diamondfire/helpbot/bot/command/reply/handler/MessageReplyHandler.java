@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.bot.command.reply.handler;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.handler.followup.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
@@ -8,6 +10,7 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 public class MessageReplyHandler implements ReplyHandler {
     private final TextChannel channel;
@@ -15,55 +18,56 @@ public class MessageReplyHandler implements ReplyHandler {
         this.channel = channel;
     }
     
-    public void reply(String content) {
-        textReply(content, channel).queue();
+    public CompletableFuture<FollowupReplyHandler> reply(String content) {
+        return channel.sendMessage(content)
+                .submit()
+                .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    public void reply(PresetBuilder preset) {
-        reply(preset, channel);
+    public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
+        return reply(preset.getEmbed());
     }
     
-    public void reply(PresetBuilder preset, MessageChannel channel) {
-        reply(preset.getEmbed(), channel);
+    public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
+        return channel.sendMessageEmbeds(builder.build())
+                .submit()
+                .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    public void reply(EmbedBuilder builder) {
-        embedReply(builder, channel).queue();
+    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return replyFile(preset.getEmbed(), file, name, options);
     }
     
-    public void reply(EmbedBuilder builder, MessageChannel channel) {
-        embedReply(builder, channel).queue();
+    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return channel.sendMessageEmbeds(embed.build()).addFile(file, name, options)
+                .submit()
+                .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    @Override
-    public void replyFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        replyFile(preset.getEmbed(), file, name, options);
+    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
+        return channel.sendMessage(content).addFile(file, name, options)
+                .submit()
+                .thenApply(MessageFollowupReplyHandler::new);
     }
     
-    @Override
-    public void replyFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        channel.sendMessageEmbeds(embed.build()).addFile(file, name, options).queue();
+    public CompletableFuture<FollowupReplyHandler> deferReply() {
+        return reply(String.format("*%s is thinking...*", HelpBotInstance.getJda().getSelfUser().getName()));
     }
     
-    @Override
-    public void replyFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        channel.sendMessage(content).addFile(file, name, options).queue();
+    public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
+        return reply(content);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
+        return reply(preset);
+    }
+    
+    public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
+        return reply(embed);
     }
     
     public MessageAction replyA(PresetBuilder preset) {
-        return replyA(preset, channel);
-    }
-    
-    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
-        return embedReply(preset.getEmbed(), channel);
-    }
-    
-    public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
-        return channel.sendMessageEmbeds(embed.build());
-    }
-    
-    public MessageAction textReply(String msg, MessageChannel channel) {
-        return channel.sendMessage(msg);
+        return channel.sendMessageEmbeds(preset.getEmbed().build());
     }
 
 }

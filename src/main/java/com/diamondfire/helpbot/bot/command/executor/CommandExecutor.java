@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.sys.slash.SlashCommands;
-import com.diamondfire.helpbot.bot.events.commands.*;
+import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -104,7 +104,7 @@ public class CommandExecutor {
                 String commandStr = "unknown";
                 if (e instanceof MessageCommandEvent messageCommandEvent) {
                     commandStr =  messageCommandEvent.getMessage().getContentRaw();
-                } else if (e instanceof com.diamondfire.helpbot.bot.events.commands.SlashCommandEvent slashCommandEvent) {
+                } else if (e instanceof com.diamondfire.helpbot.bot.events.command.SlashCommandEvent slashCommandEvent) {
                     commandStr = slashCommandEvent.getInternalEvent().getCommandString();
                 }
                 PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), commandStr)));
