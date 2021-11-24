@@ -37,9 +37,4 @@ public interface ReplyHandler {
     CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset);
     
     CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed);
-    
-    // TODO Legacy - Replace all with `deferReply`
-    
-    @Deprecated
-    MessageAction replyA(PresetBuilder preset);
 }

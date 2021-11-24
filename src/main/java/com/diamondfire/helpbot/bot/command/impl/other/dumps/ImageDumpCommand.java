@@ -38,30 +38,17 @@ public class ImageDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        PresetBuilder builder = new PresetBuilder();
-        if (event instanceof MessageCommandEvent) {
-            builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
-            event.getReplyHandler().replyA(builder).queue((msg) -> {
-                File zip = createZip();
-                if (zip != null) {
-                    event.getChannel().sendFile(zip).queue((fileMsg) -> {
-                        msg.delete().queue();
-                    });
-                } else {
-                    msg.editMessageEmbeds(createErrorPreset().getEmbed().build()).queue();
-                }
-            });
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
-                File zip = createZip();
-                if (zip != null) {
-                    interactionHook.editOriginal("").addFile(zip).queue();
-                } else {
-                    interactionHook.editOriginalEmbeds(createErrorPreset().getEmbed().build()).queue();
-                }
-            });
-        }
-        
+        event.getReplyHandler()
+                .deferReply(new PresetBuilder().withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created.")))
+                .thenAccept(followupReplyHandler -> {
+                    File zip = createZip();
+                    if (zip != null) {
+                        followupReplyHandler.editOriginalFile("", zip, "images.zip");
+                    } else {
+                        followupReplyHandler.editOriginal(createErrorPreset());
+                    }
+                });
     }
     
     private File createZip() {

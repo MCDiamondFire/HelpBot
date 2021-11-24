@@ -73,25 +73,12 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
             
         }
         
-        
-        if (event instanceof MessageCommandEvent) {
-            PresetBuilder loadingPreset = new PresetBuilder();
-            loadingPreset.withPreset(
-                    new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
-            );
-            
-            event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
-                PresetBuilder namesEmbed = createNamesEmbed(mainName, nameRanges);
-        
-                msg.editMessageEmbeds(namesEmbed.getEmbed().build()).override(true).queue();
-            });
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
-                PresetBuilder namesEmbed = createNamesEmbed(mainName, nameRanges);
-    
-                interactionHook.editOriginalEmbeds(namesEmbed.getEmbed().build()).queue();
-            });
-        }
+        event.getReplyHandler()
+                .deferReply(new PresetBuilder().withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")))
+                .thenAccept(followupReplyHandler -> {
+                    followupReplyHandler.editOriginal(createNamesEmbed(mainName, nameRanges));
+                });
     }
     
     private PresetBuilder createNamesEmbed(String mainName, List<NameDateRange> nameRanges) {

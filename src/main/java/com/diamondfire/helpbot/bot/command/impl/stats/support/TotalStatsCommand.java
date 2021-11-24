@@ -41,20 +41,11 @@ public class TotalStatsCommand extends Command {
     // It would be nice if someone with more SQL experience could remake these to be more condensed.
     @Override
     public void run(CommandEvent event) {
-        PresetBuilder presetBefore = new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Please wait a moment, statistics are currently being calculated.")
-                );
         
-        if (event instanceof MessageCommandEvent) {
-            event.getReplyHandler().replyA(presetBefore).queue((msg) -> {
-                msg.editMessageEmbeds(createStatsEmbed().getEmbed().build()).queue();
-            });
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
-                interactionHook.editOriginalEmbeds(createStatsEmbed().getEmbed().build()).queue();
-            });
-        }
+        event.getReplyHandler()
+                .deferReply(new PresetBuilder().withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Please wait a moment, statistics are currently being calculated.")))
+                .thenAccept(followupReplyHandler -> followupReplyHandler.editOriginal(createStatsEmbed()));
     }
     
     private PresetBuilder createStatsEmbed() {

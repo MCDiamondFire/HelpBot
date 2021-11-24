@@ -50,32 +50,21 @@ public class SlashReplyHandler implements ReplyHandler {
                 .thenApply(SlashFollowupReplyHandler::new);
     }
     
-    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply() {
         return internalEvent.deferReply()
                 .submit()
                 .thenApply(SlashFollowupReplyHandler::new);
     }
     
-    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
         return deferReply();
     }
     
-    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
         return deferReply();
     }
     
-    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
         return deferReply();
-    }
-    
-    
-    
-    @Override
-    public MessageAction replyA(PresetBuilder preset) {
-        throw new UnsupportedOperationException();
     }
 }

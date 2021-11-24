@@ -65,9 +65,5 @@ public class MessageReplyHandler implements ReplyHandler {
     public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
         return reply(embed);
     }
-    
-    public MessageAction replyA(PresetBuilder preset) {
-        return channel.sendMessageEmbeds(preset.getEmbed().build());
-    }
 
 }
