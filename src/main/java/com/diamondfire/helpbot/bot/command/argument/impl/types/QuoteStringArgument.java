@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -37,5 +38,10 @@ public class QuoteStringArgument implements Argument<String> {
         // Join elements and remove quotes
         String result = String.join(" ", elements);
         return result.substring(1, result.length()-1);
+    }
+    
+    @Override
+    public String parseSlash(OptionMapping optionMapping, CommandEvent event) throws ArgumentException {
+        return optionMapping.getAsString();
     }
 }

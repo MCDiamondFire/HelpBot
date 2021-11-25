@@ -104,20 +104,7 @@ public class SlashCommands {
             } else {
                 if (container instanceof SingleArgumentContainer singleArgumentContainer) {
                     Argument<?> argument = singleArgumentContainer.getArgument();
-                    
-                    if (argument instanceof IntegerArgument) {
-                        argMap.put(identifier, (int) optionMapping.getAsLong());
-                    } else if (argument instanceof DiscordUserArgument) {
-                        argMap.put(identifier, optionMapping.getAsLong());
-                    } else if (argument instanceof AbstractSimpleValueArgument simpleValueArgument) {
-                        argMap.put(identifier, simpleValueArgument.parse(optionMapping.getAsString(), event));
-                    } else if (argument instanceof QuoteStringArgument || argument instanceof GreedyStringArgument) {
-                        argMap.put(identifier, optionMapping.getAsString());
-                    } else if (argument instanceof DefinedObjectArgument definedObjectArgument) {
-                        argMap.put(identifier, definedObjectArgument.internalCompare(optionMapping.getAsString()));
-                    } else {
-                        argMap.put(identifier, argument.parseValue(new ArrayDeque<>(Arrays.asList(optionMapping.getAsString().split(" "))), event));
-                    }
+                    argMap.put(identifier, argument.parseSlash(optionMapping, event));
                 } else {
                     throw new ArgumentException(
                             String.format("Unable to parse arguments due to a discord limitation. Please run this command using message-based commands! (%s)",

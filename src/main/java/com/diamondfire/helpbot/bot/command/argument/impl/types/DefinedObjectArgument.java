@@ -4,7 +4,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.util.JaroWinkler;
-import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.*;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
@@ -81,5 +81,10 @@ public class DefinedObjectArgument<T> implements Argument<T> {
         }
         
         return optionData;
+    }
+    
+    @Override
+    public T parseSlash(OptionMapping optionMapping, CommandEvent event) throws ArgumentException {
+        return internalCompare(optionMapping.getAsString());
     }
 }
