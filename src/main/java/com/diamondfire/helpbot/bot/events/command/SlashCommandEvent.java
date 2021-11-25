@@ -10,13 +10,13 @@ import java.util.Map;
 
 public class SlashCommandEvent implements CommandEvent {
     private final net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent;
-    private final SlashReplyHandler slashReplyHandler;
+    private final InteractionReplyHandler interactionReplyHandler;
     private Map<String, ?> argumentMap;
     private Command command;
     
     public SlashCommandEvent(net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent) {
         this.internalEvent = internalEvent;
-        this.slashReplyHandler = new SlashReplyHandler(internalEvent);
+        this.interactionReplyHandler = new InteractionReplyHandler(internalEvent);
     }
     
     public void putArguments(Map<String, ?> input) {
@@ -35,7 +35,7 @@ public class SlashCommandEvent implements CommandEvent {
     
     @Override
     public void reply(PresetBuilder preset) {
-        slashReplyHandler.reply(preset);
+        interactionReplyHandler.reply(preset);
     }
     
     @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public class SlashCommandEvent implements CommandEvent {
     
     @Override
     public ReplyHandler getReplyHandler() {
-        return slashReplyHandler;
+        return interactionReplyHandler;
     }
     
     @Override

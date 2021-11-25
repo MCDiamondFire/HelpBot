@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgum
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
+import com.diamondfire.helpbot.bot.command.reply.handler.*;
 import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
@@ -14,6 +15,8 @@ import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSingleQueryCommand extends Command {
     
-    public static void sendMultipleMessage(List<CodeObject> actions, TextChannel channel, long userToWait, BiConsumer<CodeObject, TextChannel> onChosen) {
+    public static void sendMultipleMessage(CommandEvent event, List<CodeObject> actions, BiConsumer<CodeObject, ReplyHandler> onChosen) {
         // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
         CodeObject referenceData = actions.get(0);
         Class<? extends CodeObject> classReference = referenceData.getClass();
@@ -58,14 +61,26 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 buttonMap.put(button.getId(), data);
             }
         }
+    
+        RestAction<Message> action = null;
+        if (event instanceof MessageCommandEvent) {
+            action = event.getChannel()
+                    .sendMessageEmbeds(preset.getEmbed().build())
+                    .setActionRow(buttons);
+        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
+            action = slashCommandEvent.getInternalEvent()
+                    .getHook()
+                    .sendMessageEmbeds(preset.getEmbed().build())
+                    .addActionRow(buttons);
+        }
         
-        channel.sendMessageEmbeds(preset.getEmbed().build()).setActionRows(Util.of(buttons)).queue((message) -> {
-            ButtonHandler.addListener(userToWait, message, (event) -> {
+        action.queue((message) -> {
+            ButtonHandler.addListener(event.getAuthor().getIdLong(), message, (clickEvent) -> {
                 message.delete().queue();
                 
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
-                CodeObject object = buttonMap.get(event.getComponentId());
-                onChosen.accept(object, message.getTextChannel());
+                CodeObject object = buttonMap.get(clickEvent.getComponentId());
+                onChosen.accept(object, new InteractionReplyHandler(clickEvent));
             });
         });
         
@@ -83,9 +98,9 @@ public abstract class AbstractSingleQueryCommand extends Command {
         getData(event, onDataReceived());
     }
     
-    public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
+    public abstract BiConsumer<CodeObject, ReplyHandler> onDataReceived();
     
-    protected void getData(CommandEvent event, BiConsumer<CodeObject, TextChannel> onChosen) {
+    protected void getData(CommandEvent event, BiConsumer<CodeObject, ReplyHandler> onChosen) {
         String name = event.getArgument("name");
         PresetBuilder preset = new PresetBuilder();
         
@@ -118,13 +133,13 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 
                 // If none, proceed. Else we need to special case that.
                 if (sameActions.size() == 1) {
-                    onChosen.accept(sameActions.get(0), event.getChannel());
+                    onChosen.accept(sameActions.get(0), event.getReplyHandler());
                 } else if (sameActions.size() > 1) {
                     // TODO make this work correctly with slash commands
                     if (event instanceof SlashCommandEvent slashCommandEvent) {
                         slashCommandEvent.getInternalEvent().reply("Please see the message below to find the item you want.").setEphemeral(true).queue();
                     }
-                    sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
+                    sendMultipleMessage(event, sameActions, onChosen);
                 }
                 
                 return;

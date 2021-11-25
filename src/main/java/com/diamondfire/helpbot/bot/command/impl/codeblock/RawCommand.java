@@ -2,25 +2,24 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.handler.ReplyHandler;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 
 public class RawCommand extends AbstractSingleQueryCommand {
     
-    private static void sendRawMessage(CodeObject data, TextChannel channel) {
+    private static void sendRawMessage(CodeObject data, ReplyHandler replyHandler) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(data.getJson());
         
-        for (String part : StringUtil.splitBy(json, 1950)) {
-            channel.sendMessage(String.format("```%s```", part)).queue();
-        }
-        
+        replyHandler.replyFile("Data is attached below.", json.getBytes(StandardCharsets.UTF_8), "simpledata.json");
     }
     
     @Override
@@ -50,12 +49,7 @@ public class RawCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public void run(CommandEvent event) {
-        super.run(event);
-    }
-    
-    @Override
-    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, ReplyHandler> onDataReceived() {
         return RawCommand::sendRawMessage;
     }
     

@@ -2,19 +2,21 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.handler.ReplyHandler;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.function.BiConsumer;
 
 
 public class TagsCommand extends AbstractSingleQueryCommand {
     
-    private static void sendTagMessage(CodeObject data, TextChannel channel) {
+    private static void sendTagMessage(CodeObject data, ReplyHandler replyHandler) {
         EmbedBuilder builder = new EmbedBuilder();
         ActionData actionData;
         
@@ -26,14 +28,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
-            channel.sendMessageEmbeds(builder.build()).queue();
+            replyHandler.reply(builder);
             return;
         }
         
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
-            channel.sendMessageEmbeds(builder.build()).queue();
+            replyHandler.reply(builder);
             return;
         }
         
@@ -52,10 +54,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon).queue();
+            try {
+                replyHandler.replyFile(builder, Files.readAllBytes(actionIcon.toPath()), actionIcon.getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             builder.setThumbnail(customHead);
-            channel.sendMessageEmbeds(builder.build()).queue();
+            replyHandler.reply(builder);
         }
     }
     
@@ -91,7 +97,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, ReplyHandler> onDataReceived() {
         return TagsCommand::sendTagMessage;
     }
 }

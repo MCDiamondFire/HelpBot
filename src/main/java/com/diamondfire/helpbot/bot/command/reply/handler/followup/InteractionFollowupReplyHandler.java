@@ -1,21 +1,19 @@
 package com.diamondfire.helpbot.bot.command.reply.handler.followup;
 
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
-import com.diamondfire.helpbot.bot.command.reply.handler.SlashReplyHandler;
+import com.diamondfire.helpbot.bot.command.reply.handler.InteractionReplyHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class SlashFollowupReplyHandler extends SlashReplyHandler implements FollowupReplyHandler {
+public class InteractionFollowupReplyHandler extends InteractionReplyHandler implements FollowupReplyHandler {
     
     private final InteractionHook interactionHook;
-    public SlashFollowupReplyHandler(InteractionHook interactionHook) {
-        super((CommandInteraction) interactionHook.getInteraction());
+    public InteractionFollowupReplyHandler(InteractionHook interactionHook) {
+        super(interactionHook.getInteraction());
         this.interactionHook = interactionHook;
     }
     

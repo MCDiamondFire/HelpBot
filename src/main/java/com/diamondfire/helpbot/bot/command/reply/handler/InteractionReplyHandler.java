@@ -3,25 +3,22 @@ package com.diamondfire.helpbot.bot.command.reply.handler;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.handler.followup.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.commands.CommandInteraction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
-public class SlashReplyHandler implements ReplyHandler {
-    private final CommandInteraction internalEvent;
-    public SlashReplyHandler(CommandInteraction internalEvent) {
+public class InteractionReplyHandler implements ReplyHandler {
+    private final Interaction internalEvent;
+    public InteractionReplyHandler(Interaction internalEvent) {
         this.internalEvent = internalEvent;
     }
     
     public CompletableFuture<FollowupReplyHandler> reply(String content) {
         return internalEvent.reply(content)
                 .submit()
-                .thenApply(SlashFollowupReplyHandler::new);
+                .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
@@ -31,14 +28,14 @@ public class SlashReplyHandler implements ReplyHandler {
     public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
         return internalEvent.replyEmbeds(builder.build())
                 .submit()
-                .thenApply(SlashFollowupReplyHandler::new);
+                .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.reply(content)
                 .addFile(data, name, options)
                 .submit()
-                .thenApply(SlashFollowupReplyHandler::new);
+                .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     @Override
@@ -51,13 +48,13 @@ public class SlashReplyHandler implements ReplyHandler {
         return internalEvent.replyEmbeds(embed.build())
                 .addFile(data, name, options)
                 .submit()
-                .thenApply(SlashFollowupReplyHandler::new);
+                .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     public CompletableFuture<FollowupReplyHandler> deferReply() {
         return internalEvent.deferReply()
                 .submit()
-                .thenApply(SlashFollowupReplyHandler::new);
+                .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
