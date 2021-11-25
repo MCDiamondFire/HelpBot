@@ -40,10 +40,6 @@ public class MultiSelector {
             buttons.add(button);
         }
         
-        // TODO
-//        if (event instanceof SlashCommandEvent slashCommandEvent) {
-//            slashCommandEvent.getInternalEvent().reply("The output of your command will be displayed below.").setEphemeral(true).queue();
-//        }
         long user = commandEvent.getAuthor().getIdLong();
         Consumer<Message> onMessage = (message) -> {
             ButtonHandler.addListener(user, message, event -> {
