@@ -1,26 +1,24 @@
 package com.diamondfire.helpbot.sys.multiselector;
 
+import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class MultiSelector {
     
     private final MultiSelectorPage[] pages;
-    private final long channel;
-    private final long user;
     
-    public MultiSelector(List<MultiSelectorPage> pages, long channel, long user) {
+    public MultiSelector(List<MultiSelectorPage> pages) {
         this.pages = pages.toArray(new MultiSelectorPage[0]);
-        this.channel = channel;
-        this.user = user;
     }
     
-    public void send(JDA jda) {
+    public void send(CommandEvent commandEvent) {
         for (MultiSelectorPage page : pages) {
             EmbedBuilder pageBuilder = page.getPage();
             pageBuilder.setTitle(page.getName());
@@ -46,12 +44,25 @@ public class MultiSelector {
 //        if (event instanceof SlashCommandEvent slashCommandEvent) {
 //            slashCommandEvent.getInternalEvent().reply("The output of your command will be displayed below.").setEphemeral(true).queue();
 //        }
-        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+        long user = commandEvent.getAuthor().getIdLong();
+        Consumer<Message> onMessage = (message) -> {
             ButtonHandler.addListener(user, message, event -> {
                 event.deferEdit().queue();
                 message.editMessageEmbeds(pageMap.get(event.getComponentId()).getPage().build()).setActionRows(message.getActionRows()).queue();
             }, true);
-        });
+        };
+        if (commandEvent instanceof MessageCommandEvent) {
+            commandEvent.getChannel()
+                    .sendMessageEmbeds(pages[0].getPage().build())
+                    .setActionRow(buttons)
+                    .queue(onMessage);
+        } else if (commandEvent instanceof SlashCommandEvent slashCommandEvent) {
+            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+                interactionHook.sendMessageEmbeds(pages[0].getPage().build())
+                        .addActionRow(buttons)
+                        .queue(onMessage);
+            });
+        }
     }
     
     private String getButtonKey(MultiSelectorPage page) {

@@ -48,7 +48,6 @@ public class StaffListCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setEvent(event);
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM ranks,players\n" +
                         "                        WHERE ranks.uuid = players.uuid\n" +
@@ -117,7 +116,7 @@ public class StaffListCommand extends Command {
                                 EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Contributors");
                                 guild.pruneMemberCache();
                                 builder.addPage("Developers", devEmbed);
-                                builder.build().send(event.getJDA());
+                                builder.build().send(event);
                             });
                 });
         

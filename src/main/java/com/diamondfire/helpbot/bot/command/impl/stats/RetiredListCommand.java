@@ -47,7 +47,6 @@ public class RetiredListCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setEvent(event);
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM ranks, players WHERE ranks.uuid = players.uuid " +
                         "AND ranks.retirement > 0 " +
@@ -71,7 +70,7 @@ public class RetiredListCommand extends Command {
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);
                 });
-        builder.build().send(event.getJDA());
+        builder.build().send(event);
     }
     
 }

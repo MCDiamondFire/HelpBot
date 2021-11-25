@@ -59,7 +59,6 @@ public class HelpCommand extends Command {
             
             Map<CommandCategory, EmbedBuilder> categories = new LinkedHashMap<>();
             MultiSelectorBuilder selector = new MultiSelectorBuilder();
-            selector.setEvent(event);
             
             EmbedBuilder homeBuilder = new EmbedBuilder();
             homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055");
@@ -94,7 +93,7 @@ public class HelpCommand extends Command {
                 embedBuilder.setDescription(category.getDescription());
                 selector.addPage(category.getName(), embedBuilder, category.getEmoji());
             }
-            selector.build().send(event.getJDA());
+            selector.build().send(event);
         } else {
             Command command = CommandHandler.getInstance().getCommands().get(helpInfo);
             HelpContext context = command.getHelpContext();

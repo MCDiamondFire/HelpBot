@@ -40,7 +40,6 @@ public class RulesCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         MultiSelectorBuilder builder = new MultiSelectorBuilder();
-        builder.setEvent(event);
         
         EmbedBuilder rulesEmbed = new EmbedBuilder();
         rulesEmbed.addField("Minecraft Server Rules", "https://mcdiamondfire.com/rules/", true);
@@ -92,7 +91,7 @@ public class RulesCommand extends Command {
         builder.addPage("Support Rules", supportRules);
         builder.addPage("Supportee Rules", supporteeRules);
         
-        builder.build().send(event.getJDA());
+        builder.build().send(event);
     }
     
     private String list(String[] strings, String prefix) {
