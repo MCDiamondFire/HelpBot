@@ -104,7 +104,11 @@ public class SlashCommands {
             } else {
                 if (container instanceof SingleArgumentContainer singleArgumentContainer) {
                     Argument<?> argument = singleArgumentContainer.getArgument();
-                    argMap.put(identifier, argument.parseSlash(optionMapping, event));
+                    try {
+                        argMap.put(identifier, argument.parseSlash(optionMapping, event));
+                    } catch (IllegalStateException e) {
+                        throw new MalformedArgumentException("Invalid argument type provided!");
+                    }
                 } else {
                     throw new ArgumentException(
                             String.format("Unable to parse arguments due to a discord limitation. Please run this command using message-based commands! (%s)",

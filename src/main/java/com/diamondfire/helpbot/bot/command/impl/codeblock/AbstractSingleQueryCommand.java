@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 
@@ -62,27 +62,29 @@ public abstract class AbstractSingleQueryCommand extends Command {
             }
         }
     
-        RestAction<Message> action = null;
-        if (event instanceof MessageCommandEvent) {
-            action = event.getChannel()
-                    .sendMessageEmbeds(preset.getEmbed().build())
-                    .setActionRow(buttons);
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            action = slashCommandEvent.getInternalEvent()
-                    .getHook()
-                    .sendMessageEmbeds(preset.getEmbed().build())
-                    .addActionRow(buttons);
-        }
-        
-        action.queue((message) -> {
+        Consumer<Message> onSent = (message) -> {
             ButtonHandler.addListener(event.getAuthor().getIdLong(), message, (clickEvent) -> {
-                message.delete().queue();
-                
+//                message.delete().queue();
+        
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
                 CodeObject object = buttonMap.get(clickEvent.getComponentId());
                 onChosen.accept(object, new InteractionReplyHandler(clickEvent));
             });
-        });
+        };
+    
+        if (event instanceof MessageCommandEvent) {
+            event.getChannel()
+                    .sendMessageEmbeds(preset.getEmbed().build())
+                    .setActionRow(buttons)
+                    .queue(onSent);
+        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
+            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+                interactionHook
+                        .editOriginalEmbeds(preset.getEmbed().build())
+                        .setActionRow(buttons)
+                        .queue(onSent);
+            });
+        }
         
     }
     
@@ -135,10 +137,6 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 if (sameActions.size() == 1) {
                     onChosen.accept(sameActions.get(0), event.getReplyHandler());
                 } else if (sameActions.size() > 1) {
-                    // TODO make this work correctly with slash commands
-                    if (event instanceof SlashCommandEvent slashCommandEvent) {
-                        slashCommandEvent.getInternalEvent().reply("Please see the message below to find the item you want.").setEphemeral(true).queue();
-                    }
                     sendMultipleMessage(event, sameActions, onChosen);
                 }
                 
