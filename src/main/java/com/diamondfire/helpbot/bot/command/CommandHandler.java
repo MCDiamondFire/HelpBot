@@ -32,9 +32,9 @@ public class CommandHandler {
     }
     
     public static Command getCommand(String name) {
-        Command cmd = CommandHandler.getInstance().getCommands().get(name.toLowerCase(Locale.ROOT));
+        Command cmd = CommandHandler.getInstance().getCommands().get(name.toLowerCase());
         if (cmd == null) {
-            cmd = CommandHandler.getInstance().getAliases().get(name.toLowerCase(Locale.ROOT));
+            cmd = CommandHandler.getInstance().getAliases().get(name.toLowerCase());
         }
         
         return cmd;
@@ -78,8 +78,9 @@ public class CommandHandler {
                             Command command1 = CMDS.get(command.getName());
                             List<CommandPrivilege> commandPrivileges = new ArrayList<>();
                             for (Permission perm : Permission.VALUES) {
-                                if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel())
+                                if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel()) {
                                     commandPrivileges.add(CommandPrivilege.enableRole(perm.getRole()));
+                                }
                             }
                             privilegeMap.put(command.getId(), commandPrivileges);
                         }

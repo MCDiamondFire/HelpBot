@@ -24,8 +24,12 @@ public interface CommandEvent {
     String getAliasUsed();
     
     JDA getJDA();
+    
     Guild getGuild();
+    
     Member getMember();
+    
     User getAuthor();
+    
     TextChannel getChannel();
 }

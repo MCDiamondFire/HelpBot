@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class SamImage {
+    
     protected static final String SAM_NAME = "           SamMan_";
     
     protected static Color getRandNameColor() {

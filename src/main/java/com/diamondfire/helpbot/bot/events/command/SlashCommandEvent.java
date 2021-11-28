@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.*;
 import java.util.Map;
 
 public class SlashCommandEvent implements CommandEvent {
+    
     private final net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent;
     private final InteractionReplyHandler interactionReplyHandler;
     private Map<String, ?> argumentMap;

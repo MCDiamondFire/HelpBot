@@ -10,27 +10,34 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 
 public class InteractionReplyHandler implements ReplyHandler {
+    
     private final Interaction internalEvent;
+    
     public InteractionReplyHandler(Interaction internalEvent) {
         this.internalEvent = internalEvent;
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> reply(String content) {
         return internalEvent.reply(content)
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
+    
+    @Override
     public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
         return reply(preset.getEmbed());
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
         return internalEvent.replyEmbeds(builder.build())
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.reply(content)
                 .addFile(data, name, options)
@@ -51,20 +58,24 @@ public class InteractionReplyHandler implements ReplyHandler {
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply() {
         return internalEvent.deferReply()
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
         return deferReply();
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
         return deferReply();
     }
     
+    @Override
     public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
         return deferReply();
     }

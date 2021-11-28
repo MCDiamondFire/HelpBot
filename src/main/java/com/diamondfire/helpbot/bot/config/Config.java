@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Config {
+    
     private static final Gson gson = new Gson();
     
     private final JsonObject config;
