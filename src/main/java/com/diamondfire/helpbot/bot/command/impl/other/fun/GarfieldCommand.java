@@ -5,13 +5,11 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.google.gson.JsonParser;
-import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.awt.*;
-import java.io.*;
-import java.net.URL;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GarfieldCommand extends Command {
     
