@@ -40,23 +40,18 @@ public class GarfieldCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        try {
-            URL url = new URL("https://labscore.vercel.app/v2/garfield");
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                String link = JsonParser.parseString(in.readLine()).getAsJsonObject().get("link").getAsString();
-                
-                if (link == null) {
-                    throw new IOException();
-                } else {
-                    builder.setTitle("Garfield Comic");
-                    builder.setImage(link);
-                    builder.setColor(new Color(252, 166, 28));
-                }
-            }
-        } catch (Exception e) {
-            builder.setTitle(":rotating_light: API BROKE :rotating_light:");
-            builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
-        }
+
+        final Date d1 = new GregorianCalendar(1978, Calendar.JULY, 1).getTime();
+        final Date d2 = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
+        Date randomDate = new Date(ThreadLocalRandom.current()
+            .nextLong(d1.getTime(), d2.getTime()));
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/yyyy-MM-dd");
+
+        builder.setTitle("Garfield Comic");
+        builder.setImage(String.format("https://derpystuff.gitlab.io/garf/%s.gif", formatter.format(randomDate)));
+        builder.setColor(new Color(252, 166, 28));
+
         event.getChannel().sendMessageEmbeds(builder.build()).queue();
     }
     
