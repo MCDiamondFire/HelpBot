@@ -39,7 +39,7 @@ public class GarfieldCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
 
-        final Date d1 = new GregorianCalendar(1978, Calendar.JULY, 1).getTime();
+        final Date d1 = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
         final Date d2 = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
         Date randomDate = new Date(ThreadLocalRandom.current()
             .nextLong(d1.getTime(), d2.getTime()));
