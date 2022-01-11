@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GarfieldCommand extends Command {
 
     public final long MIN = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
-    public final long MAx = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
+    public final long MAX = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
 
     
     @Override
@@ -47,6 +47,8 @@ public class GarfieldCommand extends Command {
             .nextLong(MIN, MAX);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/yyyy-MM-dd");
+
+
 
         builder.setTitle("Garfield Comic");
         builder.setImage(String.format("https://derpystuff.gitlab.io/garf/%s.gif", formatter.format(randomDate)));
