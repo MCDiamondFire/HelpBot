@@ -12,6 +12,10 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class GarfieldCommand extends Command {
+
+    public final long MIN = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
+    public final long MAx = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
+
     
     @Override
     public String getName() {
@@ -39,10 +43,8 @@ public class GarfieldCommand extends Command {
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
 
-        final Date d1 = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
-        final Date d2 = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
         Date randomDate = new Date(ThreadLocalRandom.current()
-            .nextLong(d1.getTime(), d2.getTime()));
+            .nextLong(MIN, MAX);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/yyyy-MM-dd");
 
