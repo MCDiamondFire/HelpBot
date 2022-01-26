@@ -13,8 +13,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GarfieldCommand extends Command {
 
-    public final long MIN = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
-    public final long MAX = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
+    public final static long MIN = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
+    public final static long MAX = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
 
     
     @Override
