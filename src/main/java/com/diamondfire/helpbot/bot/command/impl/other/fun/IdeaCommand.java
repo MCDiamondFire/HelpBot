@@ -7,8 +7,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.util.Random;
-import java.util.ArrayList;
+import java.util.*;
 
 public class IdeaCommand extends Command {
     
@@ -334,7 +333,7 @@ public class IdeaCommand extends Command {
     
     //private String getRngStrings(String[] sourceStrings, int numToFind){ return getRngStrings(sourceStrings, numToFind, " "); }
     private String getRngStrings(String[] sourceStrings, int numToFind, String joiner){
-        ArrayList<String> strings = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
         String toAdd;
         while (numToFind > 0){
             toAdd = sourceStrings[RNG.nextInt(sourceStrings.length)];
