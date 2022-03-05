@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -25,7 +25,7 @@ public class CowsayCommand extends Command {
     
     @Override
     protected ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument("message", new StringArgument());
+        return new ArgumentSet().addArgument("message", new EndlessStringArgument());
     }
     
     @Override
