@@ -5,15 +5,17 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.google.gson.JsonParser;
-import net.dv8tion.jda.api.EmbedBuilder;
-
-import java.awt.*;
-import java.io.*;
-import java.net.URL;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GarfieldCommand extends Command {
+
+    public final static long MIN = new GregorianCalendar(1978, Calendar.JUNE, 19).getTime();
+    public final static long MAX = new GregorianCalendar(1999, Calendar.DECEMBER, 31).getTime();
+
     
     @Override
     public String getName() {
@@ -40,23 +42,18 @@ public class GarfieldCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
-        try {
-            URL url = new URL("https://labscore.vercel.app/v2/garfield");
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                String link = JsonParser.parseString(in.readLine()).getAsJsonObject().get("link").getAsString();
-                
-                if (link == null) {
-                    throw new IOException();
-                } else {
-                    builder.setTitle("Garfield Comic");
-                    builder.setImage(link);
-                    builder.setColor(new Color(252, 166, 28));
-                }
-            }
-        } catch (Exception e) {
-            builder.setTitle(":rotating_light: API BROKE :rotating_light:");
-            builder.setDescription("DM: <@223518178100248576>\nPING: <@223518178100248576>");
-        }
+
+        Date randomDate = new Date(ThreadLocalRandom.current()
+            .nextLong(MIN, MAX);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/yyyy-MM-dd");
+
+
+
+        builder.setTitle("Garfield Comic");
+        builder.setImage(String.format("https://derpystuff.gitlab.io/garf/%s.gif", formatter.format(randomDate)));
+        builder.setColor(new Color(252, 166, 28));
+
         event.getChannel().sendMessageEmbeds(builder.build()).queue();
     }
     
