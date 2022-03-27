@@ -31,7 +31,7 @@ public enum Permission {
     private final int permissionLevel;
     
     Permission(int permissionLevel) {
-        this.role = Long.parseLong((String) HelpBotInstance.getConfig().getPermissionRoleMap().get(name()));
+        this.role = HelpBotInstance.getConfig().getPermissionRoleMap().get(name());
         this.permissionLevel = permissionLevel;
     }
     
