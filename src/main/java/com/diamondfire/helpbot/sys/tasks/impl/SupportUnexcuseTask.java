@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class SupportUnexcuseTask implements OneTimeTask {
     
-    private static final long EXPERT_CHAT = 467729470539694091L;
+    private static final long EXPERT_CHAT = HelpBotInstance.getConfig().getExpertChatChannel();
     private static final Command[] commandsToRun = new Command[]{
             new StatsCommand(),
             new LastJoinedCommand(),
