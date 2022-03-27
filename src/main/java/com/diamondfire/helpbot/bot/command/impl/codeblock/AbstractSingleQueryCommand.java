@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.codeblock;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgument;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
@@ -75,7 +75,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("name",
-                        new MessageArgument());
+                        new GreedyStringArgument());
     }
     
     @Override

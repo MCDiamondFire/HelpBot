@@ -54,7 +54,7 @@ public class MuteCommand extends Command {
                 .addArgument("duration",
                         new TimeOffsetArgument())
                 .addArgument("reason",
-                        new SingleArgumentContainer<>(new MessageArgument()).optional("Not Specified"));
+                        new SingleArgumentContainer<>(new GreedyStringArgument()).optional("Not Specified"));
     }
     
     @Override

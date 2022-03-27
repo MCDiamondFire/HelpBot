@@ -51,7 +51,7 @@ public class ExcuseStaffCommand extends Command {
                 .addArgument("duration",
                         new DateOffsetArgument())
                 .addArgument("reason",
-                        new SingleArgumentContainer<>(new MessageArgument())
+                        new SingleArgumentContainer<>(new GreedyStringArgument())
                                 .optional("Not Specified")
                 );
     }

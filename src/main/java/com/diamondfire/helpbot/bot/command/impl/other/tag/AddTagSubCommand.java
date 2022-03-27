@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgument;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
@@ -40,7 +41,7 @@ public class AddTagSubCommand extends SubCommand {
         ).addArgument(
                 "title", new QuoteStringArgument()
         ).addArgument(
-                "response", new EndlessStringArgument()
+                "response", new new GreedyStringArgument()
         );
     }
     

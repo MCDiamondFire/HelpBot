@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.dev;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.MessageArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -37,7 +37,7 @@ public class QueryCommand extends Command {
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
-                .addArgument("query", new MessageArgument());
+                .addArgument("query", new GreedyStringArgument());
     }
     
     @Override

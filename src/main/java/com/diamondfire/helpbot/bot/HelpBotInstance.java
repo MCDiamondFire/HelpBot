@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.other.StoreCommand;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
+import com.diamondfire.helpbot.bot.command.impl.other.fun.samquote.SamQuotesCommand;
 import com.diamondfire.helpbot.bot.command.impl.other.info.*;
 import com.diamondfire.helpbot.bot.command.impl.other.mod.*;
 import com.diamondfire.helpbot.bot.command.impl.other.tag.TagCommand;

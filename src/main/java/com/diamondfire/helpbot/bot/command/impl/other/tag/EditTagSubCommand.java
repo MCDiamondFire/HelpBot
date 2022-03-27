@@ -40,7 +40,7 @@ public class EditTagSubCommand extends SubCommand {
                 "property", new EnumArgument<TagProperty>()
                         .setEnum(TagProperty.class)
         ).addArgument(
-                "newValue", new EndlessStringArgument()
+                "newValue", new new GreedyStringArgument()
         );
     }
     
