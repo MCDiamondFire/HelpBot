@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.sys.message.acceptors;
 
 import club.minnced.discord.webhook.WebhookClient;
 import club.minnced.discord.webhook.external.JDAWebhookClient;
-import club.minnced.discord.webhook.send.WebhookMessageBuilder;
+import club.minnced.discord.webhook.send.*;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.*;
 
@@ -28,6 +28,7 @@ public class ReportAcceptor implements MessageAcceptor {
                 WebhookMessageBuilder builder = new WebhookMessageBuilder()
                         .setTTS(message.isTTS())
                         .setContent(content)
+                        .setAllowedMentions(AllowedMentions.none())
                         .setUsername(message.getMember().getEffectiveName())
                         .setAvatarUrl(message.getAuthor().getEffectiveAvatarUrl());
                 message.delete().queue();

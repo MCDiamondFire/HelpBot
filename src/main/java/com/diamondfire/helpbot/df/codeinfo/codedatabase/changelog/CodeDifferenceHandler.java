@@ -19,7 +19,7 @@ public class CodeDifferenceHandler {
         differs = new ArrayList<>();
         try {
             generateDifferences();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

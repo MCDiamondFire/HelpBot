@@ -31,7 +31,8 @@ public class CodeDatabase {
             CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
             System.out.println("Database loaded!");
         } catch (Exception e) {
-            System.out.println("Malformed codeblock database.");
+            e.printStackTrace();
+           // System.out.println("Malformed codeblock database.");
         }
     }
     

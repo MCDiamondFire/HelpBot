@@ -66,7 +66,7 @@ public class MutedCommand extends Command {
                             names.add(name);
                         }
                         
-                        muted.add("<@" + name + ">\n" + String.format("For: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatMilliTime(duration), reason, muted_by));
+                        muted.add("<@" + name + ">\n" + String.format("For: `%s`\nReason: %s (<@%s>)", FormatUtil.formatMilliTime(duration), reason, muted_by));
                     }
                     
                     EmbedUtil.addFields(builder.getEmbed(), muted, "", false);

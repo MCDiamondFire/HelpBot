@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.WebUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 
 import java.util.*;
 
@@ -46,6 +47,9 @@ public class StoreCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("<:diamondfire:867472383098486794> DiamondFire Store <:diamondfire:867472383098486794>", "https://store.mcdiamondfire.com/");
+        builder.setDescription("Fetching store..");
+        Message message = event.getChannel().sendMessageEmbeds(builder.build()).complete();
         try{
             JsonObject json = WebUtil.getJson("https://df.vatten.dev/store/").getAsJsonObject();
             builder.setTitle("<:diamondfire:867472383098486794> DiamondFire Store <:diamondfire:867472383098486794>", "https://store.mcdiamondfire.com/");
@@ -73,16 +77,16 @@ public class StoreCommand extends Command {
                 }
                 builder.addField(emotes.get(category.getKey()) + " " + category.getKey(), String.join("\n", fieldval) + "\n\u200b", false);
             }
-    
+            
             ArrayList<String> fieldval = new ArrayList<>();
             for(JsonElement purchase : json.getAsJsonArray("recent-purchases")) {
                 fieldval.add(" **" + purchase.getAsJsonObject().get("player").getAsString() + "** bought **" + purchase.getAsJsonObject().get("item").getAsString() + "**");
             }
             builder.addField(":partying_face: Recent Purchases", String.join("\n", fieldval), false);
             
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            message.editMessageEmbeds(builder.build()).queue();
         }catch(Exception e) {
-            event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to retrieve store items.")));
+            message.editMessageEmbeds(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to retrieve store items.")).getEmbed().build()).queue();
         }
     }
 }

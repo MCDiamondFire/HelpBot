@@ -29,7 +29,7 @@ public class ChannelMuteCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Mutes a player from posing in a specific channel for one week (7 days)")
+                .description("Mutes a player from posting in a specific channel for a specified duration.")
                 .category(CommandCategory.OTHER)
                 .addArgument(new HelpContextArgument().name("user"))
                 .addArgument(new HelpContextArgument().name("channel"))
@@ -62,7 +62,7 @@ public class ChannelMuteCommand extends Command {
         }
         String reason = event.getArgument("reason");
         if (reason.length() == 0) {
-            reason = "No reason given";
+            reason = "No reason given.";
         }
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
         Date finalDuration = duration;
@@ -80,7 +80,8 @@ public class ChannelMuteCommand extends Command {
                     });
                     
                     builder.withPreset(
-                            new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("User will be muted for ``%s``.", FormatUtil.formatMilliTime(timeLeft)))
+                            new InformativeReply(InformativeReplyType.SUCCESS, "Muted!",
+                                    String.format("User will be muted in <#%s> for `%s`.", channel, FormatUtil.formatMilliTime(timeLeft)))
                     );
                     Guild punishmentGuild = event.getGuild();
                     TextChannel textChannel = punishmentGuild.getTextChannelById(channel);

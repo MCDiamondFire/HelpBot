@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
+import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
 
 
 //Command exists for easy mobile copy and pasting
@@ -21,7 +22,10 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public HelpContext getHelpContext() {
-        return new HelpContext();
+        return new HelpContext()
+                .addArgument(new HelpContextArgument()
+                        .name("player name|uuid")
+                        .optional());
     }
     
     @Override
