@@ -14,7 +14,7 @@ public class GraphChannelTask implements MidnightTask {
         channel.getHistoryFromBeginning(50).queue(messageHistory -> channel.purgeMessages(messageHistory.getRetrievedHistory()));
     
         TimeGraphContext context = new TimeGraphContext(TimeMode.DAILY, 14);
-        channel.sendFile(GraphGenerators.NEW_PLAYERS.createGraph(context)).queue();
-        channel.sendFile(GraphGenerators.UNIQUE_JOINS.createGraph(context)).queue();
+        channel.sendFile(GraphGenerators.NEW_PLAYERS.createGraph(context), "new_players.png").queue();
+        channel.sendFile(GraphGenerators.UNIQUE_JOINS.createGraph(context), "unique_joins.png").queue();
     }
 }

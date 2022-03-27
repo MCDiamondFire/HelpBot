@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.sys.graph.impl;
 
 
-import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.sys.graph.graphable.GraphableEntry;
 import org.jetbrains.annotations.Contract;
 
@@ -22,7 +21,7 @@ public class ChartGraphBuilder {
         return this;
     }
     
-    public File createGraphFromCollection(Collection<? extends GraphableEntry<?>> entryList) {
+    public byte[] createGraphFromCollection(Collection<? extends GraphableEntry<?>> entryList) {
         Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
         for (GraphableEntry<?> entry : entryList) {
             entries.computeIfPresent(entry, (key, value) -> value + 1);
@@ -32,15 +31,8 @@ public class ChartGraphBuilder {
     }
     
     
-    public File createGraph(Map<GraphableEntry<?>, Integer> entries) {
+    public byte[] createGraph(Map<GraphableEntry<?>, Integer> entries) {
         BoxGraph graph = new ChartGraph(graphName);
-        File graphFile;
-        try {
-            graphFile = ExternalFileUtil.generateFile("graph.png");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
         
         BufferedImage image = new BufferedImage(2250, 1420, BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = image.createGraphics();
@@ -54,12 +46,15 @@ public class ChartGraphBuilder {
         //graphics.drawRect(BORDER_WIDTH, BORDER_WIDTH, WIDTH, HEIGHT);
         graph.paintGraph(graphics);
         //Generate values and their numbers
+    
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         
         try {
-            ImageIO.write(image, "png", graphFile);
+            ImageIO.write(image, "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return graphFile;
+        
+        return baos.toByteArray();
     }
 }

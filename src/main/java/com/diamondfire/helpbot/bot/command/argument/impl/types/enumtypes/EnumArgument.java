@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types.Enum;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.enumtypes;
 
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;

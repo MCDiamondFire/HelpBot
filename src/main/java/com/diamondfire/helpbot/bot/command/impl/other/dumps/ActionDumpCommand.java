@@ -7,6 +7,9 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class ActionDumpCommand extends Command {
     
     @Override
@@ -33,9 +36,12 @@ public class ActionDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        event.getChannel().sendFile(ExternalFiles.DB).queue();
+        try {
+            event.getChannel().sendFile(Files.readAllBytes(ExternalFiles.DB.toPath()), ExternalFiles.DB.getName()).queue();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
 }
 
 

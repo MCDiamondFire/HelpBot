@@ -64,9 +64,12 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
                         dates.put(new DateEntry(set.getDate("date")), set.getInt("total"));
                     }
                 
-                    event.getChannel().sendFile(new ChartGraphBuilder()
-                            .setGraphName(String.format("%s's sessions", player))
-                            .createGraph(dates)).queue();
+                    event.getChannel()
+                            .sendFile(new ChartGraphBuilder()
+                                    .setGraphName(String.format("%s's sessions", player))
+                                    .createGraph(dates),
+                                    "graph.png")
+                            .queue();
                 
                 });
     }

@@ -23,7 +23,7 @@ public class QueryGraphGenerator implements GraphGenerator<TimeGraphContext> {
     }
     
     @Override
-    public File createGraph(TimeGraphContext context) {
+    public byte[] createGraph(TimeGraphContext context) {
         Map<GraphableEntry<?>, Integer> entries = new LinkedHashMap<>();
         ChartGraphBuilder builder = new ChartGraphBuilder();
         TimeMode timeMode = context.getMode();

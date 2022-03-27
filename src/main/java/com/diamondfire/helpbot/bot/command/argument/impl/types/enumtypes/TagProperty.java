@@ -1,4 +1,4 @@
-package com.diamondfire.helpbot.bot.command.argument.impl.types.Enum;
+package com.diamondfire.helpbot.bot.command.argument.impl.types.enumtypes;
 
 import com.diamondfire.helpbot.sys.tag.Tag;
 import org.jetbrains.annotations.NotNull;

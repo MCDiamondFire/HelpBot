@@ -10,7 +10,7 @@ import java.util.*;
 
 public class DisableCommandHandler {
     
-    private final List<String> disabledCommands = new ArrayList<>();
+    private final Set<String> disabledCommands = new HashSet<>();
     private static final File FILE = ExternalFiles.DISABLED_COMMANDS;
     
     public boolean isDisabled(Command command) {
@@ -34,7 +34,7 @@ public class DisableCommandHandler {
         try {
             FILE.delete();
             FILE.createNewFile();
-            Files.write(FILE.toPath(), string.getBytes(), StandardOpenOption.WRITE);
+            Files.write(FILE.toPath(), string.getBytes(), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class DisableCommandHandler {
     }
     
     
-    public List<String> getDisabledCommands() {
+    public Set<String> getDisabledCommands() {
         return disabledCommands;
     }
 }

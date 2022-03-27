@@ -4,11 +4,10 @@ import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.Player;
 import com.diamondfire.helpbot.bot.command.impl.stats.AbstractPlayerUUIDCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.FormatUtil;
+import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.io.File;
-import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDCommand {
@@ -33,14 +32,12 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
             builder.append("\n");
         }
         
-        try {
-            File file = ExternalFileUtil.generateFile("session_log.txt");
-            Files.writeString(file.toPath(), builder.toString(), StandardOpenOption.WRITE);
-            
-            event.getChannel().sendFile(file).queue();
-        } catch (Exception e) {
-            throw new IllegalStateException();
-        }
+        event.getChannel()
+                .sendMessageEmbeds(new EmbedBuilder()
+                        .setTitle("Session Log")
+                        .build())
+                .addFile(builder.toString().getBytes(StandardCharsets.UTF_8), "session_log.txt")
+                .queue();
         
     }
     

@@ -26,17 +26,20 @@ public class SupporterClassTask implements LoopingTask {
     @Override
     public void run() {
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
+        guild.loadMembers(SupporterClassTask::updateMember);
+    }
+    
+    public static void updateMember(Member member) {
+        Guild guild = member.getGuild();
         Role discord = guild.getRoleById(DISCORD_BOOSTER);
         Role twitch = guild.getRoleById(TWITCH_BOOSTER);
         Role generalBoost = guild.getRoleById(GENERAL_BOOST);
-        
-        guild.loadMembers((member) -> {
-            List<Role> roles = member.getRoles();
-            if ((roles.contains(discord) || roles.contains(twitch)) && !roles.contains(generalBoost)) {
-                guild.addRoleToMember(member, generalBoost).queue();
-            } else if (roles.contains(generalBoost) && !(roles.contains(discord) || roles.contains(twitch))) {
-                guild.removeRoleFromMember(member, generalBoost).queue();
-            }
-        });
+    
+        List<Role> roles = member.getRoles();
+        if ((roles.contains(discord) || roles.contains(twitch)) && !roles.contains(generalBoost)) {
+            guild.addRoleToMember(member, generalBoost).queue();
+        } else if (roles.contains(generalBoost) && !(roles.contains(discord) || roles.contains(twitch))) {
+            guild.removeRoleFromMember(member, generalBoost).queue();
+        }
     }
 }

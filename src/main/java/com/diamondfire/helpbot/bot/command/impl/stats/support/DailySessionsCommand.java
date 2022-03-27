@@ -100,9 +100,12 @@ public class DailySessionsCommand extends Command {
                         }
                     }
                     
-                    event.getChannel().sendFile(new ChartGraphBuilder()
-                            .setGraphName(String.format("Total sessions on %s", date))
-                            .createGraph(dates)).queue();
+                    event.getChannel()
+                            .sendFile(new ChartGraphBuilder()
+                                    .setGraphName(String.format("Total sessions on %s", date))
+                                    .createGraph(dates),
+                                    "graph.png")
+                            .queue();
                     
                 });
         
