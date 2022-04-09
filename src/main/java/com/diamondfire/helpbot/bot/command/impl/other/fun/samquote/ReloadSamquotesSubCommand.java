@@ -29,7 +29,7 @@ public class ReloadSamquotesSubCommand extends SubCommand {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT;
+        return Permission.SR_HELPER;
     }
     
     @Override

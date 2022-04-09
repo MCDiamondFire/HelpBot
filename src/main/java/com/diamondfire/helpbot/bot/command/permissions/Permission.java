@@ -13,7 +13,7 @@ public enum Permission {
     // Ask DragonSlasher, not me.
     ADMINISTRATOR(666),
     MODERATION(5),
-    EXPERT(4),
+    SR_HELPER(4),
     SUPPORT(3),
     RETIRED_SUPPORT(2),
     USER(1);

@@ -39,7 +39,7 @@ public class RemoveTagSubCommand extends SubCommand {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT
+        return Permission.SR_HELPER
                 .setOverrides(this, 808966728201666620L);
     }
     

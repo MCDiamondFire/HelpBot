@@ -53,22 +53,30 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
     
     enum ParamConverter {
         ANY_TYPE("Any Value"),
+        VARIABLE("Variable"),
+        
         TEXT("Text"),
         NUMBER("Number"),
         LOCATION("Location"),
         VECTOR("Vector"),
+        
+        LIST("List"),
+        DICT("Dictionary"),
+        
         SOUND("Sound"),
         PARTICLE("Particle"),
         POTION("Potion"),
-        VARIABLE("Variable"),
-        LIST("List"),
+        
         ITEM("Item"),
         PROJECTILE("Projectile"),
         SPAWN_EGG("Spawn Egg"),
+        
         ENTITY_TYPE("Entity Type"),
         VEHICLE("Vehicle"),
+        
         BLOCK("Block"),
         BLOCK_TAG("Block Tag"),
+        
         NONE("None"),
         UNKNOWN("?");
         

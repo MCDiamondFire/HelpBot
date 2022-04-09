@@ -13,12 +13,12 @@ public enum Rank {
     RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
     EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
     //Special
-    BUILDER("B", 1, RankBranch.BUILDER, "Builder"),
-    YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
+    BUILDER("Builder", 1, RankBranch.BUILDER, "Builder"),
+    YOUTUBER("YouTuber", 1, RankBranch.YOUTUBER, "Youtube"),
     // Support
     JRHELPER("JrHelper", 1, RankBranch.SUPPORT, "S_JrHelper"),
     HELPER("Helper", 2, RankBranch.SUPPORT, "Helper"),
-    EXPERT("Expert", 3, RankBranch.SUPPORT, "S_Expert"),
+    SR_HELPER("SrHelper", 3, RankBranch.SUPPORT, "S_Expert"),
     // Moderation
     JRMOD("JrMod", 1, RankBranch.MODERATION, "JrModerator"),
     MOD("Mod", 2, RankBranch.MODERATION, "Moderator"),
