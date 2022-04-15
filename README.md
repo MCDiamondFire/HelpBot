@@ -64,13 +64,13 @@ After setting up the config, you will need to paste the following into the swear
 
 ```json
 {
-  "equal": [
-  ],
-  "prefix": [
-  ],
-  "suffix": [
-  ],
-  "part": [
-  ]
+    "equal": [
+    ],
+    "prefix": [
+    ],
+    "suffix": [
+    ],
+    "part": [
+    ]
 }
 ```
