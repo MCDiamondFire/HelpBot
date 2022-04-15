@@ -41,7 +41,7 @@ public class AddTagSubCommand extends SubCommand {
         ).addArgument(
                 "title", new QuoteStringArgument()
         ).addArgument(
-                "response", new new GreedyStringArgument()
+                "response", new GreedyStringArgument()
         );
     }
     

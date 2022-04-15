@@ -83,7 +83,7 @@ public class ExcusedStaffCommand extends Command {
                             names.add(name);
                         }
                         
-                        embed.addField(rank.getRankEmote().getAsMention() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
+                        embed.addField(rank.getRankEmote() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
                     }
                     
                     event.reply(builder);

@@ -22,27 +22,40 @@ created, use the following format.
 
 ```json
 {
-     "token": "bot token",
-     "prefix": "?",
-     "dev_bot": true,
-     
-     "mc_email": "Minecraft@email.com",
-     "mc_password": "MinecraftPassword",
-     
-     "db_link": "jdbc:db_type://ip:port/schema",
-     "db_user": "dbuser",
-     "db_password": "dbpassword",
-     
-     "guild": long,
-     "log_channel": long,
-     "discussion_channel": long,
-     "muted_role": long,
-     "verified_role": long,
-     
-     "role_react_channel": long,
-     "role_react_message": long
-     
-   }
+    "token": "bot token",
+    "prefix": "?",
+    "dev_bot": true,
+    
+    "mc_email": "Minecraft@email.com",
+    "mc_password": "MinecraftPassword",
+    
+    "db_link": "jdbc:db_type://ip:port/schema",
+    "db_user": "dbuser",
+    "db_password": "dbpassword",
+    
+    "guild": long,
+    
+    "log_channel": long,
+    "discussion_channel": long,
+    "purge_evidence_channel": long,
+    "graph_channel": long,
+    "expert_chat_channel": long,
+    
+    "muted_role": long,
+    "verified_role": long,
+    "report_webhook": long,
+
+    "permission_roles": {
+        "BOT_DEVELOPER": long,
+        "DEVELOPER": long,
+        "ADMINISTRATOR": long,
+        "MODERATION": long,
+        "EXPERT": long,
+        "SUPPORT": long,
+        "RETIRED_SUPPORT": long,
+        "USER": long
+    }
+}
 ```
 
 **Swear Filter**

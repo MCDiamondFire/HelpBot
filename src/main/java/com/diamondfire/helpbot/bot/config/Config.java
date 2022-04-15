@@ -67,6 +67,16 @@ public class Config {
         return getPropertyLong("guild");
     }
     
+    public String getReportWehook() {
+        return getPropertyString("report_webhook");
+    }
+    
+    public Map<String, Long> getPermissionRoleMap() {
+        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), new TypeToken<Map<String, Long>>(){}.getType());
+    }
+    
+    // Channels
+    
     public long getLogChannel() {
         return getPropertyLong("log_channel");
     }
@@ -87,6 +97,8 @@ public class Config {
         return getPropertyLong("expert_chat_channel");
     }
     
+    // Roles
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }
@@ -95,13 +107,7 @@ public class Config {
         return getPropertyLong("verified_role");
     }
     
-    public String getReportWehook() {
-        return getPropertyString("report_webhook");
-    }
-    
-    public Map<String, Long> getPermissionRoleMap() {
-        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), new TypeToken<Map<String, Long>>(){}.getType());
-    }
+    // Getters
     
     private long getPropertyLong(String property) {
         return config.get(property).getAsLong();

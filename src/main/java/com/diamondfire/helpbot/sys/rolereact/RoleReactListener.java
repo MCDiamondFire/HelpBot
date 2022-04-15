@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class RoleReactListener extends ListenerAdapter {
-    
     private static final long MESSAGE_ID = 762167137775124491L;
     private static final long CHANNEL_ID = 762158470019022858L;
     

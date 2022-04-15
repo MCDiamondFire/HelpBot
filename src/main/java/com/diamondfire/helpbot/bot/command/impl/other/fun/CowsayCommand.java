@@ -25,7 +25,7 @@ public class CowsayCommand extends Command {
     
     @Override
     protected ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument("message", new new GreedyStringArgument());
+        return new ArgumentSet().addArgument("message", new GreedyStringArgument());
     }
     
     @Override

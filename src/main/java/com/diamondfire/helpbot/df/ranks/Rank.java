@@ -5,39 +5,39 @@ import net.dv8tion.jda.api.entities.Emote;
 
 public enum Rank {
     // Ranks
-    NOBLE("Noble", 1, RankBranch.DONOR, "Noble"),
-    EMPEROR("Emperor", 2, RankBranch.DONOR, "Emperor"),
-    MYTHIC("Mythic", 3, RankBranch.DONOR, "Mythic"),
-    OVERLORD("Overlord", 4, RankBranch.DONOR, "Overlord"),
+    NOBLE("Noble", 1, RankBranch.DONOR, "<:dfr_noble:964324460624740382>"),
+    EMPEROR("Emperor", 2, RankBranch.DONOR, "<:dfr_emperor:964324460666699776>"),
+    MYTHIC("Mythic", 3, RankBranch.DONOR, "<:dfr_mythic:964324460767354880>"),
+    OVERLORD("Overlord", 4, RankBranch.DONOR, "<:dfr_overlord:964324460595384370>"),
     //Retirement
-    RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
-    EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
+    RETIRED("Retired", 1, RankBranch.RETIREMENT, "<:dfr_retired:964324460641521795>"),
+    EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "<:dfr_emeritus:964324460633141249>"),
     //Special
-    BUILDER("Builder", 1, RankBranch.BUILDER, "Builder"),
-    YOUTUBER("YouTuber", 1, RankBranch.YOUTUBER, "Youtube"),
+    BUILDER("Builder", 1, RankBranch.BUILDER, "<:dfr_builder:964324460222111755>"),
+    YOUTUBER("YouTuber", 1, RankBranch.YOUTUBER, "<:dfr_youtuber:964324460628967424>"),
     // Support
-    JRHELPER("JrHelper", 1, RankBranch.SUPPORT, "S_JrHelper"),
-    HELPER("Helper", 2, RankBranch.SUPPORT, "Helper"),
-    SR_HELPER("SrHelper", 3, RankBranch.SUPPORT, "S_Expert"),
+    JRHELPER("JrHelper", 1, RankBranch.SUPPORT, "<:dfr_jrhelper:964324460272451655>"),
+    HELPER("Helper", 2, RankBranch.SUPPORT, "<:dfr_helper:964324460628951122>"),
+    SR_HELPER("SrHelper", 3, RankBranch.SUPPORT, "<:dfr_srhelper:964324460628942919>"),
     // Moderation
-    JRMOD("JrMod", 1, RankBranch.MODERATION, "JrModerator"),
-    MOD("Mod", 2, RankBranch.MODERATION, "Moderator"),
-    SR_MOD("SrMod", 3, RankBranch.MODERATION, "SrModerator"),
+    JRMOD("JrMod", 1, RankBranch.MODERATION, "<:dfr_jrmod:964324460616364083>"),
+    MOD("Mod", 2, RankBranch.MODERATION, "<:dfr_mod:964324460603785246>"),
+    SR_MOD("SrMod", 3, RankBranch.MODERATION, "<:dfr_srmod:964324460570214441>"),
     //Administration
-    DEVELOPER("Dev", 1, RankBranch.ADMINISTRATION, "S_Developer"),
-    ADMIN("Admin", 2, RankBranch.ADMINISTRATION, "Admin"),
-    OWNER("Owner", 3, RankBranch.ADMINISTRATION, "Owner");
+    DEVELOPER("Dev", 1, RankBranch.ADMINISTRATION, "<:dfr_dev:964324460624760862>"),
+    ADMIN("Admin", 2, RankBranch.ADMINISTRATION, "<:dfr_admin:964324460628942939>"),
+    OWNER("Owner", 3, RankBranch.ADMINISTRATION, "<:dfr_owner:964324460670890034>");
     
     private final String rankName;
     private final int number;
     private final RankBranch category;
-    private final Emote emote;
+    private final String emote;
     
     Rank(String rankName, int number, RankBranch category, String emote) {
         this.rankName = rankName;
         this.number = number;
         this.category = category;
-        this.emote = HelpBotInstance.getJda().getGuildById(615846886414483465L).getEmotesByName(emote, false).get(0);
+        this.emote = emote;
     }
     
     public String getRankName() {
@@ -62,7 +62,7 @@ public enum Rank {
         return null;
     }
     
-    public Emote getRankEmote() {
+    public String getRankEmote() {
         return emote;
     }
 }
