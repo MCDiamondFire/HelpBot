@@ -13,6 +13,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.entities.*;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.time.format.DateTimeFormatter;
 
@@ -58,47 +59,44 @@ public class PurgeCommand extends Command {
             TextChannel channel = event.getChannel();
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
                 // Adds the messages to the messageBuilder object
-                StringBuilder stringBuilder = new StringBuilder();
+                StringBuilder logBuilder = new StringBuilder();
+                logBuilder.append(
+                        String.format(
+                                "%s purged %s messages in #%s\n\n",
+                                event.getAuthor().getAsTag(),
+                                messagesToRemove,
+                                event.getChannel().getName()
+                        )
+                );
                 
-                // Iterates through the message history and appends the values to the MessageBuilder.
+                // Iterates through the message history and appends the values to the StringBuilder.
                 for (Message m : messages) {
-                    stringBuilder.insert(0,
-                                    String.format("[%s] (%s): %s",
-                                            m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
-                                            m.getAuthor().getName(),
-                                            m.getContentRaw())
-                            );
+                    logBuilder.append(
+                            String.format("[%s] (%s): %s\n",
+                                    m.getTimeCreated().format(DateTimeFormatter.RFC_1123_DATE_TIME),
+                                    m.getAuthor().getName(),
+                                    m.getContentRaw().replace("\n", "\\n").replace("\r", "\\r") // prevent injection into the log file
+                            )
+                    );
                     if (!m.getAttachments().isEmpty()) {
                         for (Message.Attachment a : m.getAttachments()) {
-                            stringBuilder.insert(0,
-                                    String.format(" [ATTACHMENT: %s ]\n",
+                            logBuilder.append(
+                                    String.format("-\tAttachment: %s\n",
                                             a.getProxyUrl())
                             );
                         }
-                    } else {
-                        stringBuilder.insert(0,
-                                "\n"
-                        );
                     }
                 }
     
-                stringBuilder.insert(0,
-                        String.format("%s purged %s messages in #%s",
-                                event.getAuthor().getAsTag(),
-                                messagesToRemove,
-                                event.getChannel().getName()));
+                
                 
                 try {
-                    File file = ExternalFileUtil.generateFile("purge_log.txt");
-                    Files.writeString(file.toPath(), stringBuilder.toString(), StandardOpenOption.WRITE);
-    
                     TextChannel evidenceLog = event.getJDA().getTextChannelById(
                             HelpBotInstance.getConfig().getPurgeEvidenceChannel()
                     );
     
                     assert evidenceLog != null;
-                    evidenceLog.sendFile(file).queue();
-                    
+                    evidenceLog.sendFile(logBuilder.toString().getBytes(StandardCharsets.UTF_8), "purge_log.txt").queue();
                 } catch (Exception e) {
                     throw new IllegalStateException();
                 }
