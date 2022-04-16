@@ -41,7 +41,7 @@ public class UnmuteCommand extends Command {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("user",
-                        new DiscordUserArgument())
+                        DiscordMentionArgument.user())
                 .addArgument("reason",
                         new SingleArgumentContainer<>(new GreedyStringArgument()).optional("Not Specified"));
     }

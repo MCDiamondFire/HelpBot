@@ -53,7 +53,7 @@ public class DiscussionMuteCommand extends Command {
         
         return new ArgumentSet()
                 .addArgument("user",
-                        new DiscordUserArgument())
+                        DiscordMentionArgument.user())
                 .addArgument("duration",
                         new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(DateUtil.toDate(nextMonday)));
     }

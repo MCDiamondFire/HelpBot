@@ -50,7 +50,7 @@ public class MuteCommand extends Command {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("user",
-                        new DiscordUserArgument())
+                        DiscordMentionArgument.user())
                 .addArgument("duration",
                         new TimeOffsetArgument())
                 .addArgument("reason",
