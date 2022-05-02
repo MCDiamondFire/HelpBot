@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.util.nbs;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 // from https://github.com/CodeUtilities/CodeUtilities
 
 
@@ -39,7 +41,7 @@ public class NBSToTemplate {
         this.customInstrumentCount = song.getCustomInstrumentCount();
     }
 
-    public String convert() {
+    public byte[] convert() throws IOException {
         String[] songData = song.split("=");
         StringBuilder currentNotes = new StringBuilder();
         StringBuilder code = new StringBuilder();
@@ -154,6 +156,7 @@ public class NBSToTemplate {
         //CreateList: songData
         code.append(String.format("{\"id\":\"block\",\"block\":\"set_var\",\"args\":{\"items\":[{\"item\":{\"id\":\"var\",\"data\":{\"name\":\"songData\",\"scope\":\"local\"}},\"slot\":0},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":1},{\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":2},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%s\"}},\"slot\":3}, {\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":4}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":5}, {\"item\":{\"id\":\"txt\",\"data\":{\"name\":\"%s\"}},\"slot\":6},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":7},{\"item\":{\"id\":\"num\",\"data\":{\"name\":\"%d\"}},\"slot\":8}]},\"action\":\"CreateList\"}", name, author, songTempo, length, layers, version, loopTick, loopCount));
 
-        return "{\"blocks\": [" + code + "]}";
+        String data = "{\"blocks\": [" + code + "]}";
+        return CompressionUtil.toBase64(CompressionUtil.toGZIP(data.getBytes(StandardCharsets.UTF_8)));
     }
 }
