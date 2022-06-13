@@ -63,7 +63,7 @@ public class CowsayCommand extends Command {
     
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("The cow says")
-                .appendDescription("```\n" + bubbleBuilder.toString() + cowBuilder.toString() + "\n```");
+                .appendDescription("```\n" + StringUtil.display(bubbleBuilder.toString() + cowBuilder.toString()) + "\n```");
         
         event.getMessage().getChannel().sendMessageEmbeds(builder.build()).queue();
     }
