@@ -5,6 +5,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -14,11 +15,10 @@ public class Config {
     private final JsonObject config;
     
     public Config() throws IllegalStateException {
-        try (BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.CONFIG.getPath()))) {
-            String config = txtReader2.lines().collect(Collectors.joining());
-            this.config = JsonParser.parseString(config).getAsJsonObject();
+        try {
+            this.config = JsonParser.parseString(Files.readString(ExternalFiles.CONFIG.toPath())).getAsJsonObject();
         } catch (Exception exception) {
-            throw new IllegalStateException("Config not correctly structured! Please check the readme file for a config template.");
+            throw new IllegalStateException("Config is correctly structured! Please check the readme file for a config template.");
         }
     }
     

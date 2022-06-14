@@ -1,6 +1,7 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public interface ExternalFiles {
     
@@ -61,9 +62,9 @@ public interface ExternalFiles {
             .setFileType("json")
             .buildFile();
     
-    File SAM_QUOTES = new ExternalFileBuilder()
+    Path SAM_QUOTES = new ExternalFileBuilder()
             .isDirectory(false)
             .setName("samquotes")
             .setFileType("txt")
-            .buildFile();
+            .build();
 }

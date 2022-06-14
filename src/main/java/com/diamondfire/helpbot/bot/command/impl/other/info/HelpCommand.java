@@ -63,7 +63,7 @@ public class HelpCommand extends Command {
             selector.setChannel(event.getChannel().getIdLong());
             
             EmbedBuilder homeBuilder = new EmbedBuilder();
-            homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055");
+            homeBuilder.setDescription("Commands that are available to you are listed in the pages below. To select a page, react to the message. Any additional questions may be forwarded to Owen1212055.");
             homeBuilder.setThumbnail(event.getJDA().getSelfUser().getAvatarUrl());
             homeBuilder.setFooter("Your permissions: " + PermissionHandler.getPermission(event.getMember()));
             selector.addPage("Home", homeBuilder, true);
@@ -83,7 +83,6 @@ public class HelpCommand extends Command {
                 if (category != null && command.getPermission().hasPermission(event.getMember())) {
                     EmbedBuilder embedBuilder = categories.get(category);
                     embedBuilder.addField(FormatUtil.displayCommand(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
-                    
                 }
                 
             }
