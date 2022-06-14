@@ -15,7 +15,7 @@ public class Config {
     
     public Config() throws IllegalStateException {
         try {
-            this.config = HelpBotInstance.GSON.fromJson(Files.readString(ExternalFiles.CONFIG.toPath()), JsonObject.class);
+            this.config = HelpBotInstance.GSON.fromJson(Files.readString(ExternalFiles.CONFIG), JsonObject.class);
         } catch (Exception exception) {
             throw new IllegalStateException("Config is correctly structured! Please check the readme file for a config template.");
         }

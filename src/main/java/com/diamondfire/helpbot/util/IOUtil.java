@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 import java.util.zip.*;
 
 public class IOUtil {
@@ -51,22 +51,24 @@ public class IOUtil {
     
     
     public static File zipFile(Path path, String fileName) throws IOException {
-        File zipped = ExternalFileUtil.generateFile(fileName);
+        File zipped = ExternalFileUtil.generateFile(fileName).toFile();
         ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipped));
-        for (Path innerPath : Files.walk(path).collect(Collectors.toSet())) {
-            
-            //Ignore parent file, for some reason that's included
-            if (innerPath.getParent() == null) continue;
-            
-            try {
-                zipOutputStream.putNextEntry(new ZipEntry(innerPath.toString()));
-                byte[] bytes = Files.readAllBytes(innerPath);
-                zipOutputStream.write(bytes, 0, bytes.length);
-                zipOutputStream.closeEntry();
-            } catch (IOException e) {
-                e.printStackTrace();
+        try (Stream<Path> walkStream = Files.walk(path)) {
+            for (Path innerPath : walkStream.collect(Collectors.toSet())) {
+        
+                // Ignore parent file, for some reason that's included
+                if (innerPath.getParent() == null) continue;
+        
+                try {
+                    zipOutputStream.putNextEntry(new ZipEntry(innerPath.toString()));
+                    byte[] bytes = Files.readAllBytes(innerPath);
+                    zipOutputStream.write(bytes, 0, bytes.length);
+                    zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        
             }
-            
         }
         zipOutputStream.finish();
         zipOutputStream.close();
@@ -75,11 +77,11 @@ public class IOUtil {
     }
     
     
-    public static File getFileFromSite(String url, String name) {
+    public static Path getFileFromSite(String url, String name) {
         try (InputStream in = new URL(url).openStream()) {
-            File tempFile = ExternalFileUtil.generateFile(name);
+            Path tempFile = ExternalFileUtil.generateFile(name);
             
-            Files.write(tempFile.toPath(), in.readAllBytes(), StandardOpenOption.WRITE);
+            Files.write(tempFile, in.readAllBytes(), StandardOpenOption.WRITE);
             
             return tempFile;
         } catch (IOException e) {

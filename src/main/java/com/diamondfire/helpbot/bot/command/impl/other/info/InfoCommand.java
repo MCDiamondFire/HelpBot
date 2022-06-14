@@ -12,6 +12,8 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.util.*;
 
@@ -58,8 +60,12 @@ public class InfoCommand extends Command {
         embed.addField("What's New on Beta?", String.format("```%s```", EmbedUtil.fieldSafe(CodeDifferenceHandler.getDifferences())), true);
         embed.setFooter("Database Last Updated");
         embed.setDescription("The database is updated automatically every 24h.");
-        embed.setTimestamp(Instant.ofEpochMilli(ExternalFiles.DB.lastModified()));
-        
+        try {
+            embed.setTimestamp(Files.getLastModifiedTime(ExternalFiles.DB).toInstant());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    
         event.reply(preset);
     }
     

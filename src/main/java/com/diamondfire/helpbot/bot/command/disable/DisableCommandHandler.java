@@ -11,7 +11,6 @@ import java.util.*;
 public class DisableCommandHandler {
     
     private final Set<String> disabledCommands = new HashSet<>();
-    private static final File FILE = ExternalFiles.DISABLED_COMMANDS;
     
     public boolean isDisabled(Command command) {
         return disabledCommands.contains(command.getName());
@@ -19,7 +18,7 @@ public class DisableCommandHandler {
     
     public void initialize() {
         try {
-            List<String> lines = Files.readAllLines(FILE.toPath());
+            List<String> lines = Files.readAllLines(ExternalFiles.DISABLED_COMMANDS);
             for (String cmd : lines) {
                 disable(CommandHandler.getCommand(cmd));
             }
@@ -32,9 +31,7 @@ public class DisableCommandHandler {
     public void save() {
         String string = String.join("\n", disabledCommands);
         try {
-            FILE.delete();
-            FILE.createNewFile();
-            Files.write(FILE.toPath(), string.getBytes(), StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(ExternalFiles.DISABLED_COMMANDS, string.getBytes());
             
         } catch (IOException e) {
             e.printStackTrace();

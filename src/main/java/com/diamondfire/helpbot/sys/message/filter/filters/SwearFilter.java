@@ -18,7 +18,7 @@ public class SwearFilter extends ChatFilter {
     
     static {
         try {
-            byte[] content = Files.readAllBytes(ExternalFiles.FILTER.toPath());
+            byte[] content = Files.readAllBytes(ExternalFiles.FILTER);
             
             JsonObject object = JsonParser.parseString(new String(content)).getAsJsonObject();
             

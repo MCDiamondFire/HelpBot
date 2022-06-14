@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Path;
 
 public class SubmitSamquoteSubCommand extends SubCommand {
     @Override
@@ -64,8 +65,8 @@ public class SubmitSamquoteSubCommand extends SubCommand {
                     BufferedImage combined = SamImage.createFull(text);
                     
                     //save image
-                    File imageFile = new File(ExternalFiles.SAM_DIR, text.replaceAll(" ", "") + ".png");
-                    ImageIO.write(combined, "PNG", imageFile);
+                    Path imageFile = ExternalFiles.SAM_DIR.resolve(text.replaceAll(" ", "") + ".png");
+                    ImageIO.write(combined, "PNG", imageFile.toFile());
                     
                     event.reply(new PresetBuilder()
                             .withPreset(new InformativeReply(InformativeReplyType.SUCCESS, "Your samquote has been added!")));

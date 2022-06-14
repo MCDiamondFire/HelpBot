@@ -1,20 +1,19 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
 import java.io.*;
+import java.nio.file.*;
 
 public class ExternalFileUtil {
     
-    public static File generateFile(String name) throws IOException {
-        File file = new File(ExternalFiles.OTHER_CACHE_DIR, name);
-        if (file.exists()) {
-            file.delete();
-        }
+    public static Path generateFile(String name) throws IOException {
+        Path path = ExternalFiles.OTHER_CACHE_DIR.resolve(name);
         
-        file.createNewFile();
-        return file;
+        Files.write(path, new byte[0]);
+        
+        return path;
     }
     
-    public static File getFile(String name) {
-        return new File(ExternalFiles.OTHER_CACHE_DIR, name);
+    public static Path getFile(String name) {
+        return ExternalFiles.OTHER_CACHE_DIR.resolve(name);
     }
 }

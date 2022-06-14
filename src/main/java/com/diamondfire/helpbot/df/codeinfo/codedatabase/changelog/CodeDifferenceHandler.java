@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
@@ -24,9 +25,9 @@ public class CodeDifferenceHandler {
         }
     }
     
-    public static void setComparer(File toCompare) {
+    public static void setComparer(Path toCompare) {
         try {
-            Files.copy(toCompare.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(toCompare, ExternalFiles.DB_COMPARE, StandardCopyOption.REPLACE_EXISTING);
             refresh();
             
         } catch (Exception e) {
@@ -35,11 +36,7 @@ public class CodeDifferenceHandler {
     }
     
     private static void generateDifferences() throws IOException {
-        
-        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFiles.DB_COMPARE.getPath()));
-        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.DB.getPath()));
-        
-        List<JsonObject> jsonObjects = readDiff(txtReader,txtReader2);
+        List<JsonObject> jsonObjects = readDiff(Files.readString(ExternalFiles.DB_COMPARE), Files.readString(ExternalFiles.DB));
         
         //Clean up here maybe possible but it isn't that bad
         compare(jsonObjects.get(0).get("codeblocks").getAsJsonArray(), jsonObjects.get(1).get("codeblocks").getAsJsonArray(), "name");
@@ -114,25 +111,20 @@ public class CodeDifferenceHandler {
     /**
      * Does stuff with readers to parse old and new JSON data
      *
-     * @param readers - readers being parsed
+     * @param contents - file contents being parsed
      * @return parsed JsonObjects
      * @throws IOException {@link BufferedReader#close()}
      */
-    private static List<JsonObject> readDiff(BufferedReader... readers) throws IOException {
+    private static List<JsonObject> readDiff(String... contents) throws IOException {
         List<JsonObject> jsonObjects = new ArrayList<>();
         
-        for (BufferedReader reader : readers) {
-            String rawJson = reader.lines().collect(Collectors.joining());
-            reader.close();
-            
-            JsonReader readerJson = new JsonReader(new StringReader(rawJson));
-            
+        for (String content : contents) {
             JsonObject jsonObject = null;
             try {
-                jsonObject = JsonParser.parseReader(readerJson).getAsJsonObject();
+                jsonObject = HelpBotInstance.GSON.fromJson(content, JsonObject.class);
             } catch (Exception e) {
                 System.out.println("Old db is corrupted, rewriting!");
-                Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(ExternalFiles.DB, ExternalFiles.DB_COMPARE, StandardCopyOption.REPLACE_EXISTING);
             }
             
             jsonObjects.add(jsonObject);

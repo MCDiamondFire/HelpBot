@@ -8,7 +8,7 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.io.File;
+import java.io.*;
 import java.util.function.BiConsumer;
 
 
@@ -19,9 +19,9 @@ public class CodeCommand extends AbstractSingleQueryCommand {
         String customHead = data.getItem().getHead();
         
         if (customHead == null) {
-            File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
-            builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon).queue();
+            byte[] actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
+            builder.setThumbnail("attachment://item.png");
+            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon, "item.png").queue();
         } else {
             builder.setThumbnail(customHead);
             channel.sendMessageEmbeds(builder.build()).queue();

@@ -38,12 +38,11 @@ public class ImageDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        File images = ExternalFiles.IMAGES_DIR;
         PresetBuilder builder = new PresetBuilder();
         builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
         event.getReplyHandler().replyA(builder).queue((msg) -> {
             try {
-                File zip = IOUtil.zipFile(images.toPath(), "images.zip");
+                File zip = IOUtil.zipFile(ExternalFiles.IMAGES_DIR, "images.zip");
                 event.getChannel().sendFile(zip).queue((fileMsg) -> {
                     msg.delete().queue();
                 });

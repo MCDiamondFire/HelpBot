@@ -39,7 +39,7 @@ created, use the following format.
     "discussion_channel": long,
     "purge_evidence_channel": long,
     "graph_channel": long,
-    "expert_chat_channel": long,
+    "srhelper_chat_channel": long,
     
     "muted_role": long,
     "verified_role": long,
@@ -50,7 +50,7 @@ created, use the following format.
         "DEVELOPER": long,
         "ADMINISTRATOR": long,
         "MODERATION": long,
-        "EXPERT": long,
+        "SR_HELPER": long,
         "SUPPORT": long,
         "RETIRED_SUPPORT": long,
         "USER": long

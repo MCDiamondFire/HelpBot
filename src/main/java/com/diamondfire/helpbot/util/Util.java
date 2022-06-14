@@ -25,6 +25,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -55,21 +56,15 @@ public class Util {
         }
     }
     
-    public static File fetchMinecraftTextureFile(String fileName) {
-        File imagesDir = ExternalFiles.IMAGES_DIR;
+    public static byte[] fetchMinecraftTextureFile(String fileName) {
+        Path path = ExternalFiles.IMAGES_DIR.resolve(fileName + ".png");
+        if (!Files.exists(path)) path = ExternalFiles.IMAGES_DIR.resolve("BARRIER.png");
+        
         try {
-            File file = new File(imagesDir, fileName + ".png");
-            
-            if (file.exists()) {
-                return file;
-            } else {
-                return new File(imagesDir, "BARRIER.png");
-            }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+            return Files.readAllBytes(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load backup item image!", e);
         }
-        return new File(imagesDir, "BARRIER.png");
     }
     
     public static String getPlayerHead(String player) {

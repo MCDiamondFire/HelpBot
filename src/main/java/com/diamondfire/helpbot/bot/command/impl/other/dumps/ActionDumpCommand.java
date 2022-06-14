@@ -37,7 +37,7 @@ public class ActionDumpCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         try {
-            event.getChannel().sendFile(Files.readAllBytes(ExternalFiles.DB.toPath()), ExternalFiles.DB.getName()).queue();
+            event.getChannel().sendFile(Files.readAllBytes(ExternalFiles.DB), "db.json").queue();
         } catch (IOException e) {
             e.printStackTrace();
         }
