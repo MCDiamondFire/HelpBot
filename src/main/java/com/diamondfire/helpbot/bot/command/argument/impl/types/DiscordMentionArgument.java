@@ -31,7 +31,6 @@ public class DiscordMentionArgument extends AbstractSimpleValueArgument<Long> {
     
     @Override
     public Long parse(@NotNull String msg, CommandEvent event) throws MalformedArgumentException {
-        
         try {
             return Long.parseLong(msg);
         } catch (NumberFormatException ignored) {

@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun.samquote;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.LongArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -9,6 +9,8 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.util.textgen.SamQuotes;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,15 +26,15 @@ public class SubmitSamquoteSubCommand extends SubCommand {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .addArgument(
-                        new HelpContextArgument().name("channel_id"),
-                        new HelpContextArgument().name("message_id")
+                        new HelpContextArgument().name("channel"),
+                        new HelpContextArgument().name("message id")
                 );
     }
     
     @Override
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
-                .addArgument("channel_id", new LongArgument())
+                .addArgument("channel_id", DiscordMentionArgument.channel())
                 .addArgument("message_id", new LongArgument());
     }
     
@@ -46,74 +48,38 @@ public class SubmitSamquoteSubCommand extends SubCommand {
         
         long channelID = event.getArgument("channel_id");
         long messageID = event.getArgument("message_id");
+    
+        TextChannel channel = event.getGuild().getTextChannelById(channelID);
+        if (channel == null) {
+            event.reply(new PresetBuilder()
+                    .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Unknown channel!")));
+            return;
+        }
         
-        event.getGuild().getTextChannelById(channelID).retrieveMessageById(messageID).queue((messageText) -> {
-            
+        channel.retrieveMessageById(messageID).queue((messageText) -> {
             if(messageText.getAuthor().getIdLong() == 132092551782989824L) {
                 
                 try {
                     String text = messageText.getContentRaw().replaceAll("[^a-zA-Z0-9 ]", "");
-                    
                     BufferedImage combined = SamImage.createFull(text);
                     
                     //save image
-                    
-                    File imageFile = new File(ExternalFiles.SAM_DIR, messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", "") + ".png");
+                    File imageFile = new File(ExternalFiles.SAM_DIR, text.replaceAll(" ", "") + ".png");
                     ImageIO.write(combined, "PNG", imageFile);
                     
-                    PresetBuilder success = new PresetBuilder();
+                    event.reply(new PresetBuilder()
+                            .withPreset(new InformativeReply(InformativeReplyType.SUCCESS, "Your samquote has been added!")));
                     
-                    success.withPreset(
-                            new InformativeReply(InformativeReplyType.SUCCESS, "Your SamQuote has been added!")
-                    );
-                    
-                    event.reply(success);
-                    
-                    addSamquote(messageText.getContentRaw().replaceAll("[^a-zA-Z0-9]", ""));
-                    
+                    SamQuotes.add(text);
                 } catch (IOException e) {
-                    
                     e.printStackTrace();
-                    
                 }
                 
             } else {
-                
-                PresetBuilder error = new PresetBuilder();
-                
-                error.withPreset(
-                        new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")
-                );
-                
-                event.reply(error);
+                event.reply(new PresetBuilder()
+                        .withPreset(new InformativeReply(InformativeReplyType.ERROR, "This is not a samquote!")));
                 
             }
-            
         });
-    }
-    
-    protected static void addSamquote(String samquote) {
-        try {
-            
-            File file = new File("samquotes.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            
-            String line;
-            StringBuilder newFile = new StringBuilder();
-            
-            while ((line = br.readLine()) != null) {
-                
-                if (!line.equals(samquote)) { newFile.append(line).append("\n"); }
-            }
-            
-            newFile.append(samquote);
-            
-            FileWriter fileWriter = new FileWriter("samquotes.txt");
-            fileWriter.write(newFile.toString());
-            fileWriter.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

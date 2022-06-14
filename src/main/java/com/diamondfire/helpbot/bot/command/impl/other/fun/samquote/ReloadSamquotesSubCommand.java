@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.util.textgen.CacheData;
+import com.diamondfire.helpbot.util.textgen.*;
 
 import java.io.IOException;
 
@@ -19,7 +19,7 @@ public class ReloadSamquotesSubCommand extends SubCommand {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Reloads the list of samquotes.");
+                .description("Reloads the list of samquotes. Only run if things are broken.");
     }
     
     @Override
@@ -35,9 +35,9 @@ public class ReloadSamquotesSubCommand extends SubCommand {
     @Override
     public void run(CommandEvent event) {
         try {
-            CacheData.cacheData();
+            SamQuotes.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

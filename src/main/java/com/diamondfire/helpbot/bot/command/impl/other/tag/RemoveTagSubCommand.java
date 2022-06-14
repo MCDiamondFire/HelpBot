@@ -57,7 +57,7 @@ public class RemoveTagSubCommand extends SubCommand {
                                     "Successfully deleted tag with activator `%s`.", activator))
                     ));
             
-        } catch (TagDoesNotExistException | IOException err) {
+        } catch (IOException err) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR,

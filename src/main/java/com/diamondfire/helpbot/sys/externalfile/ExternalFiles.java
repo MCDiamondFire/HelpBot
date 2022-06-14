@@ -56,11 +56,11 @@ public interface ExternalFiles {
             .setFileType("png")
             .buildFile();
     
-    File TAGS = new ExternalFileBuilder()
+    Path TAGS = new ExternalFileBuilder()
             .isDirectory(false)
             .setName("tags")
             .setFileType("json")
-            .buildFile();
+            .build();
     
     Path SAM_QUOTES = new ExternalFileBuilder()
             .isDirectory(false)

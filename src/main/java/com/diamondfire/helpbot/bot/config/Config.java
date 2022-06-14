@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.config;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -10,13 +11,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Config {
-    private static final Gson gson = new Gson();
-    
     private final JsonObject config;
     
     public Config() throws IllegalStateException {
         try {
-            this.config = JsonParser.parseString(Files.readString(ExternalFiles.CONFIG.toPath())).getAsJsonObject();
+            this.config = HelpBotInstance.GSON.fromJson(Files.readString(ExternalFiles.CONFIG.toPath()), JsonObject.class);
         } catch (Exception exception) {
             throw new IllegalStateException("Config is correctly structured! Please check the readme file for a config template.");
         }
@@ -72,7 +71,7 @@ public class Config {
     }
     
     public Map<String, Long> getPermissionRoleMap() {
-        return gson.fromJson(config.get("permission_roles").getAsJsonObject(), new TypeToken<Map<String, Long>>(){}.getType());
+        return HelpBotInstance.GSON.fromJson(config.get("permission_roles").getAsJsonObject(), new TypeToken<Map<String, Long>>(){}.getType());
     }
     
     // Channels

@@ -1,7 +1,5 @@
 package com.diamondfire.helpbot.sys.tag;
 
-import com.diamondfire.helpbot.util.serializer.TagSerializer;
-import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +7,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 
 public class Tag implements Serializable {
-    
     private String activator;
     private String title;
     private String response;
@@ -29,6 +26,8 @@ public class Tag implements Serializable {
     }
     
     public void setActivator(String activator) {
+        // Force a cache refresh
+        TagHandler.recache(this.activator, activator);
         this.activator = activator.replaceAll(" ", "");
     }
     
@@ -78,10 +77,6 @@ public class Tag implements Serializable {
         }
                 
         channel.sendMessageEmbeds(embed.build()).queue();
-    }
-    
-    public JsonObject serialize() {
-        return TagSerializer.getInstance().serialize(this);
     }
     
 }

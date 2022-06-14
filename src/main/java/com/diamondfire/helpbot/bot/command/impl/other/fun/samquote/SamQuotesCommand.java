@@ -12,8 +12,6 @@ import java.util.Random;
 
 public class SamQuotesCommand extends SubCommandHolder {
     
-    private static final Random random = new Random();
-    
     @Override
     public String getName() {
         return "samquote";
