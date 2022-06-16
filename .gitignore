@@ -1,7 +1,6 @@
 .gradle
 .idea
 build
-/src/main/resources/swear_filter.json
 
 *.json
 *.png
