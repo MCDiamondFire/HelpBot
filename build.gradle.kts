@@ -8,8 +8,10 @@ group = "com.diamondfire.helpbot"
 
 repositories {
     mavenCentral()
-    maven("https://jitpack.io")
     maven("https://m2.dv8tion.net/releases")
+
+    maven("https://jitpack.io")
+    maven("https://repo.opencollab.dev/maven-releases/")
 }
 
 dependencies {
@@ -20,7 +22,7 @@ dependencies {
     implementation("club.minnced:discord-webhooks:0.8.0")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.google.code.gson:gson:2.9.0")
-    implementation("com.github.Steveice10:MCProtocolLib:c5e4b66")
+    implementation("com.github.steveice10:mcprotocollib:1.18.2-1")
     implementation("mysql:mysql-connector-java:5.1.49")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.11")
 }

@@ -14,12 +14,15 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.PlainComponentSerializer;
 import com.github.steveice10.mc.auth.exception.request.RequestException;
-import com.github.steveice10.mc.auth.service.AuthenticationService;
+import com.github.steveice10.mc.auth.service.*;
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.game.MessageType;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.clientbound.*;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerJoinGamePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.serverbound.ServerboundChatPacket;
+import com.github.steveice10.packetlib.Session;
 import com.github.steveice10.packetlib.event.session.PacketReceivedEvent;
 import com.github.steveice10.packetlib.event.session.SessionAdapter;
 import com.github.steveice10.packetlib.packet.Packet;
@@ -138,7 +141,7 @@ public class FetchDataCommand extends Command {
     private CompletableFuture<List<String>> fetchData(Message message, boolean includeColors) {
         CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
         
-        AuthenticationService authService = new AuthenticationService();
+        AuthenticationService authService = new MojangAuthenticationService();
         authService.setUsername(USERNAME);
         authService.setPassword(PASSWORD);
         try {
@@ -155,27 +158,25 @@ public class FetchDataCommand extends Command {
         client.connect();
         
         client.addListener(new SessionAdapter() {
-            
             boolean ready = false;
-            List<String> queue = new ArrayList<>();
+            final List<String> queue = new ArrayList<>();
             
             @Override
-            public void packetReceived(PacketReceivedEvent event) {
-                Packet packet = event.getPacket();
+            public void packetReceived(Session session, Packet packet) {
                 
-                if (packet instanceof ServerJoinGamePacket) {
+                if (packet instanceof ClientboundLoginPacket) {
                     status(message, "Joined server!");
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    event.getSession().send(new ClientChatPacket("/chat none"));
-                    event.getSession().send(new ClientChatPacket(includeColors ? "/dumpactioninfo -c" : "/dumpactioninfo"));
+                    
+                    session.send(new ServerboundChatPacket("/chat none"));
+                    session.send(new ServerboundChatPacket(includeColors ? "/dumpactioninfo -c" : "/dumpactioninfo"));
                 }
                 
-                if (packet instanceof ServerChatPacket) {
-                    ServerChatPacket chatPacket = event.getPacket();
+                if (packet instanceof ClientboundChatPacket chatPacket) {
                     String text = PlainComponentSerializer.INSTANCE.serialize(chatPacket.getMessage());
                     
                     if (chatPacket.getType() == MessageType.NOTIFICATION) return;
