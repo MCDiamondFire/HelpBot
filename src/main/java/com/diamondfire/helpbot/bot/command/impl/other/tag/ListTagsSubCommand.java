@@ -37,7 +37,9 @@ public class ListTagsSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        String formattedTags = TagHandler.getTags().stream()
+        String formattedTags = TagHandler.getTags()
+                .values()
+                .stream()
                 .map(tag -> String.format("`%s`", tag.getActivator()))
                 .collect(Collectors.joining(" "));
     

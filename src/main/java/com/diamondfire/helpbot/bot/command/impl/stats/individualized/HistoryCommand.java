@@ -12,11 +12,14 @@ import com.diamondfire.helpbot.df.punishments.*;
 import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.*;
-import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.internal.requests.restaction.MessageActionImpl;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -65,13 +68,19 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
             return;
         }
         
-        List<MessageAction> msgs = new ArrayList<>();
-        List<Punishment> punishments = new PunishmentFetcher()
-                .withUUID(player.uuidString())
-                .withAll()
-                .fetch();
+        
+        
         
         event.getMember().getUser().openPrivateChannel().queue((privateChannel) -> {
+            List<Punishment> punishments = new PunishmentFetcher()
+                    .withUUID(player.uuidString())
+                    .withAll()
+                    .fetch();
+    
+            // unfortunately jda doesn't allow us to create a message without specifying something about it, but adding an empty string won't change the internal state from default
+            MessageAction messageAction = privateChannel.sendMessage("");
+            List<MessageEmbed> embeds = new ArrayList<>(); // apparently JDA decided to depreciate adding a single embed at a time. we don't like deprecations so a list is used here
+            
             // Retrieve active punishments
             {
                 PresetBuilder activePunishmentsPreset = new PresetBuilder()
@@ -124,10 +133,17 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 
                 if (yearlyWarnings > 10) {
                     embed.setColor(Color.RED);
-                    embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
+                    embed.addField(
+                            "Tempban",
+                            String.format(
+                                    "\u26A0 If you receive **%s** more %s this year, you will receive a **45 day** tempban!",
+                                    20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)
+                            ),
+                            false
+                    );
                 }
                 
-                msgs.add(privateChannel.sendMessageEmbeds(embed.build()));
+                embeds.add(embed.build());
             }
             
             // Retrieve normal punishments
@@ -145,23 +161,15 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
                 if (punishmentStrings.size() == 0) {
                 } else if (presetBuilder.isValidLength()) {
-                    msgs.add(privateChannel.sendMessage(presetBuilder.build()));
+                    embeds.add(presetBuilder.build());
                 } else {
-                    try {
-                        File sendFile = ExternalFileUtil.generateFile("history.txt");
-                        Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
-                        msgs.add(privateChannel.sendFile(sendFile));
-                    } catch (IOException exception) {
-                        exception.printStackTrace();
-                    }
+                    messageAction.addFile(String.join("\n", punishmentStrings).getBytes(StandardCharsets.UTF_8), "history.txt");
                 }
-                
             }
             
-            MessageAction action = msgs.get(0);
-            msgs.remove(0);
+            messageAction.setEmbeds(embeds);
             
-            action.queue((msg) -> {
+            messageAction.queue((msg) -> {
                 PresetBuilder successMSG = new PresetBuilder()
                         .withPreset(
                                 new InformativeReply(InformativeReplyType.SUCCESS, "Check your messages for history!"),
@@ -169,10 +177,6 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         );
                 
                 event.reply(successMSG);
-                
-                for (MessageAction msgAction : msgs) {
-                    msgAction.queue();
-                }
             }, (error) -> {
                 PresetBuilder errorMSG = new PresetBuilder()
                         .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Could not send private message! Please check to make sure private messages are enabled."));

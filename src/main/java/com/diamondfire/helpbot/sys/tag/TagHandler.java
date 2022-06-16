@@ -1,9 +1,11 @@
 package com.diamondfire.helpbot.sys.tag;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.sys.tag.exceptions.*;
 import com.diamondfire.helpbot.util.serializer.*;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -12,9 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TagHandler {
-    
-    private static final List<Tag> TAGS = new ArrayList<>();
-    private static final File FILE = ExternalFiles.TAGS;
+    private static Map<String, Tag> TAGS = new HashMap<>();
     
     static {
         try {
@@ -24,74 +24,60 @@ public class TagHandler {
         }
     }
     
-    public static List<Tag> getTags() {
+    public static Map<String, Tag> getTags() {
         return TAGS;
     }
     
     public static void cacheJson() throws IOException {
         // Read the file and update the cache
-        String content = new String(Files.readAllBytes(FILE.toPath()));
+        String content = Files.readString(ExternalFiles.TAGS);
         
         if (content.isEmpty()) {
-            content = "{}";
+            // Just short circuit here because there can't be any tags
+            TAGS = new HashMap<>();
+            return;
         }
         
-        JsonObject obj = JsonParser.parseString(content).getAsJsonObject();
-        
-        for (String key : obj.keySet()) {
-            TAGS.add(TagSerializer.getInstance().deserialize(
-                    obj.get(key).getAsJsonObject()
-            ));
-        }
+        TAGS = HelpBotInstance.GSON.fromJson(content, new TypeToken<Map<String, Tag>>() {}.getType());
     }
     
     public static void save() throws IOException {
-        JsonObject json = new JsonObject();
-        
-        for (Tag tag : TAGS) {
-            json.add(tag.getActivator(), tag.serialize());
-        }
-    
-        FILE.delete();
-        FILE.createNewFile();
-        Files.write(FILE.toPath(), json.toString().getBytes(), StandardOpenOption.WRITE);
+        Files.writeString(ExternalFiles.TAGS, HelpBotInstance.GSON.toJson(TAGS));
     }
     
     public static void newTag(Tag tag) throws TagAlreadyExistsException, IOException {
         // Check if tag with equal activator already exists
-        if (TAGS.stream().anyMatch(t -> t.getActivator().equals(tag.getActivator()))) {
+        if (TAGS.containsKey(tag.getActivator())) {
             throw new TagAlreadyExistsException("A tag with this activator already exists.");
         }
         
         // Add the new tag
-        TAGS.add(tag);
+        TAGS.put(tag.getActivator(), tag);
         save();
     }
     
-    public static void deleteTag(String activator) throws TagDoesNotExistException, IOException {
-        // Get tag + check if it exists
-        Tag tag = getTag(activator);
-        
-        // Remove the tag
-        TAGS.remove(tag);
+    public static void deleteTag(String activator) throws IOException {
+        TAGS.remove(activator);
         save();
     }
     
-    public static void deleteTag(Tag tag) throws TagDoesNotExistException, IOException {
+    public static void deleteTag(Tag tag) throws IOException {
         deleteTag(tag.getActivator());
     }
     
+    public static void recache(String oldActivator, String activator) {
+        TAGS.put(activator, TAGS.remove(oldActivator));
+    }
+    
     public static @NotNull Tag getTag(String activator) throws TagDoesNotExistException, IOException {
-        List<Tag> tags = TAGS.stream()
-                .filter(t -> t.getActivator().equals(activator))
-                .collect(Collectors.toList());
+        Tag tag = TAGS.get(activator);
         
-        if (tags.size() < 1) {
+        if (tag == null) {
             throw new TagDoesNotExistException(String.format(
                     "A tag with activator `%s` does not exist.", activator));
         }
         
-        return tags.get(0);
+        return tag;
     }
     
 }

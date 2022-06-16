@@ -10,8 +10,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.*;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class GetSamquoteSubCommand extends SubCommand {
     
@@ -43,17 +45,19 @@ public class GetSamquoteSubCommand extends SubCommand {
     }
     
     public static void runStatic(CommandEvent event) {
-        String[] strings = ExternalFiles.SAM_DIR.list();
-        File file = new File(ExternalFiles.SAM_DIR, strings[random.nextInt(strings.length)]);
+        byte[] content = null;
+        try (Stream<Path> directoryStream = Files.list(ExternalFiles.SAM_DIR)) {
+            List<Path> files = directoryStream.toList();
+            content = Files.readAllBytes(files.get(random.nextInt(files.size())));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Sam Quote");
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        try {
-            event.getReplyHandler().replyFile(builder, Files.readAllBytes(file.toPath()), "quote.png");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        event.getReplyHandler().replyFile(builder, content, "quote.png");
     }
 }

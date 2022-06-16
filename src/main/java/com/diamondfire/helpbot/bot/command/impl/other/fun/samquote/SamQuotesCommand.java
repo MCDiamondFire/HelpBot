@@ -61,6 +61,4 @@ public class SamQuotesCommand extends SubCommandHolder {
                 new GetSamquoteSubCommand()
         };
     }
-    
-    
 }

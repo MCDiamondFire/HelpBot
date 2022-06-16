@@ -35,20 +35,26 @@ created, use the following format.
     "db_password": "dbpassword",
     
     "guild": long,
-    "log_channel": long,
-    "discussion_channel": long,
-    "muted_role": long,
-    "verified_role": long,
     
     "role_react_channel": long,
     "role_react_message": long,
+    
+    "log_channel": long,
+    "discussion_channel": long,
+    "purge_evidence_channel": long,
+    "graph_channel": long,
+    "srhelper_chat_channel": long,
+    
+    "muted_role": long,
+    "verified_role": long,
+    "report_webhook": long,
 
     "permission_roles": {
         "BOT_DEVELOPER": long,
         "DEVELOPER": long,
         "ADMINISTRATOR": long,
         "MODERATION": long,
-        "EXPERT": long,
+        "SR_HELPER": long,
         "SUPPORT": long,
         "RETIRED_SUPPORT": long,
         "USER": long

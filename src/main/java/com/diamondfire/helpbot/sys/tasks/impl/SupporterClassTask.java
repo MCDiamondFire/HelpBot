@@ -34,6 +34,7 @@ public class SupporterClassTask implements LoopingTask {
         Role discord = guild.getRoleById(DISCORD_BOOSTER);
         Role twitch = guild.getRoleById(TWITCH_BOOSTER);
         Role generalBoost = guild.getRoleById(GENERAL_BOOST);
+        
         List<Role> roles = member.getRoles();
         if ((roles.contains(discord) || roles.contains(twitch)) && !roles.contains(generalBoost)) {
             guild.addRoleToMember(member, generalBoost).queue();

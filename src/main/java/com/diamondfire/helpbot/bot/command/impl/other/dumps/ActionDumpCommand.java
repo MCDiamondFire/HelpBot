@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class ActionDumpCommand extends Command {
     
     @Override
@@ -38,12 +41,11 @@ public class ActionDumpCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         try {
-            event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Action Dump"), Files.readAllBytes(ExternalFiles.DB.toPath()), ExternalFiles.DB.getName());
+            event.getReplyHandler().replyFile(new EmbedBuilder().setTitle("Action Dump"), Files.readAllBytes(ExternalFiles.DB), "db.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
 }
 
 

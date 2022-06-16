@@ -91,13 +91,8 @@ public abstract class AbstractPlotCommand extends Command {
                 embed.setThumbnail(Util.getPlayerHead(plotIcon.substring(1)));
                 event.reply(preset);
             } else {
-                File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
-                embed.setThumbnail("attachment://" + mcItem.getName());
-                try {
-                    event.getReplyHandler().replyFile(preset, Files.readAllBytes(mcItem.toPath()), mcItem.getName());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                embed.setThumbnail("attachment://item.png");
+                event.getReplyHandler().replyFile(preset, Util.fetchMinecraftTextureFile(plotIcon.toUpperCase()), "item.png");
             }
             
         } catch (SQLException | IllegalStateException e) {

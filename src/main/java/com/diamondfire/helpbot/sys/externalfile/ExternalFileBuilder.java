@@ -1,20 +1,15 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
-import java.io.File;
+import java.io.*;
+import java.nio.file.*;
 
 public class ExternalFileBuilder {
     
     String fileName;
-    String fileType = "unk";
     boolean directory = false;
     
     public ExternalFileBuilder setName(String fileName) {
         this.fileName = fileName;
-        return this;
-    }
-    
-    public ExternalFileBuilder setFileType(String fileType) {
-        this.fileType = fileType;
         return this;
     }
     
@@ -23,22 +18,31 @@ public class ExternalFileBuilder {
         return this;
     }
     
-    public File buildFile() {
-        File file = new File(fileName + (directory ? "" : "." + fileType));
-        try {
-            if (!file.exists()) {
-                if (directory) {
-                    file.mkdir();
-                } else {
-                    file.createNewFile();
-                }
-                
+    protected Path buildRaw() throws IOException {
+        Path path = Path.of(fileName);
+    
+        if (directory) {
+            try {
+                Files.createDirectory(path);
+            } catch (FileAlreadyExistsException x) {
+                if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) throw x;
             }
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            try {
+                Files.createFile(path);
+            } catch (FileAlreadyExistsException x) {
+                if (!Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS)) throw x;
+            }
         }
-        return file;
         
+        return path;
+    }
+    
+    public Path build() {
+        try {
+            return buildRaw();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

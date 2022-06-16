@@ -1,7 +1,6 @@
 package com.diamondfire.helpbot.sys.graph.impl;
 
 
-import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.sys.graph.graphable.GraphableEntry;
 import org.jetbrains.annotations.Contract;
 
@@ -47,14 +46,16 @@ public class ChartGraphBuilder {
         //graphics.drawRect(BORDER_WIDTH, BORDER_WIDTH, WIDTH, HEIGHT);
         graph.paintGraph(graphics);
         //Generate values and their numbers
-        
+    
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        
         try {
             ImageIO.write(image, "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+        
         return baos.toByteArray();
     }
 }

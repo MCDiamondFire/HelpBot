@@ -21,6 +21,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.top.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
+import com.google.gson.Gson;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -31,11 +32,12 @@ import okhttp3.OkHttpClient;
 import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
-    
-    private static final Config config = new Config();
-    public static final long DF_GUILD = config.getGuild();
-    public static final long LOG_CHANNEL = config.getLogChannel();
     public static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    public static final Gson GSON = new Gson();
+    private static final Config CONFIG = new Config();
+    public static final long DF_GUILD = CONFIG.getGuild();
+    public static final long LOG_CHANNEL = CONFIG.getLogChannel();
+    
     
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
@@ -133,7 +135,7 @@ public class HelpBotInstance {
                 new PurgeCommand()
         );
         
-        JDABuilder builder = JDABuilder.createDefault(config.getToken())
+        JDABuilder builder = JDABuilder.createDefault(CONFIG.getToken())
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
@@ -155,7 +157,7 @@ public class HelpBotInstance {
     }
     
     public static Config getConfig() {
-        return config;
+        return CONFIG;
     }
     
     public static TaskRegistry getScheduler() {

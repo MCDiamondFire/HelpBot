@@ -40,7 +40,7 @@ public class RemoveTagSubCommand extends SubCommand {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT
+        return Permission.SR_HELPER
                 .setOverrides(this, 808966728201666620L);
     }
     
@@ -58,7 +58,7 @@ public class RemoveTagSubCommand extends SubCommand {
                                     "Successfully deleted tag with activator `%s`.", activator))
                     ));
             
-        } catch (TagDoesNotExistException | IOException err) {
+        } catch (IOException err) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR,

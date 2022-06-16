@@ -41,7 +41,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
                 .addArgument("z",
                         new IntegerArgument())
                 .addArgument("node",
-                        new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4, 5)).optional(null));
+                        new SingleArgumentContainer<>(new DefinedObjectArgument<>(1, 2, 3, 4, 5, 6, 7)).optional(null));
     }
     
     @Override

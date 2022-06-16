@@ -1,14 +1,19 @@
 package com.diamondfire.helpbot.df.codeinfo.codedatabase.db;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
+import java.nio.file.Files;
 import java.util.*;
 
 public class CodeDatabase {
+    public static final Gson GSON = new GsonBuilder()
+            .setLenient()
+            .create();
     
     public static final String CODEBLOCKS = "codeblocks";
     public static final String ACTIONS = "actions";
@@ -25,14 +30,12 @@ public class CodeDatabase {
         registry.clear();
         
         System.out.println("Starting code database...");
-        try (JsonReader reader = new JsonReader(new FileReader(ExternalFiles.DB))) {
-            reader.setLenient(true);
-            
-            CodeDatabase.initDatabase(JsonParser.parseReader(reader).getAsJsonObject());
+        try {
+            CodeDatabase.initDatabase(GSON.fromJson(Files.readString(ExternalFiles.DB), JsonObject.class));
             System.out.println("Database loaded!");
         } catch (Exception e) {
             e.printStackTrace();
-           // System.out.println("Malformed codeblock database.");
+            System.out.println("Malformed codeblock database.");
         }
     }
     

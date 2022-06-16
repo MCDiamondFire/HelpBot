@@ -9,6 +9,9 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.stream.Stream;
 
 public class CountSamquotesSubCommand extends SubCommand {
     
@@ -35,13 +38,18 @@ public class CountSamquotesSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        String[] strings = ExternalFiles.SAM_DIR.list();
+        long count = 0;
+        try (Stream<Path> directoryStream = Files.list(ExternalFiles.SAM_DIR)) {
+            count = directoryStream.count();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Total Sam Quotes:");
-        builder.setDescription("" + strings.length);
+        builder.setDescription("" + count);
         builder.setColor(new Color(87, 177, 71));
-    
+        
         event.getReplyHandler().reply(builder);
     }
 }

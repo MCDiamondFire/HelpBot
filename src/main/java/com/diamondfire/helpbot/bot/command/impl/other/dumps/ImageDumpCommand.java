@@ -53,7 +53,7 @@ public class ImageDumpCommand extends Command {
     
     private File createZip() {
         try {
-            return IOUtil.zipFile(ExternalFiles.IMAGES_DIR.toPath(), "images.zip");
+            return IOUtil.zipFile(ExternalFiles.IMAGES_DIR, "images.zip");
         } catch (IOException e) {
             return null;
         }

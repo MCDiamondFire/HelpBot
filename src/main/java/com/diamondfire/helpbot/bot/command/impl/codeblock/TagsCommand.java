@@ -9,8 +9,6 @@ import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.io.*;
-import java.nio.file.Files;
 import java.util.function.BiConsumer;
 
 
@@ -52,13 +50,8 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         
         String customHead = data.getItem().getHead();
         if (customHead == null) {
-            File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
-            builder.setThumbnail("attachment://" + actionIcon.getName());
-            try {
-                replyHandler.replyFile(builder, Files.readAllBytes(actionIcon.toPath()), actionIcon.getName());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            builder.setThumbnail("attachment://item.png");
+            replyHandler.replyFile(builder, Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase()), "icon.png");
         } else {
             builder.setThumbnail(customHead);
             replyHandler.reply(builder);

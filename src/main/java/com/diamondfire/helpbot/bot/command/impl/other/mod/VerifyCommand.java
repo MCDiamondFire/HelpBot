@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.bot.events.command.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.Util;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.*;
 
 import java.sql.ResultSet;
 
@@ -42,7 +42,7 @@ public class VerifyCommand extends Command {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("user",
-                        new DiscordUserArgument())
+                        DiscordMentionArgument.user())
                 .addArgument("mcname",
                         new StringArgument());
     }

@@ -1,69 +1,61 @@
 package com.diamondfire.helpbot.sys.externalfile;
 
-import java.io.File;
+import java.nio.file.Path;
 
 public interface ExternalFiles {
     
-    File DB = new ExternalFileBuilder()
+    Path CONFIG = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("db")
-            .setFileType("json")
-            .buildFile();
+            .setName("config.json")
+            .build();
     
-    File DB_COMPARE = new ExternalFileBuilder()
+    Path DISABLED_COMMANDS = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("db_last")
-            .setFileType("json")
-            .buildFile();
+            .setName("disabled_commands.txt")
+            .build();
     
-    File OTHER_CACHE_DIR = new ExternalFileBuilder()
+    Path FILTER = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("swear_filter.json")
+            .build();
+    
+    Path DB = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("db.json")
+            .build();
+    
+    Path DB_COMPARE = new ExternalFileBuilder()
+            .isDirectory(false)
+            .setName("db_last.json")
+            .build();
+    
+    Path OTHER_CACHE_DIR = new ExternalFileBuilder()
             .isDirectory(true)
             .setName("other_cache")
-            .buildFile();
+            .build();
     
-    File IMAGES_DIR = new ExternalFileBuilder()
+    Path IMAGES_DIR = new ExternalFileBuilder()
             .isDirectory(true)
             .setName("images")
-            .buildFile();
+            .build();
     
-    File SAM_DIR = new ExternalFileBuilder()
+    Path SAM_DIR = new ExternalFileBuilder()
             .isDirectory(true)
             .setName("samquotes")
-            .buildFile();
+            .build();
     
-    File CONFIG = new ExternalFileBuilder()
+    Path SAMMAN = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("config")
-            .setFileType("json")
-            .buildFile();
+            .setName("samman.png")
+            .build();
     
-    File DISABLED_COMMANDS = new ExternalFileBuilder()
+    Path TAGS = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("disabled_commands")
-            .setFileType("txt")
-            .buildFile();
+            .setName("tags.json")
+            .build();
     
-    File FILTER = new ExternalFileBuilder()
+    Path SAM_QUOTES = new ExternalFileBuilder()
             .isDirectory(false)
-            .setName("swear_filter")
-            .setFileType("json")
-            .buildFile();
-    
-    File SAMMAN = new ExternalFileBuilder()
-            .isDirectory(false)
-            .setName("samman")
-            .setFileType("png")
-            .buildFile();
-    
-    File TAGS = new ExternalFileBuilder()
-            .isDirectory(false)
-            .setName("tags")
-            .setFileType("json")
-            .buildFile();
-    
-    File SAM_QUOTES = new ExternalFileBuilder()
-            .isDirectory(false)
-            .setName("samquotes")
-            .setFileType("txt")
-            .buildFile();
+            .setName("samquotes.txt")
+            .build();
 }

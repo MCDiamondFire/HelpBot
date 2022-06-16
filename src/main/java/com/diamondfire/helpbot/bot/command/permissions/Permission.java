@@ -13,7 +13,7 @@ public enum Permission {
     // Ask DragonSlasher, not me.
     ADMINISTRATOR(666),
     MODERATION(5),
-    EXPERT(4),
+    SR_HELPER(4),
     SUPPORT(3),
     RETIRED_SUPPORT(2),
     USER(1);
@@ -32,7 +32,6 @@ public enum Permission {
     private final int permissionLevel;
     
     Permission(int permissionLevel) {
-        // This is a string due to a weird GSON error I can't be bothered to fix.
         this.role = HelpBotInstance.getConfig().getPermissionRoleMap().get(name());
         this.permissionLevel = permissionLevel;
     }

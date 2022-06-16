@@ -33,6 +33,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -109,29 +110,19 @@ public class FetchDataCommand extends Command {
         fetchData(sentMessage, includeColors).thenAccept((queue) -> {
             status(sentMessage, String.format("Data has been received, parsing %s lines...", queue.size()));
             
-            File file = null;
-            try {
-                file = updateDb ? ExternalFiles.DB : ExternalFileUtil.generateFile("temp_db.txt");
-                if (updateDb) {
-                    CodeDifferenceHandler.setComparer(file);
-                }
-                
-                if (file.exists()) {
-                    file.delete();
-                }
-                file.createNewFile();
-                
-                try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getPath(), true))) {
-                    for (String s : queue) {
-                        bufferedWriter.append(s);
-                    }
+            String content = String.join("", queue);
+            
+            if (updateDb) {
+                try {
+                    Path file = ExternalFiles.DB;
                     
+                    CodeDifferenceHandler.setComparer(file);
+                    Files.writeString(file, content);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                
-                
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+            
             if (updateDb) {
                 status(sentMessage, "Restarting and comparing code database...");
                 CodeDatabase.initialize();
@@ -139,7 +130,7 @@ public class FetchDataCommand extends Command {
                 status(sentMessage, "Finished!");
             } else {
                 status(sentMessage, "Finished!");
-                sentMessage.getChannel().sendFile(file).queue();
+                sentMessage.getChannel().sendFile(content.getBytes(), "db.json").queue();
             }
         }).exceptionally((exception) -> {
             error(sentMessage, exception);

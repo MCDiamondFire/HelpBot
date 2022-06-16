@@ -19,10 +19,11 @@ import java.util.Date;
 public class SupportUnexcuseTask implements OneTimeTask {
     
     private static final long EXPERT_CHAT = HelpBotInstance.getConfig().getExpertChatChannel();
-//    private static final Command[] commandsToRun = new Command[]{
-//            new StatsCommand(),
-//            new LastJoinedCommand(),
-//    };
+    
+    private static final Command[] commandsToRun = new Command[]{
+            new StatsCommand(),
+            new LastJoinedCommand(),
+    };
     private final long ms;
     private final String uuid;
     private final Date initDate;

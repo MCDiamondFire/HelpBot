@@ -18,8 +18,5 @@ public class DisabledCheck implements CommandCheck {
         builder.withPreset(
                 new InformativeReply(InformativeReplyType.ERROR, "Disabled!", "This command has been disabled until further notice.")
         );
-        
     }
-    
-    
 }

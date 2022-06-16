@@ -51,7 +51,7 @@ public class RulesCommand extends Command {
                 "They believe the supportee is already capable of completing the request, and are purely using support to progress their plot.",
                 "They believe the request is too far above the supportee's coding level, and they would not understand the code, or how to change/add in more code.",
                 "It is a request to build on the plot",
-                "The support member is unable to complete the request, in this case, the support member should ask any expert or more experienced support members."};
+                "The support member is unable to complete the request, in this case, the support member should ask any srhelper or more experienced support members."};
         supportRules.addField("A Support member has the right to deny a request in a session if", list(denyRequestReasons, "-"), false);
         supportRules.addField("Support should make sure that the supportee understands the new code before the end of the session.",
                 "This knowledge can be easily gained by a simple \"Do you understand what I have done?\" and is crucial in making sure they could add or modify your code.", false);
@@ -61,7 +61,7 @@ public class RulesCommand extends Command {
                 "In this circumstance, the support member should check if anyone else is online, so they can continue the session.", false);
         supportRules.addField("If, at any point in the session, the supportee is afk for at least one minute, the support member can end the session by using /support kill. If this is regular from someone, they should be reported in the session-reports channel.",
                 "", false);
-        supportRules.addField("If you are in a particularly hostile session, where the supportee is being rude, ignoring what you're doing or removing your code after you place it, you should report them in #session-reports, and tell any online experts of the occurrence.",
+        supportRules.addField("If you are in a particularly hostile session, where the supportee is being rude, ignoring what you're doing or removing your code after you place it, you should report them in #session-reports, and tell any online srhelpers of the occurrence.",
                 "", false);
         
         EmbedBuilder supporteeRules = new EmbedBuilder();
@@ -84,7 +84,7 @@ public class RulesCommand extends Command {
                 "You should only use support question in the hope of gaining coding advice about the DiamondFire plugin, such as code related questions, but not personal questions (No plot idea questions or joke requests)", false);
         supporteeRules.addField("If you feel like the support member is unsure of what to do, and with permission from the current support member, you may ask them to kill the session, so you can rejoin the queue and get help from another support member.",
                 "", false);
-        supporteeRules.addField("If the believe the support member is not helping, or they break any rules, you should report them to an expert or moderator.",
+        supporteeRules.addField("If the believe the support member is not helping, or they break any rules, you should report them to an srhelper or moderator.",
                 "", false);
         
         builder.addPage("General Rules", rulesEmbed);

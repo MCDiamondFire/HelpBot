@@ -9,20 +9,15 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.sys.samquote.SamImage;
+import com.diamondfire.helpbot.util.textgen.SamQuotes;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-
-import static com.diamondfire.helpbot.util.textgen.MarkovManipulation.getNextWord;
 
 public class GenerateSamquoteSubCommand extends SubCommand {
-    
     @Override
     public String getName() {
         return "generate";
@@ -48,63 +43,19 @@ public class GenerateSamquoteSubCommand extends SubCommand {
     
     @Override
     public void run(CommandEvent event) {
-        File file = new File("samquotes.txt");
-    
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    
-        ArrayList<String> startingTexts = new ArrayList<>();
-    
-        String line = null;
-        while (true) {
-            try {
-                if ((line = br.readLine()) == null) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        
-            startingTexts.add(line.split(" ")[0]);
-        }
-    
-        String word;
-    
         String startWord = event.getArgument("start_word");
-        if (startWord == null) {
-            word = startingTexts.get((int) Math.rint(Math.random() * startingTexts.size()));
-        } else {
-            if (startingTexts.contains(startWord)) {
-                word = startWord;
-            } else {
-                PresetBuilder error = new PresetBuilder();
-            
-                error.withPreset(
-                        new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")
-                );
-            
-                return;
-            }
-        }
-        StringBuilder string = new StringBuilder();
-        for (int i = 0; i < 50; i++) {
         
-            if (word == null || word.equals(".")) break;
-            string.append(word).append(" ");
-            try {
-                word = getNextWord(word);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        String quote = startWord != null ? SamQuotes.generateFull(64, startWord) : SamQuotes.generateFull(64);
+        if (quote == null || quote.isBlank()) {
+            event.reply(new PresetBuilder()
+                    .withPreset(new InformativeReply(InformativeReplyType.ERROR, "Sam has never started a message with this word before!")));
+            
+            return;
         }
-    
-//        String text = "           " + string;
-    
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ImageIO.write(SamImage.createFull(string.toString()), "png", baos);
+            ImageIO.write(SamImage.createFull(quote), "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
             event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Unable to create samquote image.")));

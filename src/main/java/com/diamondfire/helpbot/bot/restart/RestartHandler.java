@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.*;
 
 public class RestartHandler {
     
@@ -16,10 +16,8 @@ public class RestartHandler {
         long channel = restartMSG.getChannel().getIdLong();
         
         try {
-            File restart = ExternalFileUtil.generateFile("restart_cache");
-            try (FileWriter writer = new FileWriter(restart)) {
-                writer.append(String.valueOf(msg)).append(":").append(String.valueOf(channel)).append(":").append(String.valueOf(System.currentTimeMillis()));
-            }
+            Path restart = ExternalFileUtil.generateFile("restart_cache");
+            Files.writeString(restart, msg + ":" + channel + ":" + System.currentTimeMillis());
         } catch (IOException ignored) {
         }
         
@@ -27,17 +25,19 @@ public class RestartHandler {
     
     public static void recover(JDA jda) {
         try {
-            File restart = ExternalFileUtil.getFile("restart_cache");
-            if (!restart.exists()) {
+            Path restart = ExternalFileUtil.getFile("restart_cache");
+            if (!Files.exists(restart)) {
                 return;
             }
-            String[] restartMSG = Files.readAllLines(restart.toPath()).get(0).split(":");
+            
+            String[] restartMSG = Files.readString(restart).trim().split(":");
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Restart Successful!");
             builder.setDescription("Restarted in " + FormatUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
             
             jda.getTextChannelById(restartMSG[1]).editMessageEmbedsById(restartMSG[0], builder.build()).override(true).queue();
-            restart.delete();
+            
+            Files.delete(restart);
         } catch (IOException | ArrayIndexOutOfBoundsException ignored) {
         }
     }

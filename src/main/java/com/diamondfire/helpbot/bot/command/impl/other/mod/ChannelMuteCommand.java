@@ -40,7 +40,7 @@ public class ChannelMuteCommand extends Command {
     @Override
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
-                .addArgument("user", new DiscordUserArgument())
+                .addArgument("user", DiscordMentionArgument.user())
                 .addArgument("channel", new LongArgument())
                 .addArgument("duration", new SingleArgumentContainer<>(new TimeOffsetArgument()).optional(null))
                 .addArgument("reason", new StringArgument());

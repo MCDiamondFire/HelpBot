@@ -2,8 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.other.mod;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.DiscordUserArgument;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.GreedyStringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -42,7 +41,7 @@ public class UnmuteCommand extends Command {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument("user",
-                        new DiscordUserArgument())
+                        DiscordMentionArgument.user())
                 .addArgument("reason",
                         new SingleArgumentContainer<>(new GreedyStringArgument()).optional("Not Specified"));
     }
