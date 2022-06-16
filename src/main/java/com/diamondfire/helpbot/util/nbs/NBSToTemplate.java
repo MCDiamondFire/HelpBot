@@ -1,5 +1,7 @@
 package com.diamondfire.helpbot.util.nbs;
 
+import com.diamondfire.helpbot.util.CompressionUtil;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;

@@ -42,7 +42,7 @@ public class ImageDumpCommand extends Command {
                 .deferReply(new PresetBuilder().withPreset(
                         new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created.")))
                 .thenAccept(followupReplyHandler -> {
-                    File zip = createZip();
+                    byte[] zip = createZip();
                     if (zip != null) {
                         followupReplyHandler.editOriginalFile("", zip, "images.zip");
                     } else {
@@ -51,7 +51,7 @@ public class ImageDumpCommand extends Command {
                 });
     }
     
-    private File createZip() {
+    private byte[] createZip() {
         try {
             return IOUtil.zipFile(ExternalFiles.IMAGES_DIR, "images.zip");
         } catch (IOException e) {

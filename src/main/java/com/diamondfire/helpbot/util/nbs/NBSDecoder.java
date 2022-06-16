@@ -5,20 +5,14 @@ import java.math.BigDecimal;
 //from https://github.com/CodeUtilities/CodeUtilities
 
 public class NBSDecoder {
-
-    public static SongData parse(File songFile) throws IOException, OutdatedNBSException {
-        try {
-            return parse(new FileInputStream(songFile), songFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    
+    public static SongData parse(InputStream inputStream) throws IOException, OutdatedNBSException {
+        return parse(inputStream, null);
     }
 
-    private static SongData parse(InputStream inputStream, File songFile) throws IOException, OutdatedNBSException {
+    public static SongData parse(InputStream inputStream, String file) throws IOException, OutdatedNBSException {
         String title = "";
         String author = "";
-        String file = songFile.getName();
         float speed = 0f;
         float actualSpeed = 0f;
         short timeSignature = 4;
@@ -40,8 +34,6 @@ public class NBSDecoder {
             } else if (nbsversion == 1 || nbsversion == 2) {
                 throw new OutdatedNBSException();
             }
-        } else {
-
         }
         short layers = readShort(dataInputStream); //song height
         title = readString(dataInputStream); //title
@@ -269,9 +261,5 @@ public class NBSDecoder {
         double finalValue = (0.5 * (Math.pow(2, (key / 12)))) * 1000;
 
         return (int) finalValue;
-    }
-
-    public SongData parse(InputStream inputStream) throws IOException, OutdatedNBSException {
-        return parse(inputStream, null);
     }
 }

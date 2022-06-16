@@ -18,7 +18,7 @@ public class InteractionReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(String content) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(String content) {
         return internalEvent.reply(content)
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
@@ -26,19 +26,19 @@ public class InteractionReplyHandler implements ReplyHandler {
     
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
         return reply(preset.getEmbed());
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
         return internalEvent.replyEmbeds(builder.build())
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(String content, @NotNull byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.reply(content)
                 .addFile(data, name, options)
                 .submit()
@@ -46,12 +46,12 @@ public class InteractionReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte @NotNull [] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return replyFile(preset.getEmbed(), data, name, options);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte @NotNull [] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return internalEvent.replyEmbeds(embed.build())
                 .addFile(data, name, options)
                 .submit()
@@ -59,24 +59,24 @@ public class InteractionReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply() {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply() {
         return internalEvent.deferReply()
                 .submit()
                 .thenApply(InteractionFollowupReplyHandler::new);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(String content) {
         return deferReply();
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
         return deferReply();
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
         return deferReply();
     }
 }

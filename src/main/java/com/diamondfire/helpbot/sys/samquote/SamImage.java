@@ -27,7 +27,7 @@ public class SamImage {
     }
     
     protected static BufferedImage cropSamPfp() throws IOException {
-        BufferedImage samPfp = ImageIO.read(ExternalFiles.SAMMAN);
+        BufferedImage samPfp = ImageIO.read(ExternalFiles.SAMMAN.toFile());
     
         int pfpWidth = samPfp.getWidth() * 10;
         

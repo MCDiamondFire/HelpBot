@@ -5,13 +5,8 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
-<<<<<<< HEAD
-=======
 import java.nio.file.Files;
->>>>>>> pr/general-fixes
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Config {
     private final JsonObject config;

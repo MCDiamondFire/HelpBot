@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 public class MessageFollowupReplyHandler extends MessageReplyHandler implements FollowupReplyHandler {
 
@@ -19,32 +19,32 @@ public class MessageFollowupReplyHandler extends MessageReplyHandler implements 
     }
     
     @Override
-    public void editOriginal(String content) {
-        message.editMessage(content).queue();
+    public @NotNull CompletableFuture<Void> editOriginal(String content) {
+        return message.editMessage(content).submit().thenAccept(message -> {});
     }
     
     @Override
-    public void editOriginal(PresetBuilder preset) {
-        editOriginal(preset.getEmbed());
+    public @NotNull CompletableFuture<Void> editOriginal(PresetBuilder preset) {
+        return editOriginal(preset.getEmbed());
     }
     
     @Override
-    public void editOriginal(EmbedBuilder builder) {
-        message.editMessageEmbeds(builder.build()).queue();
+    public @NotNull CompletableFuture<Void> editOriginal(EmbedBuilder builder) {
+        return message.editMessageEmbeds(builder.build()).submit().thenAccept(message -> {});
     }
     
     @Override
-    public void editOriginalFile(String content, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        message.editMessage(content).addFile(file, name, options).queue();
+    public @NotNull CompletableFuture<Void> editOriginalFile(String content, byte @NotNull [] file, @NotNull String name, @NotNull AttachmentOption @NotNull ... options) {
+        return message.editMessage(content).addFile(file, name, options).submit().thenAccept(message -> {});
     }
     
     @Override
-    public void editOriginalFile(PresetBuilder preset, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        editOriginalFile(preset.getEmbed(), file, name, options);
+    public @NotNull CompletableFuture<Void> editOriginalFile(PresetBuilder preset, byte @NotNull [] file, @NotNull String name, @NotNull AttachmentOption @NotNull ... options) {
+        return editOriginalFile(preset.getEmbed(), file, name, options);
     }
     
     @Override
-    public void editOriginalFile(EmbedBuilder embed, @NotNull File file, @NotNull String name, @NotNull AttachmentOption... options) {
-        message.editMessageEmbeds(embed.build()).addFile(file, name, options).queue();
+    public @NotNull CompletableFuture<Void> editOriginalFile(EmbedBuilder embed, byte @NotNull [] file, @NotNull String name, @NotNull AttachmentOption @NotNull ... options) {
+        return message.editMessageEmbeds(embed.build()).addFile(file, name, options).submit().thenAccept(message -> {});
     }
 }

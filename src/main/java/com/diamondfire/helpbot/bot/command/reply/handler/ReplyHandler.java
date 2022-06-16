@@ -11,27 +11,27 @@ import java.util.concurrent.CompletableFuture;
 public interface ReplyHandler {
     // Standard Replies
     
-    CompletableFuture<FollowupReplyHandler> reply(String content);
+    @NotNull CompletableFuture<FollowupReplyHandler> reply(String content);
     
-    CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset);
+    @NotNull CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset);
     
-    CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder);
+    @NotNull CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder);
     
     // File Replies
     
-    CompletableFuture<FollowupReplyHandler> replyFile(String content, final byte[] data, @NotNull final String name, @NotNull AttachmentOption... options);
+    @NotNull CompletableFuture<FollowupReplyHandler> replyFile(String content, final byte @NotNull [] data, @NotNull final String name, @NotNull AttachmentOption... options);
     
-    CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, final byte[] data, @NotNull final String name, @NotNull AttachmentOption... options);
+    @NotNull CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, final byte @NotNull [] data, @NotNull final String name, @NotNull AttachmentOption... options);
     
-    CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, final byte[] data, @NotNull final String name, @NotNull AttachmentOption... options);
+    @NotNull CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, final byte @NotNull [] data, @NotNull final String name, @NotNull AttachmentOption... options);
     
     // Deferred Replies
     
-    CompletableFuture<FollowupReplyHandler> deferReply();
+    @NotNull CompletableFuture<FollowupReplyHandler> deferReply();
     
-    CompletableFuture<FollowupReplyHandler> deferReply(String content);
+    @NotNull CompletableFuture<FollowupReplyHandler> deferReply(String content);
     
-    CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset);
+    @NotNull CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset);
     
-    CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed);
+    @NotNull CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed);
 }

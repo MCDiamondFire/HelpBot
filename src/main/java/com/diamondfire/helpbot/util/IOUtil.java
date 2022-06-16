@@ -11,9 +11,9 @@ import java.util.stream.*;
 import java.util.zip.*;
 
 public class IOUtil {
-    public static File zipFile(Path path, String fileName) throws IOException {
-        File zipped = ExternalFileUtil.generateFile(fileName).toFile();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipped));
+    public static byte[] zipFile(Path path, String fileName) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(baos);
         try (Stream<Path> walkStream = Files.walk(path)) {
             for (Path innerPath : walkStream.collect(Collectors.toSet())) {
         
@@ -34,7 +34,7 @@ public class IOUtil {
         zipOutputStream.finish();
         zipOutputStream.close();
         
-        return zipped;
+        return baos.toByteArray();
     }
     
     

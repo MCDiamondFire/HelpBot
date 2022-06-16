@@ -21,31 +21,31 @@ public class MessageReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(String content) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(String content) {
         return channel.sendMessage(content)
                 .submit()
                 .thenApply(MessageFollowupReplyHandler::new);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(PresetBuilder preset) {
         return reply(preset.getEmbed());
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> reply(EmbedBuilder builder) {
         return channel.sendMessageEmbeds(builder.build())
                 .submit()
                 .thenApply(MessageFollowupReplyHandler::new);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(PresetBuilder preset, byte @NotNull [] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return replyFile(preset.getEmbed(), data, name, options);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(EmbedBuilder embed, byte @NotNull [] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return channel.sendMessageEmbeds(embed.build())
                 .addFile(data, name, options)
                 .submit()
@@ -53,7 +53,7 @@ public class MessageReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> replyFile(String content, byte[] data, @NotNull String name, @NotNull AttachmentOption... options) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> replyFile(String content, byte @NotNull [] data, @NotNull String name, @NotNull AttachmentOption... options) {
         return channel.sendMessage(content)
                 .addFile(data, name, options)
                 .submit()
@@ -61,22 +61,22 @@ public class MessageReplyHandler implements ReplyHandler {
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply() {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply() {
         return reply(String.format("*%s is thinking...*", HelpBotInstance.getJda().getSelfUser().getName()));
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(String content) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(String content) {
         return reply(content);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(PresetBuilder preset) {
         return reply(preset);
     }
     
     @Override
-    public CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
+    public @NotNull CompletableFuture<FollowupReplyHandler> deferReply(EmbedBuilder embed) {
         return reply(embed);
     }
 }

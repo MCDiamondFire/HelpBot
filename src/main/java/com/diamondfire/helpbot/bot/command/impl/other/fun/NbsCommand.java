@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
+import com.diamondfire.helpbot.bot.command.reply.handler.followup.FollowupReplyHandler;
 import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.util.nbs.*;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,6 +14,8 @@ import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class NbsCommand extends Command {
     
@@ -52,58 +55,37 @@ public class NbsCommand extends Command {
         PresetBuilder error = new PresetBuilder()
             .withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while processing/generating!"));
         
-        if(messageCommandEvent.getMessage().getAttachments().isEmpty()) {
-            event.reply(nbsPreset);
-            return;
-        }
         Message.Attachment attachment = messageCommandEvent.getMessage().getAttachments().get(0);
-        if(!attachment.getFileExtension().equals("nbs")) {
+        if(attachment == null || !Objects.equals(attachment.getFileExtension(), "nbs")) {
             event.reply(nbsPreset);
             return;
         }
-        
-        TextChannel channel = event.getChannel();
-        PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
-        PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
-        
-        if (event.getMessage().getAttachments().isEmpty()) {
-            event.reply(attachNbsMsg);
-            return;
-        }
-        
-        Message.Attachment attachment = event.getMessage().getAttachments().get(0);
-        if (!attachment.getFileExtension().equals("nbs")) {
-            event.reply(attachNbsMsg);
-            return;
-        }
-        
-        File file = new File("input.nbs");
-        
-        // TODO: fixme
-        attachment.downloadToFile(file).thenAccept(downloadedFile -> {
-            try {
-                byte[] b64 = new NBSToTemplate(NBSDecoder.parse(file)).convert();
-                File templateOutputfile = File.createTempFile("nbs_output", ".txt");
-                BufferedWriter writer = new BufferedWriter(new FileWriter(templateOutputfile));
-                writer.write(String.format("/give @p minecraft:ender_chest{display:{Name:'[{\"text\":\"» \",\"color\":\"gold\"},{\"text\":\"Code Template\",\"color\":\"yellow\",\"bold\":true}]'},PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"name\":\"&6» &e&lCode Template\",\"version\":1,\"code\":\"%s\",\"author\":\"helpbot\"}'}} 1", new String(b64)));
-                
-                writer.close();
-                
-                    
-                EmbedBuilder embed = new EmbedBuilder()
-                        .setColor(new Color(70,199,82))
-                        .setTitle("Template Generated!")
-                        .setThumbnail(NBS_IMAGE)
-                        .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) function to play this song!", false);
-                
-                
-                channel.sendFile(templateOutputfile).setEmbeds(embed.build()).queue();
-                file.deleteOnExit();
-            } catch (OutdatedNBSException | IOException e) {
-                e.printStackTrace();
-                event.reply(errorMsg);
-            }
-        });
+    
+        event.getReplyHandler().deferReply(new PresetBuilder().withPreset(
+                new InformativeReply(InformativeReplyType.INFO, "Please wait while your nbs file is converted,")
+        ))
+                .thenAccept(followupReplyHandler -> {
+                    attachment.retrieveInputStream().thenAccept(stream -> {
+                        try {
+                            byte[] b64 = new NBSToTemplate(NBSDecoder.parse(stream, attachment.getFileName())).convert();
+                            String fileContent = String.format("/give @p minecraft:ender_chest{display:{Name:'[{\"text\":\"» \",\"color\":\"gold\"},{\"text\":\"Code Template\",\"color\":\"yellow\",\"bold\":true}]'},PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"name\":\"&6» &e&lCode Template\",\"version\":1,\"code\":\"%s\",\"author\":\"helpbot\"}'}} 1", new String(b64));
+                            
+                            EmbedBuilder embed =
+                                    new PresetBuilder().withPreset(new InformativeReply(
+                                            InformativeReplyType.INFO,
+                                            "You can copy the command below and give it to yourself in singleplayer, then use saved toolbars to transfer it to DiamondFire. You will need a [Music Player](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) function to play this song!"
+                                    ))
+                                    .getEmbed()
+                                    .setTitle("Template Generated!")
+                                    .setThumbnail(NBS_IMAGE);
+                            
+                            followupReplyHandler.editOriginalFile(embed, fileContent.getBytes(StandardCharsets.UTF_8), "nbs_output.txt");
+                        } catch (OutdatedNBSException | IOException e) {
+                            e.printStackTrace();
+                            event.reply(error);
+                        }
+                    });
+                });
     }
     
 }
