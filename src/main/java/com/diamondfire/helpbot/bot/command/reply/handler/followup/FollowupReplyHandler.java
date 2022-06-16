@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 import java.util.concurrent.CompletableFuture;
 
 public interface FollowupReplyHandler extends ReplyHandler {

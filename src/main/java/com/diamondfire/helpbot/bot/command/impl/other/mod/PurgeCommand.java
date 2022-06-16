@@ -9,12 +9,9 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.command.CommandEvent;
-import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.entities.*;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
 import java.time.format.DateTimeFormatter;
 
 public class PurgeCommand extends Command {
