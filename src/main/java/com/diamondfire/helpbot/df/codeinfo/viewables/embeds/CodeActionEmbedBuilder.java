@@ -70,6 +70,6 @@ public class CodeActionEmbedBuilder implements IconEmbedBuilder<ActionData> {
             params.append("(None)");
         }
         
-        builder.addField("<:chest:789269855886901288> Parameters", params.toString(), false);
+        builder.addField("<:c_chest:988240071960461402> Parameters", params.toString(), false);
     }
 }
