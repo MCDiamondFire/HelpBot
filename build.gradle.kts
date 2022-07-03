@@ -25,6 +25,9 @@ dependencies {
     implementation("com.github.steveice10:mcprotocollib:1.18.2-1")
     implementation("mysql:mysql-connector-java:5.1.49")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.11")
+
+    implementation("net.kyori:adventure-api:4.11.0")
+    implementation("net.kyori:adventure-text-serializer-plain:4.11.0")
 }
 
 java {
