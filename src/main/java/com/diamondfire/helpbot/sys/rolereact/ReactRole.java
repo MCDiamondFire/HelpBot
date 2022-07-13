@@ -10,7 +10,7 @@ public enum ReactRole {
     SALES("\uD83C\uDFF7", 761779623322320916L),
     APP_UPDATES("\uD83D\uDCD4", 770062219362435113L, "Staff Applications"),
     MEDIA("\uD83D\uDCF7", 821811669918416897L),
-    POLLS("\uD83D\uDCCA", 995746459964166154L, "Bao Polls");
+    POLLS("\uD83D\uDCCA", 995746459964166154L);
     
     private static final Map<String, ReactRole> roleMap = new HashMap<>();
     private final String emoji;
