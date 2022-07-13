@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class CowsayCommand extends Command {
@@ -63,7 +64,7 @@ public class CowsayCommand extends Command {
     
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("The cow says")
-                .appendDescription("```\n" + bubbleBuilder.toString() + cowBuilder.toString() + "\n```");
+                .appendDescription("```\n" + StringUtil.display(bubbleBuilder.toString() + cowBuilder.toString()) + "\n```");
         
         event.getMessage().getChannel().sendMessageEmbeds(builder.build()).queue();
     }
