@@ -62,6 +62,7 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         POTION("Potion"),
         VARIABLE("Variable"),
         LIST("List"),
+        DICT("Dictionary"),
         ITEM("Item"),
         PROJECTILE("Projectile"),
         SPAWN_EGG("Spawn Egg"),
