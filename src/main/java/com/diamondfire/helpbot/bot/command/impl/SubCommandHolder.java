@@ -1,36 +1,62 @@
 package com.diamondfire.helpbot.bot.command.impl;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
-import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.SubCommandArgument;
+import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.bot.events.command.*;
+import com.diamondfire.helpbot.util.FormatUtil;
+import org.jetbrains.annotations.ApiStatus;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class SubCommandHolder extends Command {
+    private Map<String, SubCommand> subCommands;
+
+    public SubCommandHolder() {
+        this.cacheSubCommands();
+    }
 
     @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument(
-                "subcommand", new SubCommandArgument()
-        );
+    protected ArgumentSet compileArguments() {
+        return new ArgumentSet();
+    }
+
+    protected HelpContextArgument[] createHelpContextArguments() {
+        return new HelpContextArgument[] {
+            new HelpContextArgument()
+                .name(FormatUtil.formatSubCommandOptions(this)),
+            new HelpContextArgument()
+                .name("...")
+                .optional()
+        };
     }
 
     @Override
     public void run(CommandEvent event) {
-        SubCommand subcommand = event.getArgument("subcommand");
-        event.setCommand(subcommand);
-    
-        if (event instanceof MessageCommandEvent messageCommandEvent) {
-            String[] rawArgs = messageCommandEvent.getRawArgs();
-            rawArgs[0] = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length());
-    
-            List<String> args = new ArrayList<>(Arrays.asList(rawArgs));
-            args.remove(1);
-    
-            CommandHandler.getInstance().run(messageCommandEvent, args.toArray(String[]::new));
+        throw new IllegalStateException("SubCommandHolder should never be executed as a command!");
+    }
+
+    // Cache subcommands so we don't have to loop when parsing.
+    protected void cacheSubCommands() {
+        HashMap<String, SubCommand> subCommandMap = new HashMap<>();
+
+        for (SubCommand subCommand : getSubCommands()) {
+
+            subCommandMap.put(subCommand.getName(), subCommand);
         }
+
+        this.subCommands = Collections.unmodifiableMap(subCommandMap);
+    }
+
+    @ApiStatus.Internal
+    @Nullable
+    public SubCommand getSubCommand(String name) {
+        return subCommands.get(name);
+    }
+
+    @Nullable
+    public String getDefaultSubCommand() {
+        return null;
     }
 
     public abstract SubCommand[] getSubCommands();

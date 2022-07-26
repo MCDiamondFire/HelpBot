@@ -85,11 +85,6 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public void run(CommandEvent event) {
-        super.run(event);
-    }
-    
-    @Override
     public BiConsumer<CodeObject, ReplyHandler> onDataReceived() {
         return TagsCommand::sendTagMessage;
     }

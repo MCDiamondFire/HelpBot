@@ -21,7 +21,7 @@ public class SingleArgumentParser<A> extends ArgumentParser<SingleArgumentContai
         Argument<A> arg = getContainer().getArgument();
         
         if (rawArgs.peek() == null) {
-            throw new MissingArgumentException("Expected an argument, but got nothing.");
+            throw MissingArgumentException.expectedArgument();
         }
         
         return new ParsedArgument<>(identifier, arg.parseValue(rawArgs, event));

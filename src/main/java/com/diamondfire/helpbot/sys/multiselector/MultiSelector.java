@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.sys.multiselector;
 
 import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
-import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -52,8 +51,8 @@ public class MultiSelector {
                     .sendMessageEmbeds(pages[0].getPage().build())
                     .setActionRow(buttons)
                     .queue(onMessage);
-        } else if (commandEvent instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+        } else if (commandEvent instanceof ApplicationCommandEvent applicationCommandEvent) {
+            applicationCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
                 interactionHook.sendMessageEmbeds(pages[0].getPage().build())
                         .addActionRow(buttons)
                         .queue(onMessage);

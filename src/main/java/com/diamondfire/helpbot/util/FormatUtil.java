@@ -1,14 +1,17 @@
 package com.diamondfire.helpbot.util;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.argument.ParseResults;
 import com.diamondfire.helpbot.bot.command.help.HelpContext;
 import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.impl.SubCommandHolder;
 
 import java.text.*;
 import java.time.LocalDate;
 import java.time.temporal.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class FormatUtil {
     
@@ -90,8 +93,17 @@ public class FormatUtil {
                 .toArray(String[]::new);
     }
     
-    public static String displayCommand(Command cmd) {
-        return HelpBotInstance.getConfig().getPrefix() + cmd.getName();
+    public static String displayExecutionStack(ParseResults.ExecutionStack executionStack) {
+        return executionStack.getAsList()
+            .stream()
+            .map(Command::getName)
+            .collect(Collectors.joining(" "));
+    }
+
+    public static String formatSubCommandOptions(SubCommandHolder command) {
+        return Arrays.stream(command.getSubCommands())
+            .map(Command::getName)
+            .collect(Collectors.joining("/"));
     }
     //</editor-fold>
     

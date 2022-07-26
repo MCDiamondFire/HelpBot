@@ -1,13 +1,16 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
+import com.diamondfire.helpbot.bot.command.argument.ParseResults;
 import com.diamondfire.helpbot.bot.command.impl.*;
 import com.diamondfire.helpbot.bot.events.command.*;
 import com.diamondfire.helpbot.util.FormatUtil;
 
+import java.util.List;
+
 public class ArgumentException extends Exception {
     
-    private String message;
+    protected String message;
     
     public ArgumentException(String message) {
         super(message);
@@ -18,22 +21,14 @@ public class ArgumentException extends Exception {
         return message;
     }
     
-    public void setContext(Command command, int pos, CommandEvent event) {
+    public void setContext(ParseResults.ExecutionStack executionStack, int pos, CommandEvent event) {
+        String prefix = HelpBotInstance.getConfig().getPrefix();
+
+        Command command = executionStack.last();
+
         String[] args = FormatUtil.getArgumentDisplay(command.getHelpContext());
         args[pos] = "**" + args[pos] + "**";
-        String argMessage = FormatUtil.displayCommand(command) + " " + String.join(" ", args);
-        
-        if (command instanceof SubCommand) {
-            String prefix = HelpBotInstance.getConfig().getPrefix();
-            String subCommandName = "unknown";
-            
-            if (event instanceof MessageCommandEvent messageCommandEvent) {
-                subCommandName = messageCommandEvent.getRawArgs()[0];
-            } if (event instanceof SlashCommandEvent slashCommandEvent) {
-                subCommandName = slashCommandEvent.getInternalEvent().getSubcommandName();
-            }
-            argMessage = subCommandName + " " + argMessage.substring(prefix.length());
-        }
+        String argMessage = prefix + FormatUtil.displayExecutionStack(executionStack) + " " + String.join(" ", args);
         
         message = argMessage + "\n\n" + getMessage();
     }

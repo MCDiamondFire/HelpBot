@@ -10,9 +10,4 @@ public class MutedCheck implements CommandCheck {
     public boolean check(CommandEvent event) {
         return !event.getMember().getRoles().contains(event.getGuild().getRoleById(MuteCommand.ROLE_ID));
     }
-    
-    @Override
-    public void buildMessage(CommandEvent event, PresetBuilder builder) {
-        throw new CommandCheckFailure();
-    }
 }

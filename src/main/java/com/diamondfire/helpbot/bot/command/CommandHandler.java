@@ -8,8 +8,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.command.*;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -72,27 +72,28 @@ public class CommandHandler {
                     .addCommands(commandDataList)
                     .queue(commands1 -> {
                         System.out.println("Commands registered. Setting up permissions...");
-                        Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();
-                    
-                        for (net.dv8tion.jda.api.interactions.commands.Command command : commands1) {
-                            Command command1 = CMDS.get(command.getName());
-                            List<CommandPrivilege> commandPrivileges = new ArrayList<>();
-                            for (Permission perm : Permission.VALUES) {
-                                if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel()) {
-                                    commandPrivileges.add(CommandPrivilege.enableRole(perm.getRole()));
-                                }
-                            }
-                            privilegeMap.put(command.getId(), commandPrivileges);
-                        }
-                    
-                        guild.updateCommandPrivileges(privilegeMap).queue(stringListMap -> {
-                            System.out.println("Slash command permissions registered.");
-                        });
+                        // TODO: raw api reqs + oauth token
+//                        Map<String, Collection<? extends CommandPrivilege>> privilegeMap = new HashMap<>();
+//
+//                        for (net.dv8tion.jda.api.interactions.commands.Command command : commands1) {
+//                            Command command1 = CMDS.get(command.getName());
+//                            List<CommandPrivilege> commandPrivileges = new ArrayList<>();
+//                            for (Permission perm : Permission.VALUES) {
+//                                if (command1.getPermission().getPermissionLevel() <= perm.getPermissionLevel()) {
+//                                    commandPrivileges.add(CommandPrivilege.enableRole(perm.getRole()));
+//                                }
+//                            }
+//                            privilegeMap.put(command.getId(), commandPrivileges);
+//                        }
+//
+//                        guild.updateCommandPrivileges(privilegeMap).queue(stringListMap -> {
+//                            System.out.println("Slash command permissions registered.");
+//                        });
                     });
         }
     }
     
-    public void run(@NotNull SlashCommandEvent event) {
+    public void run(@NotNull GenericCommandInteractionEvent event) {
         COMMAND_EXECUTOR.run(event);
     }
     

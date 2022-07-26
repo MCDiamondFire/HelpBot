@@ -57,8 +57,8 @@ public class StoreCommand extends Command {
                     message.editMessageEmbeds(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to retrieve store items.")).getEmbed().build()).queue();
                 }
             });
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+        } else if (event instanceof ApplicationCommandEvent applicationCommandEvent) {
+            applicationCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
                 try {
                     interactionHook.editOriginalEmbeds(createStoreEmbed().build()).queue();
                 } catch (IOException e) {

@@ -8,14 +8,13 @@ group = "com.diamondfire.helpbot"
 
 repositories {
     mavenCentral()
-    maven("https://m2.dv8tion.net/releases")
 
     maven("https://jitpack.io")
     maven("https://repo.opencollab.dev/maven-releases/")
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.4.0_352") {
+    implementation("net.dv8tion:JDA:5.0.0-alpha.13") {
         exclude(module = "opus-java")
     }
 

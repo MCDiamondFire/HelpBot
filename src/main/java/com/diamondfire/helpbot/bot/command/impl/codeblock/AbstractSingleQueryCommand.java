@@ -15,8 +15,6 @@ import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.requests.RestAction;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 import java.util.*;
 import java.util.function.*;
@@ -77,8 +75,8 @@ public abstract class AbstractSingleQueryCommand extends Command {
                     .sendMessageEmbeds(preset.getEmbed().build())
                     .setActionRow(buttons)
                     .queue(onSent);
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
+        } else if (event instanceof ApplicationCommandEvent applicationCommandEvent) {
+            applicationCommandEvent.getInternalEvent().deferReply().queue(interactionHook -> {
                 interactionHook
                         .editOriginalEmbeds(preset.getEmbed().build())
                         .setActionRow(buttons)

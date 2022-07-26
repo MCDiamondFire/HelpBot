@@ -20,6 +20,6 @@ public class AlternateArgumentParser<A> extends ArgumentParser<AlternateArgument
             }
         }
         
-        throw new MissingArgumentException("No valid arguments were provided.");
+        throw MissingArgumentException.noValidArguments();
     }
 }

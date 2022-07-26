@@ -11,7 +11,7 @@ public class CommandAcceptor implements MessageAcceptor {
     public boolean accept(Message message) {
         if (message.getContentDisplay().startsWith(HelpBotInstance.getConfig().getPrefix()) && !message.getAuthor().isBot()) {
             MessageCommandEvent event = new MessageCommandEvent(message);
-            if (event.getCommand() == null) {
+            if (event.getBaseCommand() == null) {
                 return false;
             }
             

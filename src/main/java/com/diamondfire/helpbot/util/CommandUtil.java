@@ -8,8 +8,8 @@ public class CommandUtil {
     public static void replyEphemeralOrDeleteCommand(CommandEvent event, String content) {
         if (event instanceof MessageCommandEvent messageCommandEvent) {
             messageCommandEvent.getMessage().delete().queue();
-        } else if (event instanceof SlashCommandEvent slashCommandEvent) {
-            slashCommandEvent.getInternalEvent()
+        } else if (event instanceof ApplicationCommandEvent applicationCommandEvent) {
+            applicationCommandEvent.getInternalEvent()
                     .reply(content)
                     .setEphemeral(true)
                     .queue();

@@ -14,11 +14,11 @@ public class SubCommandArgument extends AbstractSimpleValueArgument<SubCommand> 
     @Override
     public SubCommand parse(@NotNull String msg, CommandEvent event) throws ArgumentException {
         try {
-            return Arrays.stream(((SubCommandHolder) event.getCommand()).getSubCommands())
+            return Arrays.stream(((SubCommandHolder) event.getBaseCommand()).getSubCommands())
                     .filter(s -> s.getName().equals(msg)).collect(Collectors.toList()).get(0);
         } catch (IndexOutOfBoundsException e) {
             throw new MalformedArgumentException(
-                    "Not a valid subcommand. Choose from " + event.getCommand().getHelpContext().getArguments().get(0).getArgumentName());
+                    "Not a valid subcommand. Choose from " + event.getBaseCommand().getHelpContext().getArguments().get(0).getArgumentName());
         }
     }
     

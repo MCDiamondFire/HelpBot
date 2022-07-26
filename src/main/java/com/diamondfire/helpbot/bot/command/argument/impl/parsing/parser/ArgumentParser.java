@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser;
 
+import com.diamondfire.helpbot.bot.command.argument.ParseResults;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.ArgumentContainer;
@@ -17,9 +18,11 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
         this.container = container;
     }
     
-    public static ParsedArgumentSet parseArgs(Command command, String[] args, CommandEvent event) throws ArgumentException {
+    public static ParsedArgumentSet parseArgs(CommandEvent event, ParseResults.ExecutionStack executionStack, Collection<String> args) throws ArgumentException {
+        Command command = executionStack.last();
+
         Map<String, ParsedArgument<?>> parsedArgs = new HashMap<>();
-        ArgumentStack stack = new ArgumentStack(command.getArguments().getArguments(), Arrays.asList(args));
+        ArgumentStack stack = new ArgumentStack(command.getArguments().getArguments(), args);
         int arguments = stack.getArguments().size();
         
         for (int i = 0; i < arguments; i++) {
@@ -35,11 +38,11 @@ public abstract class ArgumentParser<T extends ArgumentContainer<A>, A> {
                 if (argumentContainer.isOptional()) {
                     parsedArgs.put(identifier, new ParsedArgument<>(identifier, argumentContainer.getDefaultValue()));
                 } else {
-                    exception.setContext(command, i, event);
+                    exception.setContext(executionStack, i, event);
                     throw exception;
                 }
             } catch (MalformedArgumentException exception) {
-                exception.setContext(command, i, event);
+                exception.setContext(executionStack, i, event);
                 throw exception;
             }
         }

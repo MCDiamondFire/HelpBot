@@ -12,7 +12,6 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.command.*;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public class BulkExecuteCommand extends Command {
@@ -76,13 +75,9 @@ public class BulkExecuteCommand extends Command {
         
         for (String player : playerNames) {
             try {
-                Command command1 = CommandHandler.getInstance().getCommands().get(command);
-                Field field = event.getClass().getDeclaredField("command");
-                field.trySetAccessible();
-                field.set(event, command1);
-                
-                messageCommandEvent.pushArguments(new String[]{"dummy", player});
-                command1.run(event);
+                CommandEvent commandEvent = new TextCommandEvent(event.getChannel(), event.getMember(), new String[] {command, player});
+
+                commandEvent.getBaseCommand().run(commandEvent);
             } catch (Exception e) {
                 builder.withPreset(
                         new InformativeReply(InformativeReplyType.ERROR, "Failed to execute.")

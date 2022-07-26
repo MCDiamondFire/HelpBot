@@ -1,63 +1,52 @@
 package com.diamondfire.helpbot.bot.events.command;
 
-import com.diamondfire.helpbot.bot.command.impl.Command;
-import com.diamondfire.helpbot.bot.command.reply.*;
+import com.diamondfire.helpbot.bot.command.CommandHandler;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.ParsedArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.reply.handler.*;
+import com.diamondfire.helpbot.bot.command.argument.ParseResults;
+import com.diamondfire.helpbot.sys.slash.SlashCommands;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Map;
 
-public class SlashCommandEvent implements CommandEvent {
+public class ApplicationCommandEvent extends CommandEvent {
     
-    private final net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent;
-    private final InteractionReplyHandler interactionReplyHandler;
-    private Map<String, ?> argumentMap;
-    private Command command;
+    private final net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent internalEvent;
     
-    public SlashCommandEvent(net.dv8tion.jda.api.events.interaction.SlashCommandEvent internalEvent) {
+    public ApplicationCommandEvent(net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent internalEvent) {
+        super(new InteractionReplyHandler(internalEvent));
+
         this.internalEvent = internalEvent;
-        this.interactionReplyHandler = new InteractionReplyHandler(internalEvent);
+
+        this.baseCommand = CommandHandler.getInstance().getCommands().get(internalEvent.getName().toLowerCase());
+
+//        if (command instanceof SubCommandHolder subCommandHolder) {
+//            Optional<SubCommand> optionalSubCommand = Arrays.stream(subCommandHolder.getSubCommands()).filter(subCommand -> subCommand.getName().equalsIgnoreCase(internalEvent.getSubcommandName())).findFirst();
+//            if (optionalSubCommand.isEmpty()) {
+//                throw new UnknownCommandException(UnknownCommandException.Level.SUBCOMMAND, internalEvent.getName());
+//                this.reply(new PresetBuilder().withPreset(
+//                    new InformativeReply(InformativeReplyType.ERROR, "Invalid Subcommand!", "Choose from " + command.getHelpContext().getArguments().get(0).getArgumentName())
+//                ));
+//                return;
+//            }
+//
+//            this.command = optionalSubCommand.get();
+//        }
     }
-    
-    public void putArguments(Map<String, ?> input) {
-        argumentMap = input;
-    }
-    
+
     @Override
-    public Command getCommand() {
-        return command;
+    public ParseResults parseCommand() throws ArgumentException {
+        ParsedArgumentSet parsedArgumentSet = SlashCommands.parseSlashArgs(this);
+
+        return new ParseResults(???, parsedArgumentSet);
     }
-    
-    @Override
-    public void setCommand(Command command) {
-        this.command = command;
-    }
-    
-    @Override
-    public void reply(PresetBuilder preset) {
-        interactionReplyHandler.reply(preset);
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getArgument(String code) {
-        return (T) argumentMap.get(code);
-    }
-    
-    @Override
-    public Map<String, ?> getArguments() {
-        return argumentMap;
-    }
-    
-    @Override
-    public ReplyHandler getReplyHandler() {
-        return interactionReplyHandler;
-    }
-    
+
     @Override
     public String getAliasUsed() {
-        return command.getName();
+        return baseCommand.getName();
     }
     
     @Override
@@ -84,8 +73,9 @@ public class SlashCommandEvent implements CommandEvent {
     public TextChannel getChannel() {
         return internalEvent.getTextChannel();
     }
-    
-    public net.dv8tion.jda.api.events.interaction.SlashCommandEvent getInternalEvent() {
+
+    @ApiStatus.Internal
+    public net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent getInternalEvent() {
         return internalEvent;
     }
 }

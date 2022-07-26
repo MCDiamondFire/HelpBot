@@ -30,7 +30,7 @@ public class MultiArgumentParser<A> extends ArgumentParser<MultiArgumentContaine
         }
         
         if (approvedArgumentValues.isEmpty()) {
-            throw new MissingArgumentException("No valid arguments were provided.");
+            throw MissingArgumentException.noValidArguments();
         }
         
         return new ParsedArgument<>(identifier, approvedArgumentValues);

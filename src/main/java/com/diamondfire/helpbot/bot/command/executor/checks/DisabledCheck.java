@@ -10,12 +10,12 @@ public class DisabledCheck implements CommandCheck {
     @Override
     public boolean check(CommandEvent event) {
         return Permission.ADMINISTRATOR.hasPermission(event.getMember())
-                || !CommandHandler.getInstance().getDisabledHandler().isDisabled(event.getCommand());
+                || !CommandHandler.getInstance().getDisabledHandler().isDisabled(event.getBaseCommand());
     }
     
     @Override
-    public void buildMessage(CommandEvent event, PresetBuilder builder) {
-        builder.withPreset(
+    public PresetBuilder buildMessage(CommandEvent event) {
+        return new PresetBuilder().withPreset(
                 new InformativeReply(InformativeReplyType.ERROR, "Disabled!", "This command has been disabled until further notice.")
         );
     }

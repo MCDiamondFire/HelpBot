@@ -80,7 +80,7 @@ public class HelpCommand extends Command {
                 CommandCategory category = context.getCommandCategory();
                 if (category != null && command.getPermission().hasPermission(event.getMember())) {
                     EmbedBuilder embedBuilder = categories.get(category);
-                    embedBuilder.addField(FormatUtil.displayCommand(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
+                    embedBuilder.addField(FormatUtil.displayExecutionStack(command) + " " + FormatUtil.displayArguments(context), context.getDescription(), false);
                 }
                 
             }

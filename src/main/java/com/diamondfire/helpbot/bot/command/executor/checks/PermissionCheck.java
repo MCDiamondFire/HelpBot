@@ -9,16 +9,20 @@ public class PermissionCheck implements CommandCheck {
     
     @Override
     public boolean check(CommandEvent event) {
-        return event.getCommand().getPermission().hasPermission(event.getMember())
-            || Permission.getOverrides(event.getCommand()).contains(event.getAuthor().getIdLong());
+        return event.getBaseCommand().getPermission().hasPermission(event.getMember())
+            || Permission.getOverrides(event.getBaseCommand()).contains(event.getAuthor().getIdLong());
     }
     
     @Override
-    public void buildMessage(CommandEvent event, PresetBuilder builder) {
+    public PresetBuilder buildMessage(CommandEvent event) {
+        PresetBuilder builder = new PresetBuilder();
+
         builder.withPreset(
                 new InformativeReply(InformativeReplyType.ERROR, "No Permission!", "Sorry, you do not have permission to use this command. Commands that you are able to use are listed in ?help.")
         );
-        builder.getEmbed().setFooter("Permission Required: " + event.getCommand().getPermission().name());
+        builder.getEmbed().setFooter("Permission Required: " + event.getBaseCommand().getPermission().name());
+
+        return builder;
     }
     
     

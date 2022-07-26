@@ -13,5 +13,7 @@ public interface CommandCheck {
      */
     boolean check(CommandEvent event);
     
-    void buildMessage(CommandEvent event, PresetBuilder builder);
+    default PresetBuilder buildMessage(CommandEvent event) {
+        return null;
+    }
 }

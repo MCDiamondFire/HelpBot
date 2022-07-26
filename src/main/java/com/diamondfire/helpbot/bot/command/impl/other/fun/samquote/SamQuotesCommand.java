@@ -1,12 +1,11 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun.samquote;
 
-import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
-import com.diamondfire.helpbot.bot.command.help.*;
-import com.diamondfire.helpbot.bot.command.impl.*;
+import com.diamondfire.helpbot.bot.command.help.CommandCategory;
+import com.diamondfire.helpbot.bot.command.help.HelpContext;
+import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
+import com.diamondfire.helpbot.bot.command.impl.SubCommand;
+import com.diamondfire.helpbot.bot.command.impl.SubCommandHolder;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
-import com.diamondfire.helpbot.bot.events.command.*;
 
 public class SamQuotesCommand extends SubCommandHolder {
     
@@ -31,26 +30,15 @@ public class SamQuotesCommand extends SubCommandHolder {
     }
     
     @Override
-    public ArgumentSet compileArguments() {
-        return new ArgumentSet().addArgument(
-                "subcommand", new SingleArgumentContainer<>(new SubCommandArgument()).optional(null)
-        );
-    }
-    
-    @Override
     public Permission getPermission() {
         return Permission.USER;
     }
-    
+
     @Override
-    public void run(CommandEvent event) {
-        if (event.getArgument("subcommand") == null) {
-            GetSamquoteSubCommand.runStatic(event);
-        } else {
-            super.run(event);
-        }
+    public String getDefaultSubCommand() {
+        return "get";
     }
-    
+
     @Override
     public SubCommand[] getSubCommands() {
         return new SubCommand[] {
