@@ -85,7 +85,7 @@ public class StaffListCommand extends Command {
                     }
                     
                     EmbedBuilder supportPage = new EmbedBuilder();
-                    EmbedUtil.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
+                    EmbedUtil.addFields(supportPage, ranks.get(Rank.EXPERT), "", "SrHelpers");
                     EmbedUtil.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
                     EmbedUtil.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
                     builder.addPage("Support", supportPage);
