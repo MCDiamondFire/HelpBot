@@ -58,7 +58,7 @@ public class BulkExecuteCommand extends Command {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT;
+        return Permission.SR_HELPER;
     }
     
     @Override

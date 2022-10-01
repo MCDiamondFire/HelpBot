@@ -60,7 +60,7 @@ public class StaffListCommand extends Command {
                     registerRank(ranks,
                             Rank.JRHELPER,
                             Rank.HELPER,
-                            Rank.EXPERT,
+                            Rank.SR_HELPER,
                             Rank.JRMOD,
                             Rank.MOD,
                             Rank.SR_MOD,
@@ -85,7 +85,7 @@ public class StaffListCommand extends Command {
                     }
                     
                     EmbedBuilder supportPage = new EmbedBuilder();
-                    EmbedUtil.addFields(supportPage, ranks.get(Rank.EXPERT), "", "Experts");
+                    EmbedUtil.addFields(supportPage, ranks.get(Rank.SR_HELPER), "", "SrHelpers");
                     EmbedUtil.addFields(supportPage, ranks.get(Rank.HELPER), "", "Helpers");
                     EmbedUtil.addFields(supportPage, ranks.get(Rank.JRHELPER), "", "JrHelpers");
                     builder.addPage("Support", supportPage);

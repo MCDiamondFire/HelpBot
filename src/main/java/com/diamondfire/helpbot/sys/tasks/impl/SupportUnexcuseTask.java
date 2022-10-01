@@ -18,7 +18,7 @@ import java.util.Date;
 
 public class SupportUnexcuseTask implements OneTimeTask {
     
-    private static final long EXPERT_CHAT = 467729470539694091L;
+    private static final long SR_HELPER_CHAT = 467729470539694091L;
     private static final Command[] commandsToRun = new Command[]{
             new StatsCommand(),
             new LastJoinedCommand(),
@@ -41,7 +41,7 @@ public class SupportUnexcuseTask implements OneTimeTask {
     @Override
     public void run() {
         PresetBuilder builder = new PresetBuilder();
-        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(EXPERT_CHAT);
+        TextChannel channel = HelpBotInstance.getJda().getTextChannelById(SR_HELPER_CHAT);
         
         new DatabaseQuery()
                 .query(new BasicQuery("SELECT * FROM players WHERE players.uuid = ?", (statement) -> statement.setString(1, uuid)))
