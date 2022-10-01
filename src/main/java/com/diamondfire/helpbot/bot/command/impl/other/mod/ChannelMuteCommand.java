@@ -89,7 +89,7 @@ public class ChannelMuteCommand extends Command {
                         textChannel.putPermissionOverride(member).deny(net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION, net.dv8tion.jda.api.Permission.MESSAGE_WRITE).queue();
                     });
                     
-                    HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, finalDuration, false));
+                    HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, finalDuration));
                     event.reply(builder);
                 }, (error) -> {
                     builder.withPreset(

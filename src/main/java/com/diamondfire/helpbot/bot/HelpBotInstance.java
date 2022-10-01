@@ -54,7 +54,7 @@ public class HelpBotInstance {
                 new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
-                new GarfieldCommand(),
+                // new GarfieldCommand(), - Dead
                 new HelpCommand(),
                 new RestartCommand(),
                 new ActionDumpCommand(),
@@ -74,10 +74,10 @@ public class HelpBotInstance {
                 new MutedCommand(),
                 new UnmuteCommand(),
                 new VerifyCommand(),
-                new PollCommand(),
+                // new PollCommand(), - Unused
                 new IdeaCommand(),
                 new StoreCommand(),
-                new ChannelMuteCommand(),
+                // new ChannelMuteCommand(), - not finished
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -103,7 +103,7 @@ public class HelpBotInstance {
                 new QueueCommand(),
                 new WhoHelpedCommand(),
                 new HelpedByCommand(),
-                new NamesCommand(),
+                // new NamesCommand(), - Dead
                 new PlayerJoinGraphCommand(),
                 //new CpCommand(),
                 //new CpRequirementsCommand(),
@@ -121,11 +121,10 @@ public class HelpBotInstance {
                 new ExcuseStaffCommand(),
                 new ExcusedStaffCommand(),
                 new SupportBannedPlayersCommand(),
-                new DiscussionMuteCommand(),
                 new NbsCommand(),
                 new DailySessionsCommand(),
                 new EightBallCommand(),
-                new OcrCommand(),
+                // new OcrCommand(), - Dead
                 new JoinsCommand(),
                 new TagCommand(),
                 new PurgeCommand()
