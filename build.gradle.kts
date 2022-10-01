@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.3.0_305") {
+    implementation("net.dv8tion:JDA:4.4.0_350") {
         exclude(module = "opus-java")
     }
 
