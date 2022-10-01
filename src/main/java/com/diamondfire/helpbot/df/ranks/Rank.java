@@ -18,7 +18,7 @@ public enum Rank {
     // Support
     JRHELPER("JrHelper", 1, RankBranch.SUPPORT, "S_JrHelper"),
     HELPER("Helper", 2, RankBranch.SUPPORT, "Helper"),
-    EXPERT("Expert", 3, RankBranch.SUPPORT, "S_Expert"),
+    SR_HELPER("SrHelper", 3, RankBranch.SUPPORT, "S_Expert"),
     // Moderation
     JRMOD("JrMod", 1, RankBranch.MODERATION, "JrModerator"),
     MOD("Mod", 2, RankBranch.MODERATION, "Moderator"),
