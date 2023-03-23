@@ -76,6 +76,10 @@ public class Config {
         return getPropertyLong("purge_evidence_channel");
     }
     
+    public long getGhostPingChannel() {
+        return this.getPropertyLong("ghost_ping_channel");
+    }
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }

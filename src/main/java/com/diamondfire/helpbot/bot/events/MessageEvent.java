@@ -14,7 +14,8 @@ public class MessageEvent extends ListenerAdapter {
             new FilterAcceptor(),
             new CommandAcceptor(),
             new TagAcceptor(),
-            new VerifyAcceptor()
+            new VerifyAcceptor(),
+            new GhostPingAcceptor(),
     };
     
     @Override

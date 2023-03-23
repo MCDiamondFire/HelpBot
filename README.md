@@ -40,7 +40,9 @@ created, use the following format.
      "verified_role": long,
      
      "role_react_channel": long,
-     "role_react_message": long
+     "role_react_message": long,
+     
+     "ghost_ping_channel": long
      
    }
 ```
