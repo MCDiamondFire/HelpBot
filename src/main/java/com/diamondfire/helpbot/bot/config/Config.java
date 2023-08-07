@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
 
 import java.io.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Config {
@@ -84,8 +85,8 @@ public class Config {
         return getPropertyLong("verified_role");
     }
     
-    public String getReportWehook() {
-        return getPropertyString("report_webhook");
+    public JsonObject getForwardingChannels() {
+        return config.get("forwarding_channels").getAsJsonObject();
     }
     
     private long getPropertyLong(String property) {

@@ -9,24 +9,21 @@ import net.dv8tion.jda.api.entities.*;
 import java.net.URL;
 import java.util.concurrent.*;
 
-public class ReportAcceptor implements MessageAcceptor {
+public class ReportAndFeatureApplicationAcceptor implements MessageAcceptor {
     
     private static final ExecutorService SERVICE = Executors.newCachedThreadPool();
     
     @Override
     public boolean accept(Message message) {
-        if (message.getChannel().getIdLong() != 849769323166040124L) {
-            return false;
-        }
+        final var webhookUrl = HelpBotInstance.getConfig().getForwardingChannels().get(message.getChannel().getId());
+        if (webhookUrl == null) return false;
         
         SERVICE.submit(() -> {
-            try (WebhookClient client = JDAWebhookClient.withUrl(HelpBotInstance.getConfig().getReportWehook())) {
+            try (WebhookClient client = JDAWebhookClient.withUrl(webhookUrl.getAsString())) {
                 boolean tooLong = message.getContentRaw().length() > 2000;
                 String content = tooLong ? "See content.txt for message (too long)" : message.getContentRaw();
                 
-                
                 WebhookMessageBuilder builder = new WebhookMessageBuilder()
-                        .setTTS(message.isTTS())
                         .setContent(content)
                         .setAllowedMentions(AllowedMentions.none())
                         .setUsername(message.getMember().getEffectiveName())
@@ -43,7 +40,10 @@ public class ReportAcceptor implements MessageAcceptor {
                 
                 System.out.println("Sending to webhook");
                 client.send(builder.build()).whenComplete((msg, exception) -> {
-                    exception.printStackTrace();
+                    if (exception != null) exception.printStackTrace();
+                    
+                    if (message.getChannel().getIdLong() != 849769323166040124L) return;
+                    
                     User user = message.getAuthor();
                     user.openPrivateChannel().queue((channel) -> {
                         if (exception != null) {
