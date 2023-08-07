@@ -1,14 +1,10 @@
 package com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft;
 
-import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import okhttp3.Request;
-import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -23,16 +19,9 @@ public class MojangPlayerUUIDArgument extends AbstractSimpleValueArgument<UUID> 
            return Util.toUuid(argument);
         } else {
             JsonObject responseObject = null;
-            ResponseBody res = null;
-            Request request = new Request.Builder().url("https://api.mojang.com/users/profiles/minecraft/" + argument).get().build();
-            try {
-                res = HelpBotInstance.getHttpClient().newCall(request).execute().body();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             
             try {
-                responseObject = JsonParser.parseString(res.string()).getAsJsonObject();
+                responseObject = WebUtil.getJson("https://api.mojang.com/users/profiles/minecraft/" + argument).getAsJsonObject();
             } catch (IOException e) {
                 e.printStackTrace();
             }
