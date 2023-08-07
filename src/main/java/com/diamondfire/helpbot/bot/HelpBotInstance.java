@@ -56,7 +56,7 @@ public class HelpBotInstance {
                 new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
-                // new GarfieldCommand(), - Dead
+                new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
                 new ActionDumpCommand(),
@@ -69,6 +69,7 @@ public class HelpBotInstance {
                 new DisableCommand(),
                 new ImageDumpCommand(),
                 new SoundListCommand(),
+                new QueryCommand(),
                 new RulesCommand(),
                 new BulkExecuteCommand(),
                 new PermUnlocksCommand(),

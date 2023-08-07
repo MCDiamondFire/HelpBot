@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 public class MessageEvent extends ListenerAdapter {
     
     private static final MessageAcceptor[] acceptors = {
-            new ReportAcceptor(),
+            new ReportAndFeatureApplicationAcceptor(),
             new FilterAcceptor(),
             new CommandAcceptor(),
             new TagAcceptor(),

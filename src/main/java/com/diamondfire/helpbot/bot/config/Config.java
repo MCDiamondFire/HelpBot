@@ -87,8 +87,8 @@ public class Config {
         return getPropertyLong("verified_role");
     }
     
-    public String getReportWehook() {
-        return getPropertyString("report_webhook");
+    public JsonObject getForwardingChannels() {
+        return config.get("forwarding_channels").getAsJsonObject();
     }
     
     public Map<String, Long> getPermissionRoleMap() {
