@@ -18,7 +18,7 @@ public class Config {
         try {
             this.config = HelpBotInstance.GSON.fromJson(Files.readString(ExternalFiles.CONFIG.toPath()), JsonObject.class);
         } catch (Exception exception) {
-            throw new IllegalStateException("Config not correctly structured! Please check the readme file for a config template.");
+            throw new IllegalStateException("Config not correctly structured! Please check the readme file for a config template.", exception);
         }
     }
     

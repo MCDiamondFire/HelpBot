@@ -32,11 +32,11 @@ import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
     
+    public static final Gson GSON = new Gson();
+    
     private static final Config config = new Config();
     public static final long DF_GUILD = config.getGuild();
     public static final long LOG_CHANNEL = config.getLogChannel();
-    
-    public static final Gson GSON = new Gson();
     
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
