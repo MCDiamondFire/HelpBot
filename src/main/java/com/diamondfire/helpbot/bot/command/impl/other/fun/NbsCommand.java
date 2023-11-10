@@ -26,7 +26,7 @@ public class NbsCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Generates a Codeutils song function.")
+                .description("Generates a Recode song function.")
                 .category(CommandCategory.OTHER);
     }
     
@@ -74,7 +74,7 @@ public class NbsCommand extends Command {
                         .setColor(new Color(70,199,82))
                         .setTitle("Template Generated!")
                         .setThumbnail(NBS_IMAGE)
-                        .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) function to play this song!", false);
+                        .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://dfonline.dev/edit/?template=nbs) function to play this song!", false);
                 
                 
                 channel.sendFile(templateOutputfile).setEmbeds(embed.build()).queue();
