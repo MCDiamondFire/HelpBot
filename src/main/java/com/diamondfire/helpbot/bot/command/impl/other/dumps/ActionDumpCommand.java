@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 public class ActionDumpCommand extends Command {
     
@@ -33,7 +34,7 @@ public class ActionDumpCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        event.getChannel().sendFile(ExternalFiles.DB).queue();
+        event.getChannel().sendFiles(FileUpload.fromData(ExternalFiles.DB)).queue();
     }
     
 }

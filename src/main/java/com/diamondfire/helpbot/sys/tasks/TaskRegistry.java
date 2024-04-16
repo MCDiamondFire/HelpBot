@@ -13,7 +13,7 @@ public class TaskRegistry {
         if (HelpBotInstance.getConfig().isDevBot()) return;
         
         register(
-                new CodeDatabaseTask(),
+                //new CodeDatabaseTask(),
                 new GraphChannelTask(),
                 //new RefreshCreditsTask(),
                 new SupporterClassTask(),

@@ -2,10 +2,9 @@ package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.sys.message.acceptors.*;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class MessageEvent extends ListenerAdapter {
     
@@ -18,14 +17,12 @@ public class MessageEvent extends ListenerAdapter {
     };
     
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         Message message = event.getMessage();
         for (MessageAcceptor acceptor : acceptors) {
             if (acceptor.accept(message)) {
                 break;
             }
         }
-        
     }
-    
 }

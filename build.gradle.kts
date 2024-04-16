@@ -17,14 +17,14 @@ repositories {
 }
 
 dependencies {
-    implementation("net.dv8tion:JDA:4.4.0_350") {
+    implementation ("net.dv8tion:JDA:5.0.0-beta.20") {
         exclude(module = "opus-java")
     }
 
     implementation("club.minnced:discord-webhooks:0.5.8")
     implementation("ch.qos.logback:logback-classic:1.2.5")
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation("com.github.Steveice10:MCProtocolLib:c5e4b66")
+    implementation ("com.github.Steveice10:MCProtocolLib:c5e4b66")
     implementation("mysql:mysql-connector-java:5.1.13")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.8")
 }

@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.*;
 import java.util.*;
@@ -43,6 +44,6 @@ public abstract class AbstractFileListCommand extends Command {
             return;
         }
         
-        event.getChannel().sendMessage("File Generated").addFile(file).queue();
+        event.getChannel().sendMessage("File Generated").addFiles(FileUpload.fromData(file)).queue();
     }
 }
