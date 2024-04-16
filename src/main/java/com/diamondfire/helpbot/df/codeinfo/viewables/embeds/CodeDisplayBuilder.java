@@ -5,6 +5,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.util.*;
 
@@ -57,7 +58,7 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
         Deque<String> nums = Util.getUnicodeNumbers();
         LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
         for (CodeObject data : dataArrayList) {
-            dataHashed.put(new BasicReaction(nums.pop()), data);
+            dataHashed.put(new BasicReaction(Emoji.fromUnicode(nums.pop())), data);
         }
         
         return dataHashed;

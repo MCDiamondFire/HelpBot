@@ -8,14 +8,14 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.Argument
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
 
-public class CommandEvent extends GuildMessageReceivedEvent {
+public class CommandEvent extends MessageReceivedEvent {
     
     private Command command;
-    private final ReplyHandler replyHandler = new ReplyHandler(getChannel());
+    private final ReplyHandler replyHandler = new ReplyHandler(getChannel().asTextChannel());
     //TODO Cleanup and refactor this.
     // I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;

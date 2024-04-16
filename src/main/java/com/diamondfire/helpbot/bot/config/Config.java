@@ -95,6 +95,10 @@ public class Config {
         return HelpBotInstance.GSON.fromJson(config.get("permission_roles"), new TypeToken<Map<String, Long>>(){}.getType());
     }
     
+    public long getPermission(String role) {
+        return this.config.get("permission_roles").getAsJsonObject().get(role).getAsLong();
+    }
+    
     private long getPropertyLong(String property) {
         return config.get(property).getAsLong();
     }

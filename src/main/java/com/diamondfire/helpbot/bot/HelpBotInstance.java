@@ -51,12 +51,12 @@ public class HelpBotInstance {
                 new SearchCommand(),
                 new TagsCommand(),
                 // others
-                new CowsayCommand(),
+                //new CowsayCommand(),
                 new MimicCommand(),
-                new FetchDataCommand(),
+                //new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
-                new GarfieldCommand(),
+                //new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
                 new ActionDumpCommand(),
@@ -79,7 +79,7 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 // new PollCommand(), - Unused
                 new IdeaCommand(),
-                new StoreCommand(),
+                // new StoreCommand(),
                 // new ChannelMuteCommand(), - not finished
                 // statsbot
                 new StatsCommand(),
@@ -134,7 +134,7 @@ public class HelpBotInstance {
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))

@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.sql.ResultSet;
 
@@ -32,7 +33,7 @@ public class VerifyAcceptor implements MessageAcceptor {
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
-                        message.addReaction("❌").queue();
+                        message.addReaction(Emoji.fromUnicode("❌")).queue();
                     } else {
                         ResultSet set = result.getResult();
                         Member author = message.getMember();

@@ -15,6 +15,7 @@ import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -129,9 +130,9 @@ public class CpCommand extends AbstractPlayerUUIDCommand {
                                 embed.setImage("attachment://graph.png");
                                 try {
                                     event.getReplyHandler().replyA(preset)
-                                            .addFile(new ChartGraphBuilder()
+                                            .addFiles(FileUpload.fromData(new ChartGraphBuilder()
                                                     .setGraphName(player.name() + "'s CP Graph")
-                                                    .createGraph(entries), "graph.png")
+                                                    .createGraph(entries), "graph.png"))
                                             .queue();
                                 } catch (Exception ignored) {
                                     event.reply(preset);

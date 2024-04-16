@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.ranks;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public enum Rank {
     // Ranks
@@ -31,13 +31,13 @@ public enum Rank {
     private final String rankName;
     private final int number;
     private final RankBranch category;
-    private final Emote emote;
+    private final Emoji emote;
     
     Rank(String rankName, int number, RankBranch category, String emote) {
         this.rankName = rankName;
         this.number = number;
         this.category = category;
-        this.emote = HelpBotInstance.getJda().getGuildById(615846886414483465L).getEmotesByName(emote, false).get(0);
+        this.emote = HelpBotInstance.getJda().getGuildById(615846886414483465L).getEmojiById(emote);
     }
     
     public String getRankName() {
@@ -62,7 +62,7 @@ public enum Rank {
         return null;
     }
     
-    public Emote getRankEmote() {
+    public Emoji getRankEmote() {
         return emote;
     }
 }

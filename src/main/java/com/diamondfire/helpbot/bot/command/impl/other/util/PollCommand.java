@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.awt.*;
 import java.util.*;
@@ -104,7 +105,7 @@ public class PollCommand extends Command {
             //add reactions
             Deque<String> nums = Util.getUnicodeNumbers();
             for (String option : pollOptions) {
-                message.addReaction(nums.pop()).queue();
+                message.addReaction(Emoji.fromUnicode(nums.pop())).queue();
             }
             
         });

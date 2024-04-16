@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import com.diamondfire.helpbot.util.DateUtil;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.sql.ResultSet;
 import java.time.Instant;
@@ -100,9 +101,9 @@ public class DailySessionsCommand extends Command {
                         }
                     }
                     
-                    event.getChannel().sendFile(new ChartGraphBuilder()
+                    event.getChannel().sendFiles(FileUpload.fromData(new ChartGraphBuilder()
                             .setGraphName(String.format("Total sessions on %s", date))
-                            .createGraph(dates)).queue();
+                            .createGraph(dates))).queue();
                     
                 });
         

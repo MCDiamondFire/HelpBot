@@ -3,10 +3,11 @@ package com.diamondfire.helpbot.sys.rolereact;
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyAction;
+import net.dv8tion.jda.api.interactions.components.buttons.*;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -34,13 +35,13 @@ public class RoleReactListener extends ListenerAdapter {
                 roleMap.put(button.getId(), role.getRoleID());
             }
             
-            msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself").setActionRows(Util.of(buttons)).queue();
+            msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself").setActionRow(buttons).queue();
         });
     }
     
     
     @Override
-    public void onButtonClick(@NotNull ButtonClickEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (!roleMap.containsKey(event.getComponentId())) {
             return;
         }
@@ -49,16 +50,15 @@ public class RoleReactListener extends ListenerAdapter {
         Guild guild = event.getGuild();
         Role guildRole = event.getGuild().getRoleById(role);
         Member member = event.getMember();
-    
-        ReplyAction action = event.deferReply(true);
+        
+        ReplyCallbackAction action = event.deferReply(true);
         if (member.getRoles().contains(guildRole)) {
             action.setContent("Removed the " + guildRole.getAsMention() + " role from you!");
-            guild.removeRoleFromMember(member.getIdLong(), guildRole).reason("User unsubscribed to announcement!").queue();
+            guild.removeRoleFromMember(UserSnowflake.fromId(member.getIdLong()), guildRole).reason("User unsubscribed to announcement!").queue();
         } else {
             action.setContent("Added the " + guildRole.getAsMention() + " role to you!");
-            guild.addRoleToMember(member.getIdLong(), guildRole).reason("User subscribed to announcement!").queue();
+            guild.addRoleToMember(UserSnowflake.fromId(member.getIdLong()), guildRole).reason("User subscribed to announcement!").queue();
         }
         action.queue();
     }
-    
 }

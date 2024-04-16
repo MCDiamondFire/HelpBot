@@ -80,7 +80,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                         if (highRank == null) {
                             rankString = "";
                         } else {
-                            rankString = highRank.getRankEmote().getAsMention();
+                            rankString = highRank.getRankEmote().getFormatted();
                         }
                     }
                     

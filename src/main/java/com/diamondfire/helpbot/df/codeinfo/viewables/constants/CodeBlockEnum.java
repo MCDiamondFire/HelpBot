@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.constants;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
-import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.emoji.*;
 
 import java.awt.*;
 import java.util.Map;
@@ -53,7 +53,7 @@ public enum CodeBlockEnum {
     }
     
     
-    public Emote getEmoji() {
-        return HelpBotInstance.getJda().getEmotesByName(getID(), true).get(0);
+    public CustomEmoji getEmoji() {
+        return HelpBotInstance.getJda().getEmojisByName(getID(), true).get(0);
     }
 }

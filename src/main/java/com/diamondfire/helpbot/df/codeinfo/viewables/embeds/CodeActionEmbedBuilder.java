@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.emoji.*;
 
 import java.util.*;
 
@@ -13,7 +13,7 @@ public class CodeActionEmbedBuilder implements IconEmbedBuilder<ActionData> {
     
     @Override
     public EmbedBuilder buildDataEmbed(ActionData data) {
-        Emote emote = data.getCodeBlockData().getCodeblockEnum().getEmoji();
+        CustomEmoji emote = data.getCodeBlockData().getCodeblockEnum().getEmoji();
         EmbedBuilder builder = new EmbedBuilder()
                 .setColor(data.getCodeBlockData().getCodeblockEnum().getColor())
                 .setAuthor(StringUtil.smartCaps(data.getCodeblockName()), null, emote.getImageUrl());
@@ -34,7 +34,7 @@ public class CodeActionEmbedBuilder implements IconEmbedBuilder<ActionData> {
         LinkedHashMap<BasicReaction, CodeObject> dataHashed = new LinkedHashMap<>();
         for (CodeObject data : dataArrayList) {
             ActionData actionData = (ActionData) data;
-            dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji().getIdLong()), data);
+            dataHashed.put(new BasicReaction(actionData.getCodeBlockData().getCodeblockEnum().getEmoji()), data);
         }
         
         return dataHashed;

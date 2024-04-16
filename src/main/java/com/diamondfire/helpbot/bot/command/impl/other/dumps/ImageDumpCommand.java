@@ -9,6 +9,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.IOUtil;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.*;
 
@@ -44,7 +45,7 @@ public class ImageDumpCommand extends Command {
         event.getReplyHandler().replyA(builder).queue((msg) -> {
             try {
                 File zip = IOUtil.zipFile(images.toPath(), "images.zip");
-                event.getChannel().sendFile(zip).queue((fileMsg) -> {
+                event.getChannel().sendFiles(FileUpload.fromData(zip)).queue((fileMsg) -> {
                     msg.delete().queue();
                 });
             } catch (IOException e) {
