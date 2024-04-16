@@ -17,7 +17,8 @@ public class TaskRegistry {
                 new GraphChannelTask(),
                 //new RefreshCreditsTask(),
                 new SupporterClassTask(),
-                new NameUpdateTask()
+                new NameUpdateTask(),
+                new VIPStarTask()
         );
         
         SupportUnexcuseTask.prepare();
