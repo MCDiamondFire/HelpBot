@@ -114,6 +114,7 @@ public class VIPStarTask implements LoopingTask {
         Role role = guild.createRole()
                 .setName(" ")
                 .setIcon(Icon.from(baos.toByteArray()))
+                .setPermissions(0L)
                 .complete();
         new DatabaseQuery()
                 .query(new BasicQuery("INSERT INTO owen.vip_roles (color, role_id) VALUES (?, ?)", statement -> {
@@ -121,7 +122,8 @@ public class VIPStarTask implements LoopingTask {
                     statement.setLong(2, role.getIdLong());
                 }))
                 .compile()
-                .run(ignored -> {});
+                .run(ignored -> {
+                });
         return role;
     }
     
