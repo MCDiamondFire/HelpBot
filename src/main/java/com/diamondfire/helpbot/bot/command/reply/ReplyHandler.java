@@ -2,7 +2,11 @@ package com.diamondfire.helpbot.bot.command.reply;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.messages.MessageRequest;
 
 public class ReplyHandler {
     
@@ -36,19 +40,19 @@ public class ReplyHandler {
         embedReply(builder, channel).queue();
     }
     
-    public MessageAction replyA(PresetBuilder preset) {
+    public MessageCreateAction replyA(PresetBuilder preset) {
         return replyA(preset, getChannel());
     }
     
-    public MessageAction replyA(PresetBuilder preset, MessageChannel channel) {
+    public MessageCreateAction replyA(PresetBuilder preset, MessageChannel channel) {
         return embedReply(preset.getEmbed(), channel);
     }
     
-    public MessageAction embedReply(EmbedBuilder embed, MessageChannel channel) {
+    public MessageCreateAction embedReply(EmbedBuilder embed, MessageChannel channel) {
         return channel.sendMessageEmbeds(embed.build());
     }
     
-    public MessageAction textReply(String msg, MessageChannel channel) {
+    public MessageCreateAction textReply(String msg, MessageChannel channel) {
         return channel.sendMessage(msg);
     }
     

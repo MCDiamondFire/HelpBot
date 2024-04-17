@@ -13,7 +13,9 @@ import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -46,7 +48,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
             for (Map.Entry<BasicReaction, CodeObject> reaction : referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions).entrySet()) {
                 Button button = Button.secondary(reaction.getKey().toString(), reaction.getValue().getName());
                 
-                buttons.add(button.withEmoji(Emoji.fromEmote(reaction.getKey().getEmote())));
+                buttons.add(button.withEmoji(Emoji.fromCustom(reaction.getKey().getEmote())));
                 buttonMap.put(button.getId(), reaction.getValue());
             }
         } else {
@@ -54,18 +56,18 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 long emoji = data.getEnum().getEmoji();
                 Button button = Button.secondary(String.valueOf(data.getEnum().getEmoji()), data.getName());
                 
-                buttons.add(button.withEmoji(Emoji.fromEmote(HelpBotInstance.getJda().getEmoteById(emoji))));
+                buttons.add(button.withEmoji(HelpBotInstance.getJda().getEmojiById(emoji)));
                 buttonMap.put(button.getId(), data);
             }
         }
         
-        channel.sendMessageEmbeds(preset.getEmbed().build()).setActionRows(Util.of(buttons)).queue((message) -> {
+        channel.sendMessageEmbeds(preset.getEmbed().build()).setActionRow(buttons).queue((message) -> {
             ButtonHandler.addListener(userToWait, message, (event) -> {
                 message.delete().queue();
                 
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
                 CodeObject object = buttonMap.get(event.getComponentId());
-                onChosen.accept(object, message.getTextChannel());
+                onChosen.accept(object, message.getChannel().asTextChannel());
             });
         });
         
@@ -118,9 +120,9 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 
                 // If none, proceed. Else we need to special case that.
                 if (sameActions.size() == 1) {
-                    onChosen.accept(sameActions.get(0), event.getChannel());
+                    onChosen.accept(sameActions.get(0), event.getChannel().asTextChannel());
                 } else if (sameActions.size() > 1) {
-                    sendMultipleMessage(sameActions, event.getChannel(), event.getMember().getIdLong(), onChosen);
+                    sendMultipleMessage(sameActions, event.getChannel().asTextChannel(), event.getMember().getIdLong(), onChosen);
                 }
                 
                 return;

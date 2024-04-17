@@ -82,6 +82,10 @@ public class TagHandler {
     }
     
     public static @NotNull Tag getTag(String activator) throws TagDoesNotExistException, IOException {
+        if (TAGS.isEmpty()) {
+            throw new TagDoesNotExistException("Empty");
+        }
+        
         Tag tag = TAGS.stream()
                 .filter(t -> t.getActivator().equals(activator))
                 .collect(Collectors.toList())

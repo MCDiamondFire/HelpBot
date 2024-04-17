@@ -13,7 +13,8 @@ import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 import java.io.*;
@@ -65,7 +66,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
             return;
         }
         
-        List<MessageAction> msgs = new ArrayList<>();
+        List<MessageCreateAction> msgs = new ArrayList<>();
         List<Punishment> punishments = new PunishmentFetcher()
                 .withUUID(player.uuidString())
                 .withAll()
@@ -150,7 +151,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                     try {
                         File sendFile = ExternalFileUtil.generateFile("history.txt");
                         Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
-                        msgs.add(privateChannel.sendFile(sendFile));
+                        msgs.add(privateChannel.sendFiles(FileUpload.fromData(sendFile)));
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -158,7 +159,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 
             }
             
-            MessageAction action = msgs.get(0);
+            MessageCreateAction action = msgs.get(0);
             msgs.remove(0);
             
             action.queue((msg) -> {
@@ -170,7 +171,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 
                 event.reply(successMSG);
                 
-                for (MessageAction msgAction : msgs) {
+                for (MessageCreateAction msgAction : msgs) {
                     msgAction.queue();
                 }
             }, (error) -> {

@@ -10,6 +10,8 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.nbs.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 import java.io.*;
@@ -26,7 +28,7 @@ public class NbsCommand extends Command {
     @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
-                .description("Generates a Codeutils song function.")
+                .description("Generates a Recode song function.")
                 .category(CommandCategory.OTHER);
     }
     
@@ -42,7 +44,7 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        TextChannel channel = event.getChannel();
+        TextChannel channel = event.getChannel().asTextChannel();
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         
@@ -59,7 +61,7 @@ public class NbsCommand extends Command {
         
         File file = new File("input.nbs");
         
-            
+        
         attachment.downloadToFile(file).thenAccept(downloadedFile -> {
             try {
                 byte[] b64 = new NBSToTemplate(NBSDecoder.parse(file)).convert();
@@ -74,10 +76,10 @@ public class NbsCommand extends Command {
                         .setColor(new Color(70,199,82))
                         .setTitle("Template Generated!")
                         .setThumbnail(NBS_IMAGE)
-                        .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://derpystuff.gitlab.io/code/l?link=7cf5d91c35bbde31c28567d8d8945c40) function to play this song!", false);
+                        .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://dfonline.dev/edit/?template=nbs) function to play this song!", false);
                 
                 
-                channel.sendFile(templateOutputfile).setEmbeds(embed.build()).queue();
+                channel.sendFiles(FileUpload.fromData(templateOutputfile)).setEmbeds(embed.build()).queue();
                 file.deleteOnExit();
             } catch (OutdatedNBSException | IOException e) {
                 e.printStackTrace();

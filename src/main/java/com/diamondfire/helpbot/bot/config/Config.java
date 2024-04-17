@@ -1,9 +1,13 @@
 package com.diamondfire.helpbot.bot.config;
 
+import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Config {
@@ -11,11 +15,10 @@ public class Config {
     private final JsonObject config;
     
     public Config() throws IllegalStateException {
-        try (BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.CONFIG.getPath()))) {
-            String config = txtReader2.lines().collect(Collectors.joining());
-            this.config = JsonParser.parseString(config).getAsJsonObject();
+        try {
+            this.config = HelpBotInstance.GSON.fromJson(Files.readString(ExternalFiles.CONFIG.toPath()), JsonObject.class);
         } catch (Exception exception) {
-            throw new IllegalStateException("Config not correctly structured! Please check the readme file for a config template.");
+            throw new IllegalStateException("Config not correctly structured! Please check the readme file for a config template.", exception);
         }
     }
     
@@ -84,8 +87,16 @@ public class Config {
         return getPropertyLong("verified_role");
     }
     
-    public String getReportWehook() {
-        return getPropertyString("report_webhook");
+    public JsonObject getForwardingChannels() {
+        return config.get("forwarding_channels").getAsJsonObject();
+    }
+    
+    public Map<String, Long> getPermissionRoleMap() {
+        return HelpBotInstance.GSON.fromJson(config.get("permission_roles"), new TypeToken<Map<String, Long>>(){}.getType());
+    }
+    
+    public long getPermission(String role) {
+        return this.config.get("permission_roles").getAsJsonObject().get(role).getAsLong();
     }
     
     private long getPropertyLong(String property) {
@@ -95,5 +106,4 @@ public class Config {
     private String getPropertyString(String property) {
         return config.get(property).getAsString();
     }
-    
 }

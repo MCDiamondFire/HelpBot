@@ -2,66 +2,41 @@ package com.diamondfire.helpbot.df.codeinfo.viewables;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.emoji.*;
 import net.dv8tion.jda.api.requests.RestAction;
 
 public class BasicReaction {
     
-    final boolean isUnicode;
-    String unicode;
-    long id;
+    private final Emoji emoji;
     
-    public BasicReaction(String unicode) {
-        isUnicode = true;
-        this.unicode = unicode;
+    public BasicReaction(Emoji emoji) {
+        this.emoji = emoji;
     }
     
-    public BasicReaction(long emoteID) {
-        isUnicode = false;
-        this.id = emoteID;
-    }
     
     
     public String getUnicode() {
-        if (!isUnicode) {
+        if (emoji.getType() != Emoji.Type.UNICODE) {
             throw new IllegalStateException("Emoji is not a unicode char!");
         }
         
-        return unicode;
+        return emoji.getName();
     }
     
-    public Emote getEmote() {
-        if (isUnicode) {
-            throw new IllegalStateException("Emoji is a unicode char!");
+    public CustomEmoji getEmote() {
+        if (emoji.getType() != Emoji.Type.CUSTOM) {
+            throw new IllegalStateException("Emoji is not a unicode char!");
         }
         
-        return HelpBotInstance.getJda().getEmoteById(id);
+        return (CustomEmoji) emoji;
     }
     
     public RestAction<Void> react(Message message) {
-        if (isUnicode) {
-            return message.addReaction(getUnicode());
-        }
-        
-        return message.addReaction(getEmote());
+        return message.addReaction(emoji);
     }
     
     @Override
     public String toString() {
-        if (isUnicode) {
-            return getUnicode();
-        }
-        
-        return getEmote().getAsMention();
-    }
-    
-    public boolean equalToReaction(MessageReaction.ReactionEmote reaction) {
-        // if reaction is emoji yet this isn't unicode error is thrown.
-        if (reaction.isEmoji() != isUnicode) {
-            return false;
-        }
-        
-        if (reaction.isEmoji()) return getUnicode().equals(reaction.getEmoji());
-        if (!reaction.isEmoji()) return getEmote().getIdLong() == reaction.getIdLong();
-        return false;
+        return this.emoji.getFormatted();
     }
 }

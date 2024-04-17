@@ -170,6 +170,6 @@ public class JoinDataCommand extends Command {
     }
     
     private String format(Rank rank) {
-        return rank.getRankEmote().getAsMention() + " ";
+        return rank.getRankEmote().getFormatted() + " ";
     }
 }

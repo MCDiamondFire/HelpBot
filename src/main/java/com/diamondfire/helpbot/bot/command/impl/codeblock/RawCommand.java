@@ -6,7 +6,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.*;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.function.BiConsumer;
 

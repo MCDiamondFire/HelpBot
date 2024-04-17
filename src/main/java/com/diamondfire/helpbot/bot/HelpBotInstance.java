@@ -20,6 +20,7 @@ import com.diamondfire.helpbot.bot.command.impl.stats.top.*;
 import com.diamondfire.helpbot.bot.config.Config;
 import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
+import com.google.gson.Gson;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -31,10 +32,11 @@ import javax.security.auth.login.LoginException;
 
 public class HelpBotInstance {
     
+    public static final Gson GSON = new Gson();
+    
     private static final Config config = new Config();
     public static final long DF_GUILD = config.getGuild();
     public static final long LOG_CHANNEL = config.getLogChannel();
-    public static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     
     private static JDA jda;
     private static final TaskRegistry loop = new TaskRegistry();
@@ -49,12 +51,12 @@ public class HelpBotInstance {
                 new SearchCommand(),
                 new TagsCommand(),
                 // others
-                new CowsayCommand(),
+                //new CowsayCommand(),
                 new MimicCommand(),
-                new FetchDataCommand(),
+                //new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
-                new GarfieldCommand(),
+                //new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
                 new ActionDumpCommand(),
@@ -67,6 +69,7 @@ public class HelpBotInstance {
                 new DisableCommand(),
                 new ImageDumpCommand(),
                 new SoundListCommand(),
+                new QueryCommand(),
                 new RulesCommand(),
                 new BulkExecuteCommand(),
                 new PermUnlocksCommand(),
@@ -76,7 +79,7 @@ public class HelpBotInstance {
                 new VerifyCommand(),
                 // new PollCommand(), - Unused
                 new IdeaCommand(),
-                new StoreCommand(),
+                // new StoreCommand(),
                 // new ChannelMuteCommand(), - not finished
                 // statsbot
                 new StatsCommand(),
@@ -131,7 +134,7 @@ public class HelpBotInstance {
         );
         
         JDABuilder builder = JDABuilder.createDefault(config.getToken())
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
                 .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
@@ -145,10 +148,6 @@ public class HelpBotInstance {
     
     public static JDA getJda() {
         return jda;
-    }
-    
-    public static OkHttpClient getHttpClient() {
-        return HTTP_CLIENT;
     }
     
     public static Config getConfig() {
