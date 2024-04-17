@@ -20,7 +20,7 @@ import java.util.*;
 
 public class VIPRoleHandler {
 
-    private static final String ROLE_NAME = " ";
+    private static final String ROLE_NAME = "VIP";
     
     private static final File FILE = ExternalFiles.VIP_ROLES;
     private static final Map<Integer, Long> COLOR_ROLE_MAP = new HashMap<>();
@@ -28,6 +28,27 @@ public class VIPRoleHandler {
     static {
         try {
             cacheJson();
+            
+            Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
+            for (Role role : guild.getRoles()) {
+                int color = role.getColorRaw();
+                if (color == Role.DEFAULT_COLOR_RAW) {
+                    continue;
+                }
+                if (!COLOR_ROLE_MAP.containsKey(color)) {
+                    // Create the coloured star and register it on discord.
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
+                    baos.flush();
+                    role = guild.createRole()
+                            .setName(ROLE_NAME)
+                            .setIcon(Icon.from(baos.toByteArray()))
+                            .setPermissions(0L)
+                            .complete();
+                    COLOR_ROLE_MAP.put(color, role.getIdLong());
+                }
+            }
+            save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,35 +96,12 @@ public class VIPRoleHandler {
         return vips;
     }
 
-    public static Role getOrCreateRole(int color) {
+    public static Role getRole(int color) {
         if (color == Role.DEFAULT_COLOR_RAW) {
             return null;
         }
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
-        Role role;
-
-        assert guild != null;
-
-        if (COLOR_ROLE_MAP.containsKey(color)) {
-            role = guild.getRoleById(COLOR_ROLE_MAP.get(color));
-        } else {
-            try {
-                // Create the coloured star and register it on discord.
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
-                baos.flush();
-                role = guild.createRole()
-                        .setName(ROLE_NAME)
-                        .setIcon(Icon.from(baos.toByteArray()))
-                        .setPermissions(0L)
-                        .complete();
-                COLOR_ROLE_MAP.put(color, role.getIdLong());
-                VIPRoleHandler.save();
-            } catch (IOException e) {
-                return null;
-            }
-        }
-        return role;
+        return guild.getRoleById(COLOR_ROLE_MAP.get(color));
     }
     
 
