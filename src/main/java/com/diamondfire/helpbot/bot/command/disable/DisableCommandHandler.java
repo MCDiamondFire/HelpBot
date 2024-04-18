@@ -48,6 +48,9 @@ public class DisableCommandHandler {
     }
     
     public void disable(Command command) {
+        if (command == null) {
+            return;
+        }
         // Prevents tricky people using eval.
         if (command instanceof CommandDisableFlag) {
             return;

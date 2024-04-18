@@ -11,7 +11,7 @@ import java.io.*;
 public class StarUtil {
     
     private static final BufferedImage STAR;
-    private static final int SIZE = 32;
+    private static final int SIZE = 64;
     
     static {
         // Load the star from the resources.
@@ -32,7 +32,7 @@ public class StarUtil {
         g2d.drawImage(STAR, 0, 0, null);
         g2d.setComposite(AlphaComposite.SrcAtop);
         g2d.setColor(color);
-        g2d.fillRect(0, 0, 32, 32);
+        g2d.fillRect(0, 0, SIZE, SIZE);
         g2d.dispose();
         return bufferedImage;
     }

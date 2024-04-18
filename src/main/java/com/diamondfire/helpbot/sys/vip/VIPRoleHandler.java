@@ -104,6 +104,9 @@ public class VIPRoleHandler {
             return null;
         }
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
+        if (!COLOR_ROLE_MAP.containsKey(color)) {
+            return null;
+        }
         return guild.getRoleById(COLOR_ROLE_MAP.get(color));
     }
     
