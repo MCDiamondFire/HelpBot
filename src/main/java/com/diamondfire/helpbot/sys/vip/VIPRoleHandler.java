@@ -35,6 +35,9 @@ public class VIPRoleHandler {
                 if (color == Role.DEFAULT_COLOR_RAW) {
                     continue;
                 }
+                if (role.getIcon() != null) {
+                    continue;
+                }
                 if (!COLOR_ROLE_MAP.containsKey(color)) {
                     // Create the coloured star and register it on discord.
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
