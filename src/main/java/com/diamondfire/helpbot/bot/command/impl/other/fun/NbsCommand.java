@@ -11,6 +11,7 @@ import com.diamondfire.helpbot.util.nbs.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
@@ -44,7 +45,7 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        TextChannel channel = event.getChannel().asTextChannel();
+        GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         

@@ -15,7 +15,7 @@ import java.util.*;
 public class CommandEvent extends MessageReceivedEvent {
     
     private Command command;
-    private final ReplyHandler replyHandler = new ReplyHandler(getChannel().asTextChannel());
+    private final ReplyHandler replyHandler = new ReplyHandler(getChannel().asGuildMessageChannel());
     //TODO Cleanup and refactor this.
     // I'd like to see stuff like replying be put into it's whole own section and refactored as well.
     private ParsedArgumentSet parsedArgumentSet = null;

@@ -39,7 +39,7 @@ public class VIPStarTask implements LoopingTask {
                         .queue();
                 return;
             }
-            if (member.getRoles().contains(role)) {
+            if (!vipIds.contains(member.getIdLong()) && member.getRoles().contains(role)) {
                 guild.removeRoleFromMember(member, role)
                         .reason("User's VIP Pass has expired")
                         .queue();

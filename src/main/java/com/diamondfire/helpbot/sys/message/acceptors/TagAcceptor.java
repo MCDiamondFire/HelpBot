@@ -21,7 +21,7 @@ public class TagAcceptor implements MessageAcceptor {
             try {
                 // Get Tag and send response
                 TagHandler.getTag(parsedText)
-                        .sendResponse(message.getChannel().asTextChannel(), message.getAuthor());
+                        .sendResponse(message.getChannel().asGuildMessageChannel(), message.getAuthor());
                 
             } catch (TagDoesNotExistException | IOException ignored) {
                 return false;
