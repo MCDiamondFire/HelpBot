@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.command.reply;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
@@ -10,13 +11,13 @@ import net.dv8tion.jda.api.utils.messages.MessageRequest;
 
 public class ReplyHandler {
     
-    private final TextChannel channel;
+    private final GuildMessageChannel channel;
     
-    public ReplyHandler(TextChannel channel) {
+    public ReplyHandler(GuildMessageChannel channel) {
         this.channel = channel;
     }
     
-    public TextChannel getChannel() {
+    public GuildMessageChannel getChannel() {
         return channel;
     }
     

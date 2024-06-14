@@ -37,7 +37,7 @@ public enum Rank {
         this.rankName = rankName;
         this.number = number;
         this.category = category;
-        this.emote = HelpBotInstance.getJda().getGuildById(615846886414483465L).getEmojiById(emote);
+        this.emote = HelpBotInstance.getJda().getGuildById(615846886414483465L).getEmojisByName(emote, false).get(0);
     }
     
     public String getRankName() {
