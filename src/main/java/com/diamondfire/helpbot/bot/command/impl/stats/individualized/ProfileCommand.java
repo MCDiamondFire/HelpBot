@@ -86,7 +86,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     
                     embed.addField("Name", rankString + " " + StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
-                    embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    embed.addField("Whois", StringUtil.fromMiniMessage(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
                     embed.addField("Pronouns", StringUtil.display(pronouns == null || pronouns.isEmpty() ? "N/A" : pronouns), false);
                 
                     Rank[] ranks = RankUtil.getRanks(set);

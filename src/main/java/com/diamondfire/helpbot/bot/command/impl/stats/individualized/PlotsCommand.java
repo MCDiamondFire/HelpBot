@@ -69,7 +69,7 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                                 "Votes: " + plot.getInt("votes"),
                                 "Players: " + plot.getInt("player_count")
                         };
-                        embed.addField(StringUtil.display(plot.getString("name")) +
+                        embed.addField(StringUtil.fromMiniMessage(plot.getString("name")) +
                                         String.format(" **(%s)**", plot.getInt("id")),
                                 String.join("\n", stats), false);
                     

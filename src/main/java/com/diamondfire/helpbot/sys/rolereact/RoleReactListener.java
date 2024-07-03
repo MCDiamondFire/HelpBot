@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,8 @@ public class RoleReactListener extends ListenerAdapter {
                 roleMap.put(button.getId(), role.getRoleID());
             }
             
-            msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself").setActionRow(buttons).queue();
+            msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself")
+                    .setComponents(Util.of(buttons)).queue();
         });
     }
     

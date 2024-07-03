@@ -53,7 +53,7 @@ public abstract class AbstractPlotCommand extends Command {
             PlotSize size = PlotSize.fromID(resultTablePlot.getInt("plotsize") - 1);
             
             embed.setTitle(String.format("Plot Information (%s)", plotID));
-            embed.addField("Name", StringUtil.display(resultTablePlot.getString("name")), true);
+            embed.addField("Name", StringUtil.fromMiniMessage(resultTablePlot.getString("name")), true);
             embed.addField("Owner", resultTablePlot.getString("owner_name"), true);
             embed.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
             embed.addField("Plot Size", StringUtil.smartCaps(size.name()), true);

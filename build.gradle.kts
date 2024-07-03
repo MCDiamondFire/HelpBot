@@ -27,6 +27,9 @@ dependencies {
     implementation ("com.github.Steveice10:MCProtocolLib:c5e4b66")
     implementation("mysql:mysql-connector-java:5.1.13")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.8")
+    implementation("net.kyori:adventure-api:4.16.0")
+    implementation("net.kyori:adventure-text-minimessage:4.16.0")
+    implementation("dev.vankka:mcdiscordreserializer:4.3.0")
 }
 
 tasks {

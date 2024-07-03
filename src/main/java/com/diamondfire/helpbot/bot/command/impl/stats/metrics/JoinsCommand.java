@@ -36,7 +36,7 @@ public class JoinsCommand extends Command {
         
         // gets the total amount of players that have joined before
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(*) AS count FROM players"))
+                .query(new BasicQuery("SELECT COUNT(uuid) AS count FROM ranks"))
                 .compile()
                 .run((result) -> {
                     String count = FormatUtil.formatNumber(result.getResult().getInt("count"));
