@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 
 public class TagsCommand extends AbstractSingleQueryCommand {
     
-    private static void sendTagMessage(CodeObject data, TextChannel channel) {
+    private static void sendTagMessage(CodeObject data, GuildMessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         ActionData actionData;
         
@@ -92,7 +93,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
         return TagsCommand::sendTagMessage;
     }
 }

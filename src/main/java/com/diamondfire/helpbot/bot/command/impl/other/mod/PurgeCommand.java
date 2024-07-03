@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class PurgeCommand extends Command {
             );
             event.reply(builder);
         } else {
-            TextChannel channel = event.getChannel().asTextChannel();
+            GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
                 // Adds the messages to the messageBuilder object
                 StringBuilder stringBuilder = new StringBuilder();

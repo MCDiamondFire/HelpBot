@@ -16,6 +16,7 @@ import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.*;
@@ -61,7 +62,7 @@ public class FetchDataCommand extends Command {
     public void run(CommandEvent event) {
         List<String> flags = event.getArgument("flag");
         if (flags == null) {
-            setup(event.getChannel().asTextChannel());
+            setup(event.getChannel().asGuildMessageChannel());
         } else {
             boolean includeColors = false;
             boolean updateDb = true;
@@ -72,15 +73,15 @@ public class FetchDataCommand extends Command {
                     updateDb = false;
                 }
             }
-            setup(event.getChannel().asTextChannel(), includeColors, updateDb);
+            setup(event.getChannel().asGuildMessageChannel(), includeColors, updateDb);
         }
     }
     
-    public void setup(TextChannel channel) {
+    public void setup(GuildMessageChannel channel) {
         setup(channel, false, true);
     }
     
-    public void setup(TextChannel channel, boolean includeColors, boolean updateDb) {
+    public void setup(GuildMessageChannel channel, boolean includeColors, boolean updateDb) {
         EmbedBuilder builder = new EmbedBuilder();
         
         builder.setTitle("Fetching Code Database...");

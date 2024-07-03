@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.function.BiConsumer;
 
 public class CodeCommand extends AbstractSingleQueryCommand {
     
-    public static <T extends CodeObject> void sendHelpMessage(T data, TextChannel channel) {
+    public static <T extends CodeObject> void sendHelpMessage(T data, GuildMessageChannel channel) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String customHead = data.getItem().getHead();
         
@@ -57,7 +58,7 @@ public class CodeCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
         return CodeCommand::sendHelpMessage;
     }
 }

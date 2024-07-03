@@ -37,7 +37,8 @@ public class RoleReactListener extends ListenerAdapter {
             }
             
             msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself")
-                    .setComponents(Util.of(buttons)).queue();
+                    .setComponents(Util.of(buttons))
+                    .queue();
         });
     }
     

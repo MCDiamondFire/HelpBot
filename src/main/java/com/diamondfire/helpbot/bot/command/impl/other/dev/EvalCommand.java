@@ -13,11 +13,19 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import javax.script.*;
 import java.awt.*;
 import java.io.*;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
 public class EvalCommand extends Command {
+    
+    // Moderators can just give themselves bot dev role apparently...
+    private static final Set<Long> BOT_DEVELOPERS = Set.of(
+            511653192942092289L, // Reasonless
+            248855041803288576L, // Tomoli75
+            945012492030074900L  // Owen1212055
+    );
     
     private static final List<String> IMPORTS = List.of(
             "net.dv8tion.jda.core",
@@ -64,6 +72,17 @@ public class EvalCommand extends Command {
             builder.setTitle("No.");
             builder.setColor(Color.red);
 
+            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            return;
+        }
+        
+        boolean hasManual = BOT_DEVELOPERS.contains(event.getMember().getIdLong());
+        boolean hasRole = Permission.DEVELOPER.hasPermission(event.getMember());
+        if (!hasManual && !hasRole) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("No.");
+            builder.setColor(Color.red);
+            
             event.getChannel().sendMessageEmbeds(builder.build()).queue();
             return;
         }

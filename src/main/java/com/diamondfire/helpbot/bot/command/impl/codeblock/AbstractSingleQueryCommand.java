@@ -14,6 +14,7 @@ import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractSingleQueryCommand extends Command {
     
-    public static void sendMultipleMessage(List<CodeObject> actions, TextChannel channel, long userToWait, BiConsumer<CodeObject, TextChannel> onChosen) {
+    public static void sendMultipleMessage(List<CodeObject> actions, GuildMessageChannel channel, long userToWait, BiConsumer<CodeObject, GuildMessageChannel> onChosen) {
         // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
         CodeObject referenceData = actions.get(0);
         Class<? extends CodeObject> classReference = referenceData.getClass();
@@ -67,7 +68,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 
                 // when msg is deleted causes nullpointer when tries to remove reactions! FIX
                 CodeObject object = buttonMap.get(event.getComponentId());
-                onChosen.accept(object, message.getChannel().asTextChannel());
+                onChosen.accept(object, message.getChannel().asGuildMessageChannel());
             });
         });
         
@@ -85,9 +86,9 @@ public abstract class AbstractSingleQueryCommand extends Command {
         getData(event, onDataReceived());
     }
     
-    public abstract BiConsumer<CodeObject, TextChannel> onDataReceived();
+    public abstract BiConsumer<CodeObject, GuildMessageChannel> onDataReceived();
     
-    protected void getData(CommandEvent event, BiConsumer<CodeObject, TextChannel> onChosen) {
+    protected void getData(CommandEvent event, BiConsumer<CodeObject, GuildMessageChannel> onChosen) {
         String name = event.getArgument("name");
         PresetBuilder preset = new PresetBuilder();
         
@@ -120,9 +121,9 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 
                 // If none, proceed. Else we need to special case that.
                 if (sameActions.size() == 1) {
-                    onChosen.accept(sameActions.get(0), event.getChannel().asTextChannel());
+                    onChosen.accept(sameActions.get(0), event.getChannel().asGuildMessageChannel());
                 } else if (sameActions.size() > 1) {
-                    sendMultipleMessage(sameActions, event.getChannel().asTextChannel(), event.getMember().getIdLong(), onChosen);
+                    sendMultipleMessage(sameActions, event.getChannel().asGuildMessageChannel(), event.getMember().getIdLong(), onChosen);
                 }
                 
                 return;

@@ -8,8 +8,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public enum Permission {
-    BOT_DEVELOPER(999),
     DEVELOPER(999),
+    BOT_DEVELOPER(998),
     // Ask DragonSlasher, not me.
     ADMINISTRATOR(666),
     MODERATION(5),
