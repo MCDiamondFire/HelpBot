@@ -1,11 +1,16 @@
 package com.diamondfire.helpbot.util;
 
 import net.dv8tion.jda.api.utils.MarkdownSanitizer;
+import net.kyori.adventure.text.*;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.*;
+import java.util.regex.*;
 
 public class StringUtil {
     
+    private static final Pattern UNICODE_PATTERN = Pattern.compile("§u([\\da-f]{5})");
+
     public static String listView(String pointer, boolean sanitize, Iterable<? extends CharSequence> array) {
         String view = listView(pointer, array);
         return sanitize ? StringUtil.display(view) : view;
@@ -82,6 +87,18 @@ public class StringUtil {
     
     public static String display(String string) {
         return MarkdownSanitizer.escape(StringUtil.stripColorCodes(string));
+    }
+    
+    public static String fromMiniMessage(String expression) {
+        Matcher matcher = UNICODE_PATTERN.matcher(expression);
+        StringBuilder builder = new StringBuilder();
+        while (matcher.find()) {
+            int value = Integer.parseInt(matcher.group(1), 16);
+            matcher.appendReplacement(builder, Matcher.quoteReplacement(String.valueOf(Character.toChars(value))));
+        }
+        matcher.appendTail(builder);
+        Component component = MiniMessage.miniMessage().deserialize(StringUtil.stripColorCodes(builder.toString()));
+        return MarkdownSanitizer.escape(PlainComponentSerializer.INSTANCE.serialize(component));
     }
     
     public static String sCheck(String text, int number) {

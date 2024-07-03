@@ -54,7 +54,7 @@ public class SamQuotesCommand extends Command {
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        event.getChannel().sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(file)).queue();
+        event.getChannel().sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(file).setName("quote.png")).queue();
     }
     
     @Override

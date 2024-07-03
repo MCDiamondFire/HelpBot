@@ -59,7 +59,7 @@ public class TrendingPlotsCommand extends Command {
                             stats.add("Players: " + count);
                         }
                         
-                        embed.addField(StringUtil.display(set.getString("name")) +
+                        embed.addField(StringUtil.fromMiniMessage(set.getString("name")) +
                                         String.format(" **(%s)**", set.getInt("id")),
                                 String.join("\n", stats), false);
                     }
