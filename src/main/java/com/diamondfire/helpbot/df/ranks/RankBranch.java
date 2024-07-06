@@ -4,6 +4,7 @@ import java.util.*;
 
 public enum RankBranch {
     DONOR,
+    VIP,
     RETIREMENT,
     BUILDER,
     YOUTUBER,
