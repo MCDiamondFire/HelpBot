@@ -26,7 +26,7 @@ public class RankUtil {
         } catch (SQLException ignored) {
         }
         
-        return ranks.toArray(Rank[]::new);
+        return ranks.stream().sorted(Comparator.comparingInt(Enum::ordinal)).toArray(Rank[]::new);
     }
     
     public static Rank getHighRank(ResultSet set) {

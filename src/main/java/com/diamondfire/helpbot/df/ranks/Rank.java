@@ -4,8 +4,6 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 public enum Rank {
-    // VIP Pass
-    VIP("VIP", 1, RankBranch.VIP, "VIP"),
     // Ranks
     NOBLE("Noble", 1, RankBranch.DONOR, "Noble"),
     EMPEROR("Emperor", 2, RankBranch.DONOR, "Emperor"),
@@ -15,6 +13,7 @@ public enum Rank {
     RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
     EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
     //Special
+    VIP("VIP", 1, RankBranch.VIP, "VIP"),
     BUILDER("B", 1, RankBranch.BUILDER, "Builder"),
     YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
     // Support
