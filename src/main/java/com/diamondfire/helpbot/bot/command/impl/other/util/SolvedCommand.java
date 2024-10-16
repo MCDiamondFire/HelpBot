@@ -8,6 +8,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.*;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 
@@ -40,8 +41,11 @@ public class SolvedCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        // Check if the command is used in the help forum.
-        if (event.getChannel().asThreadChannel().getParentChannel().getIdLong() != HelpBotInstance.getConfig().getHelpChannel()) {
+        // Limit to help forum.
+        if (
+                event.getChannel().getType() != ChannelType.GUILD_PUBLIC_THREAD ||
+                        event.getChannel().asThreadChannel().getParentChannel().getIdLong() != HelpBotInstance.getConfig().getHelpChannel()
+        ) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, "Command can only be used in <#" + HelpBotInstance.getConfig().getHelpChannel() + ">")
@@ -69,19 +73,12 @@ public class SolvedCommand extends Command {
             return;
         }
         
-        // Apply the solved tag and lock the post.
+        // Apply the solved tag, other behavior handled by PostAppliedTagsEvent.
         var solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
         ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
         if (!appliedTags.contains(solvedTag)) appliedTags.add(solvedTag);
+        
         threadChannel.getManager().setAppliedTags(appliedTags).queue();
-        
-        threadChannel.getManager().setLocked(true).queue();
-        
-        event.reply(new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.SUCCESS, "Post marked as solved!")
-                ));
-        event.getChannel().asThreadChannel().getManager().setName("[ARCHIVED] " + event.getChannel().getName()).queue();
     }
     
 }
