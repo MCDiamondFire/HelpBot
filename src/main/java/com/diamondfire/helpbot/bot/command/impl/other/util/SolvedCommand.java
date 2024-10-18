@@ -74,7 +74,7 @@ public class SolvedCommand extends Command {
         }
         
         // Apply the solved tag, other behavior handled by PostAppliedTagsEvent.
-        var solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
+        ForumTag solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
         ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
         if (!appliedTags.contains(solvedTag)) appliedTags.add(solvedTag);
         

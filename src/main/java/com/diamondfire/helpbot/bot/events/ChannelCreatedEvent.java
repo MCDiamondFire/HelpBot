@@ -2,6 +2,8 @@ package com.diamondfire.helpbot.bot.events;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -20,11 +22,13 @@ public class ChannelCreatedEvent extends ListenerAdapter {
         }
         
         // Remove solved tag if post was created with it.
-        var solvedTag = event.getChannel().asThreadChannel().getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
-        if (event.getChannel().asThreadChannel().getAppliedTags().contains(solvedTag)) {
-            var appliedTags = new ArrayList<>(event.getChannel().asThreadChannel().getAppliedTags());
+        ThreadChannel threadChannel = event.getChannel().asThreadChannel();
+        
+        ForumTag solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
+        if (threadChannel.getAppliedTags().contains(solvedTag)) {
+            ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
             appliedTags.remove(solvedTag);
-            event.getChannel().asThreadChannel().getManager().setAppliedTags(appliedTags).queue();
+            threadChannel.getManager().setAppliedTags(appliedTags).queue();
         }
         
     }
