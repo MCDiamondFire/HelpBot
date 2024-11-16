@@ -79,6 +79,14 @@ public class Config {
         return getPropertyLong("purge_evidence_channel");
     }
     
+    public long getHelpChannel() {
+        return getPropertyLong("help_channel");
+    }
+    
+    public long getHelpChannelSolvedTag() {
+        return getPropertyLong("help_channel_solved_tag");
+    }
+    
     public long getMutedRole() {
         return getPropertyLong("muted_role");
     }
