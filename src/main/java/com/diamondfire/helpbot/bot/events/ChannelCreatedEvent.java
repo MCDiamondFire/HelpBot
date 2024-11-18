@@ -27,7 +27,11 @@ public class ChannelCreatedEvent extends ListenerAdapter {
         ForumTag solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
         if (threadChannel.getAppliedTags().contains(solvedTag)) {
             ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
-            appliedTags.remove(solvedTag);
+            // Solved tag is the only tag, and we need at least one tag.
+            // In this case, this will do nothing, however ?solved will still change post's the name, so it's fine.
+            if (appliedTags.size() != 1) {
+                appliedTags.remove(solvedTag);
+            }
             threadChannel.getManager().setAppliedTags(appliedTags).queue();
         }
         
