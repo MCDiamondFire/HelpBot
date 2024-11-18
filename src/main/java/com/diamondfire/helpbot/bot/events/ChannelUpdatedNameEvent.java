@@ -25,10 +25,6 @@ public class ChannelUpdatedNameEvent extends ListenerAdapter {
         
         if (event.getOldValue() == null || event.getNewValue() == null) return;
         
-        System.out.println();
-        System.out.println(event.getOldValue());
-        System.out.println(event.getNewValue());
-        
         // If the post starts with [SOLVED] and has a solved tag, but renamed to not have [SOLVED], then revert to the old name.
         if (event.getOldValue().startsWith("[SOLVED] ") && !event.getNewValue().startsWith("[SOLVED] ") && threadChannel.getAppliedTags().contains(solvedTag)) {
             threadChannel.getManager().setName(event.getOldValue()).queue();
