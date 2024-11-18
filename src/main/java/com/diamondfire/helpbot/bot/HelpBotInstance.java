@@ -141,7 +141,7 @@ public class HelpBotInstance {
                 .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new MessageEditEvent(), new PostAppliedTagsEvent(), new ChannelCreatedEvent(), new ChannelArchiveEvent());
+                .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new MessageEditEvent(), new PostChannelEvent(), new ChannelCreatedEvent(), new ChannelUpdatedNameEvent());
         
         jda = builder.build();
         CommandHandler.getInstance().initialize();
