@@ -68,10 +68,9 @@ public class NbsCommand extends Command {
                 byte[] b64 = new NBSToTemplate(NBSDecoder.parse(file)).convert();
                 File templateOutputfile = File.createTempFile("nbs_output", ".txt");
                 BufferedWriter writer = new BufferedWriter(new FileWriter(templateOutputfile));
-                writer.write(String.format("/give @p minecraft:ender_chest{display:{Name:'[{\"text\":\"» \",\"color\":\"gold\"},{\"text\":\"Code Template\",\"color\":\"yellow\",\"bold\":true}]'},PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"name\":\"&6» &e&lCode Template\",\"version\":1,\"code\":\"%s\",\"author\":\"helpbot\"}'}} 1", new String(b64)));
+                writer.write(String.format("/give @p minecraft:note_block[minecraft:custom_name='{\"extra\":[{\"bold\":true,\"color\":\"aqua\",\"italic\":false,\"obfuscated\":false,\"strikethrough\":false,\"text\":\"Function \",\"underlined\":false},{\"bold\":false,\"color\":\"dark_aqua\",\"italic\":false,\"text":\"» \"},{\"color\":\"aqua\",\"italic\":false,\"text\":\"Nbs Song\"}],\"text\":\"\"}', minecraft:custom_data={PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"author\":\"Help Bot\",\"name\":\"&b&lFunction &3» &bNbs Song\",\"version\":1,\"code\":\"%s\"}'}}]", new String(b64)));
                 
                 writer.close();
-                
                     
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(new Color(70,199,82))
