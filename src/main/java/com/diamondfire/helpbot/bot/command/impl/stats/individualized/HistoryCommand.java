@@ -13,7 +13,8 @@ import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
 import java.io.*;
@@ -65,7 +66,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
             return;
         }
         
-        List<MessageAction> msgs = new ArrayList<>();
+        List<MessageCreateAction> msgs = new ArrayList<>();
         List<Punishment> punishments = new PunishmentFetcher()
                 .withUUID(player.uuidString())
                 .withAll()
@@ -114,18 +115,18 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                         warningReq = 6 - warnings;
                     }
                     
-                    if (duration != null) {
-                        embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more active %s, you will receive a **%s** tempban!", warningReq, StringUtil.sCheck("warning", warningReq), duration), false);
-                    }
+//                    if (duration != null) {
+//                        embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more active %s, you will receive a **%s** tempban!", warningReq, StringUtil.sCheck("warning", warningReq), duration), false);
+//                    }
                     
                 } else if (punishments.size() == 0) {
                     embed.setDescription("No punishments here, keep up the good work!");
                 }
-                
-                if (yearlyWarnings > 10) {
-                    embed.setColor(Color.RED);
-                    embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
-                }
+//
+//                if (yearlyWarnings > 10) {
+//                    embed.setColor(Color.RED);
+//                    embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
+//                }
                 
                 msgs.add(privateChannel.sendMessageEmbeds(embed.build()));
             }
@@ -145,12 +146,12 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
                 if (punishmentStrings.size() == 0) {
                 } else if (presetBuilder.isValidLength()) {
-                    msgs.add(privateChannel.sendMessage(presetBuilder.build()));
+                    msgs.add(privateChannel.sendMessageEmbeds(presetBuilder.build()));
                 } else {
                     try {
                         File sendFile = ExternalFileUtil.generateFile("history.txt");
                         Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
-                        msgs.add(privateChannel.sendFile(sendFile));
+                        msgs.add(privateChannel.sendFiles(FileUpload.fromData(sendFile)));
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
@@ -158,7 +159,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 
             }
             
-            MessageAction action = msgs.get(0);
+            MessageCreateAction action = msgs.get(0);
             msgs.remove(0);
             
             action.queue((msg) -> {
@@ -170,7 +171,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 
                 event.reply(successMSG);
                 
-                for (MessageAction msgAction : msgs) {
+                for (MessageCreateAction msgAction : msgs) {
                     msgAction.queue();
                 }
             }, (error) -> {

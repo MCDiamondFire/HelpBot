@@ -2,7 +2,6 @@ package com.diamondfire.helpbot.util;
 
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.serializer.ComponentSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Function;
 
@@ -18,23 +17,23 @@ public class PlainComponentSerializer implements ComponentSerializer<Component, 
         this(component -> "");
     }
     
-    public PlainComponentSerializer(final @NonNull Function<TranslatableComponent, String> translatable) {
+    public PlainComponentSerializer(final Function<TranslatableComponent, String> translatable) {
         this.translatable = translatable;
     }
     
     @Override
-    public @NonNull TextComponent deserialize(final @NonNull String input) {
+    public TextComponent deserialize(final  String input) {
         return Component.text(input);
     }
     
     @Override
-    public @NonNull String serialize(final @NonNull Component component) {
+    public String serialize(final Component component) {
         final StringBuilder sb = new StringBuilder();
         this.serialize(sb, component);
         return sb.toString();
     }
     
-    public void serialize(final @NonNull StringBuilder sb, final @NonNull Component component) {
+    public void serialize(final StringBuilder sb, final  Component component) {
         if (component instanceof TextComponent) {
             sb.append(((TextComponent) component).content());
         } else if (component instanceof TranslatableComponent) {

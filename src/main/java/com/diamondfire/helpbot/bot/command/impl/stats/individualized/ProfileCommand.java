@@ -71,6 +71,7 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     String playerName = set.getString("name");
                     String playerUUID = set.getString("uuid");
                     String whois = set.getString("whois");
+                    String pronouns = set.getString("pronouns");
                     Timestamp joinDate = set.getTimestamp("join_date");
                     
                     String rankString;
@@ -79,13 +80,14 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                         if (highRank == null) {
                             rankString = "";
                         } else {
-                            rankString = highRank.getRankEmote().getAsMention();
+                            rankString = highRank.getRankEmote().getFormatted();
                         }
                     }
                     
                     embed.addField("Name", rankString + " " + StringUtil.display(playerName), false);
                     embed.addField("UUID", playerUUID, false);
-                    embed.addField("Whois", StringUtil.display(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    embed.addField("Whois", StringUtil.fromMiniMessage(whois.isEmpty() ? "N/A" : whois).replace("\\n", "\n"), false);
+                    embed.addField("Pronouns", StringUtil.display(pronouns == null || pronouns.isEmpty() ? "N/A" : pronouns), false);
                 
                     Rank[] ranks = RankUtil.getRanks(set);
                     List<String> ranksList = new ArrayList<>();

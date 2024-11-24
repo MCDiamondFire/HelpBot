@@ -61,3 +61,13 @@ After setting up the config, you will need to paste the following into the swear
   ]
 }
 ```
+
+## Special Thanks To
+
+![YourKit Logo](https://www.yourkit.com/images/yklogo.png)
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
+and [YourKit YouMonitor](ttps://www.yourkit.com/youmonitor/).

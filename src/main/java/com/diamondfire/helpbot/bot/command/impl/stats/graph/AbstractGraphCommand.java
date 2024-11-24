@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.graph.generators.*;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 public abstract class AbstractGraphCommand<T> extends Command {
     
@@ -27,7 +28,7 @@ public abstract class AbstractGraphCommand<T> extends Command {
     public void run(CommandEvent event) {
         T context = createContext(event);
         
-        event.getChannel().sendFile(getGraphGenerator().createGraph(context)).queue();
+        event.getChannel().sendFiles(FileUpload.fromData(getGraphGenerator().createGraph(context))).queue();
     }
     
     public abstract GraphGenerator<T> getGraphGenerator();

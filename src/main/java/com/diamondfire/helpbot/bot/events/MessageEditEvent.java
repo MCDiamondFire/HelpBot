@@ -5,9 +5,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-
-import javax.annotation.Nonnull;
-
 public class MessageEditEvent extends ListenerAdapter {
     
     private static final MessageAcceptor[] acceptors = {
@@ -15,7 +12,7 @@ public class MessageEditEvent extends ListenerAdapter {
     };
     
     @Override
-    public void onMessageUpdate(@Nonnull MessageUpdateEvent event) {
+    public void onMessageUpdate(MessageUpdateEvent event) {
         Message message = event.getMessage();
         for (MessageAcceptor acceptor : acceptors) {
             if (acceptor.accept(message)) {

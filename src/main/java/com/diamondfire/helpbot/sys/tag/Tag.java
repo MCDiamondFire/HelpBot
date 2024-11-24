@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.util.serializer.TagSerializer;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -65,7 +67,7 @@ public class Tag implements Serializable {
         this.image = image;
     }
     
-    public void sendResponse(TextChannel channel, @NotNull User requester) {
+    public void sendResponse(GuildMessageChannel channel, @NotNull User requester) {
         
         EmbedBuilder embed = new EmbedBuilder()
                 .setTitle(getTitle())

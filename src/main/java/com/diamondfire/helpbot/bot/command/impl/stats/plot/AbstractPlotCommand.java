@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
 import java.sql.*;
@@ -52,7 +53,7 @@ public abstract class AbstractPlotCommand extends Command {
             PlotSize size = PlotSize.fromID(resultTablePlot.getInt("plotsize") - 1);
             
             embed.setTitle(String.format("Plot Information (%s)", plotID));
-            embed.addField("Name", StringUtil.display(resultTablePlot.getString("name")), true);
+            embed.addField("Name", StringUtil.fromMiniMessage(resultTablePlot.getString("name")), true);
             embed.addField("Owner", resultTablePlot.getString("owner_name"), true);
             embed.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
             embed.addField("Plot Size", StringUtil.smartCaps(size.name()), true);
@@ -92,7 +93,7 @@ public abstract class AbstractPlotCommand extends Command {
             } else {
                 File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
                 embed.setThumbnail("attachment://" + mcItem.getName());
-                event.getReplyHandler().replyA(preset).addFile(mcItem).queue();
+                event.getReplyHandler().replyA(preset).addFiles(FileUpload.fromData(mcItem)).queue();
             }
             
         } catch (SQLException | IllegalStateException e) {

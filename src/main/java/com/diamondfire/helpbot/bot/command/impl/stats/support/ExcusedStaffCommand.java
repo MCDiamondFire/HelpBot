@@ -37,7 +37,7 @@ public class ExcusedStaffCommand extends Command {
     
     @Override
     public Permission getPermission() {
-        return Permission.EXPERT;
+        return Permission.SR_HELPER;
     }
     
     @Override
@@ -83,7 +83,7 @@ public class ExcusedStaffCommand extends Command {
                             names.add(name);
                         }
                         
-                        embed.addField(rank.getRankEmote().getAsMention() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
+                        embed.addField(rank.getRankEmote().getFormatted() + " " + name, String.format("Until: ``%s``\nReason: %s (<@%s>)", FormatUtil.formatDate(date), reason, excused_by), false);
                     }
                     
                     event.reply(builder);

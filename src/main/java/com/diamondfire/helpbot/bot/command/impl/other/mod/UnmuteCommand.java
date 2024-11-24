@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.sql.ResultSet;
 
@@ -71,16 +72,8 @@ public class UnmuteCommand extends Command {
                             
                         } else {
                             Guild guild = event.getGuild();
-                            ResultSet set = result.getResult();
-                            boolean special = "Weekly Discussion Mute".equals(set.getString("reason"));
                             
-                            if (special) {
-                                TextChannel channel = guild.getTextChannelById(DiscussionMuteCommand.DISCUSSION_CHANNEL);
-                                channel.getPermissionOverride(member).delete().queue();
-                                
-                            } else {
-                                guild.removeRoleFromMember(member, guild.getRoleById(MuteCommand.ROLE_ID)).queue();
-                            }
+                            guild.removeRoleFromMember(member, guild.getRoleById(MuteCommand.ROLE_ID)).queue();
                             
                             new DatabaseQuery()
                                     .query(new BasicQuery("UPDATE owen.muted_members SET handled = true WHERE member = ?", (statement) -> statement.setLong(1, member.getIdLong())))

@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.tasks.OneTimeTask;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.sql.*;
 import java.time.*;
@@ -15,18 +16,10 @@ public class MuteExpireTask implements OneTimeTask {
     
     private final long ms;
     private final long member;
-    private final boolean discussionMute;
     
     public MuteExpireTask(long member, Date date) {
         this.ms = Duration.between(Instant.now(), date.toInstant()).toMillis();
         this.member = member;
-        this.discussionMute = false;
-    }
-    
-    public MuteExpireTask(long member, Date date, boolean discussionMute) {
-        this.ms = Duration.between(Instant.now(), date.toInstant()).toMillis();
-        this.member = member;
-        this.discussionMute = discussionMute;
     }
     
     @Override
@@ -38,15 +31,7 @@ public class MuteExpireTask implements OneTimeTask {
     public void run() {
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
         
-        if (discussionMute) {
-            TextChannel channel = guild.getTextChannelById(DiscussionMuteCommand.DISCUSSION_CHANNEL);
-            guild.retrieveMemberById(member).queue((member) -> {
-                channel.getPermissionOverride(member).delete().queue();
-            });
-            
-        } else {
-            guild.removeRoleFromMember(member, guild.getRoleById(MuteCommand.ROLE_ID)).queue();
-        }
+        guild.removeRoleFromMember(UserSnowflake.fromId(member), guild.getRoleById(MuteCommand.ROLE_ID)).queue();
         
         new DatabaseQuery()
                 .query(new BasicQuery("UPDATE owen.muted_members SET handled = true WHERE member = ?", (statement) -> statement.setLong(1, member)))
@@ -62,9 +47,8 @@ public class MuteExpireTask implements OneTimeTask {
                     for (ResultSet set : result) {
                         Timestamp date = set.getTimestamp("muted_till");
                         long member = set.getLong("member");
-                        boolean special = "Weekly Discussion Mute".equals(set.getString("reason"));
-                        
-                        HelpBotInstance.getScheduler().schedule(new MuteExpireTask(member, date, special));
+                       
+                        HelpBotInstance.getScheduler().schedule(new MuteExpireTask(member, date));
                     }
                 });
     }

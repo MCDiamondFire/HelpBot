@@ -36,7 +36,7 @@ public class RestartHandler {
             builder.setTitle("Restart Successful!");
             builder.setDescription("Restarted in " + FormatUtil.formatMilliTime(System.currentTimeMillis() - Long.parseLong(restartMSG[2])));
             
-            jda.getTextChannelById(restartMSG[1]).editMessageEmbedsById(restartMSG[0], builder.build()).override(true).queue();
+            jda.getTextChannelById(restartMSG[1]).editMessageEmbedsById(restartMSG[0], builder.build()).setReplace(true).queue();
             restart.delete();
         } catch (IOException | ArrayIndexOutOfBoundsException ignored) {
         }

@@ -55,7 +55,7 @@ public class ActivePlotsCommand extends Command {
                 .compile()
                 .run((result) -> {
                     for (ResultSet set : result) {
-                        embed.addField(StringUtil.display(set.getString("name")) +
+                        embed.addField(StringUtil.fromMiniMessage(set.getString("name")) +
                                         String.format(" **(%s)**", set.getInt("id")),
                                 "Players: " + set.getInt("player_count"), false);
                     }

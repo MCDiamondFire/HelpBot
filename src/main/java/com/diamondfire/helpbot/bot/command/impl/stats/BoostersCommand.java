@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 import java.sql.ResultSet;
 
@@ -66,8 +66,8 @@ public class BoostersCommand extends Command {
                         int multiplier = set.getInt("multiplier");
                         String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
                         
-                        Emote emote = event.getJDA().getEmoteById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
-                        embed.addField(String.format("%s %sx booster from %s ", emote.getAsMention(), multiplier, owner), String.format("Ends in: %s", durationName), false);
+                        Emoji emote = event.getJDA().getEmojiById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
+                        embed.addField(String.format("%s %sx booster from %s ", emote.getFormatted(), multiplier, owner), String.format("Ends in: %s", durationName), false);
                     }
                     
                     event.reply(preset);

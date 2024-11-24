@@ -6,7 +6,9 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.io.File;
 import java.util.function.BiConsumer;
@@ -14,14 +16,14 @@ import java.util.function.BiConsumer;
 
 public class CodeCommand extends AbstractSingleQueryCommand {
     
-    public static <T extends CodeObject> void sendHelpMessage(T data, TextChannel channel) {
+    public static <T extends CodeObject> void sendHelpMessage(T data, GuildMessageChannel channel) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String customHead = data.getItem().getHead();
         
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessageEmbeds(builder.build()).addFile(actionIcon).queue();
+            channel.sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(actionIcon)).queue();
         } else {
             builder.setThumbnail(customHead);
             channel.sendMessageEmbeds(builder.build()).queue();
@@ -56,7 +58,7 @@ public class CodeCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, TextChannel> onDataReceived() {
+    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
         return CodeCommand::sendHelpMessage;
     }
 }

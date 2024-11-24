@@ -53,7 +53,8 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
     
     enum ParamConverter {
         ANY_TYPE("Any Value"),
-        TEXT("Text"),
+        TEXT("String"),
+        COMPONENT("Styled Text"),
         NUMBER("Number"),
         LOCATION("Location"),
         VECTOR("Vector"),
@@ -62,6 +63,7 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         POTION("Potion"),
         VARIABLE("Variable"),
         LIST("List"),
+        DICT("Dictionary"),
         ITEM("Item"),
         PROJECTILE("Projectile"),
         SPAWN_EGG("Spawn Egg"),
