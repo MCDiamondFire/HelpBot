@@ -23,6 +23,11 @@ public class SolvedCommand extends Command {
     }
     
     @Override
+    public String[] getAliases() {
+        return new String[]{"solve", "resolved"};
+    }
+    
+    @Override
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Marks the help post as solved.")
@@ -64,8 +69,8 @@ public class SolvedCommand extends Command {
             return;
         }
         
-        // Check if the post is already locked.
-        if (threadChannel.isLocked()) {
+        // Check if the post already has the solved tag.
+        if (threadChannel.getName().startsWith("[SOLVED] ")) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, "Post is already solved.")
@@ -76,8 +81,11 @@ public class SolvedCommand extends Command {
         // Apply the solved tag, other behavior handled by PostAppliedTagsEvent.
         ForumTag solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
         ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
-        if (!appliedTags.contains(solvedTag)) appliedTags.add(solvedTag);
-        
+        if (appliedTags.contains(solvedTag)) {
+            appliedTags.remove(solvedTag);
+            threadChannel.getManager().setAppliedTags(appliedTags).queue();
+        }
+        appliedTags.add(solvedTag);
         threadChannel.getManager().setAppliedTags(appliedTags).queue();
     }
     
