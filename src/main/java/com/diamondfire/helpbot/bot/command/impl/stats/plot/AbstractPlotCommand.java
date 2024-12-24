@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.*;
@@ -50,9 +51,12 @@ public abstract class AbstractPlotCommand extends Command {
                     new InformativeReply(InformativeReplyType.INFO, String.format("Plot Information (%s)", plotID), null)
             );
             
+            @Nullable String handle = resultTablePlot.getString("handle");
+            @Nullable String description = resultTablePlot.getString("description");
             PlotSize size = PlotSize.fromID(resultTablePlot.getInt("plotsize") - 1);
             
-            embed.setTitle(String.format("Plot Information (%s)", plotID));
+            embed.setTitle(handle == null ? String.format("Plot Information (%s)", plotID) : String.format("Plot Information (%s) (%s)", handle, plotID));
+            embed.setDescription(description);
             embed.addField("Name", StringUtil.fromMiniMessage(resultTablePlot.getString("name")), true);
             embed.addField("Owner", resultTablePlot.getString("owner_name"), true);
             embed.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
@@ -110,7 +114,8 @@ public abstract class AbstractPlotCommand extends Command {
     private enum PlotSize {
         BASIC(51),
         LARGE(101),
-        MASSIVE(301);
+        MASSIVE(301),
+        MEGA(1001);
         
         private final int size;
         
