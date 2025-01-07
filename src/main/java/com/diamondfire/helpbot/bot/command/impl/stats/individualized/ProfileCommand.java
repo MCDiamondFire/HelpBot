@@ -76,7 +76,8 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     
                     String rankString;
                     {
-                        Rank highRank = RankUtil.getHighRank(set);
+                        Rank[] ranks = RankUtil.getRanks(set);
+                        Rank highRank = RankUtil.getHighRank(ranks);
                         if (highRank == null) {
                             rankString = "";
                         } else {
