@@ -14,6 +14,9 @@ repositories {
     mavenCentral()
     maven(url = "https://jitpack.io")
     maven(url = "https://m2.dv8tion.net/releases")
+    maven("https://repo.opencollab.dev/maven-releases/") {
+        name = "opencollab"
+    }
 }
 
 dependencies {
@@ -24,7 +27,7 @@ dependencies {
     implementation("club.minnced:discord-webhooks:0.5.8")
     implementation("ch.qos.logback:logback-classic:1.2.5")
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation ("com.github.Steveice10:MCProtocolLib:c5e4b66")
+    implementation("org.geysermc.mcprotocollib:protocol:1.21.7-1")
     implementation("mysql:mysql-connector-java:5.1.13")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.8")
     implementation("net.kyori:adventure-api:4.16.0")
