@@ -68,10 +68,9 @@ public class NbsCommand extends Command {
                 byte[] b64 = new NBSToTemplate(NBSDecoder.parse(file)).convert();
                 File templateOutputfile = File.createTempFile("nbs_output", ".txt");
                 BufferedWriter writer = new BufferedWriter(new FileWriter(templateOutputfile));
-                writer.write(String.format("/give @p minecraft:ender_chest{display:{Name:'[{\"text\":\"» \",\"color\":\"gold\"},{\"text\":\"Code Template\",\"color\":\"yellow\",\"bold\":true}]'},PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"name\":\"&6» &e&lCode Template\",\"version\":1,\"code\":\"%s\",\"author\":\"helpbot\"}'}} 1", new String(b64)));
+                writer.write(String.format("/give @p minecraft:ender_chest[minecraft:item_name=[{text:\"» \",color:gold},{text:\"Code Template\",color:yellow,bold:1}],custom_data={PublicBukkitValues:{\"hypercube:codetemplatedata\":'{\"name\":\"&6» &e&lCode Template\",\"version\":1,\"code\":\"%s\",\"author\":\"Help Bot\"}'}}]", new String(b64)));
                 
                 writer.close();
-                
                     
                 EmbedBuilder embed = new EmbedBuilder()
                         .setColor(new Color(70,199,82))
