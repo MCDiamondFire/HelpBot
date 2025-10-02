@@ -25,31 +25,25 @@ public class PostChannelEvent extends ListenerAdapter {
         
         // If the solved tag is added, add [SOLVED] to the thread's name.
         if (event.getAddedTags().contains(solvedTag) && !threadChannel.getName().startsWith("[SOLVED] ")) {
-            threadChannel.sendMessageEmbeds(
-                    new PresetBuilder()
-                            .withPreset(
-                                    new InformativeReply(InformativeReplyType.SUCCESS, "Post marked as solved")
-                            ).getEmbed().build()
-            ).queue();
+            sendSolvedEmbed(threadChannel, "Post marked as solved");
             threadChannel.getManager().setName("[SOLVED] " + channel.getName()).queue();
         } else if (event.getRemovedTags().contains(solvedTag) && threadChannel.getName().startsWith("[SOLVED] ")) {
-            // If the solved tag is removed and the post has [SOLVED] in its name, put the old tags back.
-            threadChannel.getManager().setAppliedTags(event.getOldTags()).queue();
+            sendSolvedEmbed(threadChannel, "Post marked as unsolved");
+            String newName = threadChannel.getName().replaceFirst("\\[SOLVED] ", "");
+            if (newName.isEmpty()) {
+                newName = "Post";
+            }
+            threadChannel.getManager().setName(newName).queue();
         }
     }
     
-    @Override
-    public void onChannelUpdateArchived(ChannelUpdateArchivedEvent event) {
-        // Limit to help forum.
-        if (
-                event.getChannel().getType() != ChannelType.GUILD_PUBLIC_THREAD ||
-                        event.getChannel().asThreadChannel().getParentChannel().getIdLong() != HelpBotInstance.getConfig().getHelpChannel()
-        ) {
-            return;
-        }
-        
-        // When a post is archived, it should be locked.
-        event.getChannel().asThreadChannel().getManager().setLocked(true).queue();
+    public static void sendSolvedEmbed(ThreadChannel threadChannel, String message) {
+        threadChannel.sendMessageEmbeds(
+                new PresetBuilder()
+                        .withPreset(
+                                new InformativeReply(InformativeReplyType.SUCCESS, message)
+                        ).getEmbed().build()
+        ).queue();
     }
     
 }
