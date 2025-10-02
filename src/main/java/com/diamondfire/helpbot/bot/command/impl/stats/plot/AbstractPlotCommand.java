@@ -40,30 +40,31 @@ public abstract class AbstractPlotCommand extends Command {
     public void run(CommandEvent event) {
         PresetBuilder preset = new PresetBuilder();
         try {
-            ResultSet resultTablePlot = getPlot(event);
+            Plot plot = getPlot(event);
             EmbedBuilder embed = preset.getEmbed();
             
-            if (resultTablePlot == null || !resultTablePlot.next()) {
+            if (plot == null) {
                 throw new IllegalStateException("Plot not found");
             }
-            int plotID = resultTablePlot.getInt("id");
+            int plotID = plot.id();
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.INFO, String.format("Plot Information (%s)", plotID), null)
             );
             
-            @Nullable String handle = resultTablePlot.getString("handle");
-            @Nullable String description = resultTablePlot.getString("description");
-            PlotSize size = PlotSize.fromID(resultTablePlot.getInt("plotsize") - 1);
+            @Nullable String handle = plot.handle();
+            @Nullable String description = plot.description();
+            PlotSize size = plot.plotSize();
             
             embed.setTitle(handle == null ? String.format("Plot Information (%s)", plotID) : String.format("Plot Information (%s) (%s)", handle, plotID));
             embed.setDescription(description);
-            embed.addField("Name", StringUtil.fromMiniMessage(resultTablePlot.getString("name")), true);
-            embed.addField("Owner", resultTablePlot.getString("owner_name"), true);
-            embed.addField("Node", "Node " + resultTablePlot.getInt("node"), true);
+            embed.addField("Name", StringUtil.fromMiniMessage(plot.name()), true);
+            embed.addField("Owner", plot.ownerName(), true);
+            boolean privateNode = plot.node() >= 1000;
+            embed.addField("Node", (privateNode ? "Private " : "") + "Node " + (privateNode ? plot.node() - 1000 : plot.node()), true);
             embed.addField("Plot Size", StringUtil.smartCaps(size.name()), true);
             
             // Creates a list of tags that the plot has
-            String tags = resultTablePlot.getString("tags");
+            String tags = plot.tags();
             if (tags.equals("none")) {
                 embed.addField("Plot Tags", "None", true);
             } else {
@@ -74,22 +75,19 @@ public abstract class AbstractPlotCommand extends Command {
                 embed.addField("Plot Tags", StringUtil.listView("> ", true, tagList.toArray(new String[0])), true);
             }
             
-            int weeksTillClear = resultTablePlot.getInt("immunity_level");
-            LocalDate activeTime = resultTablePlot.getDate("active_time").toLocalDate();
-            LocalDate clearDate = activeTime.plus(weeksTillClear, ChronoUnit.WEEKS);
+            LocalDate activeTime = plot.activeTime();
             
-            embed.addField("Auto Clear Date", FormatUtil.formatDate(clearDate) + String.format(" (%s weeks)", ChronoUnit.WEEKS.between(activeTime, clearDate)), true);
             embed.addField("Last Active Date", FormatUtil.formatDate(activeTime), true);
-            embed.addField("Whitelisted", (resultTablePlot.getInt("whitelist") == 1) + "", true);
-            embed.addField("Player Count", FormatUtil.formatNumber(resultTablePlot.getInt("player_count")), true);
-            embed.addField("Current Votes", FormatUtil.formatNumber(resultTablePlot.getInt("votes")), true);
+            embed.addField("Whitelisted", plot.whitelisted() + "", true);
+            embed.addField("Player Count", FormatUtil.formatNumber(plot.playerCount()), true);
+            embed.addField("Current Votes", FormatUtil.formatNumber(plot.votes()), true);
             
-            int x = resultTablePlot.getInt("xmin") + (size.getSize() / 2);
-            int z = resultTablePlot.getInt("zmin") + (size.getSize() / 2);
+            int x = plot.xMin() + (size.getSize() / 2);
+            int z = plot.zMin() + (size.getSize() / 2);
             embed.addField("Plot Center", String.format("[%s, 50, %s]", x, z), true);
             
             // Creates the icon for the plot
-            String plotIcon = resultTablePlot.getString("icon");
+            String plotIcon = plot.icon();
             // Plot head icons start with the character h.
             if (plotIcon.startsWith("h")) {
                 embed.setThumbnail(Util.getPlayerHead(plotIcon.substring(1)));
@@ -100,7 +98,7 @@ public abstract class AbstractPlotCommand extends Command {
                 event.getReplyHandler().replyA(preset).addFiles(FileUpload.fromData(mcItem)).queue();
             }
             
-        } catch (SQLException | IllegalStateException e) {
+        } catch (IllegalStateException e) {
             preset.withPreset(
                     new InformativeReply(InformativeReplyType.ERROR, "Plot was not found.")
             );
@@ -108,27 +106,27 @@ public abstract class AbstractPlotCommand extends Command {
         }
     }
     
-    public abstract ResultSet getPlot(CommandEvent event);
+    public abstract @Nullable Plot getPlot(CommandEvent event);
     
-    
-    private enum PlotSize {
-        BASIC(51),
-        LARGE(101),
-        MASSIVE(301),
-        MEGA(1001);
-        
-        private final int size;
-        
-        PlotSize(int size) {
-            this.size = size;
-        }
-        
-        public int getSize() {
-            return size;
-        }
-        
-        public static PlotSize fromID(int id) {
-            return PlotSize.values()[id];
-        }
+    protected Plot mapResultSetToPlot(final ResultSet rs) throws SQLException {
+        return new Plot(
+                rs.getInt("id"),
+                rs.getString("handle"),
+                rs.getString("description"),
+                rs.getString("name"),
+                rs.getString("owner_name"),
+                rs.getInt("node"),
+                PlotSize.fromID(rs.getInt("plotsize") - 1),
+                rs.getString("tags"),
+                rs.getInt("immunity_level"),
+                rs.getDate("active_time").toLocalDate(),
+                rs.getInt("whitelist") == 1,
+                rs.getInt("player_count"),
+                rs.getInt("votes"),
+                rs.getInt("xmin"),
+                rs.getInt("zmin"),
+                rs.getString("icon")
+        );
     }
+
 }

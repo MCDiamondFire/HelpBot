@@ -51,7 +51,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
     
     // If someone who knows MYSQL enough that they can add plotsize as some sort of "local" variable. Go for it.
     @Override
-    public ResultSet getPlot(CommandEvent event) {
+    public Plot getPlot(CommandEvent event) {
         try {
             Connection connection = ConnectionProvider.getConnection();
             boolean nodeSpecific = event.getArgument("node") != null;
@@ -80,7 +80,7 @@ public class PlotLocCommand extends AbstractPlotCommand {
             
             statement.setInt(1, event.getArgument("x"));
             statement.setInt(2, event.getArgument("z"));
-            return statement.executeQuery();
+            return this.mapResultSetToPlot(statement.executeQuery());
         } catch (Exception e) {
             e.printStackTrace();
         }

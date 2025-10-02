@@ -30,8 +30,8 @@ dependencies {
     implementation("org.geysermc.mcprotocollib:protocol:1.21.7-1")
     implementation("mysql:mysql-connector-java:5.1.13")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.8")
-    implementation("net.kyori:adventure-api:4.16.0")
-    implementation("net.kyori:adventure-text-minimessage:4.16.0")
+    implementation("net.kyori:adventure-api:4.24.0")
+    implementation("net.kyori:adventure-text-minimessage:4.24.0")
     implementation("dev.vankka:mcdiscordreserializer:4.3.0")
 }
 

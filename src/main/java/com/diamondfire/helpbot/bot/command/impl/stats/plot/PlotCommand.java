@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.plot;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.IntegerArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
@@ -23,15 +23,15 @@ public class PlotCommand extends AbstractPlotCommand {
                 .category(CommandCategory.GENERAL_STATS)
                 .addArgument(
                         new HelpContextArgument()
-                                .name("plot id")
+                                .name("plot id or handle")
                 );
     }
     
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet()
-                .addArgument("id",
-                        new IntegerArgument());
+                .addArgument("id_or_handle",
+                        new StringArgument());
     }
     
     @Override
@@ -40,14 +40,34 @@ public class PlotCommand extends AbstractPlotCommand {
     }
     
     @Override
-    public ResultSet getPlot(CommandEvent event) {
+    public Plot getPlot(final CommandEvent event) {
         try {
-            Connection connection = ConnectionProvider.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE id = ?");
-            statement.setInt(1, event.getArgument("id"));
-            
-            return statement.executeQuery();
-        } catch (Exception e) {
+            int id = Integer.parseInt(event.getArgument("id_or_handle"));
+            try (Connection connection = ConnectionProvider.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE id = ?")) {
+                
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return this.mapResultSetToPlot(resultSet);
+                    }
+                }
+            }
+        } catch (NumberFormatException ignored) {
+            String handle = event.getArgument("id_or_handle");
+            try (Connection connection = ConnectionProvider.getConnection();
+                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM plots WHERE handle = ?")) {
+                
+                statement.setString(1, handle);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return this.mapResultSetToPlot(resultSet);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
