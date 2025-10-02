@@ -8,11 +8,9 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.util.SolvedPostManager;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.*;
-import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
-
-import java.util.*;
 
 
 public class SolvedCommand extends Command {
@@ -47,46 +45,35 @@ public class SolvedCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         // Limit to help forum.
-        if (
-                event.getChannel().getType() != ChannelType.GUILD_PUBLIC_THREAD ||
-                        event.getChannel().asThreadChannel().getParentChannel().getIdLong() != HelpBotInstance.getConfig().getHelpChannel()
-        ) {
-            event.reply(new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Command can only be used in <#" + HelpBotInstance.getConfig().getHelpChannel() + ">")
-                    ));
+        if (event.getChannel().getType() != ChannelType.GUILD_PUBLIC_THREAD ||
+                event.getChannel().asThreadChannel().getParentChannel().getIdLong() != HelpBotInstance.getConfig().getHelpChannel()) {
+            
+            event.reply(new PresetBuilder().withPreset(
+                    new InformativeReply(InformativeReplyType.ERROR, "Command can only be used in <#" + HelpBotInstance.getConfig().getHelpChannel() + ">")
+            ));
             return;
         }
         
         ThreadChannel threadChannel = event.getChannel().asThreadChannel();
         
         // Check if the command is used by the post owner.
-        if (event.getMember() == null | threadChannel.getOwnerIdLong() != event.getMember().getIdLong()) {
-            event.reply(new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Command can only be used by the post owner.")
-                    ));
+        if (event.getMember() == null || threadChannel.getOwnerIdLong() != event.getMember().getIdLong()) {
+            event.reply(new PresetBuilder().withPreset(
+                    new InformativeReply(InformativeReplyType.ERROR, "Command can only be used by the post owner.")
+            ));
             return;
         }
         
         // Check if the post already has the solved tag.
-        if (threadChannel.getName().startsWith("[SOLVED] ")) {
-            event.reply(new PresetBuilder()
-                    .withPreset(
-                            new InformativeReply(InformativeReplyType.ERROR, "Post is already solved.")
-                    ));
+        if (SolvedPostManager.isSolved(threadChannel)) {
+            event.reply(new PresetBuilder().withPreset(
+                    new InformativeReply(InformativeReplyType.ERROR, "Post is already solved.")
+            ));
             return;
         }
         
-        // Apply the solved tag, other behavior handled by PostAppliedTagsEvent.
-        ForumTag solvedTag = threadChannel.getParentChannel().asForumChannel().getAvailableTagById(HelpBotInstance.getConfig().getHelpChannelSolvedTag());
-        ArrayList<ForumTag> appliedTags = new ArrayList<>(threadChannel.getAppliedTags());
-        if (appliedTags.contains(solvedTag)) {
-            appliedTags.remove(solvedTag);
-            threadChannel.getManager().setAppliedTags(appliedTags).queue();
-        }
-        appliedTags.add(solvedTag);
-        threadChannel.getManager().setAppliedTags(appliedTags).queue();
+        // Apply the solved tag.
+        SolvedPostManager.addSolved(threadChannel);
     }
     
 }
