@@ -12,11 +12,11 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.*;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -50,7 +50,7 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 Button button = Button.secondary(reaction.getKey().toString(), reaction.getValue().getName());
                 
                 buttons.add(button.withEmoji(Emoji.fromCustom(reaction.getKey().getEmote())));
-                buttonMap.put(button.getId(), reaction.getValue());
+                buttonMap.put(button.getCustomId(), reaction.getValue());
             }
         } else {
             for (CodeObject data : actions) {
@@ -58,11 +58,11 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 Button button = Button.secondary(String.valueOf(data.getEnum().getEmoji()), data.getName());
                 
                 buttons.add(button.withEmoji(HelpBotInstance.getJda().getEmojiById(emoji)));
-                buttonMap.put(button.getId(), data);
+                buttonMap.put(button.getCustomId(), data);
             }
         }
         
-        channel.sendMessageEmbeds(preset.getEmbed().build()).setActionRow(buttons).queue((message) -> {
+        channel.sendMessageEmbeds(preset.getEmbed().build()).setComponents(ActionRow.of(buttons)).queue((message) -> {
             ButtonHandler.addListener(userToWait, message, (event) -> {
                 message.delete().queue();
                 

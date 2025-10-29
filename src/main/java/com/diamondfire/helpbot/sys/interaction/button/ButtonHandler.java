@@ -19,7 +19,7 @@ public class ButtonHandler {
         BUTTON_CONSUMERS.put(message.getIdLong(), new ButtonListener(user, consumer), () -> {
             HelpBotInstance.getJda()
                     .getTextChannelById(message.getChannel().getIdLong()).retrieveMessageById(message.getIdLong())
-                    .flatMap((msg) -> persistent, (msg) -> message.editMessage(MessageEditData.fromMessage(message)).setActionRow(Collections.emptyList()))
+                    .flatMap((msg) -> persistent, (msg) -> message.editMessage(MessageEditData.fromMessage(message)).setComponents(Collections.emptyList()))
                     .queue();
         }, persistent);
     }

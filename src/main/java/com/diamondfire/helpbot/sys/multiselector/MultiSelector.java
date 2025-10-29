@@ -3,9 +3,9 @@ package com.diamondfire.helpbot.sys.multiselector;
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.components.actionrow.ActionRow;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.util.*;
 
@@ -39,11 +39,11 @@ public class MultiSelector {
                 button = button.withEmoji(Emoji.fromUnicode(page.getCustomEmote()));
             }
             
-            pageMap.put(button.getId(), page);
+            pageMap.put(button.getCustomId(), page);
             buttons.add(button);
         }
         
-        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setActionRow(buttons).queue((message) -> {
+        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setComponents(ActionRow.of(buttons)).queue((message) -> {
             ButtonHandler.addListener(user, message, event -> {
                 event.deferEdit().queue();
                 message.editMessageEmbeds(pageMap.get(event.getComponentId()).getPage().build()).setComponents(message.getComponents()).queue();

@@ -63,7 +63,7 @@ public class NbsCommand extends Command {
         File file = new File("input.nbs");
         
         
-        attachment.downloadToFile(file).thenAccept(downloadedFile -> {
+        attachment.getProxy().downloadToFile(file).thenAccept(downloadedFile -> {
             try {
                 byte[] b64 = new NBSToTemplate(NBSDecoder.parse(file)).convert();
                 File templateOutputfile = File.createTempFile("nbs_output", ".txt");

@@ -2,11 +2,11 @@ package com.diamondfire.helpbot.sys.rolereact;
 
 import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.util.*;
+import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.*;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +33,7 @@ public class RoleReactListener extends ListenerAdapter {
                 Button button = Button.secondary(role.name(), role.getOverride() == null ? StringUtil.smartCaps(role.name().replace('_', ' ')) : role.getOverride());
                 
                 buttons.add(button.withEmoji(Emoji.fromUnicode(emoji)));
-                roleMap.put(button.getId(), role.getRoleID());
+                roleMap.put(button.getCustomId(), role.getRoleID());
             }
             
             msg.editMessage("__**Reaction Roles**__ \nClick to add/remove roles from yourself")
