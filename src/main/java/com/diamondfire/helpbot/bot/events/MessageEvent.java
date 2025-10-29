@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 public class MessageEvent extends ListenerAdapter {
     
     private static final MessageAcceptor[] acceptors = {
-            new ReportAndFeatureApplicationAcceptor(),
             new FilterAcceptor(),
             new CommandAcceptor(),
             new TagAcceptor(),
