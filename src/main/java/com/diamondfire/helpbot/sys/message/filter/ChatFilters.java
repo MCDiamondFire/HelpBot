@@ -1,13 +1,11 @@
 package com.diamondfire.helpbot.sys.message.filter;
 
 
-import com.diamondfire.helpbot.sys.message.filter.filters.SwearFilter;
 import net.dv8tion.jda.api.entities.Message;
 
 public final class ChatFilters {
     
     private static final ChatFilter[] chatFilters = new ChatFilter[]{
-            new SwearFilter()
     };
     
     public static boolean filterMessage(Message message) {
