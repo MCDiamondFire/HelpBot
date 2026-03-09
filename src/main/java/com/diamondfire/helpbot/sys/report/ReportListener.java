@@ -142,6 +142,7 @@ public class ReportListener extends ListenerAdapter {
         }
         
         SERVICE.submit(() -> {
+            event.deferReply(true).queue();
             try (WebhookClient client = JDAWebhookClient.withUrl(webhookUrl.getAsString())) {
                 boolean tooLong = message.length() > 2000;
                 String content = tooLong ? "See content.txt for message (too long)" : message;
@@ -168,9 +169,9 @@ public class ReportListener extends ListenerAdapter {
                 client.send(builder.build()).whenComplete((msg, exception) -> {
                     if (exception != null) exception.printStackTrace();
                     if (exception != null) {
-                        event.reply(":x: Uh oh! An error occurred while submitting your report. Please try resending it later.").setEphemeral(true).queue();
+                        event.getHook().sendMessage(":x: Uh oh! An error occurred while submitting your report. Please try resending it later.").setEphemeral(true).queue();
                     } else {
-                        event.reply(":mega: Your report has been successfully submitted!").setEphemeral(true).queue();
+                        event.getHook().sendMessage(":mega: Your report has been successfully submitted!").setEphemeral(true).queue();
                     }
                 });
             } catch (Throwable ignored) {
