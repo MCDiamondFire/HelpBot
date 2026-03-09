@@ -7,11 +7,13 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
 import net.dv8tion.jda.api.entities.channel.unions.ChannelUnion;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public final class SolvedPostManager {
+    
+    private static final int CHANNEL_NAME_LIMIT = 100;
+    private static final String ELLIPSIS = "...";
     
     private SolvedPostManager() {}
     
@@ -26,8 +28,25 @@ public final class SolvedPostManager {
     }
     
     public static void addSolved(ThreadChannel channel) {
+        if (!applySolvedTag(channel)) return;
+        
+        if (!isSolved(channel)) {
+            String newName = "[SOLVED] " + channel.getName();
+            if (newName.length() > CHANNEL_NAME_LIMIT) {
+                newName = newName.substring(0, CHANNEL_NAME_LIMIT - ELLIPSIS.length()) + ELLIPSIS;
+            }
+            channel.getManager().setName(newName).queue();
+        }
+        
+        sendEmbed(channel, "Post marked as solved");
+    }
+    
+    /**
+     * @return true if successful
+     */
+    public static boolean applySolvedTag(ThreadChannel channel) {
         Optional<ForumTag> optionalTag = getSolvedTag(channel);
-        if (optionalTag.isEmpty()) return;
+        if (optionalTag.isEmpty()) return false;
         ForumTag solvedTag = optionalTag.get();
         
         List<ForumTag> tags = new ArrayList<>(channel.getAppliedTags());
@@ -35,12 +54,7 @@ public final class SolvedPostManager {
             tags.add(solvedTag);
             channel.getManager().setAppliedTags(tags).queue();
         }
-        
-        if (!isSolved(channel)) {
-            channel.getManager().setName("[SOLVED] " + channel.getName()).queue();
-        }
-        
-        sendEmbed(channel, "Post marked as solved");
+        return true;
     }
     
     public static void removeSolved(ThreadChannel channel) {

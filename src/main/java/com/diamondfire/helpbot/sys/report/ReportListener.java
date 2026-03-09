@@ -96,8 +96,8 @@ public class ReportListener extends ListenerAdapter {
                 **Thank you for helping keep DiamondFire safe!**
                 * Multiple proofs are allowed.
                 * Proofs can be both **videos and screenshots**.
-                * Uploaded screenshots should be **uncropped**
-                > Meaning, take a __full screenshot__ of your screen.
+                * Uploaded screenshots should be **uncropped**.
+                > Meaning, [take a screenshot](https://www.take-a-screenshot.org/) of your __entire__ screen.
                 * Make sure reports are made in **good faith with valid proof**.
                 """);
         
@@ -185,9 +185,7 @@ public class ReportListener extends ListenerAdapter {
         // Instead of event#getValue since it returns null when not found,
         // we just assume the components always exist as we already confirm
         // it's the report modal.
-        return event.getValues().stream()
-                .filter(mapping -> mapping.getCustomId().equals(customId))
-                .findFirst().orElseThrow();
+        return event.getValue(customId);
     }
     
 }

@@ -7,7 +7,7 @@ import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
-import com.diamondfire.helpbot.bot.events.CommandEvent;
+import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.util.SolvedPostManager;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.*;
@@ -72,8 +72,8 @@ public class SolvedCommand extends Command {
             return;
         }
         
-        // Apply the solved tag.
-        SolvedPostManager.addSolved(threadChannel);
+        /// Apply the solved tag, the [PostChannelEvent] listener will call [SolvedPostManager#addSolved].
+        SolvedPostManager.applySolvedTag(threadChannel);
     }
     
 }
