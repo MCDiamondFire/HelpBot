@@ -34,7 +34,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public String[] getAliases() {
-        return new String[]{"punishments", "warns", "warninglist", "punishmentlist", "bans", "kicks", "mutes", "banlist", "warnings"};
+        return new String[]{"punishments", "warns", "warninglist", "punishmentlist", "bans", "kicks", "mutes", "banlist", "warnings", "hist"};
     }
     
     @Override
