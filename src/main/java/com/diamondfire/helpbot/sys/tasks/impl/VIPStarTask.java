@@ -54,9 +54,7 @@ public class VIPStarTask implements LoopingTask {
             }
             
             if (guild.getMembersWithRoles(role).isEmpty()) {
-                role.delete()
-                        .reason("Noone with this vip role is currently on the discord")
-                        .queue();
+                VIPRoleHandler.deleteRole(role);
             }
         }
     }

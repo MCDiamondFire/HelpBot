@@ -4,11 +4,13 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import com.diamondfire.helpbot.util.StarUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Role;
+import okhttp3.internal.concurrent.Task;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -104,5 +106,18 @@ public class VIPRoleHandler {
     
     public static boolean isVipRole(Role role) {
         return COLOR_ROLE_MAP.containsValue(role.getIdLong());
+    }
+    
+    public static void deleteRole(Role role) {
+        COLOR_ROLE_MAP.values().removeIf(id -> id == role.getIdLong());
+        role.delete()
+                .reason("Noone with this vip role is currently on the discord")
+                .queue();
+        
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
