@@ -28,30 +28,6 @@ public class VIPRoleHandler {
     static {
         try {
             cacheJson();
-            
-            Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
-            for (Role role : guild.getRoles()) {
-                int color = role.getColorRaw();
-                if (color == Role.DEFAULT_COLOR_RAW) {
-                    continue;
-                }
-                if (role.getIcon() != null) {
-                    continue;
-                }
-                if (!COLOR_ROLE_MAP.containsKey(color)) {
-                    // Create the coloured star and register it on discord.
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
-                    baos.flush();
-                    role = guild.createRole()
-                            .setName(ROLE_NAME)
-                            .setIcon(Icon.from(baos.toByteArray()))
-                            .setPermissions(0L)
-                            .complete();
-                    COLOR_ROLE_MAP.put(color, role.getIdLong());
-                }
-            }
-            save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,10 +81,28 @@ public class VIPRoleHandler {
         }
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
         if (!COLOR_ROLE_MAP.containsKey(color)) {
-            return null;
+            try {
+                // Create the coloured star and register it on discord.
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
+                baos.flush();
+                Role role = guild.createRole()
+                        .setName(ROLE_NAME)
+                        .setIcon(Icon.from(baos.toByteArray()))
+                        .setPermissions(0L)
+                        .complete();
+                COLOR_ROLE_MAP.put(color, role.getIdLong());
+                save();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return guild.getRoleById(COLOR_ROLE_MAP.get(color));
     }
     
-
+    
+    public static boolean isVipRole(Role role) {
+        return COLOR_ROLE_MAP.containsValue(role.getIdLong());
+    }
 }

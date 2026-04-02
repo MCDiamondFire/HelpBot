@@ -28,24 +28,36 @@ public class VIPStarTask implements LoopingTask {
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
         Set<Long> vipIds = VIPRoleHandler.retrieveVIPs();
 
-        guild.loadMembers((member) -> {
+        guild.loadMembers(member -> {
             Role role = VIPRoleHandler.getRole(member.getColorRaw());
             if (role == null) {
                 return;
             }
+            
             if (vipIds.contains(member.getIdLong()) && !member.getRoles().contains(role)) {
                 guild.addRoleToMember(member, role)
                         .reason("User has VIP Pass")
                         .queue();
                 return;
             }
+            
             if (!vipIds.contains(member.getIdLong()) && member.getRoles().contains(role)) {
                 guild.removeRoleFromMember(member, role)
                         .reason("User's VIP Pass has expired")
                         .queue();
             }
         });
-
+        
+        for (Role role : guild.getRoles()) {
+            if (!VIPRoleHandler.isVipRole(role)) {
+                continue;
+            }
+            
+            if (guild.getMembersWithRoles(role).isEmpty()) {
+                role.delete()
+                        .reason("Noone with this vip role is currently on the discord")
+                        .queue();
+            }
+        }
     }
-    
 }
