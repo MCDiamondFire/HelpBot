@@ -138,7 +138,7 @@ public class HelpBotInstance {
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
-                .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
+                .setActivity(Activity.watching(getConfig().getPrefix() + "help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                 .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new MessageEditEvent(), new PostChannelEvent(), new ChannelCreatedEvent(), new ChannelUpdatedNameEvent());
