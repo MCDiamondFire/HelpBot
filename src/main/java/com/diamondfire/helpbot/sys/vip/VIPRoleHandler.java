@@ -4,11 +4,13 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.sys.tasks.TaskRegistry;
 import com.diamondfire.helpbot.util.StarUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.entities.Role;
+import okhttp3.internal.concurrent.Task;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -28,30 +30,6 @@ public class VIPRoleHandler {
     static {
         try {
             cacheJson();
-            
-            Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
-            for (Role role : guild.getRoles()) {
-                int color = role.getColorRaw();
-                if (color == Role.DEFAULT_COLOR_RAW) {
-                    continue;
-                }
-                if (role.getIcon() != null) {
-                    continue;
-                }
-                if (!COLOR_ROLE_MAP.containsKey(color)) {
-                    // Create the coloured star and register it on discord.
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
-                    baos.flush();
-                    role = guild.createRole()
-                            .setName(ROLE_NAME)
-                            .setIcon(Icon.from(baos.toByteArray()))
-                            .setPermissions(0L)
-                            .complete();
-                    COLOR_ROLE_MAP.put(color, role.getIdLong());
-                }
-            }
-            save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,10 +83,41 @@ public class VIPRoleHandler {
         }
         Guild guild = HelpBotInstance.getJda().getGuildById(HelpBotInstance.DF_GUILD);
         if (!COLOR_ROLE_MAP.containsKey(color)) {
-            return null;
+            try {
+                // Create the coloured star and register it on discord.
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(StarUtil.create(new Color(color)), "png", baos);
+                baos.flush();
+                Role role = guild.createRole()
+                        .setName(ROLE_NAME)
+                        .setIcon(Icon.from(baos.toByteArray()))
+                        .setPermissions(0L)
+                        .complete();
+                COLOR_ROLE_MAP.put(color, role.getIdLong());
+                save();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return guild.getRoleById(COLOR_ROLE_MAP.get(color));
     }
     
-
+    
+    public static boolean isVipRole(Role role) {
+        return COLOR_ROLE_MAP.containsValue(role.getIdLong());
+    }
+    
+    public static void deleteRole(Role role) {
+        COLOR_ROLE_MAP.values().removeIf(id -> id == role.getIdLong());
+        role.delete()
+                .reason("Noone with this vip role is currently on the discord")
+                .queue();
+        
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
