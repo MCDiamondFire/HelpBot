@@ -13,6 +13,7 @@ public enum Rank {
     RETIRED("Retired", 1, RankBranch.RETIREMENT, "Retired"),
     EMERITUS("Emeritus", 2, RankBranch.RETIREMENT, "Emeritus"),
     //Special
+    VIP("VIP", 1, RankBranch.VIP, "VIP"),
     BUILDER("B", 1, RankBranch.BUILDER, "Builder"),
     YOUTUBER("YT", 1, RankBranch.YOUTUBER, "Youtube"),
     // Support
