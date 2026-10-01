@@ -49,18 +49,25 @@ public class PlotLocCommand extends AbstractPlotCommand {
         return Permission.USER;
     }
     
-    private static final String PLOT_SIZE = "(CASE" +
+    // Build area runs from xmin/zmin; the codespace sits on the -x side of it (see Hypercube's GridCodeWorld).
+    private static final String MIN_X = "xmin - (CASE WHEN plotsize >= 4 THEN 300 ELSE 20 END)";
+    private static final String MAX_X = "xmin + (CASE" +
             "    WHEN plotsize = 1 THEN 51" +
             "    WHEN plotsize = 2 THEN 101" +
             "    WHEN plotsize = 3 THEN 301" +
             "    WHEN plotsize = 4 THEN 1001" +
             "    ELSE 0 END)";
+    private static final String MAX_Z = "zmin + (CASE" +
+            "    WHEN plotsize = 1 THEN 51" +
+            "    WHEN plotsize = 2 THEN 101" +
+            "    WHEN plotsize = 4 THEN 1001" +
+            "    ELSE 301 END)";
     
     @Override
     public Plot getPlot(CommandEvent event) {
         boolean nodeSpecific = event.getArgument("node") != null;
-        String query = "SELECT * FROM plots WHERE ? BETWEEN xmin AND xmin + " + PLOT_SIZE +
-                " AND ? BETWEEN zmin AND zmin + " + PLOT_SIZE +
+        String query = "SELECT * FROM plots WHERE ? BETWEEN " + MIN_X + " AND " + MAX_X +
+                " AND ? BETWEEN zmin AND " + MAX_Z +
                 (nodeSpecific ? " AND node = ?" : "") + " LIMIT 1";
         
         try (Connection connection = ConnectionProvider.getConnection();
