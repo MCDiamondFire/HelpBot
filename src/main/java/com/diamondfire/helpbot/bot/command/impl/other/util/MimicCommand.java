@@ -39,7 +39,9 @@ public class MimicCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         String msg = event.getArgument("msg");
-        event.getMessage().delete().queue();
+        if (event.getMessage() != null) {
+            event.getMessage().delete().queue();
+        }
         event.getChannel().sendMessage(msg).queue();
     }
     

@@ -49,7 +49,7 @@ public class NbsCommand extends Command {
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         
-        if (event.getMessage().getAttachments().isEmpty()) {
+        if (event.getMessage() == null || event.getMessage().getAttachments().isEmpty()) {
             event.reply(attachNbsMsg);
             return;
         }

@@ -53,7 +53,7 @@ public class CommandExecutor {
                 );
                 
                 {
-                    PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), e.getMessage().getContentRaw())));
+                    PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), e.getRawContent())));
                     EmbedBuilder embed = preset.getEmbed();
                     
                     try (StringWriter writer = new StringWriter();
@@ -72,6 +72,7 @@ public class CommandExecutor {
             }
             
             e.reply(builder);
+            e.completeInteraction();
         }, POOL);
     }
     

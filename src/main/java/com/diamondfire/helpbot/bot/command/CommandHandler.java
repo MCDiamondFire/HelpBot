@@ -5,7 +5,9 @@ import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
-import java.util.HashMap;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+
+import java.util.*;
 
 public class CommandHandler {
     
@@ -53,6 +55,10 @@ public class CommandHandler {
     
     public HashMap<String, Command> getCommands() {
         return CMDS;
+    }
+    
+    public List<SlashCommandData> getSlashCommands() {
+        return CMDS.values().stream().map(Command::getSlashCommand).toList();
     }
     
     public HashMap<String, Command> getAliases() {
