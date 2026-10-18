@@ -12,8 +12,10 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.utils.*;
 
 import java.sql.ResultSet;
+import java.util.*;
 
 public class BoostersCommand extends Command {
     private static final long[] emotes = new long[]{809172442957217812L, 809172442496630815L};
@@ -54,25 +56,34 @@ public class BoostersCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM xp_boosters WHERE FROM_UNIXTIME(end_time * 0.001) > CURRENT_TIMESTAMP()"))
+                .query(new BasicQuery("SELECT owner_name, multiplier, end_time FROM xp_boosters WHERE end_time > UNIX_TIMESTAMP() * 1000 ORDER BY end_time"))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
-                        embed.addField("None!", "How sad... :(", false);
+                        embed.setDescription("There are no active boosters right now. How sad... :(");
+                        event.reply(preset);
+                        return;
                     }
                     
+                    List<String> lines = new ArrayList<>();
                     for (ResultSet set : result) {
-                        String owner = set.getString("owner_name");
+                        String owner = MarkdownSanitizer.escape(set.getString("owner_name"));
                         int multiplier = set.getInt("multiplier");
-                        String durationName = FormatUtil.formatMilliTime(set.getLong("end_time") - System.currentTimeMillis());
+                        long endTime = set.getLong("end_time");
                         
-                        Emoji emote = event.getJDA().getEmojiById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
-                        embed.addField(String.format("%s %sx booster from %s ", emote.getFormatted(), multiplier, owner), String.format("Ends in: %s", durationName), false);
+                        lines.add(String.format("%s**%sx** from **%s** \u2022 ends %s",
+                                getEmote(event, multiplier), multiplier, owner, TimeFormat.RELATIVE.format(endTime)));
                     }
                     
+                    embed.setDescription(String.join("\n", lines));
                     event.reply(preset);
                 });
         
+    }
+    
+    private static String getEmote(CommandEvent event, int multiplier) {
+        Emoji emote = event.getJDA().getEmojiById(emotes[Util.clamp(multiplier - 2, 0, emotes.length - 1)]);
+        return emote == null ? "" : emote.getFormatted() + " ";
     }
     
 }
