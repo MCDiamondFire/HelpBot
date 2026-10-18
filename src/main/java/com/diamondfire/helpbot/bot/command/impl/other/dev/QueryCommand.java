@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.StringUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.io.*;
 import java.sql.ResultSet;
@@ -75,15 +76,15 @@ public class QueryCommand extends Command {
                             builder.addField("Row: " + (i + 1), String.format("```asciidoc\n%s```", objects.get(i)), false);
                         }
                         
-                        event.getReplyHandler().reply(builder);
+                        event.reply(builder);
                     });
         } catch (IllegalStateException e) {
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String sStackTrace = sw.toString();
             builder.setTitle("Query failed! " + e.getClass().getName());
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
-            event.getChannel().sendMessage(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)).queue();
+            event.reply(builder);
+            event.reply(MessageCreateData.fromContent(String.format("```%s```", sStackTrace.length() >= 1500 ? sStackTrace.substring(0, 1500) : sStackTrace)));
         }
         
     }

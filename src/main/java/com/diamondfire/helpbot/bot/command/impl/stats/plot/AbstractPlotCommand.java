@@ -8,6 +8,7 @@ import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.Nullable;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.io.File;
 import java.sql.*;
@@ -95,7 +96,7 @@ public abstract class AbstractPlotCommand extends Command {
             } else {
                 File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
                 embed.setThumbnail("attachment://" + mcItem.getName());
-                event.getReplyHandler().replyA(preset).addFiles(FileUpload.fromData(mcItem)).queue();
+                event.reply(new MessageCreateBuilder().setEmbeds(embed.build()).setFiles(FileUpload.fromData(mcItem)).build());
             }
             
         } catch (IllegalStateException e) {

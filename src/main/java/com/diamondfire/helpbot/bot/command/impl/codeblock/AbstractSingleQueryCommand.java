@@ -9,70 +9,55 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
-import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
-import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
-import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
+import com.diamondfire.helpbot.sys.interaction.select.SelectMenuHandler;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
-import net.dv8tion.jda.api.components.buttons.Button;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.components.selections.*;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.*;
 import java.util.stream.Collectors;
 
 
 public abstract class AbstractSingleQueryCommand extends Command {
     
-    public static void sendMultipleMessage(List<CodeObject> actions, GuildMessageChannel channel, long userToWait, BiConsumer<CodeObject, GuildMessageChannel> onChosen) {
-        // This here is to determine if all the duplicate types are the same. If not, we need to make sure that we filter those out first..
-        CodeObject referenceData = actions.get(0);
-        Class<? extends CodeObject> classReference = referenceData.getClass();
-        PresetBuilder preset = new PresetBuilder();
-        preset.withPreset(
-                new InformativeReply(InformativeReplyType.INFO, "Duplicate Objects Detected!",
-                        "What you are searching for contains a duplicate entry. Let's narrow down your search.")
-        );
-        
-        boolean isSameType = true;
-        for (CodeObject data : actions) {
-            if (!data.getClass().isAssignableFrom(classReference)) {
-                isSameType = false;
-                break;
-            }
-        }
-        //If they are the same type, use the dupe emojis for that certain action type.
-        Map<String, CodeObject> buttonMap = new HashMap<>();
-        List<Button> buttons = new ArrayList<>();
-        if (isSameType) {
-            for (Map.Entry<BasicReaction, CodeObject> reaction : referenceData.getEnum().getEmbedBuilder().generateDupeEmojis(actions).entrySet()) {
-                Button button = Button.secondary(reaction.getKey().toString(), reaction.getValue().getName());
-                
-                buttons.add(button.withEmoji(Emoji.fromCustom(reaction.getKey().getEmote())));
-                buttonMap.put(button.getCustomId(), reaction.getValue());
-            }
-        } else {
-            for (CodeObject data : actions) {
-                long emoji = data.getEnum().getEmoji();
-                Button button = Button.secondary(String.valueOf(data.getEnum().getEmoji()), data.getName());
-                
-                buttons.add(button.withEmoji(HelpBotInstance.getJda().getEmojiById(emoji)));
-                buttonMap.put(button.getCustomId(), data);
-            }
+    public static void sendMultipleMessage(List<CodeObject> actions, CommandEvent event, BiConsumer<CodeObject, Consumer<MessageCreateData>> onChosen) {
+        sendSelectMessage(actions, "Duplicate Objects Detected!", "What you are searching for contains a duplicate entry. Let's narrow down your search.", event, onChosen);
+    }
+    
+    public static void sendSelectMessage(List<CodeObject> objects, String title, String description, CommandEvent event, BiConsumer<CodeObject, Consumer<MessageCreateData>> onChosen) {
+        List<CodeObject> options = objects.subList(0, Math.min(objects.size(), SelectMenu.OPTIONS_MAX_AMOUNT));
+        StringSelectMenu.Builder menu = StringSelectMenu.create("code_object").setPlaceholder("Choose an object");
+        for (int i = 0; i < options.size(); i++) {
+            CodeObject data = options.get(i);
+            String type = data instanceof ActionData action ? data.getEnum().getName() + " | " + action.getCodeblockName() : data.getEnum().getName();
+            SelectOption option = SelectOption.of(data.getName(), String.valueOf(i)).withDescription(type);
+            
+            Emoji emoji = HelpBotInstance.getJda().getEmojiById(data.getEnum().getEmoji());
+            menu.addOptions(emoji == null ? option : option.withEmoji(emoji));
         }
         
-        channel.sendMessageEmbeds(preset.getEmbed().build()).setComponents(ActionRow.of(buttons)).queue((message) -> {
-            ButtonHandler.addListener(userToWait, message, (event) -> {
-                message.delete().queue();
-                
-                // when msg is deleted causes nullpointer when tries to remove reactions! FIX
-                CodeObject object = buttonMap.get(event.getComponentId());
-                onChosen.accept(object, message.getChannel().asGuildMessageChannel());
+        PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.INFO, title, description));
+        MessageCreateData prompt = new MessageCreateBuilder()
+                .setEmbeds(preset.getEmbed().build())
+                .setComponents(ActionRow.of(menu.build()))
+                .build();
+        
+        event.reply(prompt, (message) -> SelectMenuHandler.addListener(event.getAuthor().getIdLong(), message, (selectEvent) -> {
+            AtomicBoolean edited = new AtomicBoolean();
+            CodeObject object = options.get(Integer.parseInt(selectEvent.getValues().get(0)));
+            onChosen.accept(object, (result) -> {
+                if (edited.compareAndSet(false, true)) {
+                    selectEvent.editMessage(MessageEditData.fromCreateData(result)).setReplace(true).queue();
+                } else {
+                    selectEvent.getChannel().sendMessage(result).queue();
+                }
             });
-        });
-        
+        }));
     }
     
     @Override
@@ -91,9 +76,9 @@ public abstract class AbstractSingleQueryCommand extends Command {
         getData(event, onDataReceived());
     }
     
-    public abstract BiConsumer<CodeObject, GuildMessageChannel> onDataReceived();
+    public abstract BiConsumer<CodeObject, Consumer<MessageCreateData>> onDataReceived();
     
-    protected void getData(CommandEvent event, BiConsumer<CodeObject, GuildMessageChannel> onChosen) {
+    protected void getData(CommandEvent event, BiConsumer<CodeObject, Consumer<MessageCreateData>> onChosen) {
         String name = event.getArgument("name");
         PresetBuilder preset = new PresetBuilder();
         
@@ -126,24 +111,21 @@ public abstract class AbstractSingleQueryCommand extends Command {
                 
                 // If none, proceed. Else we need to special case that.
                 if (sameActions.size() == 1) {
-                    onChosen.accept(sameActions.get(0), event.getChannel().asGuildMessageChannel());
+                    onChosen.accept(sameActions.get(0), event::reply);
                 } else if (sameActions.size() > 1) {
-                    sendMultipleMessage(sameActions, event.getChannel().asGuildMessageChannel(), event.getMember().getIdLong(), onChosen);
+                    sendMultipleMessage(sameActions, event, onChosen);
                 }
                 
                 return;
                 // Either there are too many similar actions or there is no close action.
             } else {
-                preset.withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, String.format("I couldn't exactly find `%s`! \nHere are some similar objects", StringUtil.display(EmbedUtil.titleSafe(name))))
-                );
-                List<String> similarActionNames = possibleChoices.entrySet().stream()
-                        .sorted(Comparator.comparingDouble(Map.Entry::getValue))
-                        .map((entry) -> entry.getKey().getName())
-                        .collect(Collectors.toList());
-                Collections.reverse(similarActionNames);
+                List<CodeObject> similarObjects = possibleChoices.entrySet().stream()
+                        .sorted(Map.Entry.<CodeObject, Double>comparingByValue().reversed())
+                        .map(Map.Entry::getKey)
+                        .toList();
                 
-                EmbedUtil.addFields(preset.getEmbed(), similarActionNames);
+                sendSelectMessage(similarObjects, String.format("I couldn't exactly find `%s`!", StringUtil.display(EmbedUtil.titleSafe(name))), "Here are some similar objects.", event, onChosen);
+                return;
             }
             
         } else {

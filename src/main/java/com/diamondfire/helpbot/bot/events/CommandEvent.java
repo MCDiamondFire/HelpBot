@@ -8,15 +8,22 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.Argument
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
 import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
 
 public class CommandEvent {
+
+    private static final ScheduledExecutorService DEFER_SCHEDULER = Executors.newSingleThreadScheduledExecutor();
 
     private Command command;
     private final JDA jda;
@@ -26,7 +33,7 @@ public class CommandEvent {
     private final MessageChannelUnion channel;
     private final Message message;
     private final SlashCommandInteractionEvent interaction;
-    private final AtomicBoolean interactionReplied = new AtomicBoolean();
+    private InteractionState interactionState = InteractionState.PENDING;
     private final String rawContent;
     private final ReplyHandler replyHandler;
     //TODO Cleanup and refactor this.
@@ -66,7 +73,10 @@ public class CommandEvent {
         this.message = null;
         this.interaction = interaction;
         this.replyHandler = new ReplyHandler(channel.asGuildMessageChannel());
-        this.command = CommandHandler.getInstance().getCommands().get(interaction.getName());
+        this.command = CommandHandler.getCommand(interaction.getName());
+        if (!CommandHandler.getInstance().getCommands().containsKey(interaction.getName())) {
+            this.aliasedUsed = interaction.getName();
+        }
         this.rawContent = interaction.getCommandString();
     }
 
@@ -95,18 +105,74 @@ public class CommandEvent {
             return;
         }
 
-        if (interaction != null && interactionReplied.compareAndSet(false, true)) {
-            interaction.getHook().editOriginalEmbeds(preset.getEmbed().build()).queue();
+        reply(MessageCreateData.fromEmbeds(preset.getEmbed().build()), preset.isError(), null);
+    }
+
+    public void reply(EmbedBuilder embed) {
+        if (embed.isEmpty()) {
             return;
         }
 
-        replyHandler.reply(preset, getChannel());
+        reply(MessageCreateData.fromEmbeds(embed.build()));
     }
 
-    public void completeInteraction() {
-        if (interaction != null && interactionReplied.compareAndSet(false, true)) {
-            interaction.getHook().deleteOriginal().queue();
+    public void reply(MessageCreateData data) {
+        reply(data, false, null);
+    }
+
+    public void reply(MessageCreateData data, Consumer<Message> onSent) {
+        reply(data, false, onSent);
+    }
+
+    private void reply(MessageCreateData data, boolean ephemeral, Consumer<Message> onSent) {
+        if (interaction != null && replyToInteraction(data, ephemeral, onSent)) {
+            return;
         }
+
+        channel.sendMessage(data).queue(onSent);
+    }
+
+    public void scheduleDefer() {
+        DEFER_SCHEDULER.schedule(this::defer, 2, TimeUnit.SECONDS);
+    }
+
+    public synchronized void completeInteraction() {
+        if (interaction == null) {
+            return;
+        }
+
+        switch (interactionState) {
+            case PENDING -> interaction.deferReply().flatMap(InteractionHook::deleteOriginal).queue();
+            case DEFERRED -> interaction.getHook().deleteOriginal().queue();
+        }
+        interactionState = InteractionState.DONE;
+    }
+
+    private synchronized void defer() {
+        if (interactionState == InteractionState.PENDING) {
+            interaction.deferReply().queue();
+            interactionState = InteractionState.DEFERRED;
+        }
+    }
+
+    private synchronized boolean replyToInteraction(MessageCreateData data, boolean ephemeral, Consumer<Message> onSent) {
+        switch (interactionState) {
+            case PENDING -> {
+                ReplyCallbackAction action = interaction.reply(data).setEphemeral(ephemeral);
+                if (onSent == null) {
+                    action.queue();
+                } else {
+                    action.flatMap(InteractionHook::retrieveOriginal).queue(onSent);
+                }
+            }
+            case DEFERRED -> interaction.getHook().editOriginal(MessageEditData.fromCreateData(data)).queue(onSent);
+            case DONE -> {
+                return false;
+            }
+        }
+
+        interactionState = InteractionState.DONE;
+        return true;
     }
 
     public <T> T getArgument(String code) {
@@ -155,5 +221,11 @@ public class CommandEvent {
 
     public Message getMessage() {
         return message;
+    }
+
+    private enum InteractionState {
+        PENDING,
+        DEFERRED,
+        DONE
     }
 }

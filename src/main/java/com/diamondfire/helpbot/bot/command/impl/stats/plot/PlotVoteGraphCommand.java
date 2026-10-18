@@ -13,6 +13,7 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -71,9 +72,9 @@ public class PlotVoteGraphCommand extends Command {
                         entries.add(new StringEntry(set.getString("time")));
                     }
                     
-                    event.getChannel().sendFiles(FileUpload.fromData(new ChartGraphBuilder()
+                    event.reply(MessageCreateData.fromFiles(FileUpload.fromData(new ChartGraphBuilder()
                             .setGraphName(String.format("Votes on plot %s this month", plotID))
-                            .createGraphFromCollection(entries))).queue();
+                            .createGraphFromCollection(entries))));
                 });
     }
     

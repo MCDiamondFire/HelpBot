@@ -44,6 +44,9 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         if (icon.mobsOnly()) {
             builder.addField("Mobs Only", "", false);
         }
+        if (icon.worldExclusive()) {
+            builder.addField("\uD83C\uDF0D World Exclusive", "", false);
+        }
         
         if (icon.advanced()) {
             builder.addField("Advanced", "", false);
@@ -71,6 +74,8 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         VEHICLE("Vehicle"),
         BLOCK("Block"),
         BLOCK_TAG("Block Tag"),
+        BYTE("Bytes"),
+        DIALOG("Dialog"),
         NONE("None"),
         UNKNOWN("?");
         
@@ -81,7 +86,13 @@ public interface IconEmbedBuilder<T extends CodeObject> extends CodeDisplayBuild
         }
         
         public static ParamConverter getTypeFromString(String internalName) {
-            return ParamConverter.valueOf(internalName);
+            for (ParamConverter converter : values()) {
+                if (converter.name().equals(internalName)) {
+                    return converter;
+                }
+            }
+            
+            return UNKNOWN;
         }
         
         public String getText() {

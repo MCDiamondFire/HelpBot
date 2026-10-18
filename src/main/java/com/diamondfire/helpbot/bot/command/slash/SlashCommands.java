@@ -7,8 +7,10 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.bot.command.impl.*;
+import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.*;
@@ -18,7 +20,12 @@ import java.util.*;
 public class SlashCommands {
 
     public static SlashCommandData create(Command command) {
-        SlashCommandData data = Commands.slash(command.getName(), describe(command));
+        return create(command, command.getName());
+    }
+    
+    public static SlashCommandData create(Command command, String name) {
+        SlashCommandData data = Commands.slash(name, describe(command))
+                .setDefaultPermissions(command.getPermission() == Permission.USER ? DefaultMemberPermissions.ENABLED : DefaultMemberPermissions.DISABLED);
         if (command instanceof SubCommandHolder holder) {
             for (SubCommand subCommand : holder.getSubCommands()) {
                 data.addSubcommands(new SubcommandData(subCommand.getName(), describe(subCommand)).addOptions(createOptions(subCommand)));
@@ -31,7 +38,7 @@ public class SlashCommands {
     }
 
     public static Command getCommand(String name, String subcommandName) {
-        Command command = CommandHandler.getInstance().getCommands().get(name);
+        Command command = CommandHandler.getCommand(name);
         if (subcommandName != null && command instanceof SubCommandHolder holder) {
             return getSubCommand(holder, subcommandName);
         }

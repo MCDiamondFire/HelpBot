@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.db;
 
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
+import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
@@ -20,6 +21,7 @@ public class CodeDatabase {
     public static final String DEPRECATED_GAME_VALUES = "dgamevalues";
     
     private static final Map<String, List<? extends CodeObject>> registry = new HashMap<>();
+    private static String patchVersion = null;
     
     public static void initialize() {
         registry.clear();
@@ -92,6 +94,25 @@ public class CodeDatabase {
     }
     
     
+    public static String getPatchVersion() {
+        return patchVersion;
+    }
+    
+    private static void stripColorCodes(JsonElement element) {
+        if (element.isJsonArray()) {
+            element.getAsJsonArray().forEach(CodeDatabase::stripColorCodes);
+        } else if (element.isJsonObject()) {
+            for (Map.Entry<String, JsonElement> entry : element.getAsJsonObject().entrySet()) {
+                JsonElement value = entry.getValue();
+                if ((entry.getKey().equals("name") || entry.getKey().equals("text")) && value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+                    entry.setValue(new JsonPrimitive(StringUtil.stripColorCodes(value.getAsString())));
+                } else {
+                    stripColorCodes(value);
+                }
+            }
+        }
+    }
+    
     private static boolean deprecationCheck(CodeObject data) {
         return !data.getItem().getMaterial().equals("STONE");
     }
@@ -139,6 +160,9 @@ public class CodeDatabase {
     
     
     public static void initDatabase(JsonObject data) {
+        stripColorCodes(data);
+        patchVersion = data.has("versions") ? data.getAsJsonObject("versions").get("patch").getAsString() : null;
+        
         generateCodeblocks(data);
         generateActions(data);
         generateParticles(data);

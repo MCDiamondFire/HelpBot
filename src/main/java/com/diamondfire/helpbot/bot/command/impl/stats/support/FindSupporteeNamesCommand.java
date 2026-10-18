@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.*;
 import com.google.gson.*;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -80,7 +81,7 @@ public class FindSupporteeNamesCommand extends AbstractPlayerUUIDCommand {
                 new InformativeReply(InformativeReplyType.INFO, "Please wait while previous names are calculated.")
         );
         
-        event.getReplyHandler().replyA(loadingPreset).queue((msg) -> {
+        event.reply(MessageCreateData.fromEmbeds(loadingPreset.getEmbed().build()), (msg) -> {
             for (NameDateRange range : nameRanges) {
                 if (range.getAfter() == null) {
                     new DatabaseQuery()

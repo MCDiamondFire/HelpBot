@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.bot.restart.RestartHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 public class RestartCommand extends Command {
     
@@ -43,7 +44,7 @@ public class RestartCommand extends Command {
         builder.setTitle("Restarting!");
         builder.setDescription("This may take a moment");
         
-        event.getChannel().sendMessageEmbeds(builder.build()).queue((msg) -> {
+        event.reply(MessageCreateData.fromEmbeds(builder.build()), (msg) -> {
             RestartHandler.logRestart(msg);
             System.exit(0);
         });

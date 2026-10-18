@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.graph.graphable.*;
 import com.diamondfire.helpbot.sys.graph.impl.ChartGraphBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -65,9 +66,9 @@ public class StatsGraphCommand extends AbstractPlayerUUIDCommand {
                         dates.put(new DateEntry(set.getDate("date")), set.getInt("total"));
                     }
                 
-                    event.getChannel().sendFiles(FileUpload.fromData(new ChartGraphBuilder()
+                    event.reply(MessageCreateData.fromFiles(FileUpload.fromData(new ChartGraphBuilder()
                             .setGraphName(String.format("%s's sessions", player))
-                            .createGraph(dates))).queue();
+                            .createGraph(dates))));
                 
                 });
     }

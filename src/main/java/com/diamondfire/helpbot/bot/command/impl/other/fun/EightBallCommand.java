@@ -72,7 +72,7 @@ public class EightBallCommand extends Command {
         builder.setTitle(":8ball: | " + event.getArgument("question"));
         builder.setDescription(responses[rdm.nextInt(responses.length)]);
         
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.reply(builder);
     }
     
 }

@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.awt.*;
 import java.io.*;
@@ -54,7 +55,6 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         
@@ -87,7 +87,7 @@ public class NbsCommand extends Command {
                         .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://dfonline.dev/edit/?template=nbs) function to play this song!", false);
                 
                 
-                channel.sendFiles(FileUpload.fromData(templateOutputfile)).setEmbeds(embed.build()).queue();
+                event.reply(new MessageCreateBuilder().setEmbeds(embed.build()).setFiles(FileUpload.fromData(templateOutputfile)).build());
                 file.deleteOnExit();
             } catch (OutdatedNBSException | IOException e) {
                 e.printStackTrace();

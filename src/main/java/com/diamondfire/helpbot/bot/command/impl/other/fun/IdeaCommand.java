@@ -373,7 +373,7 @@ public class IdeaCommand extends Command {
         builder.setTitle("Idea \uD83D\uDCA1");
         builder.setDescription(finalString);
         //builder.setColor(new Color(0, 214, 255, 145));
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.reply(builder);
         
     }
 }

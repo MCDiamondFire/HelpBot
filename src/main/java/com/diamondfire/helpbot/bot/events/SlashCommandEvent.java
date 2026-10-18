@@ -27,7 +27,7 @@ public class SlashCommandEvent extends ListenerAdapter {
             return;
         }
 
-        event.deferReply().queue();
+        commandEvent.scheduleDefer();
         CommandHandler.getInstance().run(commandEvent);
     }
 

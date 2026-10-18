@@ -7,6 +7,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.io.File;
 import java.nio.file.*;
@@ -38,7 +39,7 @@ public abstract class AbstractSessionLogCommand extends AbstractPlayerUUIDComman
             File file = ExternalFileUtil.generateFile("session_log.txt");
             Files.writeString(file.toPath(), builder.toString(), StandardOpenOption.WRITE);
             
-            event.getChannel().sendFiles(FileUpload.fromData(file)).queue();
+            event.reply(MessageCreateData.fromFiles(FileUpload.fromData(file)));
         } catch (Exception e) {
             throw new IllegalStateException();
         }

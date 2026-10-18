@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.*;
 
 import java.util.*;
 
@@ -60,15 +60,36 @@ public class CommandHandler {
     public List<SlashCommandData> getSlashCommands() {
         List<SlashCommandData> commands = new ArrayList<>();
         for (Command command : CMDS.values()) {
-            try {
-                commands.add(SlashCommands.create(command));
-            } catch (Exception exception) {
-                System.err.println("Failed to create slash command " + command.getName());
-                exception.printStackTrace();
+            addSlashCommand(commands, command, command.getName());
+        }
+        
+        List<Command> sorted = CMDS.values().stream().sorted(Comparator.comparing(Command::getName)).toList();
+        int maxAliases = sorted.stream().mapToInt(command -> command.getAliases().length).max().orElse(0);
+        for (int i = 0; i < maxAliases; i++) {
+            for (Command command : sorted) {
+                if (i >= command.getAliases().length || CMDS.containsKey(command.getAliases()[i].toLowerCase())) {
+                    continue;
+                }
+                
+                if (commands.size() >= Commands.MAX_SLASH_COMMANDS) {
+                    System.out.println("Slash command limit reached, skipping alias " + command.getAliases()[i]);
+                    continue;
+                }
+                
+                addSlashCommand(commands, command, command.getAliases()[i].toLowerCase());
             }
         }
         
         return commands;
+    }
+    
+    private void addSlashCommand(List<SlashCommandData> commands, Command command, String name) {
+        try {
+            commands.add(SlashCommands.create(command, name));
+        } catch (Exception exception) {
+            System.err.println("Failed to create slash command " + name);
+            exception.printStackTrace();
+        }
     }
     
     public HashMap<String, Command> getAliases() {
