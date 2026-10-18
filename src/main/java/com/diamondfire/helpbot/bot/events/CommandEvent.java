@@ -7,11 +7,11 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.Argu
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.parser.ArgumentParser;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.reply.*;
+import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -67,14 +67,19 @@ public class CommandEvent {
         this.interaction = interaction;
         this.replyHandler = new ReplyHandler(channel.asGuildMessageChannel());
         this.command = CommandHandler.getInstance().getCommands().get(interaction.getName());
-
-        OptionMapping arguments = interaction.getOption(Command.SLASH_ARGUMENTS);
-        String prefixed = HelpBotInstance.getConfig().getPrefix() + interaction.getName();
-        this.rawContent = arguments == null ? prefixed : prefixed + " " + arguments.getAsString().trim();
+        this.rawContent = interaction.getCommandString();
     }
 
     public void pushArguments(String[] rawArgs) throws ArgumentException {
         this.parsedArgumentSet = ArgumentParser.parseArgs(command, Arrays.copyOfRange(rawArgs, 1, rawArgs.length), this);
+    }
+
+    public void pushSlashArguments() throws ArgumentException {
+        this.parsedArgumentSet = SlashCommands.parseArguments(command, interaction, this);
+    }
+
+    public boolean isSlashCommand() {
+        return interaction != null;
     }
 
     public Command getCommand() {

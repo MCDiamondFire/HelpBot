@@ -21,6 +21,10 @@ public abstract class SubCommandHolder extends Command {
     public void run(CommandEvent event) {
         SubCommand subcommand = event.getArgument("subcommand");
         event.setCommand(subcommand);
+        if (event.isSlashCommand()) {
+            CommandHandler.getInstance().run(event);
+            return;
+        }
     
         String[] rawArgs = event.getRawArgs();
         rawArgs[0] = rawArgs[0].substring(HelpBotInstance.getConfig().getPrefix().length());

@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.AttachmentArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -30,12 +32,19 @@ public class NbsCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Generates a Recode song function.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("nbs file")
+                                .optional()
+                );
     }
     
     @Override
     protected ArgumentSet compileArguments() {
-        return new ArgumentSet();
+        return new ArgumentSet()
+                .addArgument("file",
+                        new SingleArgumentContainer<>(new AttachmentArgument()).optional(null));
     }
     
     @Override
@@ -49,13 +58,12 @@ public class NbsCommand extends Command {
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         
-        if (event.getMessage() == null || event.getMessage().getAttachments().isEmpty()) {
-            event.reply(attachNbsMsg);
-            return;
+        Message.Attachment attachment = event.getArgument("file");
+        if (attachment == null && event.getMessage() != null && !event.getMessage().getAttachments().isEmpty()) {
+            attachment = event.getMessage().getAttachments().get(0);
         }
         
-        Message.Attachment attachment = event.getMessage().getAttachments().get(0);
-        if (!attachment.getFileExtension().equals("nbs")) {
+        if (attachment == null || !"nbs".equals(attachment.getFileExtension())) {
             event.reply(attachNbsMsg);
             return;
         }

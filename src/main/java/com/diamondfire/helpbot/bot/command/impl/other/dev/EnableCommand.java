@@ -2,7 +2,7 @@ package com.diamondfire.helpbot.bot.command.impl.other.dev;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.disable.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -32,7 +32,7 @@ public class EnableCommand extends Command implements CommandDisableFlag{
     @Override
     public ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument("cmd",
-                new StringArgument()
+                new SuggestingArgument<>(new StringArgument(), (input) -> CommandHandler.getInstance().getDisabledHandler().getDisabledCommands())
         );
     }
     

@@ -38,7 +38,11 @@ public class CommandExecutor {
                     }
                 }
                 
-                e.pushArguments(args);
+                if (e.isSlashCommand()) {
+                    e.pushSlashArguments();
+                } else {
+                    e.pushArguments(args);
+                }
                 command.run(e);
             } catch (ArgumentException exception) {
                 builder.withPreset(
@@ -72,7 +76,9 @@ public class CommandExecutor {
             }
             
             e.reply(builder);
-            e.completeInteraction();
+            if (e.getCommand() == command) {
+                e.completeInteraction();
+            }
         }, POOL);
     }
     

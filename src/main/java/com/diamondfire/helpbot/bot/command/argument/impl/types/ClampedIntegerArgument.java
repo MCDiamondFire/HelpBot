@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.ArgumentException;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.Util;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 public class ClampedIntegerArgument extends IntegerArgument {
@@ -18,6 +19,11 @@ public class ClampedIntegerArgument extends IntegerArgument {
     public ClampedIntegerArgument(int min, int max) {
         this.min = min;
         this.max = max;
+    }
+    
+    @Override
+    public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean required) {
+        return super.createOptionData(name, description, required).setRequiredRange(min, max);
     }
     
     @Override

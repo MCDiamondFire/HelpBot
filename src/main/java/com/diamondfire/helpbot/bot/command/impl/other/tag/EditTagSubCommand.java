@@ -35,7 +35,10 @@ public class EditTagSubCommand extends SubCommand {
     @Override
     protected ArgumentSet compileArguments() {
         return new ArgumentSet().addArgument(
-                "activator", new StringArgument()
+                "activator", new SuggestingArgument<>(new StringArgument(), (input) -> TagHandler.getTags().stream()
+                        .map(Tag::getActivator)
+                        .sorted()
+                        .toList())
         ).addArgument(
                 "property", new EnumArgument<TagProperty>()
                         .setEnum(TagProperty.class)
@@ -43,6 +46,7 @@ public class EditTagSubCommand extends SubCommand {
                 "newValue", new EndlessStringArgument()
         );
     }
+    
     
     @Override
     public Permission getPermission() {

@@ -8,8 +8,8 @@ import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.sys.database.impl.result.DatabaseResult;
 import org.jetbrains.annotations.*;
 
-import java.sql.ResultSet;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 
 public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
     
@@ -36,6 +36,42 @@ public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    @Override
+    public List<String> getCompletions(@NotNull String input) {
+        String name = input.trim();
+        if (name.isEmpty()) {
+            return List.of();
+        }
+        
+        String pattern = name.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
+        DatabaseResult result = new DatabaseQuery()
+                .query(new BasicQuery("SELECT name FROM players WHERE name LIKE ? ORDER BY name LIMIT 25;", (statement) -> {
+                    statement.setString(1, pattern);
+                }))
+                .compile()
+                .get();
+        
+        List<String> names = new ArrayList<>();
+        if (result.isEmpty()) {
+            return names;
+        }
+        
+        try {
+            for (ResultSet set : result) {
+                names.add(set.getString("name"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        
+        return names;
+    }
+    
+    @Override
+    public boolean hasCompletions() {
+        return true;
     }
     
     @Override

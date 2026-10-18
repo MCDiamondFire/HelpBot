@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -33,9 +33,13 @@ public class RemoveTagSubCommand extends SubCommand {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument(
-                        "activator", new StringArgument()
+                        "activator", new SuggestingArgument<>(new StringArgument(), (input) -> TagHandler.getTags().stream()
+                        .map(Tag::getActivator)
+                        .sorted()
+                        .toList())
                 );
     }
+    
     
     @Override
     public Permission getPermission() {

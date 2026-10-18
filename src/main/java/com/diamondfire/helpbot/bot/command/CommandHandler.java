@@ -3,8 +3,8 @@ package com.diamondfire.helpbot.bot.command;
 import com.diamondfire.helpbot.bot.command.disable.DisableCommandHandler;
 import com.diamondfire.helpbot.bot.command.executor.CommandExecutor;
 import com.diamondfire.helpbot.bot.command.impl.Command;
+import com.diamondfire.helpbot.bot.command.slash.SlashCommands;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 import java.util.*;
@@ -58,7 +58,17 @@ public class CommandHandler {
     }
     
     public List<SlashCommandData> getSlashCommands() {
-        return CMDS.values().stream().map(Command::getSlashCommand).toList();
+        List<SlashCommandData> commands = new ArrayList<>();
+        for (Command command : CMDS.values()) {
+            try {
+                commands.add(SlashCommands.create(command));
+            } catch (Exception exception) {
+                System.err.println("Failed to create slash command " + command.getName());
+                exception.printStackTrace();
+            }
+        }
+        
+        return commands;
     }
     
     public HashMap<String, Command> getAliases() {

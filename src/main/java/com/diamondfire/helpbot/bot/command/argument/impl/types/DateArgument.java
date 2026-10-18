@@ -5,7 +5,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.*;
-import java.util.Date;
+import java.util.*;
 
 public class DateArgument extends AbstractSimpleValueArgument<Date> {
     
@@ -17,6 +17,24 @@ public class DateArgument extends AbstractSimpleValueArgument<Date> {
     
     public DateArgument(String format) {
         this.format = new SimpleDateFormat(format);
+    }
+    
+    @Override
+    public List<String> getCompletions(@NotNull String input) {
+        SimpleDateFormat completionFormat = new SimpleDateFormat(format.toPattern());
+        List<String> dates = new ArrayList<>();
+        for (int daysAgo : new int[]{0, 1, 7, 30, 90, 365}) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, -daysAgo);
+            dates.add(completionFormat.format(calendar.getTime()));
+        }
+        
+        return dates;
+    }
+    
+    @Override
+    public boolean hasCompletions() {
+        return true;
     }
     
     @Override
