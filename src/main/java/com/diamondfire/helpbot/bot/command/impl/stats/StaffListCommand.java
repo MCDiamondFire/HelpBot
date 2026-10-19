@@ -4,6 +4,8 @@ import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
+import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.ranks.*;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
@@ -55,7 +57,7 @@ public class StaffListCommand extends Command {
                         "                        WHERE ranks.uuid = players.uuid\n" +
                         "                        AND (ranks.support > 0 || ranks.moderation > 0 || ranks.administration > 0 || ranks.builder = 1) AND ranks.retirement = 0"))
                 .compile()
-                .runAsync((result) -> {
+                .run((result) -> {
                     Map<Rank, List<String>> ranks = new HashMap<>();
                     registerRank(ranks,
                             Rank.JRHELPER,
@@ -108,6 +110,7 @@ public class StaffListCommand extends Command {
                     Role botDev = guild.getRoleById(589238520145510400L);
                     guild.findMembers((member -> member.getRoles().contains(botDev)))
                             .onSuccess((members) -> {
+                                try {
                                 List<String> memberNames = new ArrayList<>();
                                 for (Member member : members) {
                                     if (!member.getUser().isBot()) {
@@ -116,9 +119,20 @@ public class StaffListCommand extends Command {
                                 }
                                 
                                 EmbedUtil.addFields(devEmbed, memberNames, "", "Bot Contributors");
-                                guild.pruneMemberCache();
                                 builder.addPage("Developers", devEmbed);
-                                builder.build().send(event.getJDA());
+                                builder.build().send(event);
+                                } catch (Exception error) {
+                                    error.printStackTrace();
+                                    event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                            InformativeReplyType.ERROR, "Could not load staff members. Please try again.")));
+                                } finally {
+                                    guild.pruneMemberCache();
+                                }
+                            }).onError(error -> {
+                                guild.pruneMemberCache();
+                                error.printStackTrace();
+                                event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                        InformativeReplyType.ERROR, "Could not load staff members. Please try again.")));
                             });
                 });
         

@@ -60,6 +60,13 @@ public class PurgeCommand extends Command {
         } else {
             GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
             channel.getHistory().retrievePast(messagesToRemove).queue((messages) -> {
+                // A deferred slash reply may already be in the channel's history.
+                messages = messages.stream().filter(message -> !event.isInteractionResponse(message)).toList();
+                if (messages.isEmpty()) {
+                    event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                            InformativeReplyType.INFO, "No messages to remove.")));
+                    return;
+                }
                 // Adds the messages to the messageBuilder object
                 StringBuilder stringBuilder = new StringBuilder();
                 
@@ -99,16 +106,26 @@ public class PurgeCommand extends Command {
                             HelpBotInstance.getConfig().getPurgeEvidenceChannel()
                     );
     
-                    assert evidenceLog != null;
-                    evidenceLog.sendFiles(FileUpload.fromData(file)).queue();
+                    if (evidenceLog == null) {
+                        throw new IllegalStateException("Evidence channel not found");
+                    }
+                    var deletion = messages.size() == 1 ? messages.get(0).delete() : channel.deleteMessages(messages);
+                    int removedCount = messages.size();
+                    evidenceLog.sendFiles(FileUpload.fromData(file)).flatMap(unused -> deletion)
+                            .queue(unused -> event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                    InformativeReplyType.SUCCESS, "Removed " + removedCount + " messages."))),
+                                    error -> replyFailure(event, error));
                     
                 } catch (Exception e) {
-                    throw new IllegalStateException();
+                    replyFailure(event, e);
                 }
-                
-                // Removes the messages.
-                channel.deleteMessages(messages).queue();
-            });
+            }, error -> replyFailure(event, error));
         }
+    }
+
+    private static void replyFailure(CommandEvent event, Throwable error) {
+        error.printStackTrace();
+        event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,
+                "Could not log or remove the messages. Please check my permissions and try again.")));
     }
 }

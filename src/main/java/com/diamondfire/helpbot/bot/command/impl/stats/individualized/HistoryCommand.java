@@ -180,6 +180,10 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 event.reply(errorMSG);
             });
             
+        }, error -> {
+            error.printStackTrace();
+            event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,
+                    "Could not open a private message. Please check that private messages are enabled.")));
         });
     }
     

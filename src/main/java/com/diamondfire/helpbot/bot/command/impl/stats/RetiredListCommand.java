@@ -72,7 +72,7 @@ public class RetiredListCommand extends Command {
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);
                 });
-        builder.build().send(event.getJDA());
+        builder.build().send(event);
     }
     
 }

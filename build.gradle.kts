@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation ("net.dv8tion:JDA:6.1.0") {
+    implementation ("net.dv8tion:JDA:6.7.0") {
         exclude(module = "opus-java")
     }
 

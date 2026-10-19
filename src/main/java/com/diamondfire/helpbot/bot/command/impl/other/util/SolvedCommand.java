@@ -11,6 +11,8 @@ import com.diamondfire.helpbot.bot.events.*;
 import com.diamondfire.helpbot.util.SolvedPostManager;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.*;
+import net.dv8tion.jda.api.entities.channel.forums.ForumTag;
+import java.util.ArrayList;
 
 
 public class SolvedCommand extends Command {
@@ -72,8 +74,24 @@ public class SolvedCommand extends Command {
             return;
         }
         
-        /// Apply the solved tag, the [PostChannelEvent] listener will call [SolvedPostManager#addSolved].
-        SolvedPostManager.applySolvedTag(threadChannel);
+        var solvedTag = SolvedPostManager.getSolvedTag(threadChannel);
+        if (solvedTag.isEmpty()) {
+            event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                    InformativeReplyType.ERROR, "The solved tag could not be found.")));
+            return;
+        }
+        var tags = new ArrayList<ForumTag>(threadChannel.getAppliedTags());
+        if (!tags.contains(solvedTag.get())) {
+            tags.add(solvedTag.get());
+        }
+        // Reply through the interaction after Discord accepts the update.
+        threadChannel.getManager().setAppliedTags(tags).queue(unused ->
+                event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                        InformativeReplyType.SUCCESS, "Post marked as solved."))), error -> {
+            error.printStackTrace();
+            event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                    InformativeReplyType.ERROR, "Could not mark the post as solved. Please try again.")));
+        });
     }
     
 }

@@ -93,7 +93,7 @@ public class RulesCommand extends Command {
         builder.addPage("Support Rules", supportRules);
         builder.addPage("Supportee Rules", supporteeRules);
         
-        builder.build().send(event.getJDA());
+        builder.build().send(event);
     }
     
     private String list(String[] strings, String prefix) {

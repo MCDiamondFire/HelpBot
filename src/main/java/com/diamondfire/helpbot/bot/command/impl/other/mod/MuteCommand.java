@@ -69,7 +69,7 @@ public class MuteCommand extends Command {
         Date duration = event.getArgument("duration");
         long timeLeft = duration.toInstant().minusSeconds(Instant.now().getEpochSecond()).toEpochMilli();
         
-        event.getGuild().retrieveMemberById(user).queue((member) -> {
+        event.getGuild().retrieveMemberById(user).submit().thenAccept((member) -> {
             new DatabaseQuery()
                     .query(new BasicQuery("INSERT INTO owen.muted_members (member,muted_by,muted_at,muted_till,reason) VALUES (?,?,CURRENT_TIMESTAMP(),?,?)", (statement) -> {
                         statement.setLong(1, user);
@@ -80,9 +80,6 @@ public class MuteCommand extends Command {
                     }))
                     .compile();
             
-            builder.withPreset(
-                    new InformativeReply(InformativeReplyType.SUCCESS, "Muted!", String.format("Player will be muted for `%s`. They have been notified.", FormatUtil.formatMilliTime(timeLeft)))
-            );
             Guild guild = event.getGuild();
             Role role = guild.getRoleById(MuteCommand.ROLE_ID);
             if (role == null) {
@@ -94,25 +91,31 @@ public class MuteCommand extends Command {
             }
             
             guild.addRoleToMember(member, role).queue((unused) -> {
+                HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
                 member.getUser()
                         .openPrivateChannel()
                         .flatMap((e) -> e.sendMessageEmbeds(getMuteEmbed(event.getArgument("reason"),timeLeft)))
-                        .queue();
-                HelpBotInstance.getScheduler().schedule(new MuteExpireTask(user, duration));
+                        .queue(sent -> event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                InformativeReplyType.SUCCESS, "Muted!", String.format(
+                                        "Player will be muted for `%s`. They have been notified.", FormatUtil.formatMilliTime(timeLeft))))),
+                                error -> event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                        InformativeReplyType.SUCCESS, "Muted!", String.format(
+                                                "Player will be muted for `%s`, but I could not send them a private message.", FormatUtil.formatMilliTime(timeLeft))))));
             }, (error) -> {
                 builder.withPreset(
                         new InformativeReply(InformativeReplyType.ERROR, "Error occurred! " + error.getMessage())
                 );
                 error.printStackTrace();
+                event.reply(builder);
             });
-            
-            event.reply(builder);
-        }, (error) -> {
+        }).exceptionally((error) -> {
+            error.printStackTrace();
             builder.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, "Discord user was not found!")
+                    new InformativeReply(InformativeReplyType.ERROR, "Could not mute this user. Please check the user and try again.")
             );
             
             event.reply(builder);
+            return null;
         });
         
     }

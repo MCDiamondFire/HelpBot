@@ -64,7 +64,8 @@ public class CommandExecutor {
                          PrintWriter printWriter = new PrintWriter(writer)) {
                         exception.printStackTrace(printWriter);
                         
-                        String error = writer.toString().substring(0, 1000);
+                        String stackTrace = writer.toString();
+                        String error = stackTrace.substring(0, Math.min(stackTrace.length(), 1000));
                         embed.addField("Stack Trace", String.format("```%s```", error), false);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -73,12 +74,11 @@ public class CommandExecutor {
                     Util.log(preset);
                 }
                 
+            } finally {
+                // Also reply if logging the command failure throws.
+                e.reply(builder);
             }
-            
-            e.reply(builder);
-            if (e.getCommand() == command) {
-                e.completeInteraction();
-            }
+            // Returning from run() does not mean asynchronous command callbacks have replied.
         }, POOL);
     }
     

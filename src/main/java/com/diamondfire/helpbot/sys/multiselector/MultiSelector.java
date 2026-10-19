@@ -1,27 +1,26 @@
 package com.diamondfire.helpbot.sys.multiselector;
 
 import com.diamondfire.helpbot.sys.interaction.button.ButtonHandler;
-import com.diamondfire.helpbot.util.Util;
-import net.dv8tion.jda.api.*;
+import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.components.actionrow.ActionRow;
 import net.dv8tion.jda.api.components.buttons.Button;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 
 import java.util.*;
 
 public class MultiSelector {
     
     private final MultiSelectorPage[] pages;
-    private final long channel;
     private final long user;
     
     public MultiSelector(long channel, long user, List<MultiSelectorPage> pages) {
         this.pages = pages.toArray(new MultiSelectorPage[0]);
-        this.channel = channel;
         this.user = user;
     }
     
-    public void send(JDA jda) {
+    public void send(CommandEvent commandEvent) {
         for (MultiSelectorPage page : pages) {
             EmbedBuilder pageBuilder = page.getPage();
             pageBuilder.setTitle(page.getName());
@@ -43,7 +42,8 @@ public class MultiSelector {
             buttons.add(button);
         }
         
-        jda.getTextChannelById(channel).sendMessageEmbeds(pages[0].getPage().build()).setComponents(ActionRow.of(buttons)).queue((message) -> {
+        commandEvent.reply(new MessageCreateBuilder().setEmbeds(pages[0].getPage().build())
+                .setComponents(ActionRow.of(buttons)).build(), (message) -> {
             ButtonHandler.addListener(user, message, event -> {
                 event.deferEdit().queue();
                 message.editMessageEmbeds(pageMap.get(event.getComponentId()).getPage().build()).setComponents(message.getComponents()).queue();

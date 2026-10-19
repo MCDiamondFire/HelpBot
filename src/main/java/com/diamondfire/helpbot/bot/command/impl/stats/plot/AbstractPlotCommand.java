@@ -6,11 +6,9 @@ import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.Nullable;
 import net.dv8tion.jda.api.utils.messages.*;
 
-import java.io.File;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -87,17 +85,9 @@ public abstract class AbstractPlotCommand extends Command {
             int z = plot.zMin() + (size.getSize() / 2);
             embed.addField("Plot Center", String.format("[%s, 50, %s]", x, z), true);
             
-            // Creates the icon for the plot
-            String plotIcon = plot.icon();
-            // Plot head icons start with the character h.
-            if (plotIcon.startsWith("h")) {
-                embed.setThumbnail(Util.getPlayerHead(plotIcon.substring(1)));
-                event.reply(preset);
-            } else {
-                File mcItem = Util.fetchMinecraftTextureFile(plotIcon.toUpperCase());
-                embed.setThumbnail("attachment://" + mcItem.getName());
-                event.reply(new MessageCreateBuilder().setEmbeds(embed.build()).setFiles(FileUpload.fromData(mcItem)).build());
-            }
+            MessageCreateBuilder message = new MessageCreateBuilder();
+            PlotIconUtil.applyToEmbed(plot.icon(), embed, message);
+            event.reply(message.setEmbeds(embed.build()).build());
             
         } catch (IllegalStateException e) {
             preset.withPreset(

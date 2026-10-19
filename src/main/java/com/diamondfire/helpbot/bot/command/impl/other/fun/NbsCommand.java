@@ -93,6 +93,10 @@ public class NbsCommand extends Command {
                 e.printStackTrace();
                 event.reply(errorMsg);
             }
+        }).exceptionally(error -> {
+            error.printStackTrace();
+            event.reply(errorMsg);
+            return null;
         });
     }
     

@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
 import net.dv8tion.jda.api.utils.messages.*;
 
 import java.util.*;
@@ -34,6 +33,7 @@ public class CommandEvent {
     private final Message message;
     private final SlashCommandInteractionEvent interaction;
     private InteractionState interactionState = InteractionState.PENDING;
+    private CompletableFuture<InteractionHook> acknowledgement;
     private final String rawContent;
     private final ReplyHandler replyHandler;
     //TODO Cleanup and refactor this.
@@ -92,6 +92,11 @@ public class CommandEvent {
         return interaction != null;
     }
 
+    public boolean isInteractionResponse(Message candidate) {
+        Message.InteractionMetadata metadata = candidate.getInteractionMetadata();
+        return interaction != null && metadata != null && metadata.getIdLong() == interaction.getIdLong();
+    }
+
     public Command getCommand() {
         return command;
     }
@@ -136,42 +141,44 @@ public class CommandEvent {
         DEFER_SCHEDULER.schedule(this::defer, 2, TimeUnit.SECONDS);
     }
 
-    public synchronized void completeInteraction() {
-        if (interaction == null) {
-            return;
-        }
-
-        switch (interactionState) {
-            case PENDING -> interaction.deferReply().flatMap(InteractionHook::deleteOriginal).queue();
-            case DEFERRED -> interaction.getHook().deleteOriginal().queue();
-        }
-        interactionState = InteractionState.DONE;
-    }
-
     private synchronized void defer() {
         if (interactionState == InteractionState.PENDING) {
-            interaction.deferReply().queue();
+            acknowledgement = interaction.deferReply().submit();
+            acknowledgement.exceptionally(error -> {
+                error.printStackTrace();
+                return null;
+            });
             interactionState = InteractionState.DEFERRED;
         }
     }
 
     private synchronized boolean replyToInteraction(MessageCreateData data, boolean ephemeral, Consumer<Message> onSent) {
+        CompletableFuture<Message> sent;
         switch (interactionState) {
             case PENDING -> {
-                ReplyCallbackAction action = interaction.reply(data).setEphemeral(ephemeral);
-                if (onSent == null) {
-                    action.queue();
-                } else {
-                    action.flatMap(InteractionHook::retrieveOriginal).queue(onSent);
-                }
+                acknowledgement = interaction.reply(data).setEphemeral(ephemeral).submit();
+                sent = onSent == null ? acknowledgement.thenApply(hook -> null)
+                        : acknowledgement.thenCompose(hook -> hook.retrieveOriginal().submit());
             }
-            case DEFERRED -> interaction.getHook().editOriginal(MessageEditData.fromCreateData(data)).queue(onSent);
+            case DEFERRED -> {
+                // Wait for the defer request before editing its original response.
+                sent = acknowledgement.thenCompose(hook -> hook.editOriginal(MessageEditData.fromCreateData(data)).submit());
+            }
             case DONE -> {
-                return false;
+                // Follow-ups must retain the slash-command attribution too.
+                sent = acknowledgement.thenCompose(hook -> hook.sendMessage(data).setEphemeral(ephemeral).submit());
             }
+            default -> throw new IllegalStateException("Unknown interaction state");
         }
 
         interactionState = InteractionState.DONE;
+        sent.whenComplete((message, error) -> {
+            if (error != null) {
+                error.printStackTrace();
+            } else if (onSent != null) {
+                onSent.accept(message);
+            }
+        });
         return true;
     }
 

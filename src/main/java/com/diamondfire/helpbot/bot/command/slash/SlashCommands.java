@@ -7,7 +7,6 @@ import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.Argument;
 import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
 import com.diamondfire.helpbot.bot.command.impl.*;
-import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -24,8 +23,9 @@ public class SlashCommands {
     }
     
     public static SlashCommandData create(Command command, String name) {
+        // Commands are visible by default; PermissionCheck enforces the configured roles before execution.
         SlashCommandData data = Commands.slash(name, describe(command))
-                .setDefaultPermissions(command.getPermission() == Permission.USER ? DefaultMemberPermissions.ENABLED : DefaultMemberPermissions.DISABLED);
+                .setDefaultPermissions(DefaultMemberPermissions.ENABLED);
         if (command instanceof SubCommandHolder holder) {
             for (SubCommand subCommand : holder.getSubCommands()) {
                 data.addSubcommands(new SubcommandData(subCommand.getName(), describe(subCommand)).addOptions(createOptions(subCommand)));

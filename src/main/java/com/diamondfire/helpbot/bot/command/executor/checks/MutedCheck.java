@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot.command.executor.checks;
 
 import com.diamondfire.helpbot.bot.command.impl.other.mod.MuteCommand;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
+import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 
 public class MutedCheck implements CommandCheck {
@@ -13,6 +14,7 @@ public class MutedCheck implements CommandCheck {
     
     @Override
     public void buildMessage(CommandEvent event, PresetBuilder builder) {
-        throw new CommandCheckFailure();
+        builder.withPreset(new InformativeReply(InformativeReplyType.ERROR,
+                "You cannot use commands while muted."));
     }
 }
