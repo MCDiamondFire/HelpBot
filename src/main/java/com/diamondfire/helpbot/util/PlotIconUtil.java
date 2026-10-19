@@ -38,6 +38,17 @@ public final class PlotIconUtil {
         }
     }
 
+    public static void applyToAuthor(@Nullable String icon, String name, String attachmentName,
+                                     EmbedBuilder embed, MessageCreateBuilder message) {
+        Icon resolved = resolve(icon);
+        String iconUrl = resolved.headUrl();
+        if (iconUrl == null && resolved.file() != null) {
+            iconUrl = "attachment://" + attachmentName;
+            message.addFiles(FileUpload.fromData(resolved.file(), attachmentName));
+        }
+        embed.setAuthor(name, null, iconUrl);
+    }
+
     static @Nullable String getHeadUrl(@Nullable String icon) {
         if (icon == null || icon.length() <= 1) {
             return null;

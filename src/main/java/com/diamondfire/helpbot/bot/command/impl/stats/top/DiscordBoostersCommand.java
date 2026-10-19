@@ -20,12 +20,23 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
+import net.dv8tion.jda.api.requests.Route;
+import net.dv8tion.jda.api.utils.data.DataArray;
+import net.dv8tion.jda.internal.requests.RestActionImpl;
+
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.*;
 
 public class DiscordBoostersCommand extends Command {
     private static final int PAGE_SIZE = 20;
+    private static final Route LIST_MEMBERS = Route.get("guilds/{guild_id}/members");
+    private static final ConcurrentMap<Long, CachedBoosters> CACHE = new ConcurrentHashMap<>();
     private static final String BOOST_ICON = "https://cdn.discordapp.com/emojis/699936318398136341.png";
     
     @Override
@@ -61,28 +72,59 @@ public class DiscordBoostersCommand extends Command {
     public void run(CommandEvent event) {
         Guild guild = event.getGuild();
         int page = event.getArgument("page");
-        guild.findMembers(member -> member.getTimeBoosted() != null)
-                .onSuccess(members -> {
-                    try {
-                        List<Booster> boosters = new ArrayList<>();
-                        for (Member member : members) {
-                            var boosted = member.getTimeBoosted();
-                            if (boosted != null) {
-                                boosters.add(new Booster(member.getIdLong(), boosted.toInstant()));
-                            }
-                        }
-                        event.reply(createMessage(boosters, guild.getBoostCount(), page));
-                    } catch (Exception error) {
-                        replyFailure(event, error);
-                    } finally {
-                        guild.pruneMemberCache();
-                    }
-                })
-                .onError(error -> {
-                    guild.pruneMemberCache();
+        loadBoosters(guild).thenAccept(boosters ->
+                event.reply(createMessage(boosters, guild.getBoostCount(), page)))
+                .exceptionally(error -> {
                     replyFailure(event, error);
+                    return null;
                 });
     }
+
+    private static CompletableFuture<List<Booster>> loadBoosters(Guild guild) {
+        CachedBoosters cached = CACHE.compute(guild.getIdLong(), (id, existing) -> {
+            if (existing != null && !existing.result().isCompletedExceptionally() &&
+                    (!existing.result().isDone() || System.nanoTime() - existing.createdAt() < TimeUnit.MINUTES.toNanos(1))) {
+                return existing;
+            }
+            return new CachedBoosters(loadPage(guild, "0", new ArrayList<>()), System.nanoTime());
+        });
+        cached.result().whenComplete((result, error) -> {
+            if (error != null) {
+                CACHE.remove(guild.getIdLong(), cached);
+            }
+        });
+        return cached.result();
+    }
+
+    private static CompletableFuture<List<Booster>> loadPage(Guild guild, String after, List<Booster> boosters) {
+        // Use REST pagination instead of waiting for a full Gateway member-chunk response.
+        var route = LIST_MEMBERS.compile(guild.getId()).withQueryParams("limit", "1000", "after", after);
+        return new RestActionImpl<DataArray>(guild.getJDA(), route, (response, request) -> response.getArray())
+                .timeout(30, TimeUnit.SECONDS).submit().thenCompose(members -> {
+                    long cursor = Long.parseUnsignedLong(after);
+                    for (int index = 0; index < members.length(); index++) {
+                        var member = members.getObject(index);
+                        long id = member.getObject("user").getUnsignedLong("id");
+                        if (Long.compareUnsigned(id, cursor) > 0) {
+                            cursor = id;
+                        }
+                        String since = member.getString("premium_since", null);
+                        if (since != null) {
+                            boosters.add(new Booster(id, OffsetDateTime.parse(since).toInstant()));
+                        }
+                    }
+                    if (members.length() < 1000) {
+                        return CompletableFuture.completedFuture(List.copyOf(boosters));
+                    }
+                    String next = Long.toUnsignedString(cursor);
+                    if (next.equals(after)) {
+                        return CompletableFuture.failedFuture(new IllegalStateException("Member pagination did not advance"));
+                    }
+                    return loadPage(guild, next, boosters);
+                });
+    }
+
+    private record CachedBoosters(CompletableFuture<List<Booster>> result, long createdAt) {}
 
     static MessageCreateData createMessage(List<Booster> boosters, int boostCount, int requestedPage) {
         List<Booster> sorted = boosters.stream()

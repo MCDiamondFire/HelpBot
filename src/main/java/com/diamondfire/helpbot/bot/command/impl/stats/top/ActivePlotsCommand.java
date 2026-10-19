@@ -9,12 +9,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.diamondfire.helpbot.util.PlotIconUtil;
-import net.dv8tion.jda.api.components.container.Container;
-import net.dv8tion.jda.api.components.container.ContainerChildComponent;
-import net.dv8tion.jda.api.components.section.Section;
-import net.dv8tion.jda.api.components.separator.Separator;
-import net.dv8tion.jda.api.components.textdisplay.TextDisplay;
-import net.dv8tion.jda.api.components.thumbnail.Thumbnail;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
@@ -69,42 +64,40 @@ public class ActivePlotsCommand extends Command {
     }
 
     static MessageCreateData createMessage(List<ActivePlot> plots) {
-        List<ContainerChildComponent> components = new ArrayList<>();
-        components.add(TextDisplay.of("## Now Playing\nDiscover the busiest public plots on DiamondFire."));
-        components.add(Separator.createDivider(Separator.Spacing.SMALL));
+        MessageCreateBuilder message = new MessageCreateBuilder()
+                .setContent("## Now Playing")
+                .setAllowedMentions(Collections.emptySet());
 
         if (plots.isEmpty()) {
-            components.add(TextDisplay.of("**No public plots are active right now.**\nCheck back soon for something to play!"));
+            message.addEmbeds(new EmbedBuilder()
+                    .setColor(0x5865F2)
+                    .setDescription("**No public plots are active right now.**\nCheck back soon for something to play!")
+                    .build());
         } else {
-            // Ten sections with thumbnails stay within Discord's 40-component limit.
             int count = Math.min(plots.size(), 10);
             for (int index = 0; index < count; index++) {
                 ActivePlot plot = plots.get(index);
-                String name = displayText(plot.name(), "Unnamed plot", 120);
+                // Author names render as plain text, so remove the Markdown escaping used in descriptions.
+                String name = displayText(plot.name(), "Unnamed plot", 120).replaceAll("\\\\([*_`~|>])", "$1");
                 String owner = displayText(plot.owner(), "Unknown", 40);
-                TextDisplay details = TextDisplay.of("### " + (index + 1) + ". " + name + "\n**" +
-                        plot.players() + (plot.players() == 1 ? " player" : " players") +
-                        "** · by " + owner + "\n`" + plot.id() + "`");
-                // Unique attachment names also support plots sharing the same material icon.
-                Thumbnail icon = PlotIconUtil.createThumbnail(plot.icon(), "plot-icon-" + index + ".png");
-                components.add(icon == null ? details : Section.of(icon, details));
+                EmbedBuilder embed = new EmbedBuilder()
+                        .setColor(0x5865F2)
+                        .setDescription("**" + plot.players() + (plot.players() == 1 ? " player" : " players") +
+                                "** · by " + owner + " · `" + plot.id() + "`");
+                // Each embed's author displays a small icon on the left of the plot name.
+                PlotIconUtil.applyToAuthor(plot.icon(), (index + 1) + ". " + name,
+                        "plot-icon-" + index + ".png", embed, message);
+                message.addEmbeds(embed.build());
             }
-            components.add(TextDisplay.of("-# Top " + count + " public " + (count == 1 ? "plot" : "plots") +
-                    " · Most players first · Player counts at time of request"));
         }
-
-        return new MessageCreateBuilder()
-                .useComponentsV2()
-                .setComponents(Container.of(components).withAccentColor(0x5865F2))
-                .setAllowedMentions(Collections.emptySet())
-                .build();
+        return message.build();
     }
 
     private static String displayText(String value, String fallback, int limit) {
         if (value == null || value.isBlank()) {
             return fallback;
         }
-        // Keep user-provided names on one line and the entire message below 4,000 characters.
+        // Keep user-provided names on one line and within Discord's embed limits.
         String text = StringUtil.fromMiniMessage(value).replaceAll("\\s+", " ").trim();
         if (text.isEmpty()) {
             return fallback;
