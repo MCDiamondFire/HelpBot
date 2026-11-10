@@ -91,7 +91,7 @@ public class DiscordBoostersCommand extends Command {
         int pages = Math.max(1, (sorted.size() + PAGE_SIZE - 1) / PAGE_SIZE);
         int page = Math.max(1, Math.min(requestedPage, pages));
         String summary = "**" + sorted.size() + (sorted.size() == 1 ? " member boosting" : " members boosting") +
-                "** · **" + boostCount + (boostCount == 1 ? " server boost" : " server boosts") + "**";
+                "** - **" + boostCount + (boostCount == 1 ? " server boost" : " server boosts") + "**";
 
         List<ContainerChildComponent> components = new ArrayList<>();
         components.add(Section.of(Thumbnail.fromUrl(BOOST_ICON).withDescription("Server Boost"),
@@ -104,11 +104,11 @@ public class DiscordBoostersCommand extends Command {
             List<String> entries = new ArrayList<>();
             for (Booster booster : sorted.subList(start, Math.min(start + PAGE_SIZE, sorted.size()))) {
                 entries.add("<@" + booster.userId() + ">\nBoosting since " +
-                        TimeFormat.DATE_LONG.format(booster.since()) + " · " + TimeFormat.RELATIVE.format(booster.since()));
+                        TimeFormat.DATE_LONG.format(booster.since()) + " - " + TimeFormat.RELATIVE.format(booster.since()));
             }
             components.add(TextDisplay.of(String.join("\n\n", entries)));
         }
-        String footer = "-# Page " + page + " of " + pages + " · Longest-running boosts first";
+        String footer = "-# Page " + page + " of " + pages + " - Longest-running boosts first";
         if (pages > 1) {
             footer += "\n-# Use the optional page argument to see more boosters.";
         }

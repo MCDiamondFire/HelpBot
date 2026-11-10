@@ -84,7 +84,7 @@ public class ActivePlotsCommand extends Command {
                 String owner = displayText(plot.owner(), "Unknown", 40);
                 TextDisplay details = TextDisplay.of("### " + (index + 1) + ". " + name + "\n**" +
                         plot.players() + (plot.players() == 1 ? " player" : " players") +
-                        "** · by " + owner + "\n`" + plot.id() + "`");
+                        "** - by " + owner + "\n`" + plot.id() + "`");
                 // Unique attachment names also support plots sharing the same material icon.
                 Thumbnail icon = PlotIconUtil.createThumbnail(plot.icon(), "plot-icon-" + index + ".png");
                 components.add(icon == null ? details : Section.of(icon, details));

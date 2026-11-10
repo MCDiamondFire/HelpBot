@@ -61,7 +61,7 @@ public class Punishment {
         } else if (untilTime == null && (type == PunishmentType.MUTE || type == PunishmentType.BAN)) {
             builder.append(" (Permanent)");
         }
-        builder.append(" · ").append(TimeFormat.DATE_SHORT.format(startTime.getTime()));
+        builder.append(" - ").append(TimeFormat.DATE_SHORT.format(startTime.getTime()));
         
         String reasonGiven = reason.isBlank() ? "*No reason given*" : reason.trim().replace("\n", " ").replace("\r", "");
         builder.append("\n> ").append(reasonGiven);

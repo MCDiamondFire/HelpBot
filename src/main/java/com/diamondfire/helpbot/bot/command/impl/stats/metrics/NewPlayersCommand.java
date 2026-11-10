@@ -52,7 +52,7 @@ public class NewPlayersCommand extends Command {
                 .compile()
                 .run((result) -> {
                     for (ResultSet set : result) {
-                        lines.add(StringUtil.escapeName(set.getString("name")) + " · joined " +
+                        lines.add(StringUtil.escapeName(set.getString("name")) + " - joined " +
                                 TimeFormat.RELATIVE.format(set.getTimestamp("join_date").getTime()));
                         total[0] = set.getInt("total");
                     }

@@ -63,7 +63,7 @@ public class QueueCommand extends Command {
                     
                     List<String> lines = new ArrayList<>();
                     for (ResultSet set : result) {
-                        lines.add(String.format("`#%s` %s · waiting %s",
+                        lines.add(String.format("`#%s` %s - waiting %s",
                                 lines.size() + 1,
                                 StringUtil.escapeName(set.getString("player")),
                                 FormatUtil.formatMilliTime(set.getInt("time") * 1000L)));

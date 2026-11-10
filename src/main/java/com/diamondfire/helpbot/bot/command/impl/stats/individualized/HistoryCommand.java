@@ -184,7 +184,7 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
         }
         
         int warnings = counts.getOrDefault(PunishmentType.WARN, 0);
-        return String.format("**%s** %s (%s in the past year) · **%s** %s · **%s** %s · **%s** %s",
+        return String.format("**%s** %s (%s in the past year) - **%s** %s - **%s** %s - **%s** %s",
                 warnings, StringUtil.sCheck("warning", warnings), yearlyWarnings,
                 counts.getOrDefault(PunishmentType.MUTE, 0), StringUtil.sCheck("mute", counts.getOrDefault(PunishmentType.MUTE, 0)),
                 counts.getOrDefault(PunishmentType.KICK, 0), StringUtil.sCheck("kick", counts.getOrDefault(PunishmentType.KICK, 0)),
