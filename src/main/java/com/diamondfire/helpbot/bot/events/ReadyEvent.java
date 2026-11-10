@@ -16,6 +16,9 @@ public class ReadyEvent extends ListenerAdapter {
         RestartHandler.recover(event.getJDA());
         HelpBotInstance.getScheduler().initialize();
         
+        // Commands are only registered per guild; clear stale global commands so they don't shadow them.
+        event.getJDA().updateCommands().queue();
+
         Guild guild = event.getJDA().getGuildById(HelpBotInstance.DF_GUILD);
         if (guild != null) {
             guild.updateCommands().addCommands(CommandHandler.getInstance().getSlashCommands()).queue();
