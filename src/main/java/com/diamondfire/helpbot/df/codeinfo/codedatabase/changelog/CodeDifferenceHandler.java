@@ -2,12 +2,10 @@ package com.diamondfire.helpbot.df.codeinfo.codedatabase.changelog;
 
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class CodeDifferenceHandler {
     
@@ -36,10 +34,20 @@ public class CodeDifferenceHandler {
     
     private static void generateDifferences() throws IOException {
         
-        BufferedReader txtReader = new BufferedReader(new FileReader(ExternalFiles.DB_COMPARE.getPath()));
-        BufferedReader txtReader2 = new BufferedReader(new FileReader(ExternalFiles.DB.getPath()));
+        JsonObject current = readJson(ExternalFiles.DB);
+        if (current == null) {
+            System.out.println("Code database is missing or unreadable, skipping changelog.");
+            return;
+        }
         
-        List<JsonObject> jsonObjects = readDiff(txtReader,txtReader2);
+        JsonObject previous = readJson(ExternalFiles.DB_COMPARE);
+        if (previous == null) {
+            // Nothing to compare against yet (a fresh deploy starts with an empty file), so start from the current database.
+            Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            return;
+        }
+        
+        List<JsonObject> jsonObjects = List.of(previous, current);
         
         //Clean up here maybe possible but it isn't that bad
         compare(jsonObjects.get(0).get("codeblocks").getAsJsonArray(), jsonObjects.get(1).get("codeblocks").getAsJsonArray(), "name");
@@ -118,28 +126,20 @@ public class CodeDifferenceHandler {
      * @return parsed JsonObjects
      * @throws IOException {@link BufferedReader#close()}
      */
-    private static List<JsonObject> readDiff(BufferedReader... readers) throws IOException {
-        List<JsonObject> jsonObjects = new ArrayList<>();
-        
-        for (BufferedReader reader : readers) {
-            String rawJson = reader.lines().collect(Collectors.joining());
-            reader.close();
-            
-            JsonReader readerJson = new JsonReader(new StringReader(rawJson));
-            
-            JsonObject jsonObject = null;
-            try {
-                jsonObject = JsonParser.parseReader(readerJson).getAsJsonObject();
-            } catch (Exception e) {
-                System.out.println("Old db is corrupted, rewriting!");
-                Files.copy(ExternalFiles.DB.toPath(), ExternalFiles.DB_COMPARE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    /**
+     * @return the file's JSON object, or null if it is empty or not valid JSON
+     */
+    private static JsonObject readJson(File file) {
+        try {
+            String rawJson = Files.readString(file.toPath());
+            if (rawJson.isBlank()) {
+                return null;
             }
             
-            jsonObjects.add(jsonObject);
+            return JsonParser.parseString(rawJson).getAsJsonObject();
+        } catch (Exception e) {
+            return null;
         }
-        
-        
-        return jsonObjects;
     }
 }
 

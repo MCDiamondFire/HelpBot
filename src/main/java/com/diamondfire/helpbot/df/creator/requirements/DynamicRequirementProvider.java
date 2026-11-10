@@ -2,9 +2,8 @@ package com.diamondfire.helpbot.df.creator.requirements;
 
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.sys.database.impl.result.DatabaseResult;
 
-import java.sql.SQLException;
+import java.sql.ResultSet;
 
 public class DynamicRequirementProvider implements RequirementProvider {
     
@@ -16,14 +15,16 @@ public class DynamicRequirementProvider implements RequirementProvider {
     
     @Override
     public int getRequirement() {
-        DatabaseResult result = new DatabaseQuery()
+        int[] requirement = new int[1];
+        new DatabaseQuery()
                 .query(new BasicQuery("SELECT req FROM creator_req WHERE tier = ?", (statement) -> statement.setString(1, identifier)))
-                .compile().get();
+                .compile()
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        requirement[0] = set.getInt("req");
+                    }
+                });
         
-        try {
-            return result.getResult().getInt("req");
-        } catch (SQLException ignored) {
-            return 0;
-        }
+        return requirement[0];
     }
 }

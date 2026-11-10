@@ -14,51 +14,39 @@ import java.util.*;
 public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
     
     public static @Nullable Player fetchPlayer(String argument) {
-        DatabaseResult result = new DatabaseQuery()
-                .query(new BasicQuery("SELECT * FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1;", (statement) -> {
+        Player[] player = new Player[1];
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT uuid, name FROM players WHERE players.name = ? OR players.uuid = ? LIMIT 1", (statement) -> {
                     statement.setString(1, argument);
                     statement.setString(2, argument);
                 }))
                 .compile()
-                .get();
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        player[0] = new Player(set.getString("name"), UUID.fromString(set.getString("uuid")));
+                    }
+                });
         
-        if (result.isEmpty()) {
-            return null;
-        }
-        
-        try {
-            ResultSet set = result.getResult();
-            
-            UUID uuid = UUID.fromString(set.getString("uuid"));
-            String playerName = set.getString("name");
-            
-            return new Player(playerName, uuid);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return player[0];
     }
     
     /**
      * @return the player linked to this Discord account, or null if not linked
      */
     public static @Nullable Player fetchLinkedPlayer(long discordId) {
-        DatabaseResult result = new DatabaseQuery()
+        Player[] player = new Player[1];
+        new DatabaseQuery()
                 .query(new BasicQuery("SELECT players.uuid, players.name FROM linked_accounts, players " +
                         "WHERE linked_accounts.player_uuid = players.uuid AND linked_accounts.discord_id = ? LIMIT 1",
                         (statement) -> statement.setLong(1, discordId)))
                 .compile()
-                .get();
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        player[0] = new Player(set.getString("name"), UUID.fromString(set.getString("uuid")));
+                    }
+                });
         
-        if (result.isEmpty()) {
-            return null;
-        }
-        
-        try {
-            ResultSet set = result.getResult();
-            return new Player(set.getString("name"), UUID.fromString(set.getString("uuid")));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return player[0];
     }
     
     @Override
@@ -69,25 +57,17 @@ public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
         }
         
         String pattern = name.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
-        DatabaseResult result = new DatabaseQuery()
-                .query(new BasicQuery("SELECT name FROM players WHERE name LIKE ? ORDER BY name LIMIT 25;", (statement) -> {
+        List<String> names = new ArrayList<>();
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT name FROM players WHERE name LIKE ? ORDER BY name LIMIT 25", (statement) -> {
                     statement.setString(1, pattern);
                 }))
                 .compile()
-                .get();
-        
-        List<String> names = new ArrayList<>();
-        if (result.isEmpty()) {
-            return names;
-        }
-        
-        try {
-            for (ResultSet set : result) {
-                names.add(set.getString("name"));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+                .run((result) -> {
+                    for (ResultSet set : result) {
+                        names.add(set.getString("name"));
+                    }
+                });
         
         return names;
     }
