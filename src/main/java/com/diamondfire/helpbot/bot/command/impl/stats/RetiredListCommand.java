@@ -19,12 +19,12 @@ public class RetiredListCommand extends Command {
     
     @Override
     public String getName() {
-        return "retiredlist";
+        return "retired";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"retired", "retiredstaff"};
+        return new String[]{"retiredlist", "retiredstaff"};
     }
     
     @Override

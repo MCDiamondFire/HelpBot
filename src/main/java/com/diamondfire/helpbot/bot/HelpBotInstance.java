@@ -2,6 +2,7 @@ package com.diamondfire.helpbot.bot;
 
 import com.diamondfire.helpbot.bot.command.CommandHandler;
 import com.diamondfire.helpbot.bot.command.impl.codeblock.*;
+import com.diamondfire.helpbot.bot.command.impl.other.StoreCommand;
 import com.diamondfire.helpbot.bot.command.impl.other.dev.*;
 import com.diamondfire.helpbot.bot.command.impl.other.dumps.*;
 import com.diamondfire.helpbot.bot.command.impl.other.fun.*;
@@ -50,11 +51,13 @@ public class HelpBotInstance {
                 new SearchCommand(),
                 new TagsCommand(),
                 // others
+                //new CowsayCommand(),
                 new MimicCommand(),
                 new SolvedCommand(),
                 //new FetchDataCommand(),
                 new InfoCommand(),
                 new EvalCommand(),
+                //new GarfieldCommand(),
                 new HelpCommand(),
                 new RestartCommand(),
                 new ActionDumpCommand(),
@@ -74,7 +77,10 @@ public class HelpBotInstance {
                 new MutedCommand(),
                 new UnmuteCommand(),
                 new VerifyCommand(),
+                // new PollCommand(), - Unused
                 new IdeaCommand(),
+                // new StoreCommand(),
+                // new ChannelMuteCommand(), - not finished
                 // statsbot
                 new StatsCommand(),
                 new SupportBadCommand(),
@@ -84,6 +90,7 @@ public class HelpBotInstance {
                 new ActivePlotsCommand(),
                 new TrendingPlotsCommand(),
                 new PlotsCommand(),
+                //new CpTopCommand(),
                 new RetiredListCommand(),
                 new StaffListCommand(),
                 new SessionTopCommand(),
@@ -99,7 +106,10 @@ public class HelpBotInstance {
                 new QueueCommand(),
                 new WhoHelpedCommand(),
                 new HelpedByCommand(),
+                // new NamesCommand(), - Dead
                 new PlayerJoinGraphCommand(),
+                //new CpCommand(),
+                //new CpRequirementsCommand(),
                 new VoteGivenLeaderboard(),
                 new PlotVoteGraphCommand(),
                 new JoinDataCommand(),
@@ -118,6 +128,7 @@ public class HelpBotInstance {
                 new NbsCommand(),
                 new DailySessionsCommand(),
                 new EightBallCommand(),
+                // new OcrCommand(), - Dead
                 new JoinsCommand(),
                 new TagCommand(),
                 new PurgeCommand()

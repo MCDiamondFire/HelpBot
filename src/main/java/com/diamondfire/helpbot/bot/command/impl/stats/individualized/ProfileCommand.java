@@ -23,12 +23,12 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public String getName() {
-        return "profile";
+        return "whois";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"user", "whois", "p", "prof", "credits", "joindate", "tokens"};
+        return new String[]{"profile", "user", "p", "prof", "credits", "joindate", "tokens"};
     }
     
     @Override

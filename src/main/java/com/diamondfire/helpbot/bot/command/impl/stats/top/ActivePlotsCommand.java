@@ -27,12 +27,12 @@ public class ActivePlotsCommand extends Command {
     
     @Override
     public String getName() {
-        return "activeplots";
+        return "nowplaying";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"nowplaying"};
+        return new String[]{"activeplots"};
     }
     
     @Override
