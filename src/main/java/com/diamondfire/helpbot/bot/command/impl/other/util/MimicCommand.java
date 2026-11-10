@@ -43,7 +43,12 @@ public class MimicCommand extends Command {
         if (event.getMessage() != null) {
             event.getMessage().delete().queue();
         }
-        event.reply(MessageCreateData.fromContent(msg));
+        
+        // Send directly to the channel so slash usages don't show the "used /mimic" attribution.
+        event.getChannel().sendMessage(MessageCreateData.fromContent(msg)).queue();
+        if (event.isSlashCommand()) {
+            event.replyEphemeral(MessageCreateData.fromContent("Sent."));
+        }
     }
     
 }

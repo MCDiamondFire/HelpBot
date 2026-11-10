@@ -125,6 +125,10 @@ public class CommandEvent {
         reply(data, false, null);
     }
 
+    public void replyEphemeral(MessageCreateData data) {
+        reply(data, true, null);
+    }
+
     public void reply(MessageCreateData data, Consumer<Message> onSent) {
         reply(data, false, onSent);
     }
