@@ -94,7 +94,7 @@ public class PlaytimeCommand extends AbstractPlayerUUIDCommand {
                         String name = set.getString("name");
                         String line = String.format("`#%s` %s - %s",
                                 FormatUtil.formatNumber(rank),
-                                name == null ? "Unknown Player" : StringUtil.display(name),
+                                name == null ? "Unknown Player" : StringUtil.escapeName(name),
                                 FormatUtil.formatMilliTime(set.getLong("play_time_ms")));
 
                         lines.add(set.getString("uuid").equals(uuid) ? "**" + line + "**" : line);
