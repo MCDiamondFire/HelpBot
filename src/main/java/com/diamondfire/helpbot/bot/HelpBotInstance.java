@@ -116,6 +116,7 @@ public class HelpBotInstance {
                 new JoinDataCommand(),
                 new TotalStatsCommand(),
                 new TokenTopCommand(),
+                new PlaytimeCommand(),
                 new HistoryCommand(),
                 new UuidCommand(),
                 new PlotLocCommand(),
