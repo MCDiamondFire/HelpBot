@@ -55,11 +55,6 @@ public interface ExternalFiles {
             .setFileType("png")
             .buildFile();
     
-    File VIP_ROLES = new ExternalFileBuilder()
-            .isDirectory(false)
-            .setName("vip_roles")
-            .setFileType("json")
-            .buildFile();
     
     File SAM_QUOTES = new ExternalFileBuilder()
             .isDirectory(false)
