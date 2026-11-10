@@ -8,13 +8,8 @@ import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
-import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
-import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
-import com.diamondfire.helpbot.sys.database.impl.result.DatabaseResult;
 import com.diamondfire.helpbot.util.Util;
 
-import java.sql.*;
-import java.util.UUID;
 
 public abstract class AbstractPlayerUUIDCommand extends Command {
     
@@ -49,7 +44,7 @@ public abstract class AbstractPlayerUUIDCommand extends Command {
      * @return the player, or null if an error was already replied
      */
     private static Player resolveSelf(CommandEvent event) {
-        Player linked = fetchLinkedPlayer(event.getAuthor().getIdLong());
+        Player linked = DFPlayerArgument.fetchLinkedPlayer(event.getAuthor().getIdLong());
         if (linked != null) {
             return linked;
         }
@@ -73,26 +68,6 @@ public abstract class AbstractPlayerUUIDCommand extends Command {
         }
         
         return player;
-    }
-    
-    private static Player fetchLinkedPlayer(long discordId) {
-        DatabaseResult result = new DatabaseQuery()
-                .query(new BasicQuery("SELECT players.uuid, players.name FROM linked_accounts, players " +
-                        "WHERE linked_accounts.player_uuid = players.uuid AND linked_accounts.discord_id = ? LIMIT 1",
-                        (statement) -> statement.setLong(1, discordId)))
-                .compile()
-                .get();
-        
-        if (result.isEmpty()) {
-            return null;
-        }
-        
-        try {
-            ResultSet set = result.getResult();
-            return new Player(set.getString("name"), UUID.fromString(set.getString("uuid")));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
     
     protected abstract void execute(CommandEvent event, Player player);

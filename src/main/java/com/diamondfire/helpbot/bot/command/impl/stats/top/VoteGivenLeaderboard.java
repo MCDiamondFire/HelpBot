@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.top;
 
+import com.diamondfire.helpbot.bot.command.argument.impl.types.minecraft.*;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
@@ -46,22 +47,46 @@ public class VoteGivenLeaderboard extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        PresetBuilder preset = new PresetBuilder()
-                .withPreset(
-                        new InformativeReply(InformativeReplyType.INFO, "Votes Given Leaderboard", null)
-                );
-        EmbedBuilder embed = preset.getEmbed();
+        Player self = DFPlayerArgument.fetchLinkedPlayer(event.getAuthor().getIdLong());
+        Leaderboard board = new Leaderboard();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT COUNT(plot_votes.uuid) AS given, name FROM plot_votes, players WHERE players.uuid = plot_votes.uuid GROUP BY plot_votes.uuid ORDER BY COUNT(plot_votes.uuid) DESC LIMIT 10"))
+                .query(new BasicQuery("SELECT v.uuid, players.name, v.given " +
+                        "FROM (SELECT uuid, COUNT(*) AS given FROM plot_votes GROUP BY uuid ORDER BY given DESC LIMIT 10) v " +
+                        "LEFT JOIN players ON players.uuid = v.uuid ORDER BY v.given DESC, v.uuid"))
                 .compile()
                 .run((result) -> {
+                    int rank = 1;
                     for (ResultSet set : result) {
-                        embed.addField(StringUtil.display(set.getString("name")),
-                                "Votes Given: " + FormatUtil.formatNumber(set.getInt("given")), false);
+                        board.add(rank++, set.getString("name"), votes(set.getInt("given")),
+                                self != null && self.uuidString().equals(set.getString("uuid")));
                     }
                 });
-        event.reply(preset);
+        
+        if (self != null) {
+            int[] given = new int[1];
+            new DatabaseQuery()
+                    .query(new BasicQuery("SELECT COUNT(*) AS given FROM plot_votes WHERE uuid = ?", (statement) -> statement.setString(1, self.uuidString())))
+                    .compile()
+                    .run((result) -> given[0] = result.getResult().getInt("given"));
+            
+            if (given[0] > 0) {
+                new DatabaseQuery()
+                        .query(new BasicQuery("SELECT COUNT(*) + 1 AS position FROM (SELECT uuid FROM plot_votes GROUP BY uuid HAVING COUNT(*) > ?) higher",
+                                (statement) -> statement.setInt(1, given[0])))
+                        .compile()
+                        .run((result) -> board.self(result.getResult().getLong("position"), self.name(), votes(given[0])));
+            }
+        }
+        
+        event.reply(new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, "Votes Given Leaderboard", board.build())
+                ));
+    }
+    
+    private static String votes(int votes) {
+        return FormatUtil.formatNumber(votes) + " " + StringUtil.sCheck("vote", votes);
     }
     
 }

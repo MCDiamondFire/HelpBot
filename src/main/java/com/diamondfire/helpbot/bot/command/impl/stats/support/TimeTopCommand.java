@@ -57,44 +57,34 @@ public class TimeTopCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        PresetBuilder preset = new PresetBuilder();
         Object arg = event.getArgument("days");
+        boolean allTime = arg instanceof String;
+        int days = allTime ? 0 : (int) arg;
         
-        if (arg instanceof String) {
-            preset.withPreset(
-                    new InformativeReply(InformativeReplyType.INFO, "Top Support Member Time of all time", null)
-            );
-            EmbedBuilder embed = preset.getEmbed();
-            
-            new DatabaseQuery()
-                    .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions GROUP BY staff ORDER BY sessions DESC LIMIT 10"))
-                    .compile()
-                    .run((resultTable) -> {
-                        for (ResultSet set : resultTable) {
-                            embed.addField(StringUtil.display(set.getString("staff")),
-                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(set.getLong("sessions")), false);
-                        }
-                    });
-        } else {
-            int days = (int) arg;
-            preset.withPreset(
-                    new InformativeReply(InformativeReplyType.INFO, String.format("Top Support Member Time in %s %s", days, StringUtil.sCheck("day", days)), null)
-            );
-            EmbedBuilder embed = preset.getEmbed();
-            
-            new DatabaseQuery()
-                    .query(new BasicQuery("SELECT DISTINCT staff, SUM(duration) AS sessions FROM support_sessions WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY GROUP BY staff ORDER BY sessions DESC LIMIT 10", (statement) -> statement.setInt(1, days)))
-                    .compile()
-                    .run((result) -> {
-                        for (ResultSet set : result) {
-                            embed.addField(StringUtil.display(set.getString("staff")),
-                                    "\nTotal Duration: " + FormatUtil.formatMilliTime(set.getLong("sessions")), false);
-                        }
-                    });
-        }
-        event.reply(preset);
+        String title = allTime
+                ? "Top Support Time, All Time"
+                : String.format("Top Support Time, Past %s %s", days, StringUtil.sCheck("Day", days));
+        String where = allTime ? "" : "WHERE time > CURRENT_TIMESTAMP - INTERVAL ? DAY ";
+        
+        Leaderboard board = new Leaderboard();
+        new DatabaseQuery()
+                .query(new BasicQuery("SELECT staff, SUM(duration) AS total FROM support_sessions " + where + "GROUP BY staff ORDER BY total DESC LIMIT 10", (statement) -> {
+                    if (!allTime) {
+                        statement.setInt(1, days);
+                    }
+                }))
+                .compile()
+                .run((result) -> {
+                    int rank = 1;
+                    for (ResultSet set : result) {
+                        board.add(rank++, set.getString("staff"), Leaderboard.formatDuration(set.getLong("total")), false);
+                    }
+                });
+        
+        event.reply(new PresetBuilder()
+                .withPreset(
+                        new InformativeReply(InformativeReplyType.INFO, title, board.isEmpty() ? "No support sessions in this period." : board.build())
+                ));
     }
     
 }
-
-

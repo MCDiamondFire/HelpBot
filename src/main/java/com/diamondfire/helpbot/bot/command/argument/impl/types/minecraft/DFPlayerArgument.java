@@ -38,6 +38,29 @@ public class DFPlayerArgument extends AbstractSimpleValueArgument<Player> {
         }
     }
     
+    /**
+     * @return the player linked to this Discord account, or null if not linked
+     */
+    public static @Nullable Player fetchLinkedPlayer(long discordId) {
+        DatabaseResult result = new DatabaseQuery()
+                .query(new BasicQuery("SELECT players.uuid, players.name FROM linked_accounts, players " +
+                        "WHERE linked_accounts.player_uuid = players.uuid AND linked_accounts.discord_id = ? LIMIT 1",
+                        (statement) -> statement.setLong(1, discordId)))
+                .compile()
+                .get();
+        
+        if (result.isEmpty()) {
+            return null;
+        }
+        
+        try {
+            ResultSet set = result.getResult();
+            return new Player(set.getString("name"), UUID.fromString(set.getString("uuid")));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     @Override
     public List<String> getCompletions(@NotNull String input) {
         String name = input.trim();
