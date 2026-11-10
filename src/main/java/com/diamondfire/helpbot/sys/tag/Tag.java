@@ -1,16 +1,12 @@
 package com.diamondfire.helpbot.sys.tag;
 
-import com.diamondfire.helpbot.util.serializer.TagSerializer;
-import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.Serializable;
-
-public class Tag implements Serializable {
+public class Tag {
     
     private String activator;
     private String title;
@@ -82,8 +78,8 @@ public class Tag implements Serializable {
         channel.sendMessageEmbeds(embed.build()).queue();
     }
     
-    public JsonObject serialize() {
-        return TagSerializer.getInstance().serialize(this);
+    public Tag copy() {
+        return new Tag(activator, title, response, authorId, image);
     }
     
 }

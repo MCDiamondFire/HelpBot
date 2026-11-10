@@ -5,8 +5,6 @@ import com.diamondfire.helpbot.sys.tag.*;
 import com.diamondfire.helpbot.sys.tag.exceptions.TagDoesNotExistException;
 import net.dv8tion.jda.api.entities.Message;
 
-import java.io.IOException;
-
 public class TagAcceptor implements MessageAcceptor {
     
     @Override
@@ -23,7 +21,7 @@ public class TagAcceptor implements MessageAcceptor {
                 TagHandler.getTag(parsedText)
                         .sendResponse(message.getChannel().asGuildMessageChannel(), message.getAuthor());
                 
-            } catch (TagDoesNotExistException | IOException ignored) {
+            } catch (TagDoesNotExistException ignored) {
                 return false;
             }
             

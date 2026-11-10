@@ -10,9 +10,9 @@ import com.diamondfire.helpbot.bot.command.reply.PresetBuilder;
 import com.diamondfire.helpbot.bot.command.reply.feature.informative.*;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
-import com.diamondfire.helpbot.sys.tag.exceptions.TagDoesNotExistException;
+import com.diamondfire.helpbot.sys.tag.exceptions.TagException;
 
-import java.io.IOException;
+import java.sql.SQLException;
 
 public class EditTagSubCommand extends SubCommand {
     
@@ -67,9 +67,9 @@ public class EditTagSubCommand extends SubCommand {
         }
     
         try {
-            Tag tag = TagHandler.getTag(activator);
+            Tag tag = TagHandler.getTag(activator).copy();
             property.set(tag, newValue);
-            TagHandler.save();
+            TagHandler.updateTag(activator, tag);
             
             event.reply(new PresetBuilder()
                     .withPreset(
@@ -77,14 +77,19 @@ public class EditTagSubCommand extends SubCommand {
                                     "Successfully modified tag.")
                     ));
             
-        } catch (TagDoesNotExistException | IOException err) {
+        } catch (TagException err) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR,
                                     err.getMessage())
                     ));
-            
+        } catch (SQLException err) {
             err.printStackTrace();
+            event.reply(new PresetBuilder()
+                    .withPreset(
+                            new InformativeReply(InformativeReplyType.ERROR,
+                                    "Failed to save the tag.")
+                    ));
         }
     }
     
