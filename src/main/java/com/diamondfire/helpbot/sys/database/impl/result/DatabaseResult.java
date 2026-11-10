@@ -30,6 +30,13 @@ public class DatabaseResult implements Iterable<ResultSet> {
         return false;
     }
     
+    /**
+     * The result set as it is, without moving its cursor. Null for statements that return no rows.
+     */
+    public ResultSet getRawSet() {
+        return set;
+    }
+    
     public ResultSet getResult() {
         try {
             set.next();

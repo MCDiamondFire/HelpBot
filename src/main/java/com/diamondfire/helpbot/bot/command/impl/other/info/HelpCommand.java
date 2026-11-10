@@ -95,7 +95,7 @@ public class HelpCommand extends Command {
                 embedBuilder.setDescription(category.getDescription());
                 selector.addPage(category.getName(), embedBuilder, category.getEmoji());
             }
-            selector.build().send(event.getJDA());
+            selector.build().send(event);
         } else {
             Command command = CommandHandler.getInstance().getCommands().get(helpInfo);
             HelpContext context = command.getHelpContext();
@@ -108,7 +108,7 @@ public class HelpCommand extends Command {
             builder.addField("Category", context.getCommandCategory().toString(), true);
             builder.addField("Role Required", String.format("<@&%s>", command.getPermission().getRole()), true);
             
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.reply(builder);
         }
         
     }

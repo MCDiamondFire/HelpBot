@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
 import com.diamondfire.helpbot.sys.tag.exceptions.TagAlreadyExistsException;
 
-import java.io.IOException;
+import java.sql.SQLException;
 
 public class AddTagSubCommand extends SubCommand {
     
@@ -70,11 +70,17 @@ public class AddTagSubCommand extends SubCommand {
                             new InformativeReply(InformativeReplyType.SUCCESS,
                                     "Success", "Successfully added a new tag.")
                     ));
-        } catch (TagAlreadyExistsException | IOException err) {
-            
+        } catch (TagAlreadyExistsException err) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, err.getMessage())
+                    ));
+        } catch (SQLException err) {
+            err.printStackTrace();
+            
+            event.reply(new PresetBuilder()
+                    .withPreset(
+                            new InformativeReply(InformativeReplyType.ERROR, "Failed to save the tag.")
                     ));
         }
     }

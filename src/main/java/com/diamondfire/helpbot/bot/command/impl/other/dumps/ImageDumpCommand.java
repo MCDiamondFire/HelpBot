@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import com.diamondfire.helpbot.util.IOUtil;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.io.*;
 
@@ -42,15 +43,13 @@ public class ImageDumpCommand extends Command {
         File images = ExternalFiles.IMAGES_DIR;
         PresetBuilder builder = new PresetBuilder();
         builder.withPreset(new InformativeReply(InformativeReplyType.INFO, "Please wait, the zip is being created."));
-        event.getReplyHandler().replyA(builder).queue((msg) -> {
+        event.reply(MessageCreateData.fromEmbeds(builder.getEmbed().build()), (msg) -> {
             try {
                 File zip = IOUtil.zipFile(images.toPath(), "images.zip");
-                event.getChannel().sendFiles(FileUpload.fromData(zip)).queue((fileMsg) -> {
-                    msg.delete().queue();
-                });
+                msg.editMessage(MessageEditData.fromFiles(FileUpload.fromData(zip))).setReplace(true).queue();
             } catch (IOException e) {
                 PresetBuilder builderError = new PresetBuilder();
-                builder.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to send zip file."));
+                builderError.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Failed to send zip file."));
                 msg.editMessageEmbeds(builderError.getEmbed().build()).queue();
             }
         });

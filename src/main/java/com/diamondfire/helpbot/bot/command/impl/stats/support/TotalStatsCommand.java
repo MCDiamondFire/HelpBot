@@ -11,6 +11,7 @@ import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.util.FormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 import java.sql.ResultSet;
 
@@ -46,7 +47,7 @@ public class TotalStatsCommand extends Command {
                         new InformativeReply(InformativeReplyType.INFO, "Please wait a moment, statistics are currently being calculated.")
                 );
         
-        event.getReplyHandler().replyA(presetBefore).queue((msg) -> {
+        event.reply(MessageCreateData.fromEmbeds(presetBefore.getEmbed().build()), (msg) -> {
             PresetBuilder preset = new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.INFO, "Support Stats", null)

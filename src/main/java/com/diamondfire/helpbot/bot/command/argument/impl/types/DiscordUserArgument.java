@@ -3,6 +3,8 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.MalformedArgumentException;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import net.dv8tion.jda.api.utils.MiscUtil;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.*;
@@ -10,6 +12,11 @@ import java.util.regex.*;
 public class DiscordUserArgument extends AbstractSimpleValueArgument<Long> {
     
     private final Pattern pattern = Pattern.compile("<@!?(\\d+)>");
+    
+    @Override
+    public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean required) {
+        return new OptionData(OptionType.USER, name, description, required);
+    }
     
     @Override
     public Long parse(@NotNull String msg, CommandEvent event) throws MalformedArgumentException {

@@ -88,6 +88,14 @@ public class StringUtil {
     public static String display(String string) {
         return MarkdownSanitizer.escape(StringUtil.stripColorCodes(string));
     }
+
+    /**
+     * Escapes every markdown character in a name, so names like {@code a_b} never get formatted
+     * (the sanitizer leaves lone underscores alone, which Discord can still pair up).
+     */
+    public static String escapeName(String name) {
+        return name.replaceAll("([\\\\*_~`|>\\[\\]()#-])", "\\\\$1");
+    }
     
     public static String fromMiniMessage(String expression) {
         Matcher matcher = UNICODE_PATTERN.matcher(expression);

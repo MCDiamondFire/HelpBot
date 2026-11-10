@@ -67,7 +67,6 @@ public class HelpBotInstance {
                 new SkinCommand(),
                 new DisableCommand(),
                 new EnableCommand(),
-                new DisableCommand(),
                 new ImageDumpCommand(),
                 new SoundListCommand(),
                 new QueryCommand(),
@@ -116,6 +115,7 @@ public class HelpBotInstance {
                 new JoinDataCommand(),
                 new TotalStatsCommand(),
                 new TokenTopCommand(),
+                new PlaytimeCommand(),
                 new HistoryCommand(),
                 new UuidCommand(),
                 new PlotLocCommand(),
@@ -138,10 +138,10 @@ public class HelpBotInstance {
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_REACTIONS)
                 .setStatus(OnlineStatus.ONLINE)
                 .setMemberCachePolicy(MemberCachePolicy.NONE)
-                .setActivity(Activity.watching("for " + getConfig().getPrefix() + "help"))
+                .setActivity(Activity.watching(getConfig().getPrefix() + "help"))
                 .setGatewayEncoding(GatewayEncoding.ETF)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
-                .addEventListeners(new MessageEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new MessageEditEvent(), new PostChannelEvent(), new ChannelCreatedEvent(), new ChannelUpdatedNameEvent());
+                .addEventListeners(new MessageEvent(), new SlashCommandEvent(), new ReadyEvent(), new GuildJoinEvent(), new ButtonEvent(), new SelectMenuEvent(), new MessageEditEvent(), new PostChannelEvent(), new ChannelCreatedEvent(), new ChannelUpdatedNameEvent());
         
         jda = builder.build();
         CommandHandler.getInstance().initialize();

@@ -4,29 +4,38 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
-import com.diamondfire.helpbot.util.Util;
+import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.components.container.Container;
+import net.dv8tion.jda.api.components.thumbnail.Thumbnail;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.io.File;
-import java.util.function.BiConsumer;
+import java.util.function.*;
 
 
 public class CodeCommand extends AbstractSingleQueryCommand {
     
-    public static <T extends CodeObject> void sendHelpMessage(T data, GuildMessageChannel channel) {
+    public static <T extends CodeObject> void sendHelpMessage(T data, Consumer<MessageCreateData> reply) {
         EmbedBuilder builder = data.getEnum().getEmbedBuilder().generateEmbed(data);
         String customHead = data.getItem().getHead();
+        File actionIcon = customHead == null ? Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase()) : null;
         
-        if (customHead == null) {
-            File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
+        Thumbnail thumbnail = actionIcon == null ? Thumbnail.fromUrl(customHead) : Thumbnail.fromFile(FileUpload.fromData(actionIcon));
+        Container container = ComponentUtil.toContainer(builder.build(), thumbnail);
+        if (container != null) {
+            reply.accept(new MessageCreateBuilder().useComponentsV2().setComponents(container).build());
+            return;
+        }
+        
+        if (actionIcon != null) {
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(actionIcon)).queue();
+            reply.accept(new MessageCreateBuilder().setEmbeds(builder.build()).setFiles(FileUpload.fromData(actionIcon)).build());
         } else {
             builder.setThumbnail(customHead);
-            channel.sendMessageEmbeds(builder.build()).queue();
+            reply.accept(MessageCreateData.fromEmbeds(builder.build()));
         }
         
     }
@@ -58,7 +67,7 @@ public class CodeCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
+    public BiConsumer<CodeObject, Consumer<MessageCreateData>> onDataReceived() {
         return CodeCommand::sendHelpMessage;
     }
 }

@@ -19,12 +19,12 @@ public class RetiredListCommand extends Command {
     
     @Override
     public String getName() {
-        return "retiredlist";
+        return "retired";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"retired", "retiredstaff"};
+        return new String[]{"retiredlist", "retiredstaff"};
     }
     
     @Override
@@ -72,7 +72,7 @@ public class RetiredListCommand extends Command {
                     builder.addPage("Retired", retired);
                     builder.addPage("Emeritus", emeritus);
                 });
-        builder.build().send(event.getJDA());
+        builder.build().send(event);
     }
     
 }

@@ -46,6 +46,14 @@ public class DisplayIcon {
         return icon.get("requireTokens").getAsBoolean();
     }
     
+    public boolean requireSparks() {
+        return icon.get("requireSparks") != null && icon.get("requireSparks").getAsBoolean();
+    }
+    
+    public boolean worldExclusive() {
+        return icon.get("worldExclusive") != null && icon.get("worldExclusive").getAsBoolean();
+    }
+    
     public boolean requiresRankOrTokens() {
         return icon.get("requireRankAndTokens").getAsBoolean();
     }

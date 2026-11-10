@@ -4,7 +4,8 @@ enum PlotSize {
     BASIC(51),
     LARGE(101),
     MASSIVE(301),
-    MEGA(1001);
+    MEGA(1001),
+    WORLD(0);
     
     private final int size;
     

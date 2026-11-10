@@ -76,12 +76,11 @@ public class VerifyCommand extends Command {
                     String name = set.getString("name");
                     String userString = String.valueOf(user);
     
-                    event.getGuild().retrieveMemberById(user).queue((member) -> {
+                    event.getGuild().retrieveMemberById(user).submit().thenAccept((member) -> {
                         builder.withPreset(
                                 new InformativeReply(InformativeReplyType.SUCCESS, "Verified!")
                         );
                         Guild guild = event.getGuild();
-                        guild.addRoleToMember(member, guild.getRoleById((VerifyCommand.ROLE_ID))).queue();
     
                         // Run the query before any messages sent to make sure that they are actually added.
                         new DatabaseQuery()
@@ -97,21 +96,34 @@ public class VerifyCommand extends Command {
                                     statement.setString(4, userString);
                                 })).compile();
                         
-                        event.reply(builder);
-                        
-                        Util.updateMember(member);
-                        
-                        PresetBuilder log = new PresetBuilder()
-                                .withPreset(new InformativeReply(InformativeReplyType.SUCCESS, name + " was verified"));
-                        Util.log(log);
-                    }, (error) -> {
-                        builder.withPreset(
-                                new InformativeReply(InformativeReplyType.ERROR, "Discord user was not found!")
-                        );
-        
-                        event.reply(builder);
+                        guild.addRoleToMember(member, guild.getRoleById(VerifyCommand.ROLE_ID))
+                                .submit().thenRun(() -> {
+                                    event.reply(builder);
+                                    try {
+                                        Util.updateMember(member);
+                                        PresetBuilder log = new PresetBuilder().withPreset(new InformativeReply(
+                                                InformativeReplyType.SUCCESS, name + " was verified"));
+                                        Util.log(log);
+                                    } catch (Exception error) {
+                                        // Verification already succeeded; logging must not report it as a failure.
+                                        error.printStackTrace();
+                                    }
+                                }).exceptionally(error -> {
+                                    replyFailure(event, error);
+                                    return null;
+                                });
+                    }).exceptionally((error) -> {
+                        replyFailure(event, error);
+                        return null;
                     });
                 });
         
+    }
+
+    private static void replyFailure(CommandEvent event, Throwable error) {
+        error.printStackTrace();
+        event.reply(new PresetBuilder().withPreset(
+                new InformativeReply(InformativeReplyType.ERROR,
+                        "Could not complete verification. Please check the user, my permissions, and try again.")));
     }
 }

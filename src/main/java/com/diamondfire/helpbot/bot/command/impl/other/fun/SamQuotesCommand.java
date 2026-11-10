@@ -12,6 +12,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFiles;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -54,7 +55,7 @@ public class SamQuotesCommand extends Command {
         builder.setImage("attachment://quote.png");
         builder.setColor(new Color(87, 177, 71));
     
-        event.getChannel().sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(file).setName("quote.png")).queue();
+        event.reply(new MessageCreateBuilder().setEmbeds(builder.build()).setFiles(FileUpload.fromData(file).setName("quote.png")).build());
     }
     
     @Override

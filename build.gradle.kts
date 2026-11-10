@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation ("net.dv8tion:JDA:6.1.0") {
+    implementation ("net.dv8tion:JDA:6.7.0") {
         exclude(module = "opus-java")
     }
 
@@ -28,7 +28,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.5")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("org.geysermc.mcprotocollib:protocol:1.21.7-1")
-    implementation("mysql:mysql-connector-java:5.1.13")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.4.1")
+    implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.codehaus.groovy:groovy-jsr223:3.0.8")
     implementation("net.kyori:adventure-api:4.24.0")
     implementation("net.kyori:adventure-text-minimessage:4.24.0")

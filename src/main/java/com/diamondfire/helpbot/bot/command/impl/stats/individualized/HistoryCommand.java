@@ -13,6 +13,7 @@ import com.diamondfire.helpbot.df.punishments.fetcher.PunishmentFetcher;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import com.diamondfire.helpbot.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 
@@ -55,7 +56,9 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     protected void execute(CommandEvent event, Player player) {
-        if (!Permission.MODERATION.hasPermission(event.getMember()) && !event.getMember().getEffectiveName().equals(player.name())) {
+        // No player argument means the member's own (linked) account was used.
+        boolean self = event.getArgument("player") == null || event.getMember().getEffectiveName().equalsIgnoreCase(player.name());
+        if (!self && !Permission.MODERATION.hasPermission(event.getMember())) {
             PresetBuilder activePunishmentsPreset = new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR, "You must be a moderator inorder to see other peoples history!")
@@ -73,90 +76,66 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 .fetch();
         
         event.getMember().getUser().openPrivateChannel().queue((privateChannel) -> {
-            // Retrieve active punishments
+            // Recap: summary counts and any active punishments.
             {
-                PresetBuilder activePunishmentsPreset = new PresetBuilder()
+                List<Punishment> active = punishments.stream().filter((punishment) -> punishment.active).toList();
+                
+                PresetBuilder recapPreset = new PresetBuilder()
                         .withPreset(
                                 new MinecraftUserPreset(player),
-                                new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
+                                active.isEmpty()
+                                        ? new InformativeReply(InformativeReplyType.INFO, "History Recap", null)
+                                        : new InformativeReply(InformativeReplyType.ERROR, "Active Punishments", null)
                         );
-                EmbedBuilder embed = activePunishmentsPreset.getEmbed();
+                EmbedBuilder embed = recapPreset.getEmbed();
                 
-                List<String> activePunishments = new ArrayList<>();
-                int warnings = 0;
-                int yearlyWarnings = 0;
-                for (Punishment punishment : punishments) {
-                    if (punishment.active) {
-                        activePunishments.add(punishment.toString());
-                    }
-                    if (punishment.type == PunishmentType.WARN) {
-                        if (ChronoUnit.DAYS.between(punishment.startTime.toInstant(), Instant.now()) <= 365) {
-                            yearlyWarnings++;
-                        }
-                        warnings++;
-                    }
-                }
-                punishments.removeIf((punishment) -> punishment.active);
-                
-                if (activePunishments.size() > 0) {
-                    activePunishmentsPreset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Active Punishments", null));
-                    EmbedUtil.addFields(embed, activePunishments, "", true);
-                    
-                    String duration = null;
-                    int warningReq = 0;
-                    if (warnings < 4 && warnings > 1) {
-                        duration = "30 minute";
-                        warningReq = 4 - warnings;
-                    } else if (warnings < 5) {
-                        duration = "1 hour";
-                        warningReq = 5 - warnings;
-                    } else if (warnings < 6) {
-                        duration = "12 hour";
-                        warningReq = 6 - warnings;
-                    }
-                    
-//                    if (duration != null) {
-//                        embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more active %s, you will receive a **%s** tempban!", warningReq, StringUtil.sCheck("warning", warningReq), duration), false);
-//                    }
-                    
-                } else if (punishments.size() == 0) {
+                if (punishments.isEmpty()) {
                     embed.setDescription("No punishments here, keep up the good work!");
+                } else {
+                    StringBuilder description = new StringBuilder(summarize(punishments));
+                    for (Punishment punishment : active) {
+                        description.append("\n\n").append(punishment.format());
+                    }
+                    
+                    embed.setDescription(description.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH
+                            ? description.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 1) + "…"
+                            : description.toString());
                 }
-//
-//                if (yearlyWarnings > 10) {
-//                    embed.setColor(Color.RED);
-//                    embed.addField("Tempban", String.format("\u26A0 If you receive **%s** more %s this year, you will receive a **45** day tempban!", 20 - yearlyWarnings, StringUtil.sCheck("warning", 20 - yearlyWarnings)), false);
-//                }
                 
                 msgs.add(privateChannel.sendMessageEmbeds(embed.build()));
+                punishments.removeIf((punishment) -> punishment.active);
             }
             
-            // Retrieve normal punishments
-            {
-                PresetBuilder punishmentsPreset = new PresetBuilder()
-                        .withPreset(
-                                new InformativeReply(InformativeReplyType.INFO, "Punishment History", null)
-                        );
-                EmbedBuilder presetBuilder = punishmentsPreset.getEmbed();
-                List<String> punishmentStrings = new ArrayList<>();
-                for (Punishment punishment : punishments) {
-                    punishmentStrings.add(punishment.toString());
-                }
+            // Past punishments, newest first, split over as many embeds as needed.
+            if (!punishments.isEmpty()) {
+                punishments.sort(Comparator.comparing((Punishment punishment) -> punishment.startTime).reversed());
                 
-                EmbedUtil.addFields(presetBuilder, punishmentStrings, "", "", true);
-                if (punishmentStrings.size() == 0) {
-                } else if (presetBuilder.isValidLength()) {
-                    msgs.add(privateChannel.sendMessageEmbeds(presetBuilder.build()));
+                List<MessageEmbed> embeds = new ArrayList<>();
+                StringBuilder page = new StringBuilder();
+                int total = 0;
+                for (Punishment punishment : punishments) {
+                    String entry = punishment.format();
+                    if (page.length() + entry.length() + 2 > MessageEmbed.DESCRIPTION_MAX_LENGTH) {
+                        embeds.add(historyEmbed(page.toString(), embeds.isEmpty()));
+                        page.setLength(0);
+                    }
+                    
+                    page.append(page.isEmpty() ? "" : "\n\n").append(entry);
+                    total += entry.length() + 2;
+                }
+                embeds.add(historyEmbed(page.toString(), embeds.isEmpty()));
+                
+                if (embeds.size() <= Message.MAX_EMBED_COUNT && total < MessageEmbed.EMBED_MAX_LENGTH_BOT - 100) {
+                    msgs.add(privateChannel.sendMessageEmbeds(embeds));
                 } else {
                     try {
                         File sendFile = ExternalFileUtil.generateFile("history.txt");
-                        Files.writeString(sendFile.toPath(), String.join("\n", punishmentStrings));
+                        Files.writeString(sendFile.toPath(), String.join("\n\n", punishments.stream().map(Punishment::toString).toList()));
                         msgs.add(privateChannel.sendFiles(FileUpload.fromData(sendFile)));
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
                 }
-                
             }
             
             MessageCreateAction action = msgs.get(0);
@@ -180,7 +159,36 @@ public class HistoryCommand extends AbstractPlayerUUIDCommand {
                 event.reply(errorMSG);
             });
             
+        }, error -> {
+            error.printStackTrace();
+            event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,
+                    "Could not open a private message. Please check that private messages are enabled.")));
         });
+    }
+    
+    private static MessageEmbed historyEmbed(String description, boolean first) {
+        EmbedBuilder embed = new PresetBuilder()
+                .withPreset(new InformativeReply(InformativeReplyType.INFO, first ? "Punishment History" : null, null))
+                .getEmbed();
+        return embed.setDescription(description).build();
+    }
+    
+    private static String summarize(List<Punishment> punishments) {
+        Map<PunishmentType, Integer> counts = new EnumMap<>(PunishmentType.class);
+        int yearlyWarnings = 0;
+        for (Punishment punishment : punishments) {
+            counts.merge(punishment.type, 1, Integer::sum);
+            if (punishment.type == PunishmentType.WARN && ChronoUnit.DAYS.between(punishment.startTime.toInstant(), Instant.now()) <= 365) {
+                yearlyWarnings++;
+            }
+        }
+        
+        int warnings = counts.getOrDefault(PunishmentType.WARN, 0);
+        return String.format("**%s** %s (%s in the past year) - **%s** %s - **%s** %s - **%s** %s",
+                warnings, StringUtil.sCheck("warning", warnings), yearlyWarnings,
+                counts.getOrDefault(PunishmentType.MUTE, 0), StringUtil.sCheck("mute", counts.getOrDefault(PunishmentType.MUTE, 0)),
+                counts.getOrDefault(PunishmentType.KICK, 0), StringUtil.sCheck("kick", counts.getOrDefault(PunishmentType.KICK, 0)),
+                counts.getOrDefault(PunishmentType.BAN, 0), StringUtil.sCheck("ban", counts.getOrDefault(PunishmentType.BAN, 0)));
     }
     
 }

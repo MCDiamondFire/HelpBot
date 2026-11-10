@@ -43,6 +43,6 @@ public class JoinsCommand extends Command {
                     builder.setDescription(String.format("A total of %s players have joined DiamondFire before!", count));
                 });
         
-        event.getChannel().sendMessageEmbeds(builder.build()).queue();
+        event.reply(builder);
     }
 }

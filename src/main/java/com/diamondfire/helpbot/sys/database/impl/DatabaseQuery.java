@@ -17,11 +17,19 @@ public class DatabaseQuery {
     }
     
     public DatabaseFuture compile() {
+        Connection connection = null;
         try {
-            Connection connection = ConnectionProvider.getConnection();
+            connection = ConnectionProvider.getConnection();
             return new DatabaseFuture(connection, new DatabaseResult(queryProvider.execute(connection)));
         } catch (SQLException e) {
-            throw new IllegalStateException("Failed to execute SQL !" + e.getMessage());
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ignored) {
+                }
+            }
+            
+            throw new IllegalStateException("Failed to execute SQL! " + e.getMessage(), e);
         }
     }
 }

@@ -55,12 +55,6 @@ public interface ExternalFiles {
             .setFileType("png")
             .buildFile();
     
-    File TAGS = new ExternalFileBuilder()
-            .isDirectory(false)
-            .setName("tags")
-            .setFileType("json")
-            .buildFile();
-    
     File VIP_ROLES = new ExternalFileBuilder()
             .isDirectory(false)
             .setName("vip_roles")

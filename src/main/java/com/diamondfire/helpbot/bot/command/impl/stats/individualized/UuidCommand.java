@@ -10,6 +10,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import com.diamondfire.helpbot.bot.command.help.HelpContextArgument;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 
 //Command exists for easy mobile copy and pasting
@@ -35,7 +36,7 @@ public class UuidCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     protected void execute(CommandEvent event, Player player) {
-        event.getReplyHandler().reply(player.uuidString());
+        event.reply(MessageCreateData.fromContent(player.uuidString()));
     }
     
 }

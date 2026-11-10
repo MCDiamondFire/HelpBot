@@ -23,12 +23,12 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public String getName() {
-        return "profile";
+        return "whois";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"user", "whois", "p", "prof", "credits", "joindate", "tokens"};
+        return new String[]{"profile", "user", "p", "prof", "credits", "joindate", "tokens"};
     }
     
     @Override
@@ -76,7 +76,8 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                     
                     String rankString;
                     {
-                        Rank highRank = RankUtil.getHighRank(set);
+                        Rank[] ranks = RankUtil.getRanks(set);
+                        Rank highRank = RankUtil.getHighRank(ranks);
                         if (highRank == null) {
                             rankString = "";
                         } else {
@@ -103,11 +104,13 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                                     "     (SELECT (SELECT date AS owen_join FROM owen.join_log WHERE uuid = ? ORDER BY date DESC LIMIT 1) temp FROM dual) AS owen_join," +
                                     "     (SELECT (SELECT COUNT(*) AS votes FROM plot_votes WHERE uuid = ?) temp FROM dual) AS votes," +
                                     "     (SELECT (SELECT tokens FROM user_tokens WHERE uuid = ?) temp FROM dual) AS credits," +
-                                    "     (SELECT (SELECT discord_id FROM linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id", (statement) -> {
+                                    "     (SELECT (SELECT discord_id FROM linked_accounts WHERE player_uuid = ?) temp FROM dual) AS id," +
+                                    "     (SELECT (SELECT play_time_ms FROM player_playtime WHERE uuid = ?) temp FROM dual) AS playtime", (statement) -> {
                                 statement.setString(1, playerUUID);
                                 statement.setString(2, playerUUID);
                                 statement.setString(3, playerUUID);
                                 statement.setString(4, playerUUID);
+                                statement.setString(5, playerUUID);
                             }))
                             .compile()
                             .run((stats) -> {
@@ -115,6 +118,9 @@ public class ProfileCommand extends AbstractPlayerUUIDCommand {
                             
                                 embed.addField("Votes Given", FormatUtil.formatNumber(statsSet.getInt("votes.temp")), false);
                                 embed.addField("Tokens", FormatUtil.formatNumber(statsSet.getInt("credits.temp")), false);
+                                
+                                long playtime = statsSet.getLong("playtime.temp");
+                                embed.addField("Playtime", playtime > 0 ? FormatUtil.formatMilliTime(playtime) : "N/A", false);
                             
                                 long discordId = statsSet.getLong("id.temp");
                                 if (discordId != 0L) {

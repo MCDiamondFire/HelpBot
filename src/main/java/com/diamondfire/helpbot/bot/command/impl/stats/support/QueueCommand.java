@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
 import java.sql.ResultSet;
-import java.time.Instant;
+import java.util.List;
+import java.util.*;
 
 public class QueueCommand extends Command {
     
@@ -50,7 +51,7 @@ public class QueueCommand extends Command {
         EmbedBuilder embed = preset.getEmbed();
         
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT player, plot, node, staff, TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP(), enter_time)) AS time FROM support_queue ORDER BY enter_time LIMIT 25"))
+                .query(new BasicQuery("SELECT player, TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP(), enter_time)) AS time FROM support_queue ORDER BY enter_time LIMIT 25"))
                 .compile()
                 .run((result) -> {
                     if (result.isEmpty()) {
@@ -60,17 +61,19 @@ public class QueueCommand extends Command {
                         return;
                     }
                     
-                    int i = 0;
+                    List<String> lines = new ArrayList<>();
                     for (ResultSet set : result) {
-                        embed.addField(StringUtil.display(set.getString("player")), FormatUtil.formatMilliTime(Instant.EPOCH.plusSeconds(set.getInt("time")).toEpochMilli()), false);
-                        i++;
+                        lines.add(String.format("`#%s` %s - waiting %s",
+                                lines.size() + 1,
+                                StringUtil.escapeName(set.getString("player")),
+                                FormatUtil.formatMilliTime(set.getInt("time") * 1000L)));
                     }
-                    embed.setTitle(String.format("Players in Queue (%s)", i));
-                    embed.setColor(colorAmt(i));
+                    embed.setTitle(String.format("Support Queue (%s waiting)", lines.size()));
+                    embed.setDescription(String.join("\n", lines));
+                    embed.setColor(colorAmt(lines.size()));
                 });
         
         event.reply(preset);
-        
     }
     
     private Color colorAmt(int index) {

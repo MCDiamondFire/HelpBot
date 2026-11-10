@@ -1,7 +1,7 @@
 package com.diamondfire.helpbot.bot.command.impl.other.tag;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
-import com.diamondfire.helpbot.bot.command.argument.impl.types.StringArgument;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.*;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.SubCommand;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -11,7 +11,7 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.tag.*;
 import com.diamondfire.helpbot.sys.tag.exceptions.TagDoesNotExistException;
 
-import java.io.IOException;
+import java.sql.SQLException;
 
 public class RemoveTagSubCommand extends SubCommand {
     
@@ -33,9 +33,13 @@ public class RemoveTagSubCommand extends SubCommand {
     protected ArgumentSet compileArguments() {
         return new ArgumentSet()
                 .addArgument(
-                        "activator", new StringArgument()
+                        "activator", new SuggestingArgument<>(new StringArgument(), (input) -> TagHandler.getTags().stream()
+                        .map(Tag::getActivator)
+                        .sorted()
+                        .toList())
                 );
     }
+    
     
     @Override
     public Permission getPermission() {
@@ -57,11 +61,18 @@ public class RemoveTagSubCommand extends SubCommand {
                                     "Successfully deleted tag with activator `%s`.", activator))
                     ));
             
-        } catch (TagDoesNotExistException | IOException err) {
+        } catch (TagDoesNotExistException err) {
             event.reply(new PresetBuilder()
                     .withPreset(
                             new InformativeReply(InformativeReplyType.ERROR,
                                     err.getMessage())
+                    ));
+        } catch (SQLException err) {
+            err.printStackTrace();
+            event.reply(new PresetBuilder()
+                    .withPreset(
+                            new InformativeReply(InformativeReplyType.ERROR,
+                                    "Failed to delete the tag.")
                     ));
         }
     }

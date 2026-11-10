@@ -25,12 +25,12 @@ public class LastJoinedCommand extends AbstractPlayerUUIDCommand {
     
     @Override
     public String getName() {
-        return "lastjoined";
+        return "seen";
     }
     
     @Override
     public String[] getAliases() {
-        return new String[]{"lastseen", "seen", "lastonline", "lastjoin"};
+        return new String[]{"lastjoined", "lastseen", "lastonline", "lastjoin"};
     }
     
     @Override

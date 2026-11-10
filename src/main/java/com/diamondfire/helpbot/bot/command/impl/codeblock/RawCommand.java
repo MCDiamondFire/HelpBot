@@ -7,19 +7,19 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.util.StringUtil;
 import com.google.gson.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
-import java.util.function.BiConsumer;
+import java.util.function.*;
 
 
 public class RawCommand extends AbstractSingleQueryCommand {
     
-    private static void sendRawMessage(CodeObject data, GuildMessageChannel channel) {
+    private static void sendRawMessage(CodeObject data, Consumer<MessageCreateData> reply) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(data.getJson());
         
         for (String part : StringUtil.splitBy(json, 1950)) {
-            channel.sendMessage(String.format("```%s```", part)).queue();
+            reply.accept(MessageCreateData.fromContent(String.format("```%s```", part)));
         }
         
     }
@@ -56,7 +56,7 @@ public class RawCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
+    public BiConsumer<CodeObject, Consumer<MessageCreateData>> onDataReceived() {
         return RawCommand::sendRawMessage;
     }
     

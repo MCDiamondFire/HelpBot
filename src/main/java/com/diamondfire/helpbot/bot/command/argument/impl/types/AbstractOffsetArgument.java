@@ -69,6 +69,22 @@ public abstract class AbstractOffsetArgument extends AbstractSimpleValueArgument
         return calendar.getTime();
     }
     
+    @Override
+    public List<String> getCompletions(@NotNull String input) {
+        String value = input.trim();
+        if (!value.isEmpty() && !Character.isDigit(value.charAt(value.length() - 1))) {
+            return List.of(value);
+        }
+        
+        String amount = value.isEmpty() ? "1" : value;
+        return Arrays.stream(getDurations()).map(duration -> amount + duration.getId()).toList();
+    }
+    
+    @Override
+    public boolean hasCompletions() {
+        return true;
+    }
+    
     protected abstract Duration[] getDurations();
     
     public static class Duration {

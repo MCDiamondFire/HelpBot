@@ -61,6 +61,7 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                 .run((result) -> {
                     if (result.isEmpty()) {
                         preset.withPreset(new InformativeReply(InformativeReplyType.ERROR, "Player does not have any plots!"));
+                        event.reply(preset);
                         return;
                     }
                     
@@ -74,9 +75,8 @@ public class PlotsCommand extends AbstractPlayerUUIDCommand {
                                 String.join("\n", stats), false);
                     
                     }
+                    event.reply(preset);
                 });
-    
-        event.reply(preset);
     }
     
 }

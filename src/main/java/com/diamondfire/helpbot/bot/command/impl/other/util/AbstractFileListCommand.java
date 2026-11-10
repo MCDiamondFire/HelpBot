@@ -8,6 +8,7 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.CodeObject;
 import com.diamondfire.helpbot.sys.externalfile.ExternalFileUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.io.*;
 import java.util.*;
@@ -40,10 +41,10 @@ public abstract class AbstractFileListCommand extends Command {
         } catch (IOException e) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Could not generate file!");
-            event.getChannel().sendMessageEmbeds(builder.build()).queue();
+            event.reply(builder);
             return;
         }
         
-        event.getChannel().sendMessage("File Generated").addFiles(FileUpload.fromData(file)).queue();
+        event.reply(new MessageCreateBuilder().setContent("File Generated").setFiles(FileUpload.fromData(file)).build());
     }
 }

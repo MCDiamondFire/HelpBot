@@ -7,11 +7,11 @@ import com.google.gson.JsonObject;
 public class PotionData extends CodeObject {
     
     public PotionData(JsonObject data) {
-        super(data, data.get("potion").getAsString());
+        super(data, data.has("potion") ? data.get("potion").getAsString() : data.get("potionId").getAsString());
     }
     
     public String getPotion() {
-        return data.get("potion").getAsString();
+        return getName();
     }
     
     @Override

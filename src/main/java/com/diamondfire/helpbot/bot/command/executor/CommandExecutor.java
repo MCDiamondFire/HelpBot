@@ -38,7 +38,11 @@ public class CommandExecutor {
                     }
                 }
                 
-                e.pushArguments(args);
+                if (e.isSlashCommand()) {
+                    e.pushSlashArguments();
+                } else {
+                    e.pushArguments(args);
+                }
                 command.run(e);
             } catch (ArgumentException exception) {
                 builder.withPreset(
@@ -53,14 +57,15 @@ public class CommandExecutor {
                 );
                 
                 {
-                    PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), e.getMessage().getContentRaw())));
+                    PresetBuilder preset = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR, String.format("An error occurred while %s tried to execute ``%s``!", e.getMember().getEffectiveName(), e.getRawContent())));
                     EmbedBuilder embed = preset.getEmbed();
                     
                     try (StringWriter writer = new StringWriter();
                          PrintWriter printWriter = new PrintWriter(writer)) {
                         exception.printStackTrace(printWriter);
                         
-                        String error = writer.toString().substring(0, 1000);
+                        String stackTrace = writer.toString();
+                        String error = stackTrace.substring(0, Math.min(stackTrace.length(), 1000));
                         embed.addField("Stack Trace", String.format("```%s```", error), false);
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
@@ -69,9 +74,11 @@ public class CommandExecutor {
                     Util.log(preset);
                 }
                 
+            } finally {
+                // Also reply if logging the command failure throws.
+                e.reply(builder);
             }
-            
-            e.reply(builder);
+            // Returning from run() does not mean asynchronous command callbacks have replied.
         }, POOL);
     }
     

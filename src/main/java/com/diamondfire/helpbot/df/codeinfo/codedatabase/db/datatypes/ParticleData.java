@@ -6,11 +6,11 @@ import com.google.gson.JsonObject;
 public class ParticleData extends CodeObject {
     
     public ParticleData(JsonObject data) {
-        super(data, data.get("particle").getAsString());
+        super(data, data.has("particle") ? data.get("particle").getAsString() : data.get("particleId").getAsString());
     }
     
     public String getParticle() {
-        return data.get("particle").getAsString();
+        return getName();
     }
     
     @Override

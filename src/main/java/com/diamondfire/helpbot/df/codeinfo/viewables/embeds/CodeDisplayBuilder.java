@@ -1,6 +1,6 @@
 package com.diamondfire.helpbot.df.codeinfo.viewables.embeds;
 
-
+import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.CodeDatabase;
 import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.df.codeinfo.viewables.BasicReaction;
 import com.diamondfire.helpbot.util.Util;
@@ -37,6 +37,15 @@ public interface CodeDisplayBuilder<T extends CodeObject> {
             tokens.add("Unlock with Tokens");
         } else if (!icon.getRequiredRank().equals("")) {
             tokens.add("Unlock with " + icon.getRequiredRank());
+        }
+        
+        if (icon.requireSparks()) {
+            tokens.add("Unlock with Sparks");
+        }
+        
+        String patchVersion = CodeDatabase.getPatchVersion();
+        if (patchVersion != null) {
+            tokens.add("Patch " + patchVersion);
         }
         
         String[] deprecatedNote = icon.getDeprecationNote();

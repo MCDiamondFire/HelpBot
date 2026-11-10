@@ -1,6 +1,8 @@
 package com.diamondfire.helpbot.bot.command.impl.other.fun;
 
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
+import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
+import com.diamondfire.helpbot.bot.command.argument.impl.types.AttachmentArgument;
 import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
@@ -13,6 +15,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.awt.*;
 import java.io.*;
@@ -30,12 +33,19 @@ public class NbsCommand extends Command {
     public HelpContext getHelpContext() {
         return new HelpContext()
                 .description("Generates a Recode song function.")
-                .category(CommandCategory.OTHER);
+                .category(CommandCategory.OTHER)
+                .addArgument(
+                        new HelpContextArgument()
+                                .name("nbs file")
+                                .optional()
+                );
     }
     
     @Override
     protected ArgumentSet compileArguments() {
-        return new ArgumentSet();
+        return new ArgumentSet()
+                .addArgument("file",
+                        new SingleArgumentContainer<>(new AttachmentArgument()).optional(null));
     }
     
     @Override
@@ -45,17 +55,15 @@ public class NbsCommand extends Command {
     
     @Override
     public void run(CommandEvent event) {
-        GuildMessageChannel channel = event.getChannel().asGuildMessageChannel();
         PresetBuilder attachNbsMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"You need to attach an nbs file!"));
         PresetBuilder errorMsg = new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,"Something went wrong while generating!"));
         
-        if (event.getMessage().getAttachments().isEmpty()) {
-            event.reply(attachNbsMsg);
-            return;
+        Message.Attachment attachment = event.getArgument("file");
+        if (attachment == null && event.getMessage() != null && !event.getMessage().getAttachments().isEmpty()) {
+            attachment = event.getMessage().getAttachments().get(0);
         }
         
-        Message.Attachment attachment = event.getMessage().getAttachments().get(0);
-        if (!attachment.getFileExtension().equals("nbs")) {
+        if (attachment == null || !"nbs".equals(attachment.getFileExtension())) {
             event.reply(attachNbsMsg);
             return;
         }
@@ -79,12 +87,16 @@ public class NbsCommand extends Command {
                         .addField("Information","You can copy the command above and give it to yourself in singleplayer. Use toolbars to transfer it to Diamondfire. You will need a [Music Player](https://dfonline.dev/edit/?template=nbs) function to play this song!", false);
                 
                 
-                channel.sendFiles(FileUpload.fromData(templateOutputfile)).setEmbeds(embed.build()).queue();
+                event.reply(new MessageCreateBuilder().setEmbeds(embed.build()).setFiles(FileUpload.fromData(templateOutputfile)).build());
                 file.deleteOnExit();
             } catch (OutdatedNBSException | IOException e) {
                 e.printStackTrace();
                 event.reply(errorMsg);
             }
+        }).exceptionally(error -> {
+            error.printStackTrace();
+            event.reply(errorMsg);
+            return null;
         });
     }
     

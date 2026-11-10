@@ -3,6 +3,7 @@ package com.diamondfire.helpbot.bot.command.argument.impl.types.Enum;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.exceptions.*;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.AbstractSimpleValueArgument;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
@@ -15,6 +16,16 @@ public class EnumArgument<E extends Enum<E> & EnumArgument.InputEnum> extends Ab
     public EnumArgument<E> setEnum(Class<E> anEnum) {
         associatedEnum = EnumSet.allOf(anEnum);
         return this;
+    }
+    
+    @Override
+    public OptionData createOptionData(@NotNull String name, @NotNull String description, boolean required) {
+        OptionData data = super.createOptionData(name, description, required);
+        associatedEnum.stream()
+                .filter(value -> !value.isHidden())
+                .forEach(value -> data.addChoice(value.getName(), value.getName()));
+        
+        return data;
     }
     
     @Override

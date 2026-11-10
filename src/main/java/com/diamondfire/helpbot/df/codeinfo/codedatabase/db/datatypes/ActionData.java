@@ -29,6 +29,10 @@ public class ActionData extends CodeObject {
         return Util.fromJsonArray(data.get("aliases").getAsJsonArray());
     }
     
+    public JsonObject getLegacyReplacement() {
+        return data.has("legacyReplacement") ? data.getAsJsonObject("legacyReplacement") : null;
+    }
+    
     // Convenience method
     public CodeBlockData getCodeBlockData() {
         List<CodeBlockData> codeBlocks = CodeDatabase.getRegistry(CodeDatabase.CODEBLOCKS);

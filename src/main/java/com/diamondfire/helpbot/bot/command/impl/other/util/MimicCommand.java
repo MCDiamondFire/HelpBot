@@ -6,6 +6,7 @@ import com.diamondfire.helpbot.bot.command.help.*;
 import com.diamondfire.helpbot.bot.command.impl.Command;
 import com.diamondfire.helpbot.bot.command.permissions.Permission;
 import com.diamondfire.helpbot.bot.events.CommandEvent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
 
 public class MimicCommand extends Command {
@@ -39,8 +40,15 @@ public class MimicCommand extends Command {
     @Override
     public void run(CommandEvent event) {
         String msg = event.getArgument("msg");
-        event.getMessage().delete().queue();
-        event.getChannel().sendMessage(msg).queue();
+        if (event.getMessage() != null) {
+            event.getMessage().delete().queue();
+        }
+        
+        // Send directly to the channel so slash usages don't show the "used /mimic" attribution.
+        event.getChannel().sendMessage(MessageCreateData.fromContent(msg)).queue();
+        if (event.isSlashCommand()) {
+            event.replyEphemeral(MessageCreateData.fromContent("Sent."));
+        }
     }
     
 }

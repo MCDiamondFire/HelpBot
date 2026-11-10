@@ -12,9 +12,6 @@ import com.diamondfire.helpbot.bot.events.CommandEvent;
 import com.diamondfire.helpbot.sys.database.impl.DatabaseQuery;
 import com.diamondfire.helpbot.sys.database.impl.queries.BasicQuery;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-
-import java.sql.ResultSet;
 
 public class UnmuteCommand extends Command {
     
@@ -58,7 +55,7 @@ public class UnmuteCommand extends Command {
         long user = event.getArgument("user");
         String reason = event.getArgument("reason");
         
-        event.getGuild().retrieveMemberById(user).queue((member) -> {
+        event.getGuild().retrieveMemberById(user).submit().thenAccept((member) -> {
             new DatabaseQuery()
                     .query(new BasicQuery("SELECT * FROM owen.muted_members WHERE (muted_till > CURRENT_TIMESTAMP() && !handled) AND member = ? LIMIT 1", (state) -> {
                         state.setLong(1, member.getIdLong());
@@ -69,35 +66,44 @@ public class UnmuteCommand extends Command {
                             builder.withPreset(
                                     new InformativeReply(InformativeReplyType.ERROR, "Discord user is not muted!")
                             );
-                            
+                            event.reply(builder);
                         } else {
                             Guild guild = event.getGuild();
-                            
-                            guild.removeRoleFromMember(member, guild.getRoleById(MuteCommand.ROLE_ID)).queue();
-                            
-                            new DatabaseQuery()
-                                    .query(new BasicQuery("UPDATE owen.muted_members SET handled = true WHERE member = ?", (statement) -> statement.setLong(1, member.getIdLong())))
-                                    .compile();
-                            
-                            member.getUser()
-                                    .openPrivateChannel()
-                                    .flatMap((e) -> e.sendMessage(String.format("Congratulations! Your mute has been removed early. \nReason: %s", reason)))
-                                    .queue();
-                            
-                            builder.withPreset(
-                                    new InformativeReply(InformativeReplyType.SUCCESS, "User has been unmuted and notified!")
-                            );
+                            Role mutedRole = guild.getRoleById(MuteCommand.ROLE_ID);
+                            if (mutedRole == null) {
+                                event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                        InformativeReplyType.ERROR, "Could not find the muted role!")));
+                                return;
+                            }
+                            guild.removeRoleFromMember(member, mutedRole).submit().thenRun(() -> {
+                                new DatabaseQuery()
+                                        .query(new BasicQuery("UPDATE owen.muted_members SET handled = true WHERE member = ?", (statement) -> statement.setLong(1, member.getIdLong())))
+                                        .compile();
+
+                                member.getUser()
+                                        .openPrivateChannel()
+                                        .flatMap((e) -> e.sendMessage(String.format("Congratulations! Your mute has been removed early. \nReason: %s", reason)))
+                                        .queue(sent -> event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                                InformativeReplyType.SUCCESS, "User has been unmuted and notified!"))),
+                                                error -> event.reply(new PresetBuilder().withPreset(new InformativeReply(
+                                                        InformativeReplyType.SUCCESS, "User has been unmuted, but I could not send them a private message."))));
+                            }).exceptionally(error -> {
+                                replyFailure(event, error);
+                                return null;
+                            });
                         }
                     });
             
-            event.reply(builder);
-        }, (error) -> {
-            builder.withPreset(
-                    new InformativeReply(InformativeReplyType.ERROR, "Discord user was not found!")
-            );
-            
-            event.reply(builder);
+        }).exceptionally((error) -> {
+            replyFailure(event, error);
+            return null;
         });
         
+    }
+
+    private static void replyFailure(CommandEvent event, Throwable error) {
+        error.printStackTrace();
+        event.reply(new PresetBuilder().withPreset(new InformativeReply(InformativeReplyType.ERROR,
+                "Could not complete the unmute. Please check the user, my permissions, and try again.")));
     }
 }

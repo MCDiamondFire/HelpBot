@@ -7,16 +7,16 @@ import com.diamondfire.helpbot.df.codeinfo.codedatabase.db.datatypes.*;
 import com.diamondfire.helpbot.util.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.*;
 
 import java.io.File;
-import java.util.function.BiConsumer;
+import java.util.function.*;
 
 
 public class TagsCommand extends AbstractSingleQueryCommand {
     
-    private static void sendTagMessage(CodeObject data, GuildMessageChannel channel) {
+    private static void sendTagMessage(CodeObject data, Consumer<MessageCreateData> reply) {
         EmbedBuilder builder = new EmbedBuilder();
         ActionData actionData;
         
@@ -28,14 +28,14 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         } else {
             builder.setTitle("Invalid data!");
             builder.setDescription("What you have searched for is not a valid action!");
-            channel.sendMessageEmbeds(builder.build()).queue();
+            reply.accept(MessageCreateData.fromEmbeds(builder.build()));
             return;
         }
         
         if (actionData.getTags().length == 0) {
             builder.setTitle("No tags!");
             builder.setDescription("This action does not contain any tags!");
-            channel.sendMessageEmbeds(builder.build()).queue();
+            reply.accept(MessageCreateData.fromEmbeds(builder.build()));
             return;
         }
         
@@ -54,10 +54,10 @@ public class TagsCommand extends AbstractSingleQueryCommand {
         if (customHead == null) {
             File actionIcon = Util.fetchMinecraftTextureFile(data.getItem().getMaterial().toUpperCase());
             builder.setThumbnail("attachment://" + actionIcon.getName());
-            channel.sendMessageEmbeds(builder.build()).addFiles(FileUpload.fromData(actionIcon)).queue();
+            reply.accept(new MessageCreateBuilder().setEmbeds(builder.build()).setFiles(FileUpload.fromData(actionIcon)).build());
         } else {
             builder.setThumbnail(customHead);
-            channel.sendMessageEmbeds(builder.build()).queue();
+            reply.accept(MessageCreateData.fromEmbeds(builder.build()));
         }
     }
     
@@ -93,7 +93,7 @@ public class TagsCommand extends AbstractSingleQueryCommand {
     }
     
     @Override
-    public BiConsumer<CodeObject, GuildMessageChannel> onDataReceived() {
+    public BiConsumer<CodeObject, Consumer<MessageCreateData>> onDataReceived() {
         return TagsCommand::sendTagMessage;
     }
 }
