@@ -1,5 +1,6 @@
 package com.diamondfire.helpbot.bot.command.impl.stats.top;
 
+import com.diamondfire.helpbot.util.MemberLoadGate;
 import com.diamondfire.helpbot.bot.command.argument.ArgumentSet;
 import com.diamondfire.helpbot.bot.command.argument.impl.parsing.types.SingleArgumentContainer;
 import com.diamondfire.helpbot.bot.command.argument.impl.types.ClampedIntegerArgument;
@@ -61,6 +62,7 @@ public class DiscordBoostersCommand extends Command {
     public void run(CommandEvent event) {
         Guild guild = event.getGuild();
         int page = event.getArgument("page");
+        MemberLoadGate.await(guild);
         guild.findMembers(member -> member.getTimeBoosted() != null)
                 .onSuccess(members -> {
                     try {

@@ -128,9 +128,10 @@ public class Util {
     
     public static void updateGuild(HashMap<Long, String> accounts, Guild guild) {
         Role verifiedRoles = guild.getRoleById(VERIFIED);
+        MemberLoadGate.await(guild);
         guild.loadMembers((member) -> {
             updateMember(member, accounts.get(member.getIdLong()), verifiedRoles);
-        }).setTimeout(Duration.ofMinutes(5)).onError((error) -> System.out.println("Could not load members for verification: " + error));
+        }).setTimeout(Duration.ofMinutes(1)).onError((error) -> System.out.println("Could not load members for verification: " + error));
         guild.pruneMemberCache();
     }
     

@@ -80,10 +80,11 @@ public class PlaytimeCommand extends AbstractPlayerUUIDCommand {
         long startPosition = Math.max(1, position - SURROUNDING);
         List<String> lines = new ArrayList<>();
         new DatabaseQuery()
-                .query(new BasicQuery("SELECT player_playtime.uuid, players.name, player_playtime.play_time_ms " +
-                        "FROM player_playtime LEFT JOIN players ON players.uuid = player_playtime.uuid " +
-                        "ORDER BY player_playtime.play_time_ms DESC, player_playtime.uuid " +
-                        "LIMIT ? OFFSET ?", (statement) -> {
+                // Sort the playtime table alone and only look up names for the rows shown; joining first is far slower.
+                .query(new BasicQuery("SELECT w.uuid, players.name, w.play_time_ms " +
+                        "FROM (SELECT uuid, play_time_ms FROM player_playtime ORDER BY play_time_ms DESC, uuid LIMIT ? OFFSET ?) w " +
+                        "LEFT JOIN players ON players.uuid = w.uuid " +
+                        "ORDER BY w.play_time_ms DESC, w.uuid", (statement) -> {
                     statement.setInt(1, SURROUNDING * 2 + 1);
                     statement.setLong(2, startPosition - 1);
                 }))

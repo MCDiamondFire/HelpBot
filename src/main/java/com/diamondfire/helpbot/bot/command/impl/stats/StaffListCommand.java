@@ -108,6 +108,7 @@ public class StaffListCommand extends Command {
                     
                     Guild guild = event.getGuild();
                     Role botDev = guild.getRoleById(589238520145510400L);
+                    MemberLoadGate.await(guild);
                     guild.findMembers((member -> member.getRoles().contains(botDev)))
                             .onSuccess((members) -> {
                                 try {
