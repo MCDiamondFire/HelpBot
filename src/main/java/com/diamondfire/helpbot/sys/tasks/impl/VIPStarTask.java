@@ -5,6 +5,7 @@ import com.diamondfire.helpbot.sys.tasks.LoopingTask;
 import com.diamondfire.helpbot.sys.vip.VIPRoleHandler;
 import net.dv8tion.jda.api.entities.*;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +60,7 @@ public class VIPStarTask implements LoopingTask {
                 if (vip || !stars.isEmpty()) {
                     relevant.add(new Seen(member.getIdLong(), vip, VIPRoleHandler.getNameColor(member), stars));
                 }
-            }).get();
+            }).setTimeout(Duration.ofMinutes(5)).get();
         } catch (Exception e) {
             // Without every member, a star in use can't be told apart from an unused one.
             System.out.println("Could not load members, skipping VIP star update: " + e);

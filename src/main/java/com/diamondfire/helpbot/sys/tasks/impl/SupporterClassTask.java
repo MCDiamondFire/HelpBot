@@ -4,6 +4,7 @@ import com.diamondfire.helpbot.bot.HelpBotInstance;
 import com.diamondfire.helpbot.sys.tasks.LoopingTask;
 import net.dv8tion.jda.api.entities.*;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +38,6 @@ public class SupporterClassTask implements LoopingTask {
             } else if (roles.contains(generalBoost) && !(roles.contains(discord) || roles.contains(twitch))) {
                 guild.removeRoleFromMember(member, generalBoost).queue();
             }
-        });
+        }).setTimeout(Duration.ofMinutes(5)).onError((error) -> System.out.println("Could not load members for supporter roles: " + error));
     }
 }

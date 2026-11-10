@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
+import java.time.Duration;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +130,7 @@ public class Util {
         Role verifiedRoles = guild.getRoleById(VERIFIED);
         guild.loadMembers((member) -> {
             updateMember(member, accounts.get(member.getIdLong()), verifiedRoles);
-        });
+        }).setTimeout(Duration.ofMinutes(5)).onError((error) -> System.out.println("Could not load members for verification: " + error));
         guild.pruneMemberCache();
     }
     
